@@ -1,0 +1,14 @@
+.headerStyle{
+  th{
+    background-color: rgb(247,249,252) !important;
+    color: $font-color-title;
+  }
+  padding:10px;
+}
+.cursor-pointer{
+  cursor: pointer;
+  color:$color-primary;
+}
+.flexbox{
+  display:flex;
+}

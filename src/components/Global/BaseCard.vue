@@ -30,6 +30,7 @@ export default {
 .card-title{
   font-size: $font-size-18;
   line-height:$line-height-24;
+  font-weight: bold;
   i{
     color: $icon-color;
     font-size: $font-size-18;

@@ -18,7 +18,7 @@
             </div>
           </header>
           <section class="component-div">
-            <box-card />
+            <progress-card :chart-data="resourceData" />
           </section>
         </BaseCard>
       </el-col>
@@ -33,12 +33,12 @@
           <section class="component-div">
             <div class="event-container">
               <div class="total">
-                <span class="number">97</span>
+                <span class="number">{{ total }}</span>
                 <span class="text">总数</span>
                 <span>（近1天）</span>
               </div>
               <div class="chart-wrap">
-                <bar-chart-signle />
+                <bar-chart-signle :chart-data="eventData" />
               </div>
             </div>
           </section>
@@ -61,8 +61,8 @@
               </el-tooltip>
             </div>
           </header>
-          <section>
-            <pie-chart />
+          <section class="component-div">
+            <radius-pie-chart :chart-data="applicationData" />
           </section>
         </BaseCard>
       </el-col>
@@ -73,8 +73,8 @@
               <span>计算组件</span>
             </div>
           </header>
-          <section>
-            <pie-chart />
+          <section class="component-div">
+            <transverse-bar :chart-data="computeData" />
           </section>
         </BaseCard>
       </el-col>
@@ -86,7 +86,39 @@
         </div>
       </header>
       <section>
-        <bar-chart />
+        <div class="container-top flexbox">
+          <div class="container-top-left">
+            <radius-pie-chart :chart-data="containerData" />
+          </div>
+          <div class="container-top-right">
+            <pie-chart />
+          </div>
+        </div>
+        <div class="container-bottom">
+          <span>异常容器组</span>
+          <el-table
+            :data="containerList.data"
+            style="width: 100%"
+            height="300px"
+            header-row-class-name="headerStyle"
+          >
+            <el-table-column
+              v-for="col in containerColumnList"
+              :key="col.id"
+              :label="col.label"
+              :show-overflow-tooltip="col['show-overflow-tooltip']"
+            >
+              <template slot-scope="scope">
+                <div v-if="col.id === 'name'" class="cursor-pointer">
+                  {{ scope.row[col.id] }}
+                </div>
+                <div v-else>
+                  {{ scope.row[col.id] }}
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </section>
     </BaseCard>
     <el-row :gutter="24">
@@ -95,7 +127,12 @@
           <header>
             <div class="card-title right-header">
               <span>资源使用率</span>
-              <el-select v-model="time" filterable placeholder="请选择" size="mini">
+              <el-select
+                v-model="time"
+                filterable
+                placeholder="请选择"
+                size="mini"
+              >
                 <i slot="prefix" class="el-input__icon el-icon-search" />
                 <el-option
                   v-for="item in timeOptions"
@@ -106,7 +143,7 @@
               </el-select>
             </div>
           </header>
-          <section>
+          <section class="component-div component-div2">
             <raddar-chart />
           </section>
         </BaseCard>
@@ -117,13 +154,43 @@
             <div class="card-title right-header">
               <span>资源使用量 Top5</span>
               <div>
-                <el-button type="primary" round size="mini">内存</el-button>
-                <el-button round size="mini">CPU</el-button>
+                <el-button
+                  :type="activeKey === 'nc' ? 'primary' : null"
+                  round
+                  size="mini"
+                  @click="activeKey = 'nc'"
+                >内存</el-button>
+                <el-button
+                  :type="activeKey === 'cpu' ? 'primary' : null"
+                  round
+                  size="mini"
+                  @click="activeKey = 'cpu'"
+                >CPU</el-button>
               </div>
             </div>
           </header>
-          <section>
-            <line-chart :chart-data="lineChartData.newVisitis" />
+          <section class="component-div component-div2">
+            <el-table
+              :data="topList.data"
+              style="width: 100%"
+              height="100%"
+              header-row-class-name="headerStyle"
+            >
+              <el-table-column
+                v-for="col in topColumnList"
+                :key="col.id"
+                :label="col.label"
+              >
+                <template slot-scope="scope">
+                  <div v-if="col.id === 'name'" class="cursor-pointer">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div v-else>
+                    {{ scope.row[col.id] }}
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
           </section>
         </BaseCard>
       </el-col>
@@ -133,46 +200,56 @@
 
 <script>
 import OverviewBanner from './components/OverviewBanner'
-import LineChart from './components/LineChart'
+// 资源配额
+import ProgressCard from './components/ProgressCard'
+// 事件  单个柱状图组件
+import BarChartSignle from './components/BarChartSingle.vue'
+// 应用 圆角饼图组件
+import RadiusPieChart from './components/RadiusPieChart.vue'
+// 计算组件
+import TransverseBar from './components/TransverseBar.vue'
+//
 import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
-import BoxCard from './components/BoxCard'
-import BarChartSignle from './components/BarChartSingle.vue'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
-
+import {
+  resourceData,
+  eventData,
+  applicationData,
+  computeData,
+  containerData,
+  containerColumnList,
+  containerList,
+  topColumnListnc,
+  topColumnListcpu,
+  topList
+} from './constant'
 export default {
   name: 'DashboardAdmin',
   components: {
     OverviewBanner,
-    LineChart,
+    ProgressCard,
     RaddarChart,
     PieChart,
-    BarChart,
-    BoxCard,
-    BarChartSignle
+    BarChartSignle,
+    RadiusPieChart,
+    TransverseBar
   },
   data() {
     return {
-      lineChartData: lineChartData,
+      // 资源配额
+      resourceData,
+      // 事件 数据
+      total: 97,
+      eventData,
+      // 应用
+      applicationData,
+      // 计算组件
+      computeData,
+      // 容器组
+      containerData,
+      containerColumnList,
+      containerList,
+      // 资源使用率
       time: '近 1 小时',
       timeOptions: [
         {
@@ -199,14 +276,25 @@ export default {
           value: '近 7 天',
           label: '近 7 天'
         }
-      ]
+      ],
+      // 资源使用量 Top5
+      activeKey: 'nc',
+      topColumnListnc,
+      topColumnListcpu,
+      topList
     }
   },
-  methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+  computed: {
+    topColumnList: function() {
+      return this.activeKey === 'nc' ? topColumnListnc : topColumnListcpu
     }
-  }
+  },
+  created() {
+    this.total = this.eventData.reduce((pre, cur) => {
+      return pre + cur.value
+    }, 0)
+  },
+  methods: {}
 }
 </script>
 
@@ -216,33 +304,55 @@ export default {
   background-color: rgb(240, 242, 245);
   position: relative;
 }
-.component-div{
-  height: 250px;
+.component-div {
+  height: 200px;
   overflow: hidden;
   display: flex;
   align-items: center;
-  >div{
+  > div {
     flex: 1;
     height: 100%;
   }
 }
-.event-container{
+.component-div2 {
+  min-height: 400px;
+}
+.event-container {
   margin-top: 20px;
-  .total{
+  .total {
     margin-bottom: 16px;
-    .number{
-      color:$font-color-title;
+    .number {
+      color: $font-color-title;
       font-size: 40px;
       line-height: 1;
       margin-right: 8px;
     }
-    .text{
-      margin-right:20px;
+    .text {
+      margin-right: 20px;
     }
   }
 }
-.chart-wrap{
+.chart-wrap {
   width: 100%;
   height: calc(100% - 56px);
+}
+.el-table {
+  margin-top: 20px;
+}
+.container-top-left {
+  width: 32%;
+  height: 200px;
+  border-right: 1px solid $border-color-one;
+  padding-right: 20px;
+}
+.container-top-right {
+  flex: 1;
+  height: 200px;
+}
+.container-bottom {
+  margin-top: 20px;
+  > span {
+    font-weight: 500;
+  }
 }
 </style>

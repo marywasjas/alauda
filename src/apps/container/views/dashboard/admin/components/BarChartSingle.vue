@@ -1,4 +1,5 @@
 <template>
+  <!-- 单一柱状图显示 组件 -->
   <div :class="className" :style="{ height: height, width: width }" />
 </template>
 
@@ -24,11 +25,34 @@ export default {
     height: {
       type: String,
       default: '100%'
+    },
+    chartData: {
+      type: Array,
+      default: () => {
+        return [
+          {
+            label: '警告',
+            value: 0
+          },
+          {
+            label: '正常',
+            value: 0
+          }
+        ]
+      }
     }
   },
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    chartData: {
+      handler(newVal, oldVal) {
+        this.initChart()
+      },
+      deep: true
     }
   },
   mounted() {
@@ -61,6 +85,13 @@ export default {
           data: ['警告', '正常'],
           top: 0,
           left: 0
+          // formatter: function(name) { // 图例后添加数值
+          //   console.log(name)
+          //   // const item = this.chartData.filter(i => i.label === name)
+          //   // console.log(item)
+          //   // const tarValue = item.value
+          //   return name + ': ' + 1
+          // }
         },
         xAxis: [
           {
@@ -99,14 +130,14 @@ export default {
         ],
         series: [
           {
-            name: '正常',
+            name: this.chartData[0].label,
             type: 'bar',
             tooltip: {
               valueFormatter: function(value) {
                 return value
               }
             },
-            data: [20],
+            data: [this.chartData[0].value],
             barWidth: 12,
             itemStyle: {
               // 柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
@@ -117,14 +148,14 @@ export default {
             }
           },
           {
-            name: '警告',
+            name: this.chartData[1].label,
             type: 'bar',
             tooltip: {
               valueFormatter: function(value) {
                 return value
               }
             },
-            data: [48],
+            data: [this.chartData[1].value],
             barWidth: 12,
             itemStyle: {
               // 柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
