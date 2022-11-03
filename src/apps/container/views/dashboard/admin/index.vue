@@ -91,7 +91,23 @@
             <radius-pie-chart :chart-data="containerData" />
           </div>
           <div class="container-top-right">
-            <pie-chart />
+            <div class="text-right">
+              <el-select
+                v-model="containerTime"
+                filterable
+                placeholder="请选择"
+                size="mini"
+              >
+                <i slot="prefix" class="el-input__icon el-icon-search" />
+                <el-option
+                  v-for="item in timeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </div>
+            <line-chart :chart-data="containerLineData" :show-total="true" />
           </div>
         </div>
         <div class="container-bottom">
@@ -128,7 +144,7 @@
             <div class="card-title right-header">
               <span>资源使用率</span>
               <el-select
-                v-model="time"
+                v-model="resourceTime"
                 filterable
                 placeholder="请选择"
                 size="mini"
@@ -144,7 +160,7 @@
             </div>
           </header>
           <section class="component-div component-div2">
-            <raddar-chart />
+            <line-chart :chart-data="resourceLineData" class="margin-top" />
           </section>
         </BaseCard>
       </el-col>
@@ -171,6 +187,7 @@
           </header>
           <section class="component-div component-div2">
             <el-table
+              class="margin-top"
               :data="topList.data"
               style="width: 100%"
               height="100%"
@@ -209,16 +226,17 @@ import RadiusPieChart from './components/RadiusPieChart.vue'
 // 计算组件
 import TransverseBar from './components/TransverseBar.vue'
 //
-import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
+import LineChart from './components/LineChart'
 import {
   resourceData,
   eventData,
   applicationData,
   computeData,
   containerData,
+  containerLineData,
   containerColumnList,
   containerList,
+  resourceLineData,
   topColumnListnc,
   topColumnListcpu,
   topList
@@ -228,11 +246,10 @@ export default {
   components: {
     OverviewBanner,
     ProgressCard,
-    RaddarChart,
-    PieChart,
     BarChartSignle,
     RadiusPieChart,
-    TransverseBar
+    TransverseBar,
+    LineChart
   },
   data() {
     return {
@@ -247,10 +264,12 @@ export default {
       computeData,
       // 容器组
       containerData,
+      containerTime: '近 1 小时',
+      containerLineData,
       containerColumnList,
       containerList,
       // 资源使用率
-      time: '近 1 小时',
+      resourceTime: '近 1 小时',
       timeOptions: [
         {
           value: '近 1 小时',
@@ -277,6 +296,7 @@ export default {
           label: '近 7 天'
         }
       ],
+      resourceLineData,
       // 资源使用量 Top5
       activeKey: 'nc',
       topColumnListnc,
@@ -315,7 +335,7 @@ export default {
   }
 }
 .component-div2 {
-  min-height: 400px;
+  height: 400px;
 }
 .event-container {
   margin-top: 20px;
@@ -336,18 +356,26 @@ export default {
   width: 100%;
   height: calc(100% - 56px);
 }
-.el-table {
-  margin-top: 20px;
-}
 .container-top-left {
   width: 32%;
-  height: 200px;
+  height: 250px;
   border-right: 1px solid $border-color-one;
   padding-right: 20px;
+  display:flex;
+  align-items:center;
+  .chart{
+    height: 200px !important;
+  }
 }
 .container-top-right {
   flex: 1;
-  height: 200px;
+  height: 250px;
+  .el-select{
+    margin-bottom: 20px;
+  }
+  .chart{
+    height: 200px !important;
+  }
 }
 .container-bottom {
   margin-top: 20px;

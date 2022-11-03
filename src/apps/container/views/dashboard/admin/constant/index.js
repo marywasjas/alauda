@@ -150,6 +150,41 @@ export const containerList = Mock.mock({
     }
   }]
 })
+export const containerLineData = Mock.mock({
+  fields: [
+    {
+      name: '运行中',
+      flied: 'yxz'
+    },
+    {
+      name: '异常',
+      flied: 'yc'
+    }
+  ],
+  'data|10': [{
+    name: '@date',
+    yxz: '@integer(0 ,10)',
+    yc: '@integer(0 ,10)'
+  }]
+})
+// 资源使用率
+export const resourceLineData = Mock.mock({
+  fields: [
+    {
+      name: 'cpu',
+      flied: 'cpu'
+    },
+    {
+      name: '内存',
+      flied: 'nc'
+    }
+  ],
+  'data|10': [{
+    name: '@date',
+    cpu: '@integer(0 ,100)',
+    nc: '@integer(0 ,100)'
+  }]
+})
 // 资源使用量 Top5
 export const topColumnListnc = [{
   id: 'name',

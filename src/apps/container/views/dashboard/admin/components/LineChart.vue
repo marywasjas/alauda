@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div :class="className" :style="{ height: height, width: width }" />
 </template>
 
 <script>
@@ -20,15 +20,15 @@ export default {
     },
     height: {
       type: String,
-      default: '350px'
-    },
-    autoResize: {
-      type: Boolean,
-      default: true
+      default: '100%'
     },
     chartData: {
       type: Object,
       required: true
+    },
+    showTotal: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -40,7 +40,7 @@ export default {
     chartData: {
       deep: true,
       handler(val) {
-        this.setOptions(val)
+        this.initChart()
       }
     }
   },
@@ -59,30 +59,67 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-      this.setOptions(this.chartData)
-    },
-    setOptions({ expectedData, actualData } = {}) {
+      const xAxisData = this.chartData.data.map(i => i.name)
+      let seriesData = []
+      seriesData = this.chartData.fields.map(i => {
+        return {
+          name: i.name,
+          smooth: true,
+          type: 'line',
+          data: this.chartData.data.map(n => n[i.flied]),
+          animationDuration: 2800,
+          animationEasing: 'cubicInOut',
+          itemStyle: {
+            normal: {
+              areaStyle: {
+                color: '#f3f8ff'
+              }
+            }
+          }
+        }
+      })
+      if (this.showTotal) {
+        const totalData = []
+        this.chartData.data.map(i => {
+          const total = this.chartData.fields.reduce((pre, cur) => {
+            return pre + i[cur.flied]
+          }, 0)
+          totalData.push(total)
+        })
+        const totalSeries = {
+          name: '总',
+          smooth: true,
+          type: 'line',
+          data: totalData,
+          animationDuration: 2800,
+          animationEasing: 'cubicInOut',
+          itemStyle: {
+            normal: {
+              areaStyle: {
+                color: '#f3f8ff'
+              }
+            }
+          }
+        }
+        seriesData.push(totalSeries)
+      }
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: xAxisData,
           boundaryGap: false,
           axisTick: {
             show: false
           }
         },
         grid: {
-          left: 10,
-          right: 10,
-          bottom: 20,
+          left: '5%',
+          right: '5%',
+          bottom: 0,
           top: 30,
           containLabel: true
         },
         tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          padding: [5, 10]
+          trigger: 'axis'
         },
         yAxis: {
           axisTick: {
@@ -90,44 +127,10 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          right: 0,
+          top: 0
         },
-        series: [{
-          name: 'expected', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
-          },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
+        series: seriesData
       })
     }
   }
