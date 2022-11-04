@@ -123,6 +123,12 @@ export const containerAsyncRoutes = [
     },
     children: [
       {
+        path: 'resource-management',
+        component: () => import('@/apps/container/views/error-page/list'),
+        name: 'ResourceManagement',
+        meta: { title: '资源管理' }
+      },
+      {
         path: '401',
         component: () => import('@/apps/container/views/error-page/401'),
         name: 'Page401',
