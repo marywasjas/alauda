@@ -201,7 +201,7 @@ export const topColumnListcpu = [{
   label: 'CPU(m)'
 }]
 export const topList = Mock.mock({
-  'data|12': [{
+  'data|5': [{
     name: '@cword(3, 7)',
     znc: '@integer(0 ,10000)',
     zync: '@integer(0 ,1000)',

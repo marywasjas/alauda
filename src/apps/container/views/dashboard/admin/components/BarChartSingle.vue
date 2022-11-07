@@ -70,28 +70,43 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-
+      console.log(this.chartData)
+      const seriesData = this.chartData.map(item => {
+        return {
+          name: item.label,
+          type: 'bar',
+          tooltip: {
+            valueFormatter: function(value) {
+              return value
+            }
+          },
+          data: [item.value],
+          barWidth: 12,
+          itemStyle: {
+            // 柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
+            normal: {
+              // 柱形图圆角，初始化效果
+              barBorderRadius: [30, 30, 0, 0]
+            }
+          }
+        }
+      })
       this.chart.setOption({
         tooltip: {
           trigger: 'axis'
         },
         grid: {
-          left: 0,
-          bottom: 0,
-          right: 0,
-          top: 0
+          left: '3%',
+          right: '3%',
+          top: '3%',
+          bottom: '8%'
         },
         legend: {
-          data: ['警告', '正常'],
           top: 0,
-          left: 0
-          // formatter: function(name) { // 图例后添加数值
-          //   console.log(name)
-          //   // const item = this.chartData.filter(i => i.label === name)
-          //   // console.log(item)
-          //   // const tarValue = item.value
-          //   return name + ': ' + 1
-          // }
+          left: 0,
+          icon: 'circle',
+          itemWidth: 8, // 设置宽度
+          itemHeight: 8
         },
         xAxis: [
           {
@@ -107,7 +122,7 @@ export default {
               show: false
             },
             axisLine: {
-              show: true
+              show: false
             }
           }
         ],
@@ -128,44 +143,7 @@ export default {
             }
           }
         ],
-        series: [
-          {
-            name: this.chartData[0].label,
-            type: 'bar',
-            tooltip: {
-              valueFormatter: function(value) {
-                return value
-              }
-            },
-            data: [this.chartData[0].value],
-            barWidth: 12,
-            itemStyle: {
-              // 柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
-              normal: {
-                // 柱形图圆角，初始化效果
-                barBorderRadius: [30, 30, 0, 0]
-              }
-            }
-          },
-          {
-            name: this.chartData[1].label,
-            type: 'bar',
-            tooltip: {
-              valueFormatter: function(value) {
-                return value
-              }
-            },
-            data: [this.chartData[1].value],
-            barWidth: 12,
-            itemStyle: {
-              // 柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
-              normal: {
-                // 柱形图圆角，初始化效果
-                barBorderRadius: [30, 30, 0, 0]
-              }
-            }
-          }
-        ]
+        series: seriesData
       })
     }
   }

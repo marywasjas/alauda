@@ -86,13 +86,13 @@ export default {
           show: true,
           text: `${total}个`,
           subtext: '总数',
-          left: '25%',
+          left: 'center',
           top: 'center',
           textVerticalAlign: 'middle'
         },
         legend: {
           top: 'center',
-          right: '1%',
+          right: '0%',
           orient: 'vertical',
           icon: 'circle',
           itemWidth: 8, // 设置宽度
@@ -103,8 +103,7 @@ export default {
             name: '应用',
             type: 'pie',
             radius: ['65%', '80%'],
-            center: ['30%', '50%'],
-            // avoidLabelOverlap: false,
+            center: ['50%', '50%'],
             itemStyle: {
               borderRadius: 10,
               borderColor: '#fff',

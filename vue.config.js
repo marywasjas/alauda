@@ -7,6 +7,7 @@ function resolve(dir) {
 }
 
 const name = defaultSettings.title || 'vue Element Admin' // page title
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -53,7 +54,10 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    plugins: [
+      new MonacoWebpackPlugin()
+    ]
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload

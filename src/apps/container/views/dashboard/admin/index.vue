@@ -27,7 +27,7 @@
           <header>
             <div class="card-title right-header">
               <span>事件</span>
-              <i class="el-icon-s-unfold" />
+              <i class="el-icon-s-unfold" @click="openEvent" />
             </div>
           </header>
           <section class="component-div">
@@ -212,6 +212,8 @@
         </BaseCard>
       </el-col>
     </el-row>
+    <!-- 事件弹窗 -->
+    <event-dialog :visible="eventDialogVisible" @closeDialog="closeDialog" @openDialog="openDialog" />
   </div>
 </template>
 
@@ -219,13 +221,15 @@
 import OverviewBanner from './components/OverviewBanner'
 // 资源配额
 import ProgressCard from './components/ProgressCard'
-// 事件  单个柱状图组件
+// 事件
+// 单个柱状图组件
 import BarChartSignle from './components/BarChartSingle.vue'
+import EventDialog from './components/EventDialog/index.vue'
 // 应用 圆角饼图组件
 import RadiusPieChart from './components/RadiusPieChart.vue'
 // 计算组件
 import TransverseBar from './components/TransverseBar.vue'
-//
+// 容器组+资源使用率
 import LineChart from './components/LineChart'
 import {
   resourceData,
@@ -247,6 +251,7 @@ export default {
     OverviewBanner,
     ProgressCard,
     BarChartSignle,
+    EventDialog,
     RadiusPieChart,
     TransverseBar,
     LineChart
@@ -256,7 +261,8 @@ export default {
       // 资源配额
       resourceData,
       // 事件 数据
-      total: 97,
+      eventDialogVisible: false,
+      total: 0,
       eventData,
       // 应用
       applicationData,
@@ -314,7 +320,17 @@ export default {
       return pre + cur.value
     }, 0)
   },
-  methods: {}
+  methods: {
+    openEvent() {
+      this.eventDialogVisible = true
+    },
+    closeDialog() {
+      this.eventDialogVisible = false
+    },
+    openDialog() {
+      this.eventDialogVisible = true
+    }
+  }
 }
 </script>
 
@@ -335,7 +351,7 @@ export default {
   }
 }
 .component-div2 {
-  height: 400px;
+  height: 280px;
 }
 .event-container {
   margin-top: 20px;
