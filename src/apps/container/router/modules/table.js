@@ -13,6 +13,19 @@ const tableRouter = {
   },
   children: [
     {
+      path: 'service',
+      component: () => import('@/apps/container/views/network/service/index'),
+      name: 'Service',
+      meta: { title: '内部路由' }
+    },
+    {
+      path: 'service/detail/:id',
+      component: () => import('@/apps/container/views/network/service/detail'),
+      name: 'ServiceDetail',
+      meta: { title: '内部路由详情' },
+      hidden: true
+    },
+    {
       path: 'dynamic-table',
       component: () => import('@/apps/container/views/table/dynamic-table/index'),
       name: 'DynamicTable',
