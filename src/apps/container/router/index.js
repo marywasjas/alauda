@@ -23,7 +23,7 @@ export const containerAsyncRoutes = [
   {
     path: '/application',
     component: Layout,
-    redirect: '/application/nativeApp',
+    redirect: '/application/nativeAppList',
     alwaysShow: true, // will always show the root menu
     name: 'Application',
     meta: {
@@ -33,13 +33,20 @@ export const containerAsyncRoutes = [
     },
     children: [
       {
-        path: 'nativeApp',
-        component: () => import('@/apps/container/views/application/nativeApp'),
-        name: 'NativeApp',
+        path: 'nativeAppList',
+        component: () => import('@/apps/container/views/application/nativeApp/nativeAppList'),
+        name: 'NativeAppList',
         meta: {
           title: '原生应用',
           roles: ['admin'] // or you can only set roles in sub nav
         }
+      },
+      {
+        path: 'yamlCreate',
+        component: () => import('@/apps/container/views/application/nativeApp/yamlCreate'),
+        name: 'YamlCreate',
+        meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+        hidden: true
       }
       // {
       //   path: 'directive',
