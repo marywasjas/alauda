@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import DeployHeader from './DeployHeader.vue'
-import DeployTable from './DeployTable.vue'
+import DeployHeader from '../deploy/DeployHeader.vue'
+import DeployTable from '../deploy/DeployTable.vue'
 
 export default {
   name: 'Deploy',
@@ -18,11 +18,8 @@ export default {
   data() {
     return {
       drop: {
-        dropVal: '创建部署',
-        dropList: [
-          { id: 0, txt: '创建部署1' },
-          { id: 1, txt: '创建部署2' }
-        ]
+        dropVal: '创建守护进程集',
+        dropList: [{ id: 0, txt: 'YAML创建' }]
       },
       tableData: [
         {

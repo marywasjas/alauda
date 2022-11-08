@@ -13,94 +13,46 @@ const componentsRouter = {
   },
   children: [
     {
-      path: 'deploy',
-      component: () => import('@/views/components/deploy/index.vue'),
+      path: '/deploy',
+      component: () => import('@/apps/container/views/components/deploy/index.vue'),
       name: 'Deploy',
       meta: { title: '部署' }
     },
+
     {
-      path: 'tinymce',
-      component: () => import('@/apps/container/views/components-demo/tinymce'),
-      name: 'TinymceDemo',
-      meta: { title: 'Tinymce' }
+      path: '/daemons_set',
+      component: () => import('@/apps/container/views/components/daemon/index.vue'),
+      name: 'DaemonsSet',
+      meta: { title: '守护进程集' }
     },
     {
-      path: 'markdown',
-      component: () => import('@/apps/container/views/components-demo/markdown'),
-      name: 'MarkdownDemo',
-      meta: { title: 'Markdown' }
+      path: '/stateful_set',
+      // component: () => import('@/apps/container/views/components-demo/markdown'),
+      name: 'statefulSet',
+      meta: { title: '有状态副本集' }
     },
     {
-      path: 'json-editor',
-      component: () => import('@/apps/container/views/components-demo/json-editor'),
-      name: 'JsonEditorDemo',
-      meta: { title: 'JSON Editor' }
+      path: '/cron_job',
+      // component: () => import('@/apps/container/views/components-demo/json-editor'),
+      name: 'CronJob',
+      meta: { title: '定时任务' }
     },
     {
-      path: 'split-pane',
-      component: () => import('@/apps/container/views/components-demo/split-pane'),
-      name: 'SplitpaneDemo',
-      meta: { title: 'SplitPane' }
+      path: '/job',
+      // component: () => import('@/apps/container/views/components-demo/split-pane'),
+      name: 'Job',
+      meta: { title: '任务' }
     },
     {
-      path: 'avatar-upload',
+      path: '/pod',
       component: () => import('@/apps/container/views/components-demo/avatar-upload'),
-      name: 'AvatarUploadDemo',
-      meta: { title: 'Upload' }
+      name: 'Pod',
+      meta: { title: '容器组' }
     },
     {
-      path: 'dropzone',
-      component: () => import('@/apps/container/views/components-demo/dropzone'),
-      name: 'DropzoneDemo',
-      meta: { title: 'Dropzone' }
-    },
-    {
-      path: 'sticky',
-      component: () => import('@/apps/container/views/components-demo/sticky'),
-      name: 'StickyDemo',
-      meta: { title: 'Sticky' }
-    },
-    {
-      path: 'count-to',
-      component: () => import('@/apps/container/views/components-demo/count-to'),
-      name: 'CountToDemo',
-      meta: { title: 'Count To' }
-    },
-    {
-      path: 'mixin',
-      component: () => import('@/apps/container/views/components-demo/mixin'),
-      name: 'ComponentMixinDemo',
-      meta: { title: 'Component Mixin' }
-    },
-    {
-      path: 'back-to-top',
-      component: () => import('@/apps/container/views/components-demo/back-to-top'),
-      name: 'BackToTopDemo',
-      meta: { title: 'Back To Top' }
-    },
-    {
-      path: 'drag-dialog',
-      component: () => import('@/apps/container/views/components-demo/drag-dialog'),
-      name: 'DragDialogDemo',
-      meta: { title: 'Drag Dialog' }
-    },
-    {
-      path: 'drag-select',
-      component: () => import('@/apps/container/views/components-demo/drag-select'),
-      name: 'DragSelectDemo',
-      meta: { title: 'Drag Select' }
-    },
-    {
-      path: 'dnd-list',
-      component: () => import('@/apps/container/views/components-demo/dnd-list'),
-      name: 'DndListDemo',
-      meta: { title: 'Dnd List' }
-    },
-    {
-      path: 'drag-kanban',
-      component: () => import('@/apps/container/views/components-demo/drag-kanban'),
-      name: 'DragKanbanDemo',
-      meta: { title: 'Drag Kanban' }
+      path: '/detail',
+      component: () => import('@/apps/container/views/components/detail/index.vue'),
+      name: 'Detail'
     }
   ]
 }

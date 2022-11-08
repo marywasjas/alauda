@@ -3,7 +3,7 @@
     <el-table :data="tableData" size="large" :header-cell-style="{ background: 'rgb(64, 158, 255, 0.2)' }">
       <el-table-column label="姓名">
         <template slot-scope="scope">
-          <a class="link_name" :href="scope.row.name.link">{{ scope.row.name.link_name }}</a>
+          <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
           <div class="v_name">{{ scope.row.name.txt }}</div>
         </template>
       </el-table-column>
@@ -25,7 +25,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination background layout="prev, pager, next" :total="1000" />
+    <!-- <el-pagination background layout="prev, pager, next" :total="1000" /> -->
   </div>
 </template>
 
@@ -36,6 +36,16 @@ export default {
     tableData: {
       type: Array,
       default: () => []
+    }
+  },
+  methods: {
+    detail(link_name) {
+      this.$router.push({
+        path: '/detail',
+        query: {
+          link_name: link_name // 传递的参数: 键值对
+        }
+      })
     }
   }
 }

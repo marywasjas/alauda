@@ -3,7 +3,7 @@
     <el-dropdown split-button type="primary" trigger="click" @command="handleClick" @click="dialogFormVisible = true">
       {{ drop.dropVal }}
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="item in drop.dropList" :key="item.id" :command="item.txt">{{
+        <el-dropdown-item v-for="item in drop.dropList" :key="item.id" split-button :command="item.txt">{{
           item.txt
         }}</el-dropdown-item>
       </el-dropdown-menu>
