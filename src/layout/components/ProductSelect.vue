@@ -137,6 +137,15 @@ export default {
     color:rgba(150,152,155);
   }
 }
+.click-product-select:hover{
+  background:$color-primary;
+  span{
+    color: #fff;
+  }
+  i{
+    color: #fff;
+  }
+}
 .product-select-tooltip{
   // margin-top: 18px;
   background-color: #fff;
@@ -165,7 +174,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: rgb(0,122,245);
+        color: $color-primary;
         margin-bottom: 12px;
       }
       .menu__item-info{
@@ -186,13 +195,13 @@ export default {
       }
     }
     .menu__item:hover{
-      border: 1px solid rgb(0,122,245);
-      box-shadow: 0 0 8px 0 rgba(0,122,245,0.5);
+      border: 1px solid $color-primary;
+      box-shadow: 0 0 8px 0 $color-primary-rgba;
     }
     .menu__item--actived{
-      border: 1px solid rgb(0,122,245);
-      background-color: rgb(0,122,245);
-      border-color:rgb(0,122,245);
+      border: 1px solid $color-primary;
+      background-color: $color-primary;
+      border-color:$color-primary;
       color: white;
       cursor: default;
       position: relative;
@@ -214,7 +223,7 @@ export default {
       padding: 0 8px;
       font-size: 16px;
       font-weight: 500;
-      color: #007af5;
+      color: $color-primary;
       border-radius: 2px;
       cursor: pointer;
     }

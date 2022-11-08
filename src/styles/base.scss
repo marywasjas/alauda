@@ -19,12 +19,14 @@ $line-height-26:26px;
 
 // 主题色
 $color-primary: #1890ff;
+$color-primary-rgba:rgba(0,122,245,0.5);
 
 // 字体颜色
 $font-color-title:#333333;
 $font-color-text:#666666;
 $font-color-subtext:#999999;
 $font-color-auxiliaryext:#C0C4CC;
+$color-main-text:rgb(50, 52, 55);
 
 // 图标颜色
 $icon-color: rgb(150, 152, 155);
@@ -36,8 +38,14 @@ $border-color-four:#f2f6fc;
 // 背景颜色
 $bg-color1:#F0F2F5;
 $bg-color2:#F5F7FA;
+$background-color: rgb(240, 242, 245);
+$background-color2: rgb(242, 248, 254);
 // 按钮颜色
 $button-color-success:#29C78E;
 $button-color-warning:#E6A23C;
 $button-color-danger:#F56C6C;
 $button-color-link:#538DFF;
+
+
+// 圆角尺寸
+$border-radius-m:2px;

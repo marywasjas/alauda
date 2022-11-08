@@ -70,7 +70,6 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-      console.log(this.chartData)
       const seriesData = this.chartData.map(item => {
         return {
           name: item.label,

@@ -22,7 +22,7 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'page',
-        component: () => import('@/apps/container/views/permission/page'),
+        component: () => import('@/apps/devOps/views/permission/page'),
         name: 'PagePermission',
         meta: {
           title: '原生应用',
@@ -31,7 +31,7 @@ export const devOpsAsyncRoutes = [
       },
       {
         path: 'directive',
-        component: () => import('@/apps/container/views/permission/directive'),
+        component: () => import('@/apps/devOps/views/permission/directive'),
         name: 'DirectivePermission',
         meta: {
           title: '模板应用'
@@ -46,7 +46,7 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/apps/container/views/documentation/index'),
+        component: () => import('@/apps/devOps/views/documentation/index'),
         name: 'Documentation',
         meta: { title: '网络管理', icon: 'documentation', affix: true }
       }
@@ -63,7 +63,7 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/apps/container/views/icons/index'),
+        component: () => import('@/apps/devOps/views/icons/index'),
         name: 'Icons',
         meta: { title: '流水线管理', icon: 'icon', noCache: true }
       }
@@ -75,7 +75,7 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/apps/container/views/tab/index'),
+        component: () => import('@/apps/devOps/views/tab/index'),
         name: 'Tab',
         meta: { title: '产品管理', icon: 'tab' }
       }
@@ -93,20 +93,20 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'create',
-        component: () => import('@/apps/container/views/example/create'),
+        component: () => import('@/apps/devOps/views/example/create'),
         name: 'CreateArticle',
         meta: { title: 'Create Article', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
-        component: () => import('@/apps/container/views/example/edit'),
+        component: () => import('@/apps/devOps/views/example/edit'),
         name: 'EditArticle',
         meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
         hidden: true
       },
       {
         path: 'list',
-        component: () => import('@/apps/container/views/example/list'),
+        component: () => import('@/apps/devOps/views/example/list'),
         name: 'ArticleList',
         meta: { title: 'Article List', icon: 'list' }
       }
@@ -124,13 +124,13 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: '401',
-        component: () => import('@/apps/container/views/error-page/401'),
+        component: () => import('@/apps/devOps/views/error-page/401'),
         name: 'Page401',
         meta: { title: '401', noCache: true }
       },
       {
         path: '404',
-        component: () => import('@/apps/container/views/error-page/404'),
+        component: () => import('@/apps/devOps/views/error-page/404'),
         name: 'Page404',
         meta: { title: '404', noCache: true }
       }
@@ -143,7 +143,7 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'log',
-        component: () => import('@/apps/container/views/error-log/index'),
+        component: () => import('@/apps/devOps/views/error-log/index'),
         name: 'ErrorLog',
         meta: { title: '用户角色管理', icon: 'bug' }
       }
@@ -159,7 +159,7 @@ export const devOpsAsyncRoutes = [
     children: [
       {
         path: 'download',
-        component: () => import('@/apps/container/views/zip/index'),
+        component: () => import('@/apps/devOps/views/zip/index'),
         name: 'ExportZip',
         meta: { title: 'Zip' }
       }

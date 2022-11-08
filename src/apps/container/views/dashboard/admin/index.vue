@@ -117,6 +117,7 @@
             style="width: 100%"
             height="300px"
             header-row-class-name="headerStyle"
+            class="margin-top10"
           >
             <el-table-column
               v-for="col in containerColumnList"
@@ -337,7 +338,7 @@ export default {
 <style lang="scss" scoped>
 .dashboard-editor-container {
   padding: 0 20px;
-  background-color: rgb(240, 242, 245);
+  background-color: $background-color;
   position: relative;
 }
 .component-div {

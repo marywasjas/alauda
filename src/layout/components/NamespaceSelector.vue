@@ -285,7 +285,7 @@ export default {
         .grid__field-icon {
           font-size: 28px;
           display: inline-flex;
-          color:#007af5
+          color:$color-primary;
         }
         .grid__field-name {
           flex: 2;
@@ -316,8 +316,8 @@ export default {
         }
       }
       .grid__item:hover{
-        border: 1px solid rgb(0,122,245);
-        box-shadow: 0 0 8px 0 rgba(0,122,245,0.5);
+        border: 1px solid $color-primary;
+        box-shadow: 0 0 8px 0 $color-primary-rgba;
       }
       .grid__item:last-child{
         margin-bottom: 0;
@@ -329,10 +329,10 @@ export default {
         margin-right: 0;
       }
       .grid__item--selected {
-        border: 1px solid #007af5;
+        border: 1px solid $color-primary;
         border-radius: 4px;
-        background-color: #007af5;
-        border-color: #007af5;
+        background-color: $color-primary;
+        border-color: $color-primary;
         color: #fff;
         cursor: default;
         .grid__field-icon {
@@ -357,7 +357,7 @@ export default {
     font-size: 12px;
     max-width: 270px;
     > i {
-      color: #007af5;
+      color: $color-primary;
       margin-right: 4px;
       font-size: 16px;
     }
@@ -379,7 +379,7 @@ export default {
   }
 }
 .click-namespace-selector:hover {
-  background-color: #007af5;
+  background-color: $color-primary;
   color: #fff;
   border-radius: 2px;
   i {
@@ -417,7 +417,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: rgb(0, 122, 245);
+        color: $color-primary;
         margin-bottom: 12px;
       }
       .menu__item-info {
@@ -438,13 +438,13 @@ export default {
       }
     }
     .menu__item:hover {
-      border: 1px solid rgb(0, 122, 245);
-      box-shadow: 0 0 8px 0 rgba(0, 122, 245, 0.5);
+      border: 1px solid $color-primary;
+      box-shadow: 0 0 8px 0 $color-primary-rgba;
     }
     .menu__item--actived {
-      border: 1px solid rgb(0, 122, 245);
-      background-color: rgb(0, 122, 245);
-      border-color: rgb(0, 122, 245);
+      border: 1px solid $color-primary;
+      background-color: $color-primary;
+      border-color: $color-primary;
       color: white;
       cursor: default;
       position: relative;
@@ -466,7 +466,7 @@ export default {
       padding: 0 8px;
       font-size: 16px;
       font-weight: 500;
-      color: #007af5;
+      color: $color-primary;
       border-radius: 2px;
       cursor: pointer;
     }

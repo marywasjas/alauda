@@ -5,6 +5,7 @@
       :visible.sync="visible"
       width="960px"
       :before-close="closeDialog"
+      :close-on-click-modal="false"
     >
       <div>
         <el-form :inline="true" :model="formInline" class="form-inline">
@@ -89,6 +90,7 @@
       :visible.sync="detailVisible"
       width="900px"
       :before-close="closeDetailsDialog"
+      :close-on-click-modal="false"
     >
       <div>
         <div class="editor-toolbar">

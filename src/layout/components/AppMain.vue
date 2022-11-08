@@ -1,16 +1,22 @@
 <template>
   <section class="app-main">
-    <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
-        <router-view :key="key" />
-      </keep-alive>
-    </transition>
+    <navbar />
+    <div class="scroll-main">
+      <transition name="fade-transform" mode="out-in">
+        <keep-alive :include="cachedViews">
+          <router-view :key="key" />
+        </keep-alive>
+      </transition>
+    </div>
   </section>
 </template>
 
 <script>
+import Navbar from './Navbar.vue'
+
 export default {
   name: 'AppMain',
+  components: { Navbar },
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
@@ -25,14 +31,18 @@ export default {
 <style lang="scss" scoped>
 .app-main {
   /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  height: calc(100vh - 50px);
   width: 100%;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .fixed-header+.app-main {
   padding-top: 50px;
+}
+.scroll-main{
+  height: calc(100% - 50px);
 }
 
 .hasTagsView {
