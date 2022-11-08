@@ -1,61 +1,37 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <!-- <router-link :to="'/service/edit/0'" class="link-type"> -->
       <el-button class="filter-item" style="margin-right: 10px;" type="primary">
-        创建内部路由
+        创建负载均衡
       </el-button>
-      <!-- </router-link> -->
       <el-button icon="el-icon-refresh" style="float:right; margin:0 5px;" @click="handleRefresh" />
-      <el-input v-model="listQuery.title" placeholder="按名称搜索" style="width:220px; float:right;">
-        <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
-      </el-input>
     </div>
 
     <el-table
       v-loading="listLoading"
-      :data="list"
+      :data="balancerList.data"
       style="width: 100%;"
       header-row-class-name="headerStyle"
     >
-      <el-table-column type="selection" width="55" />
-      <el-table-column label="名称">
-        <template slot-scope="{row}">
-          <span class="cursor-pointer">{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="服务类型">
-        <template slot-scope="{row}">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="虚拟IP">
-        <template slot-scope="{row}">
-          <span>{{ row.ip }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="端口" width="500">
-        <template slot-scope="{row}">
-          <el-table :data="row.port" size="small">
-            <el-table-column prop="request" label="服务访问" />
-            <el-table-column prop="protocol" label="协议" />
-            <el-table-column prop="targetPort" label="容器端口" />
-            <el-table-column prop="nodePort" label="主机端口" />
-          </el-table>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间">
-        <template slot-scope="{row}">
-          <span>{{ row.createtime }}</span>
+      <el-table-column
+        v-for="col in balancerColumnList"
+        :key="col.id"
+        :label="col.label"
+      >
+        <template slot-scope="scope">
+          <div v-if="col.id === 'name'" class="cursor-pointer">
+            {{ scope.row[col.id] }}
+          </div>
+          <div v-else>
+            {{ scope.row[col.id] }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <!-- <router-link :to="'/service/edit/' + row.id" class="link-type"> -->
           <el-button type="primary" size="mini">
             更新
           </el-button>
-          <!-- </router-link> -->
           <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
@@ -67,11 +43,13 @@
 
 <script>
 import { list, create, update } from '@/api/network/service'
-
+import { balancerColumnList, balancerList } from '../const'
 export default {
-  name: 'Service',
+  name: 'LoadBalancer',
   data() {
     return {
+      balancerColumnList,
+      balancerList,
       list: null,
       total: 0,
       listLoading: true,
@@ -104,7 +82,7 @@ export default {
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 1 * 1000)
+        }, 500)
       })
     },
     handleFilter() {
