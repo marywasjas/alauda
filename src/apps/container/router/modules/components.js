@@ -13,6 +13,12 @@ const componentsRouter = {
   },
   children: [
     {
+      path: 'deploy',
+      component: () => import('@/views/components/deploy/index.vue'),
+      name: 'Deploy',
+      meta: { title: '部署' }
+    },
+    {
       path: 'tinymce',
       component: () => import('@/apps/container/views/components-demo/tinymce'),
       name: 'TinymceDemo',
