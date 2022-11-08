@@ -114,7 +114,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .flex_row {
   display: flex;
   flex-direction: row;
