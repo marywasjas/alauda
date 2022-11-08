@@ -6,7 +6,7 @@
     <sidebar class="sidebar-container" />
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
+        <!-- <navbar /> -->
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
@@ -20,7 +20,8 @@
 
 <script>
 import RightPanel from '@/components/RightPanel'
-import { AppMain, Navbar, Settings, Sidebar, TagsView, MainHeader } from './components'
+// Navbar
+import { AppMain, Settings, Sidebar, TagsView, MainHeader } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 
@@ -28,7 +29,7 @@ export default {
   name: 'Layout',
   components: {
     AppMain,
-    Navbar,
+    // Navbar,
     RightPanel,
     Settings,
     Sidebar,
@@ -66,11 +67,12 @@ export default {
   @import "~@/styles/variables.scss";
 
   .app-wrapper {
-    min-height: 100%;
+    height: 100%;
     // @include clearfix;
     // position: relative;
     // height: 100%;
     width: 100%;
+    overflow:hidden;
 
     &.mobile.openSidebar {
       position: fixed;

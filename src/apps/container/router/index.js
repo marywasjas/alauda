@@ -8,24 +8,24 @@ import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 
 export const containerAsyncRoutes = [
+  // {
+  //   path: '/oam',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/apps/container/views/oam/index'),
+  //       name: 'OAM',
+  //       meta: { title: 'OAM应用', icon: 'documentation', affix: true }
+  //     }
+  //   ]
+  // },
   {
-    path: '/documentation',
+    path: '/application',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/apps/container/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'OAM应用', icon: 'documentation', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/permission',
-    component: Layout,
-    redirect: '/permission/page',
+    redirect: '/application/nativeApp',
     alwaysShow: true, // will always show the root menu
-    name: 'Permission',
+    name: 'Application',
     meta: {
       title: '应用管理',
       icon: 'lock',
@@ -33,23 +33,23 @@ export const containerAsyncRoutes = [
     },
     children: [
       {
-        path: 'page',
-        component: () => import('@/apps/container/views/permission/page'),
-        name: 'PagePermission',
+        path: 'nativeApp',
+        component: () => import('@/apps/container/views/application/nativeApp'),
+        name: 'NativeApp',
         meta: {
           title: '原生应用',
           roles: ['admin'] // or you can only set roles in sub nav
         }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/apps/container/views/permission/directive'),
-        name: 'DirectivePermission',
-        meta: {
-          title: '模板应用'
-          // if do not set roles, means: this page does not require permission
-        }
       }
+      // {
+      //   path: 'directive',
+      //   component: () => import('@/apps/container/views/permission/directive'),
+      //   name: 'DirectivePermission',
+      //   meta: {
+      //     title: '模板应用'
+      //     // if do not set roles, means: this page does not require permission
+      //   }
+      // }
     ]
   },
   /** when your routing map is too long, you can split it into small modules **/
