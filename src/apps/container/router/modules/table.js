@@ -19,11 +19,16 @@ const tableRouter = {
       meta: { title: '内部路由' }
     },
     {
-      path: 'service/detail/:id',
-      component: () => import('@/apps/container/views/network/service/detail'),
-      name: 'ServiceDetail',
-      meta: { title: '内部路由详情' },
-      hidden: true
+      path: 'ingress',
+      component: () => import('@/apps/container/views/network/ingress/index'),
+      name: 'Ingress',
+      meta: { title: '入站规则' }
+    },
+    {
+      path: 'load_balancer',
+      component: () => import('@/apps/container/views/network/balancer/index'),
+      name: 'LoadBalancer',
+      meta: { title: '负载均衡' }
     },
     {
       path: 'dynamic-table',

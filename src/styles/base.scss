@@ -20,6 +20,7 @@ $line-height-26:26px;
 // 主题色
 $color-primary: #1890ff;
 $color-primary-rgba:rgba(0,122,245,0.5);
+$color-primary-rgba1:rgba(0,122,245,0.1);
 
 // 字体颜色
 $font-color-title:#333333;
@@ -45,7 +46,12 @@ $button-color-success:#29C78E;
 $button-color-warning:#E6A23C;
 $button-color-danger:#F56C6C;
 $button-color-link:#538DFF;
+$button-color-info:#909399;
 
 
 // 圆角尺寸
 $border-radius-m:2px;
+$border-radius-l:4px;
+
+// 阴影颜色
+$box-shadow:rgba(50, 52, 55,0.16)

@@ -13,11 +13,18 @@ export const tableColumnList = [{
   id: 'date',
   label: '创建时间',
   sortable: true
+},
+{
+  id: 'operation',
+  label: '',
+  width: '60px'
 }]
 export const tableData = Mock.mock({
   'data|10': [{
-    name: '@cword(3, 7)',
-    status: 'CrashLoopBackOff(0/1)',
+    name: '@word(3, 7)',
+    desc: '@cword(3, 7)',
+    status: 'running',
+    statusText: '运行中(0/1)',
     type: '@cword(3, 7)',
     date: '@date'
   }]
