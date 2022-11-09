@@ -9,6 +9,10 @@ export default {
   name: 'MonacoEditor',
   components: {},
   props: {
+    readOnly: {
+      type: Boolean,
+      default: true
+    },
     code: {
       type: Object,
       default: () => {
@@ -19,6 +23,7 @@ export default {
   data() {
     return {
       monacoEditor: null,
+      value: '',
       standaloneEditorConstructionOptions: {
         acceptSuggestionOnCommitCharacter: true, // 接受关于提交字符的建议
         acceptSuggestionOnEnter: 'on', // 接受输入建议 "on" | "off" | "smart"
@@ -80,13 +85,16 @@ export default {
   watch: {
     code: {
       handler(newVal, oldVal) {
+        this.value = newVal
         this.createMonacoEditor()
       },
       deep: true
     }
   },
-  created() {},
+  created() {
+  },
   mounted() {
+    this.value = this.code
     this.createMonacoEditor()
   },
   beforeDestroy() {
@@ -95,7 +103,8 @@ export default {
   methods: {
     createMonacoEditor() {
       this.$set(this.standaloneEditorConstructionOptions, 'value', '')
-      const jsonData = JSON.stringify(this.code, null, 2)
+      this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
+      const jsonData = JSON.stringify(this.value, null, 2)
       this.$set(this.standaloneEditorConstructionOptions, 'value', jsonData)
       const container = document.getElementById('monacoEditorContainer')
       this.monacoEditor = monaco.editor.create(

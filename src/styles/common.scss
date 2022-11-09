@@ -35,3 +35,18 @@
   align-items: center;
   justify-content: space-between;
 }
+// monaco-editor 样式
+.editor-toolbar{
+  height: 46px;
+  padding: 0 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.editor-toolbar__language {
+  font-size: 16px;
+  margin-right: 25px;
+  white-space: nowrap;
+  font-weight: 500;
+}

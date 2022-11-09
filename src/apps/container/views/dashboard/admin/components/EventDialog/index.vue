@@ -113,7 +113,7 @@
 
 <script>
 import { columnList, tableData } from './constant/index'
-import MonacoEditor from '../MonacoEditor.vue'
+import MonacoEditor from '@/components/MonacoEditor'
 import FileSaver from 'file-saver'
 export default {
   name: 'EventDialog',
@@ -265,18 +265,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.editor-toolbar{
-  height: 46px;
-  padding: 0 8px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.editor-toolbar__language {
-  font-size: 16px;
-  margin-right: 25px;
-  white-space: nowrap;
-  font-weight: 500;
-}
+
 </style>
