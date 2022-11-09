@@ -1,72 +1,82 @@
 <template>
-  <div class="app-container">
-    <div class="filter-container">
-      <!-- <router-link :to="'/service/edit/0'" class="link-type"> -->
-      <el-button class="filter-item" style="margin-right: 10px;" type="primary">
-        创建内部路由
-      </el-button>
-      <!-- </router-link> -->
-      <el-button icon="el-icon-refresh" style="float:right; margin:0 5px;" @click="handleRefresh" />
-      <el-input v-model="listQuery.title" placeholder="按名称搜索" style="width:220px; float:right;">
-        <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
-      </el-input>
+  <div class="oam-container">
+    <div class="oam-main">
+      <div class="card__header">
+        <el-button type="primary">创建内部路由</el-button>
+        <div class="flex-center">
+          <el-input
+            v-model="listQuery.name"
+            placeholder="按名称搜索"
+            size="small"
+            class="margin-right10"
+          >
+            <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
+          </el-input>
+          <el-button
+            icon="el-icon-refresh-right"
+            size="small"
+            @click="handleRefresh"
+          />
+        </div>
+      </div>
+      <div class="card__content">
+        <el-table
+          :data="list"
+          style="width: 100%;"
+          header-row-class-name="headerStyle"
+          class="margin-top"
+        >
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="名称">
+            <template slot-scope="{row}">
+              <span class="cursor-pointer">{{ row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="服务类型">
+            <template slot-scope="{row}">
+              <span>{{ row.type }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="虚拟IP">
+            <template slot-scope="{row}">
+              <span>{{ row.ip }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="端口" width="500">
+            <template slot-scope="{row}">
+              <el-table :data="row.port" size="small">
+                <el-table-column prop="request" label="服务访问" />
+                <el-table-column prop="protocol" label="协议" />
+                <el-table-column prop="targetPort" label="容器端口" />
+                <el-table-column prop="nodePort" label="主机端口" />
+              </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间">
+            <template slot-scope="{row}">
+              <span>{{ row.createtime }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
+            <template slot-scope="{row}">
+              <div class="operation-cell">
+                <el-dropdown>
+                  <i class="el-icon-more" />
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item>删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
-
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      style="width: 100%;"
-      header-row-class-name="headerStyle"
-    >
-      <el-table-column type="selection" width="55" />
-      <el-table-column label="名称">
-        <template slot-scope="{row}">
-          <span class="cursor-pointer">{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="服务类型">
-        <template slot-scope="{row}">
-          <span>{{ row.type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="虚拟IP">
-        <template slot-scope="{row}">
-          <span>{{ row.ip }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="端口" width="500">
-        <template slot-scope="{row}">
-          <el-table :data="row.port" size="small">
-            <el-table-column prop="request" label="服务访问" />
-            <el-table-column prop="protocol" label="协议" />
-            <el-table-column prop="targetPort" label="容器端口" />
-            <el-table-column prop="nodePort" label="主机端口" />
-          </el-table>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间">
-        <template slot-scope="{row}">
-          <span>{{ row.createtime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <!-- <router-link :to="'/service/edit/' + row.id" class="link-type"> -->
-          <el-button type="primary" size="mini">
-            更新
-          </el-button>
-          <!-- </router-link> -->
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
-</template>
+  </div></template>
 
 <script>
-import { list, create, update } from '@/api/network/service'
+import { list } from '@/api/network/service'
 
 export default {
   name: 'Service',
@@ -74,19 +84,8 @@ export default {
     return {
       list: null,
       total: 0,
-      listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
         name: ''
-      },
-      temp: {
-        id: undefined,
-        name: '',
-        type: '',
-        ip: '',
-        port: [],
-        createtime: ''
       }
     }
   },
@@ -95,16 +94,10 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true
       list(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         console.log(this.list)
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1 * 1000)
       })
     },
     handleFilter() {
@@ -114,47 +107,7 @@ export default {
     handleRefresh() {
       this.getList()
     },
-    handleCreate() {
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          create(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.$notify({
-              title: 'Success',
-              message: '保存成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          update(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.$notify({
-              title: 'Success',
-              message: '保存成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
     },
     handleDelete(row, index) {
       this.$notify({
@@ -164,12 +117,30 @@ export default {
         duration: 2000
       })
       this.list.splice(index, 1)
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        return v[j]
-      }))
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.oam-container {
+  padding: 0 20px;
+  background-color: $background-color;
+  min-height: 100%;
+  .card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .oam-main {
+    background: #fff;
+    padding: 20px;
+  }
+  .operation-cell{
+    i{
+      font-size: $font-size-20;
+      color:$color-primary;
+      cursor: pointer;
+    }
+  }
+}
+</style>

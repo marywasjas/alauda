@@ -5,51 +5,67 @@
         <div class="group-pannel">
           <el-form>
             <el-form-item label="">
-              <el-select v-model="selectedGroup" placeholder="请选择" style="width: 100%; margin-bottom: 5px;" @change="handleGroupChange">
+              <el-select v-model="selectedGroup" style="width: 100%;" size="small" @change="handleGroupChange">
                 <el-option
                   label="全部"
                   value="all"
                 />
-                <el-option
-                  v-for="item, index in groupList"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                />
               </el-select>
+            </el-form-item>
+            <el-form-item>
               <el-input
-                v-model="inputGroup"
+                v-model="inputResource"
                 placeholder="按名字过滤"
                 prefix-icon="el-icon-search"
                 clearable
-                @change="handleGroupFilter"
+                size="small"
+                @input="handleResourceFilter"
+                @clear="handleResourceClear"
               />
             </el-form-item>
           </el-form>
           <ul>
-            <li v-for="group, index in groupList" :key="index" class="group-link">
-              <el-link type="primary" @click="handleGroupChange(group.id)">
-                <span class="group-name">{{ group.name }}</span>
+            <li
+              v-for="item, index in resourceList"
+              :key="index"
+              class="li-link"
+              :class="{'isActive': compare(item.id)}"
+              @click="handleResourceChange(item.id)"
+            >
+              <span>{{ item.name }}</span>
+              <div class="li-version">
                 <span class="dot" />
-                <span class="group-version">{{ group.version[0] }}</span>
-              </el-link>
+                <span>{{ item.version[0] }}</span>
+              </div>
             </li>
           </ul>
         </div>
       </el-col>
-      <!-- <el-divider direction="vertical" /> -->
       <el-col :span="20">
         <div class="filter-container">
-          <el-button icon="el-icon-refresh" style="float:right; margin:0 5px;" @click="handleRefresh" />
-          <el-input v-model="listQuery.title" placeholder="按名称搜索" style="width:220px; float:right;">
+          <el-button
+            icon="el-icon-refresh-right"
+            size="small"
+            style="float:right;"
+            @click="handleRefresh"
+          />
+          <el-input
+            v-model="listQuery.title"
+            placeholder="按名称搜索"
+            size="small"
+            class="margin-right10"
+            style="float:right; width: 240px;"
+          >
             <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
           </el-input>
-          <span style="font-size:18px">group1</span>
+          <span style="font-size:18px">{{ resource.name }}</span>
           <div>
-            <el-select v-model="selectedVersion" placeholder="请选择" style="width: fit-content;" @change="handleVersionChange">
+            <el-select v-model="version" size="small" @change="handleVersionChange">
               <el-option
-                label="v1"
-                value="v1"
+                v-for="v, index in resource.version"
+                :key="index"
+                :label="v"
+                :value="v"
               />
             </el-select>
           </div>
@@ -77,14 +93,17 @@
               <span>{{ scope.row.createtime }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="Actions" width="180">
+          <el-table-column align="center" label="" width="180">
             <template slot-scope="scope">
-              <el-button type="primary" size="small" @click="handleEdit(scope.row.id)">
-                更新
-              </el-button>
-              <el-button type="danger" size="small" @click="handleDelete(scope.row.id)">
-                删除
-              </el-button>
+              <div class="operation-cell">
+                <el-dropdown>
+                  <i class="el-icon-more" />
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click="handleEdit(scope.row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item>删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -96,22 +115,18 @@
 <script>
 export default {
   name: 'ResourceManagement',
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       selectedGroup: 'all',
-      selectedVersion: 'v1',
-      inputGroup: '',
-      groupList: [
+      version: '',
+      inputResource: '',
+      resourceList: [],
+      resource: {
+        id: '',
+        name: '',
+        version: []
+      },
+      initResourceList: [
         { id: 1, name: 'AlaudaFeatureGate', version: ['crd.alauda.io', 'v2', 'v3'] },
         { id: 2, name: 'AlertRule', version: ['alauda.io', 'v2', 'v3'] },
         { id: 3, name: 'EndpointSlice', version: ['oam.alauda.io', 'v2', 'v3'] },
@@ -127,21 +142,27 @@ export default {
     }
   },
   created() {
+    this.resourceList = this.initResourceList
+    this.resource = this.resourceList[0]
+    this.version = this.resource.version[0]
     this.getList()
   },
   methods: {
     getList() {
       this.list = [{
+        id: 1,
         name: 'test-memcached',
         tag: ['app.kubernetes.io/instance: test', 'app.kubernetes.io/managed-by: Helm'],
         namespace: 'toda-elasticsearch-system',
         createtime: '2022-04-25 16:52:56'
       }, {
+        id: 2,
         name: 'test-memcached-metric',
         tag: ['app.kubernetes.io/component: metrics', 'app.kubernetes.io/instance: test'],
         namespace: 'toda-elasticsearch-system',
         createtime: '2022-04-25 16:52:56'
       }, {
+        id: 3,
         name: 'toda-kibana-svc',
         tag: ['app.kubernetes.io/component: metrics'],
         namespace: 'toda-elasticsearch-system',
@@ -149,25 +170,47 @@ export default {
       }]
     },
     handleRefresh() {
-      console.log(this.groupList)
+      console.log(this.ResourceList)
     },
     handleFilter() {
       console.log(this.listQuery.title)
     },
-    handleGroupChange(groupId) {
-      console.log(groupId)
-    },
-    handleGroupFilter(val) {
+    handleGroupChange(val) {
       console.log(val)
     },
-    handleVersionChange() {
-      console.log(this.selectedVersion)
+    handleResourceChange(currentId) {
+      this.resource = this.resourceList.find((item) => {
+        return item.id === currentId
+      })
+      this.version = this.resource.version[0]
+    },
+    handleResourceFilter(val) {
+      if (val) {
+        this.resourceList = this.resourceList.filter((item) => {
+          return item.name.toLowerCase().indexOf(val.toLowerCase()) > -1
+        })
+      } else {
+        this.resourceList = this.initResourceList
+      }
+    },
+    handleResourceClear() {
+      this.resourceList = this.initResourceList
+    },
+    handleVersionChange(val) {
+      console.log(val)
     },
     handleEdit(id) {
       console.log(id)
     },
     handleDelete(id) {
       console.log(id)
+    },
+    compare(currentId) {
+      if (this.resource.id === currentId) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
@@ -177,39 +220,58 @@ export default {
 .group-pannel {
   margin-right: 10px;
 }
+.el-form-item {
+  margin-bottom: 5px;
+}
 ul {
+  overflow: auto;
+  list-style: none;
+}
+ul, li {
   padding: 0;
+  margin: 0
 }
-.group-link {
-  height: 60px;
-  padding-top: 15px;
+.li-link {
+  widows: 100%;
+  padding: 12px 16px;
   text-align: left;
-  list-style-type: none;
   border-bottom: 1px solid #ccc;
-    .group-name {
-      font-size: 16px;
-      display: block;
-      color: #000;
-    }
-    .group-version {
-      font-size: 10px;
-      color: #000;
-    }
+  overflow: hidden;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  font-size: 16px;
+  color: rgb(50, 52, 55);
 }
-// .group-link :hover{
-//   color: rgb(0, 122, 245);
-//   background-color: rgb(229, 241, 254);
-// }
-.filter-item {
-  float: right;
+.li-link:hover, .isActive{
+  color: rgb(0, 122, 245);
+  background-color: rgb(229, 241, 254);
+}
+.li-version {
+  font-size: 14px;
+  color: rgb(100, 102, 105);
+  margin-top: 8px;
+  display: flex;
+  align-items: center
 }
 .tagItem {
   margin-left: 3px;
 }
+.el-select-dropdown__item {
+  padding-left: 6px;
+}
 .dot {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   margin-right: 8px;
   background-color: green;
+}
+.operation-cell{
+  i{
+    font-size: $font-size-20;
+    color:$color-primary;
+    cursor: pointer;
+  }
 }
 </style>
