@@ -5,8 +5,16 @@
         <span>{{ link_name }}</span>
         <div class="detail-header-top-t">
           <el-button type="primary" icon="el-icon-caret-right">启动</el-button>
-          <el-button type="info" plain>停止</el-button>
-          <el-button>操作<i class="el-icon-arrow-down el-icon--right" /> </el-button>
+          <el-button disabled type="info" plain style="margin-right: 10px">停止</el-button>
+          <el-dropdown>
+            <el-button type="primary">操作<i class="el-icon-arrow-down el-icon--right" /> </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>更新</el-dropdown-item>
+              <el-dropdown-item>管理资源</el-dropdown-item>
+              <el-dropdown-item>分发</el-dropdown-item>
+              <el-dropdown-item>删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
         <hr>
       </div>
@@ -29,14 +37,18 @@
         </el-menu>
       </div>
     </div>
-    <div class="detail-body" />
+    <DetailInformation />
   </div>
 </template>
 
 <script>
+import DetailInformation from './content/detailInformation.vue'
+
 export default {
   name: 'Detail',
-  components: {},
+  components: {
+    DetailInformation
+  },
   data() {
     return {
       link_name: ''
@@ -53,16 +65,14 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-$light_gray: #eee;
-
 .detail-container {
   width: 100%;
   padding: 20px 20px;
   background-color: rgb(240, 242, 245);
-  border: 1px solid $light_gray;
+  border: 1px solid #eee;
   .detail-header {
     background-color: #fff;
-    border: 1px solid $light_gray;
+    border: 1px solid #eee;
     margin-bottom: 10px;
     .detail-header-top {
       padding: 0 17px;
@@ -86,9 +96,6 @@ $light_gray: #eee;
       }
     }
   }
-  // .detail-body {
-  //   background-color: skyblue;
-  // }
 }
 .el-menu-item {
   font-size: 18px !important;
