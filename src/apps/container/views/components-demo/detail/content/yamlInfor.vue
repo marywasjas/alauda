@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import MonacoEditor from '@/components/MonacoEditor'
+import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
 export default {
   name: 'YamlInfor',
   components: { MonacoEditor },

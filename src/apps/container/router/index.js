@@ -2,24 +2,24 @@
 import Layout from '@/layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
+import componentsRouter from './modules/components-demo'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import nestedRouter from './modules/nested'
 
 export const containerAsyncRoutes = [
-  // {
-  //   path: '/oam',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/apps/container/views/oam/index'),
-  //       name: 'OAM',
-  //       meta: { title: 'OAM应用', icon: 'documentation', affix: true }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/oam',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/apps/container/views/oam/index'),
+        name: 'OAM',
+        meta: { title: 'OAM应用', icon: 'documentation', affix: true }
+      }
+    ]
+  },
   {
     path: '/application',
     component: Layout,

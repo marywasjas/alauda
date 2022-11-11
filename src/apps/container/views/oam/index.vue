@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import LineAlert from '@/components/LineAlert'
+import LineAlert from '@/apps/container/views/components/LineAlert'
 import { tableData, tableColumnList } from './constant/index'
 export default {
   name: 'OAM',

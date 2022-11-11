@@ -3,7 +3,7 @@
 import Layout from '@/layout'
 
 const componentsRouter = {
-  path: '/components',
+  path: '/components-demo',
   component: Layout,
   redirect: 'noRedirect',
   name: 'ComponentDemo',
@@ -14,14 +14,14 @@ const componentsRouter = {
   children: [
     {
       path: '/deploy',
-      component: () => import('@/apps/container/views/components/deploy/index.vue'),
+      component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
       name: 'Deploy',
       meta: { title: '部署' }
     },
 
     {
       path: '/daemons_set',
-      component: () => import('@/apps/container/views/components/daemon/index.vue'),
+      component: () => import('@/apps/container/views/components-demo/daemon/index.vue'),
       name: 'DaemonsSet',
       meta: { title: '守护进程集' }
     },
@@ -51,7 +51,7 @@ const componentsRouter = {
     },
     {
       path: '/detail',
-      component: () => import('@/apps/container/views/components/detail/index.vue'),
+      component: () => import('@/apps/container/views/components-demo/detail/index.vue'),
       name: 'Detail'
     }
   ]

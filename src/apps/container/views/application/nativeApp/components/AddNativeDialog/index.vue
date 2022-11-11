@@ -35,7 +35,7 @@
 import formCreate from '@/apps/container/assets/images/nativeApp/form-create.svg'
 import templateCreate from '@/apps/container/assets/images/nativeApp/template-create.svg'
 import yamlCreate from '@/apps/container/assets/images/nativeApp/yaml-create.svg'
-import SelectMirror from '../SelectMirror/index.vue'
+import SelectMirror from '@/apps/container/views/components/SelectMirror'
 export default {
   name: 'AddNativeDialog',
   components: {

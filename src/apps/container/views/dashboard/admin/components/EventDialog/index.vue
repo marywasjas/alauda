@@ -85,40 +85,25 @@
         <el-button @click="closeDialog">关闭</el-button>
       </span>
     </el-dialog>
-    <el-dialog
+    <monaco-editor-dialog
+      v-if="detailVisible"
       title="事件详情"
-      :visible.sync="detailVisible"
-      width="900px"
-      :before-close="closeDetailsDialog"
-      :close-on-click-modal="false"
-    >
-      <div>
-        <div class="editor-toolbar">
-          <div class="editor-toolbar__language">JSON (只读)</div>
-          <div class="editor-toolbar-wrap">
-            <el-button icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
-            <el-button icon="el-icon-search" size="mini">查找</el-button>
-            <el-button icon="el-icon-copy-document" size="mini">复制</el-button>
-            <el-button icon="el-icon-thumb" size="mini">自动</el-button>
-            <el-button icon="el-icon-full-screen" size="mini">全屏</el-button>
-          </div>
-        </div>
-        <div class="border-box">
-          <monaco-editor v-if="detailVisible" :code="currentCode" />
-        </div>
-      </div>
-    </el-dialog>
+      :visible="detailVisible"
+      sub-title="JSON (只读)"
+      :code="currentCode"
+      :language="language"
+      @closeDetailsDialog="closeDetailsDialog"
+    />
   </div>
 </template>
 
 <script>
 import { columnList, tableData } from './constant/index'
-import MonacoEditor from '@/components/MonacoEditor'
-import FileSaver from 'file-saver'
+import MonacoEditorDialog from '@/apps/container/views/components/MonacoEditorDialog'
 export default {
   name: 'EventDialog',
   components: {
-    MonacoEditor
+    MonacoEditorDialog
   },
   props: {
     visible: {
@@ -223,9 +208,10 @@ export default {
       ],
       columnList,
       tableData,
+      // 事件详情数据
       detailVisible: false,
       currentCode: '',
-      currentName: ''
+      language: 'json'
     }
   },
   computed: {},
@@ -245,25 +231,18 @@ export default {
     onSearch() {
       console.log(this.formInline)
     },
-    // 时间详情
+    // 事件详情
     openDetails(row) {
       this.detailVisible = true
-      this.currentCode = row.spec
-      this.currentName = row.name
+      this.currentCode = JSON.stringify(row.spec, null, 2)
       this.closeDialog()
     },
     closeDetailsDialog() {
       this.detailVisible = false
       this.openDialog()
-    },
-    // 导出
-    handleDownload() {
-      const blob = new Blob([JSON.stringify(this.currentCode, null, 2)], { type: 'application/json' })
-      FileSaver.saveAs(blob, `${this.currentName}.json`)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-
 </style>

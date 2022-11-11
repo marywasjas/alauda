@@ -1,9 +1,44 @@
 <template>
-  <div id="monacoEditorContainer" style="height: 400px" />
+  <div>
+    <div class="editor-toolbar">
+      <div class="editor-toolbar__language">YAML (读写)</div>
+      <div class="editor-toolbar-wrap">
+        <el-button icon="el-icon-upload2" size="mini">导入</el-button>
+        <el-button
+          v-if="btnFlag"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleDownload"
+        >导出</el-button>
+        <el-button
+          v-if="btnFlag"
+          icon="el-icon-circle-close"
+          size="mini"
+          @click="resetCode"
+        >清理</el-button>
+        <el-button
+          v-if="btnFlag"
+          icon="el-icon-search"
+          size="mini"
+        >查找</el-button>
+        <el-button
+          v-if="btnFlag"
+          icon="el-icon-copy-document"
+          size="mini"
+        >复制</el-button>
+        <el-button icon="el-icon-thumb" size="mini">自动</el-button>
+        <el-button icon="el-icon-full-screen" size="mini">全屏</el-button>
+      </div>
+    </div>
+    <div class="border-box">
+      <div id="monacoEditorContainer" style="height: 400px" />
+    </div>
+  </div>
 </template>
 
 <script>
 import * as monaco from 'monaco-editor'
+import FileSaver from 'file-saver'
 
 export default {
   name: 'MonacoEditor',
@@ -14,16 +49,19 @@ export default {
       default: true
     },
     code: {
-      type: Object,
-      default: () => {
-        return {}
-      }
+      type: String,
+      default: ''
+    },
+    language: {
+      type: String,
+      default: 'javascript'
     }
   },
   data() {
     return {
       monacoEditor: null,
       value: '',
+      btnFlag: false,
       standaloneEditorConstructionOptions: {
         acceptSuggestionOnCommitCharacter: true, // 接受关于提交字符的建议
         acceptSuggestionOnEnter: 'on', // 接受输入建议 "on" | "off" | "smart"
@@ -86,13 +124,12 @@ export default {
     code: {
       handler(newVal, oldVal) {
         this.value = newVal
-        this.createMonacoEditor()
+        this.updateMonacoEditor()
       },
       deep: true
     }
   },
-  created() {
-  },
+  created() {},
   mounted() {
     this.value = this.code
     this.createMonacoEditor()
@@ -103,14 +140,53 @@ export default {
   methods: {
     createMonacoEditor() {
       this.$set(this.standaloneEditorConstructionOptions, 'value', '')
-      this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
-      const jsonData = JSON.stringify(this.value, null, 2)
-      this.$set(this.standaloneEditorConstructionOptions, 'value', jsonData)
+      this.$set(
+        this.standaloneEditorConstructionOptions,
+        'readOnly',
+        this.readOnly
+      )
+      this.$set(
+        this.standaloneEditorConstructionOptions,
+        'language',
+        this.language
+      )
+      this.$set(this.standaloneEditorConstructionOptions, 'value', this.value)
       const container = document.getElementById('monacoEditorContainer')
       this.monacoEditor = monaco.editor.create(
         container,
         this.standaloneEditorConstructionOptions
       )
+      // 监听内容变化
+      this.monacoEditor.onDidChangeModelContent((e) => {})
+      // 监听失去焦点事件
+      this.monacoEditor.onDidBlurEditorText((e) => {
+        const inputCode = this.monacoEditor.getValue()
+        this.btnFlag = !!inputCode
+        this.$emit('handleBlur', inputCode)
+      })
+    },
+    updateMonacoEditor() {
+      if (this.monacoEditor === null) {
+        this.createMonacoEditor()
+      }
+      const oldModel = this.monacoEditor.getModel()
+      const newModel = monaco.editor.createModel(this.value, this.language)
+      if (oldModel) {
+        oldModel.dispose()
+      }
+      this.monacoEditor.setModel(newModel)
+    },
+    // 清理
+    resetCode() {
+      this.value = ''
+      this.updateMonacoEditor()
+    },
+    // 导出
+    handleDownload() {
+      const blob = new Blob([this.value], {
+        type: 'application/json'
+      })
+      FileSaver.saveAs(blob, `default.yaml`)
     }
   }
 }
