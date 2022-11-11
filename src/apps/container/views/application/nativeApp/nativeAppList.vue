@@ -4,28 +4,14 @@
       <div class="card__header">
         <el-button type="primary" @click="openDialog">创建原生应用</el-button>
         <div class="flex-center">
-          <el-input
-            v-model="formInline.name"
-            placeholder="按名称搜索"
-            size="small"
-            class="margin-right10"
-          >
+          <el-input v-model="formInline.name" placeholder="按名称搜索" size="small" class="margin-right10">
             <el-button slot="append" icon="el-icon-search" @click="onSearch" />
           </el-input>
-          <el-button
-            icon="el-icon-refresh-right"
-            size="small"
-            @click="onSearch"
-          />
+          <el-button icon="el-icon-refresh-right" size="small" @click="onSearch" />
         </div>
       </div>
       <div class="card__content">
-        <el-table
-          :data="tableData.data"
-          style="width: 100%"
-          header-row-class-name="headerStyle"
-          class="margin-top"
-        >
+        <el-table :data="tableData.data" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
           <el-table-column
             v-for="col in tableColumnList"
             :key="col.id"
@@ -33,6 +19,7 @@
             :sortable="col.sortable"
             :width="col.width"
           >
+            <!-- eslint-disable-next-line -->
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="name-cell">
                 <i class="el-icon-menu cursor-pointer" />
@@ -115,20 +102,20 @@ export default {
     background: #fff;
     padding: 20px;
   }
-  .name-cell{
-    display:flex;
-    justify-content:left;
-    align-items:center;
-    i{
+  .name-cell {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    i {
       margin-right: 10px;
       font-size: $font-size-20;
       padding: 1px;
       border: 1px solid $border-color-one;
       border-radius: $border-radius-l;
-      background:$color-primary-rgba1;
+      background: $color-primary-rgba1;
     }
-    span{
-      display:block;
+    span {
+      display: block;
       margin: 0;
       font-size: $font-size-18;
     }
@@ -138,25 +125,25 @@ export default {
       margin-top: 6px;
     }
   }
-  .status-cell{
-    display:flex;
+  .status-cell {
+    display: flex;
     align-items: center;
     justify-content: flex-start;
-    i{
+    i {
       margin-right: 10px;
       font-size: $font-size-20;
     }
-    .running{
+    .running {
       color: $button-color-success;
     }
-    .stop{
+    .stop {
       color: $button-color-info;
     }
   }
-  .operation-cell{
-    i{
+  .operation-cell {
+    i {
       font-size: $font-size-20;
-      color:$color-primary;
+      color: $color-primary;
       cursor: pointer;
     }
   }

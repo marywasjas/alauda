@@ -38,18 +38,18 @@
       <div style="height: 50px; background-color: #eee; margin-bottom: 30px">
         <div class="detail-center-container">kibana</div>
       </div>
-      <div style="padding: 10px">
-        <el-descriptions :column="2">
+      <div style="padding: 10px; display: flex; justify-content: space-between">
+        <el-descriptions :column="2" style="width: 1000px; background-color: #1890ff">
           <el-descriptions-item
             label="镜像"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >kooriookami</el-descriptions-item>
+          >kooriookami <i class="el-icon-edit" style="color: #1890ff" /></el-descriptions-item>
           <el-descriptions-item
             label="资源限制"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >18100000000</el-descriptions-item>
+          >18100000000 <i class="el-icon-edit" style="color: #1890ff" /></el-descriptions-item>
           <el-descriptions-item
             label="启动命令"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
@@ -66,6 +66,22 @@
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
           >江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
         </el-descriptions>
+
+        <div style="display: flex; justify-content: space-between; width: 120px">
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">EXEC </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item disabled>全部容器组</el-dropdown-item>
+              <el-dropdown-item divided>容器组</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown trigger="click">
+            <span class="el-dropdown-link">日志</span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>容器组</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </div>
     <div class="detail-footer">
@@ -144,20 +160,24 @@ export default {
     padding: 20px 20px;
     background-color: #fff;
     border: 1px solid #eee;
-    // .detail-footer-title {
-    //   display: flex;
-    //   justify-content: space-between;
-    //   height: 45px;
-    //   padding-bottom: 10px;
-    //   border-bottom: 1px solid #e4e7ed;
-    // }
+    .detail-footer-title {
+      display: flex;
+      justify-content: space-between;
+      height: 45px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e4e7ed;
+    }
   }
 }
 .my-label {
-  background: #e1f3d8;
+  background: #1890ff;
 }
 
 .my-content {
   background: #fde2e2;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
 }
 </style>

@@ -5,28 +5,31 @@
 </template>
 
 <script>
-import DeployHeader from '../deploy/DeployHeader.vue'
+import DeployHeader from './DeployHeader.vue'
 
 export default {
-  name: 'Deploy',
+  name: 'StatefulSet',
   components: {
     DeployHeader
   },
   data() {
     return {
       drop: {
-        dropVal: '创建守护进程集',
+        dropVal: '创建有状态副本集',
         dropList: [{ id: 0, txt: 'YAML创建' }]
       },
       tableData: [
         {
-          name: { txt: '测试', link_name: 'builder-python', link: 'https://www.baidu.com/' },
+          name: { txt: '测试', link_name: 'builder-python' },
           create_time: '2016-05-03',
           status: { done: '运行中', desc: '（1/1）' },
           application: 'gzvhs-s1-km'
         },
         {
-          name: { txt: '测试', link_name: 'builder-python', link: 'https://www.baidu.com/' },
+          name: {
+            txt: '测试',
+            link_name: 'builder-python'
+          },
           create_time: '2016-05-03',
           status: { done: '运行中', desc: '（1/1）' },
           application: 'gzvhs-s1-km'

@@ -26,9 +26,9 @@
           mode="horizontal"
           @select="handleSelect"
         >
-          <el-menu-item index="1">详情信息</el-menu-item>
-          <el-menu-item index="2">YAML</el-menu-item>
-          <el-menu-item index="3">容器组</el-menu-item>
+          <el-menu-item index="1" @click="comName = 'DetailInformation'">详情信息</el-menu-item>
+          <el-menu-item index="2" @click="comName = 'YamlInfor'">YAML</el-menu-item>
+          <el-menu-item index="3" @click="comName = 'ContainerGroup'">容器组</el-menu-item>
           <el-menu-item index="4">配置</el-menu-item>
           <el-menu-item index="5">日志</el-menu-item>
           <el-menu-item index="6">事件</el-menu-item>
@@ -37,21 +37,28 @@
         </el-menu>
       </div>
     </div>
-    <DetailInformation />
+    <component :is="comName" />
+    <!-- <DetailInformation /> -->
+    <!-- <yamlInfor></yamlInfor> -->
   </div>
 </template>
 
 <script>
 import DetailInformation from './content/detailInformation.vue'
+import YamlInfor from './content/yamlInfor.vue'
+import ContainerGroup from './content/containerGroup.vue'
 
 export default {
   name: 'Detail',
   components: {
-    DetailInformation
+    DetailInformation,
+    YamlInfor,
+    ContainerGroup
   },
   data() {
     return {
-      link_name: ''
+      link_name: '',
+      comName: 'DetailInformation'
     }
   },
   created() {
