@@ -22,10 +22,10 @@
             <!-- eslint-disable-next-line -->
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="name-cell">
-                <i class="el-icon-menu cursor-pointer" />
+                <i class="el-icon-menu" />
                 <div>
-                  <span class="cursor-pointer">{{ scope.row.name }}</span>
-                  <span class="cursor-pointer">{{ scope.row.desc }}</span>
+                  <span class="cursor-pointer" @click="goDetails(scope.row)">{{ scope.row.name }}</span>
+                  <span>{{ scope.row.desc }}</span>
                 </div>
               </div>
               <div v-else-if="col.id === 'status'" class="status-cell">
@@ -80,6 +80,15 @@ export default {
     },
     closeDialog() {
       this.visible = false
+    },
+    goDetails(row) {
+      this.$router.push({
+        name: 'NativeDetail',
+        query: {
+          name: row.name,
+          desc: row.desc
+        }
+      })
     }
   }
 }

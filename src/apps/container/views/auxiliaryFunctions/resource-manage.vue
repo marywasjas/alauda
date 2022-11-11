@@ -1,7 +1,7 @@
 <template>
-  <div class="app-container">
+  <div class="resource-management-container">
     <el-row>
-      <el-col :span="4">
+      <el-col :span="6">
         <div class="group-pannel">
           <el-form>
             <el-form-item label="">
@@ -41,7 +41,7 @@
           </ul>
         </div>
       </el-col>
-      <el-col :span="20">
+      <el-col :span="18">
         <div class="filter-container">
           <el-button
             icon="el-icon-refresh-right"
@@ -167,6 +167,19 @@ export default {
         tag: ['app.kubernetes.io/component: metrics'],
         namespace: 'toda-elasticsearch-system',
         createtime: '2022-04-06 15:06:14'
+      },
+      {
+        id: 4,
+        name: 'test-memcached',
+        tag: ['app.kubernetes.io/instance: test', 'app.kubernetes.io/managed-by: Helm'],
+        namespace: 'toda-elasticsearch-system',
+        createtime: '2022-04-25 16:52:56'
+      }, {
+        id: 5,
+        name: 'test-memcached-metric',
+        tag: ['app.kubernetes.io/component: metrics', 'app.kubernetes.io/instance: test'],
+        namespace: 'toda-elasticsearch-system',
+        createtime: '2022-04-25 16:52:56'
       }]
     },
     handleRefresh() {
@@ -217,8 +230,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.resource-management-container{
+  padding: 0 20px;
+  background-color: $background-color;
+  min-height: 100%;
+}
+.el-row{
+  padding: 20px;
+  background:#fff;
+  border-radius: $border-radius-l;
+  box-shadow: 0 0 4px 0 $box-shadow;
+  min-height: 100%;
+}
 .group-pannel {
-  margin-right: 10px;
+  margin-right: 30px;
 }
 .el-form-item {
   margin-bottom: 5px;

@@ -47,6 +47,13 @@ export const containerAsyncRoutes = [
         name: 'YamlCreate',
         meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
         hidden: true
+      },
+      {
+        path: 'nativeDetail',
+        component: () => import('@/apps/container/views/application/nativeApp/nativeDetail'),
+        name: 'NativeDetail',
+        meta: { title: '应用详情', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+        hidden: true
       }
       // {
       //   path: 'directive',
@@ -120,10 +127,11 @@ export const containerAsyncRoutes = [
     ]
   },
   {
-    path: '/error',
+    path: '/auxiliary-functions',
     component: Layout,
-    redirect: 'noRedirect',
-    name: 'ErrorPages',
+    redirect: '/auxiliary-functions/resource-management',
+    name: 'AuxiliaryFunctions',
+    alwaysShow: true,
     meta: {
       title: '辅助功能',
       icon: '404'
@@ -131,25 +139,12 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'resource-management',
-        component: () => import('@/apps/container/views/error-page/resource-manage'),
+        component: () => import('@/apps/container/views/auxiliaryFunctions/resource-manage'),
         name: 'ResourceManagement',
         meta: { title: '资源管理' }
-      },
-      {
-        path: '401',
-        component: () => import('@/apps/container/views/error-page/401'),
-        name: 'Page401',
-        meta: { title: '401', noCache: true }
-      },
-      {
-        path: '404',
-        component: () => import('@/apps/container/views/error-page/404'),
-        name: 'Page404',
-        meta: { title: '404', noCache: true }
       }
     ]
   },
-
   {
     path: '/error-log',
     component: Layout,
@@ -179,5 +174,17 @@ export const containerAsyncRoutes = [
     ]
   },
   // 404 page must be placed at the end !!!
+  {
+    path: '/401',
+    component: () => import('@/apps/container/views/error-page/401'),
+    name: 'Page401',
+    meta: { title: '401', noCache: true }
+  },
+  {
+    path: '/404',
+    component: () => import('@/apps/container/views/error-page/404'),
+    name: 'Page404',
+    meta: { title: '404', noCache: true }
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
