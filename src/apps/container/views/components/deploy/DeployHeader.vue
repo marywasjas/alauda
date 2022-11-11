@@ -17,13 +17,11 @@
           <el-button icon="el-icon-refresh-right" size="small" @click="onSearch" />
         </div>
       </div>
-
       <div class="card__content">
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
           <el-table-column label="姓名">
             <template slot-scope="scope">
               <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
-
               <div class="v_name">{{ scope.row.name.txt }}</div>
             </template>
           </el-table-column>
