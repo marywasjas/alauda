@@ -44,12 +44,18 @@
             label="镜像"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >kooriookami <i class="el-icon-edit" style="color: #1890ff" /></el-descriptions-item>
+          >kooriookami <i
+            class="el-icon-edit"
+            style="color: #1890ff"
+          /></el-descriptions-item>
           <el-descriptions-item
             label="资源限制"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >18100000000 <i class="el-icon-edit" style="color: #1890ff" /></el-descriptions-item>
+          >18100000000 <i
+            class="el-icon-edit"
+            style="color: #1890ff"
+          /></el-descriptions-item>
           <el-descriptions-item
             label="启动命令"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
@@ -83,6 +89,27 @@
           </el-dropdown>
         </div>
       </div>
+      <el-button
+        v-if="buttonVisible"
+        round
+        size="mini"
+        style="color: #1890ff"
+        @click="openTable"
+      >端口 <i class="el-icon-d-arrow-right" /></el-button>
+      <div v-if="visible" class="detail-center-table">
+        <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle">
+          <el-table-column prop="agreement" label="协议" />
+          <el-table-column prop="port" label="端口" />
+          <el-table-column prop="portName" label="端口名称" />
+        </el-table>
+        <el-button
+          class="table-button"
+          round
+          type="primary"
+          size="mini"
+          @click="closeTable"
+        >端口 <i class="el-icon-d-arrow-right" style="transform: rotate(-90deg)" /></el-button>
+      </div>
     </div>
     <div class="detail-footer">
       <div class="detail-footer-title">
@@ -109,14 +136,32 @@ export default {
         closeGracePeriod: '30秒',
         startupTime: '',
         stopTime: ''
-      }
+      },
+      tableData: [
+        {
+          agreement: 'TCP',
+          port: '80',
+          portName: '-'
+        }
+      ],
+      visible: false,
+      buttonVisible: true
     }
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    openTable() {
+      this.visible = true
+      this.buttonVisible = false
+    },
+    closeTable() {
+      this.visible = false
+      this.buttonVisible = true
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -154,6 +199,16 @@ export default {
       line-height: 50px;
       margin-bottom: 30px;
     }
+    .detail-center-table {
+      position: relative;
+      padding: 30px 30px 30px 30px;
+      border: 1px solid #1890ff;
+      .table-button {
+        position: absolute;
+        bottom: -15px;
+        left: 20px;
+      }
+    }
   }
   .detail-footer {
     margin-bottom: 10px;
@@ -179,5 +234,8 @@ export default {
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
+}
+.el-icon-d-arrow-right {
+  transform: rotate(90deg);
 }
 </style>

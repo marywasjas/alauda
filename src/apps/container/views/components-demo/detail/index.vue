@@ -29,9 +29,9 @@
           <el-menu-item index="1" @click="comName = 'DetailInformation'">详情信息</el-menu-item>
           <el-menu-item index="2" @click="comName = 'YamlInfor'">YAML</el-menu-item>
           <el-menu-item index="3" @click="comName = 'ContainerGroup'">容器组</el-menu-item>
-          <el-menu-item index="4">配置</el-menu-item>
-          <el-menu-item index="5">日志</el-menu-item>
-          <el-menu-item index="6">事件</el-menu-item>
+          <el-menu-item index="4" @click="comName = 'Configuration'">配置</el-menu-item>
+          <el-menu-item index="5" @click="comName = 'Log'">日志</el-menu-item>
+          <el-menu-item index="6" @click="comName = 'Event'">事件</el-menu-item>
           <el-menu-item index="7">监控</el-menu-item>
           <el-menu-item index="8">告警</el-menu-item>
         </el-menu>
@@ -47,13 +47,19 @@
 import DetailInformation from './content/detailInformation.vue'
 import YamlInfor from './content/yamlInfor.vue'
 import ContainerGroup from './content/containerGroup.vue'
+import Configuration from './content/configuration.vue'
+import Log from './content/log.vue'
+import Event from './content/event.vue'
 
 export default {
   name: 'Detail',
   components: {
     DetailInformation,
     YamlInfor,
-    ContainerGroup
+    ContainerGroup,
+    Configuration,
+    Log,
+    Event
   },
   data() {
     return {

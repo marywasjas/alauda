@@ -2,7 +2,7 @@
   <div class="oam-container">
     <div class="oam-main">
       <div class="card__header">
-        <el-dropdown split-button type="primary" trigger="click" @command="handleClick">
+        <el-dropdown split-button type="primary" trigger="click" @command="handleClick" @click="openDialog">
           {{ drop.dropVal }}
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item v-for="item in drop.dropList" :key="item.id" split-button :command="item.txt">{{
@@ -38,20 +38,30 @@
           </el-table-column>
           <el-table-column prop="create_time" label="创建时间" />
           <el-table-column label="" align="center" width="70" class-name="small-padding fixed-width">
-            <template>
-              <i class="el-icon-more" />
+            <template slot-scope="{ row }">
+              <div class="operation-cell">
+                <el-dropdown>
+                  <i class="el-icon-more" />
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item>删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" />
   </div>
 </template>
 
 <script>
+import SelectMirror from '@/apps/container/views/components/SelectMirror'
 export default {
   name: 'DeployHeaderVue',
-  components: {},
+  components: { SelectMirror },
   props: {
     drop: {
       type: Object,
@@ -69,7 +79,7 @@ export default {
       formInline: {
         name: ''
       },
-      visible: false
+      formVisible: false
     }
   },
   methods: {
@@ -85,6 +95,12 @@ export default {
           link_name: link_name // 传递的参数: 键值对
         }
       })
+    },
+    openDialog() {
+      this.formVisible = true
+    },
+    closeFormDialog() {
+      this.formVisible = false
     }
   }
 }

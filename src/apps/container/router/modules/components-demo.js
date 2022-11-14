@@ -27,13 +27,13 @@ const componentsRouter = {
     },
     {
       path: '/stateful_set',
-      // component: () => import('@/apps/container/views/components-demo/markdown'),
+      component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSet.vue'),
       name: 'statefulSet',
       meta: { title: '有状态副本集' }
     },
     {
       path: '/cron_job',
-      // component: () => import('@/apps/container/views/components-demo/json-editor'),
+      component: () => import('@/apps/container/views/components-demo/timedTask/index.vue'),
       name: 'CronJob',
       meta: { title: '定时任务' }
     },

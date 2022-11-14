@@ -12,17 +12,16 @@
         </div>
       </div>
       <div class="border-box">
-        <monaco-editor :code="currentCode" :read-only="false" />
+        <div id="monacoEditorContainer" style="height: 400px" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
 export default {
   name: 'YamlInfor',
-  components: { MonacoEditor },
+  components: {},
   props: {},
   data() {
     return {}

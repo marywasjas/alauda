@@ -1,5 +1,5 @@
 <template>
-  <div class="deploy-container">
+  <div class="timer-container">
     <DeployHeader :drop="drop" :table-data="tableData" />
   </div>
 </template>
@@ -8,14 +8,14 @@
 import DeployHeader from '../deploy/DeployHeader.vue'
 
 export default {
-  name: 'StatefulSet',
+  name: 'TimedTask',
   components: {
     DeployHeader
   },
   data() {
     return {
       drop: {
-        dropVal: '创建有状态副本集',
+        dropVal: '创建定时任务',
         dropList: [{ id: 0, txt: 'YAML创建' }]
       },
       tableData: [
