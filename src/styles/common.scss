@@ -9,6 +9,12 @@
   cursor: pointer;
   color:$color-primary;
 }
+.primary-text{
+  color:$color-primary;
+}
+.primary2-text{
+  color:$color-primary2;
+}
 .flexbox{
   display:flex;
 }
@@ -24,6 +30,9 @@
 .margin-right10{
   margin-right: 10px;
 }
+.margin-left10{
+  margin-left: 10px;
+}
 .text-right{
   text-align: right;
 }
@@ -34,6 +43,11 @@
   display:flex;
   align-items: center;
   justify-content: space-between;
+}
+.flex-end{
+  display:flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 // monaco-editor 样式
 .editor-toolbar{
@@ -49,4 +63,17 @@
   margin-right: 25px;
   white-space: nowrap;
   font-weight: 500;
+}
+//  tab-header 样式
+.tab-header__header-wrapper{
+  .el-tabs__header{
+    margin: 10px 0 0 0;
+  }
+  .el-tabs__item{
+    height: 50px;
+    font-size: $font-size-18;
+  }
+  .el-tabs__nav-wrap{
+    margin-bottom:0;
+  }
 }

@@ -1,6 +1,6 @@
 <template>
-  <div class="oam-container">
-    <div class="oam-main">
+  <div class="nativeApp-container">
+    <div class="nativeApp-main">
       <div class="card__header">
         <el-button type="primary" @click="openDialog">创建原生应用</el-button>
         <div class="flex-center">
@@ -22,10 +22,10 @@
             <!-- eslint-disable-next-line -->
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="name-cell">
-                <i class="el-icon-menu cursor-pointer" />
+                <i class="el-icon-menu" />
                 <div>
-                  <span class="cursor-pointer">{{ scope.row.name }}</span>
-                  <span class="cursor-pointer">{{ scope.row.desc }}</span>
+                  <span class="cursor-pointer" @click="goDetails(scope.row)">{{ scope.row.name }}</span>
+                  <span>{{ scope.row.desc }}</span>
                 </div>
               </div>
               <div v-else-if="col.id === 'status'" class="status-cell">
@@ -80,13 +80,22 @@ export default {
     },
     closeDialog() {
       this.visible = false
+    },
+    goDetails(row) {
+      this.$router.push({
+        name: 'NativeDetail',
+        query: {
+          name: row.name,
+          desc: row.desc
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.oam-container {
+.nativeApp-container {
   padding: 0 20px;
   background-color: $background-color;
   min-height: 100%;
@@ -98,7 +107,7 @@ export default {
       margin-bottom: 0;
     }
   }
-  .oam-main {
+  .nativeApp-main {
     background: #fff;
     padding: 20px;
   }
@@ -113,6 +122,7 @@ export default {
       border: 1px solid $border-color-one;
       border-radius: $border-radius-l;
       background: $color-primary-rgba1;
+      color: $color-primary;
     }
     span {
       display: block;
