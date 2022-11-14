@@ -1,9 +1,8 @@
 <template>
   <div class="oam-container">
-    <line-alert :content="content" />
     <div class="oam-main">
       <div class="card__header">
-        <el-button type="primary">创建内部路由</el-button>
+        <el-button type="primary" @click="handleCreate">创建负载均衡</el-button>
         <div class="flex-center">
           <el-input
             v-model="listQuery.name"
@@ -22,40 +21,23 @@
       </div>
       <div class="card__content">
         <el-table
-          :data="list"
+          :data="listBalancerList.data"
           style="width: 100%;"
           header-row-class-name="headerStyle"
           class="margin-top"
         >
-          <el-table-column type="selection" width="55" />
-          <el-table-column label="名称">
-            <template slot-scope="{row}">
-              <span class="cursor-pointer">{{ row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="服务类型">
-            <template slot-scope="{row}">
-              <span>{{ row.type }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="虚拟IP">
-            <template slot-scope="{row}">
-              <span>{{ row.ip }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="端口" width="500">
-            <template slot-scope="{row}">
-              <el-table :data="row.port" size="small">
-                <el-table-column prop="request" label="服务访问" />
-                <el-table-column prop="protocol" label="协议" />
-                <el-table-column prop="targetPort" label="容器端口" />
-                <el-table-column prop="nodePort" label="主机端口" />
-              </el-table>
-            </template>
-          </el-table-column>
-          <el-table-column label="创建时间">
-            <template slot-scope="{row}">
-              <span>{{ row.createtime }}</span>
+          <el-table-column
+            v-for="col in listBalancerColumnList"
+            :key="col.id"
+            :label="col.label"
+          >
+            <template slot-scope="scope">
+              <div v-if="col.id === 'name'" class="cursor-pointer">
+                {{ scope.row[col.id] }}
+              </div>
+              <div v-else>
+                {{ scope.row[col.id] }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
@@ -74,23 +56,24 @@
         </el-table>
       </div>
     </div>
-  </div></template>
+  </div>
+</template>
 
 <script>
-import { list } from '@/api/network/service'
-import LineAlert from '@/apps/container/views/components/LineAlert'
-
+import { list, create, update } from '@/api/network/service'
+import { listBalancerColumnList, listBalancerList } from '../const'
 export default {
-  name: 'Service',
-  components: { LineAlert },
+  name: 'LoadBalancerList',
   data() {
     return {
+      listBalancerColumnList,
+      listBalancerList,
       list: null,
       total: 0,
       listQuery: {
         name: ''
       },
-      content: '内部路由即 Kubernetes Service, 定义了一组 Pod 的逻辑集合和访问策略'
+      temp: {}
     }
   },
   created() {
@@ -111,7 +94,47 @@ export default {
     handleRefresh() {
       this.getList()
     },
+    handleCreate() {
+    },
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
+          create(this.temp).then(() => {
+            this.list.unshift(this.temp)
+            this.$notify({
+              title: 'Success',
+              message: '保存成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
     handleUpdate(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp)
+          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          update(tempData).then(() => {
+            const index = this.list.findIndex(v => v.id === this.temp.id)
+            this.list.splice(index, 1, this.temp)
+            this.$notify({
+              title: 'Success',
+              message: '保存成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
     },
     handleDelete(row, index) {
       this.$notify({
@@ -148,3 +171,4 @@ export default {
   }
 }
 </style>
+

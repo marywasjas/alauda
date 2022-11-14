@@ -1,5 +1,6 @@
 <template>
   <div class="oam-container">
+    <line-alert :content="content" />
     <div class="oam-main">
       <div class="card__header">
         <el-button type="primary">创建入站规则</el-button>
@@ -66,16 +67,18 @@
 
 <script>
 import { list } from '@/api/network/service'
-
+import LineAlert from '@/apps/container/views/components/LineAlert'
 export default {
   name: 'Ingress',
+  components: { LineAlert },
   data() {
     return {
       list: null,
       total: 0,
       listQuery: {
         name: ''
-      }
+      },
+      content: '入站规则即 Kubernetes Ingress，可以为内部路由提供集群外部访问的 URL、负载均衡、SSL 终止，或 HTTP 路由。部署 Ingress controller 后，它将监听入站规则和内部路由的变化，并根据所配规则负载均衡地提供访问入口。平台的自建集群中会默认部署 Ingress Controller。'
     }
   },
   created() {

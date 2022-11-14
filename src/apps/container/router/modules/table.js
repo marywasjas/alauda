@@ -26,8 +26,20 @@ const tableRouter = {
     },
     {
       path: 'load_balancer',
-      component: () => import('@/apps/container/views/network/balancer/index'),
+      component: () => import('@/apps/container/views/network/load-balancer/index'),
       name: 'LoadBalancer',
+      meta: { title: '负载均衡器' }
+    },
+    {
+      path: 'policy',
+      component: () => import('@/apps/container/views/network/policy/index'),
+      name: 'Policy',
+      meta: { title: '网络策略' }
+    },
+    {
+      path: 'load_balancer_list',
+      component: () => import('@/apps/container/views/network/load-balancer/list'),
+      name: 'LoadBalancerList',
       meta: { title: '负载均衡' }
     },
     {
