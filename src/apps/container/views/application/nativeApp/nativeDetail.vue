@@ -1,88 +1,134 @@
 <template>
-  <div class="native-detail">
-    <el-card class="box-card">
-      <div slot="header" class="flex-center">
-        <div class="title">
-          <p>{{ name }}</p>
-          <p>{{ desc }}</p>
-        </div>
-        <div>
+  <div class="detail-container">
+    <div class="detail-header">
+      <tab-header :name="name" :desc="desc" :tab-list="tabList" :active-name="activeName" @changeActive="changeActive">
+        <template v-slot:headerRight>
           <el-button type="primary">启动</el-button>
           <el-button type="info">停止</el-button>
-          <el-dropdown class="margin-left10">
-            <el-button>
-              操作<i class="el-icon-arrow-down el-icon--right" />
+          <el-dropdown>
+            <el-button
+              type="primary"
+              class="margin-left10"
+            >操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item in dropList" :key="item.id">{{
-                item.txt
-              }}</el-dropdown-item>
+              <el-dropdown-item>更新</el-dropdown-item>
+              <el-dropdown-item>管理资源</el-dropdown-item>
+              <el-dropdown-item>分发</el-dropdown-item>
+              <el-dropdown-item>删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-        </div>
-      </div>
-      <div>
-        <el-menu
-          text-color="#666666"
-          active-text-color="#1890ff"
-          class="el-menu-demo"
-          mode="horizontal"
-        >
-          <el-menu-item index="1" @click="comName = 'DetailInformation'">详情信息</el-menu-item>
-          <el-menu-item index="2" @click="comName = 'YamlInfor'">YAML</el-menu-item>
-          <el-menu-item index="3" @click="comName = 'ContainerGroup'">容器组</el-menu-item>
-          <el-menu-item index="4">配置</el-menu-item>
-          <el-menu-item index="5">日志</el-menu-item>
-          <el-menu-item index="6">事件</el-menu-item>
-          <el-menu-item index="7">监控</el-menu-item>
-          <el-menu-item index="8">告警</el-menu-item>
-        </el-menu>
-      </div>
-    </el-card>
+        </template>
+      </tab-header>
+    </div>
+    <component :is="comName" />
   </div>
 </template>
 
 <script>
+import TabHeader from '@/apps/container/views/components/TabHeader'
+import BaseInfo from './components/BaseInfo/BaseInfo.vue'
+import Topology from './components/Topology.vue'
+import Yaml from './components/Yaml.vue'
+import ContainerGroup from './components/ContainerGroup/ContainerGroup.vue'
+import VersionSnapshot from './components/VersionSnapshot.vue'
+import Journal from './components/Journal.vue'
+import Event from './components/Event.vue'
+import Monitor from './components/Monitor.vue'
+import GiveAlarm from './components/GiveAlarm.vue'
+
 export default {
-  name: 'NativeDetail',
-  components: {},
-  props: {},
+  name: 'Detail',
+  components: {
+    TabHeader,
+    BaseInfo,
+    Topology,
+    Yaml,
+    ContainerGroup,
+    VersionSnapshot,
+    Journal,
+    Event,
+    Monitor,
+    GiveAlarm
+  },
   data() {
     return {
-      name: this.$route.query.name,
-      desc: this.$route.query.desc,
-      dropList: [
-        { id: 0, txt: '更新' },
-        { id: 1, txt: '管理资源' },
-        { id: 2, txt: '分发' },
-        { id: 3, txt: '删除' }
-      ]
+      name: '',
+      desc: '',
+      tabList: [
+        {
+          label: '详细信息',
+          name: 'baseInfo',
+          com: 'BaseInfo'
+        },
+        {
+          label: '拓扑',
+          name: 'topology',
+          com: 'Topology'
+        },
+        {
+          label: 'YAML',
+          name: 'yaml',
+          com: 'Yaml'
+        },
+        {
+          label: '容器组',
+          name: 'containerGroup',
+          com: 'ContainerGroup'
+        },
+        {
+          label: '版本快照',
+          name: 'versionSnapshot',
+          com: 'VersionSnapshot'
+        },
+        {
+          label: '日志',
+          name: 'journal',
+          com: 'Journal'
+        },
+        {
+          label: '事件',
+          name: 'event',
+          com: 'Event'
+        },
+        {
+          label: '监控',
+          name: 'monitor',
+          com: 'Monitor'
+        },
+        {
+          label: '告警',
+          name: 'giveAlarm',
+          com: 'GiveAlarm'
+        }
+      ],
+      activeName: ''
     }
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
-  methods: {}
-}
-</script>
-<style lang="scss" scoped>
-.native-detail {
-  padding: 0 20px;
-  background-color: #f0f2f5;
-  min-height: 100%;
-  position: relative;
-  .title{
-    p{
-      margin: 0;
-      font-size:$font-size-20;
-      color: $font-color-title;
-      line-height:$line-height-22;
+  computed: {
+    comName: function() {
+      if (!this.activeName) return ''
+      const item = this.tabList.filter(el => el.name === this.activeName)
+      return item[0].com
     }
-    p:last-child {
-      font-size: $font-size-14;
-      color: $font-color-subtext;
+  },
+  created() {
+    this.name = this.$route.query.name
+    this.desc = this.$route.query.desc
+    this.activeName = this.tabList[0].name
+  },
+  methods: {
+    changeActive(value) {
+      this.activeName = value
     }
   }
+}
+</script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.detail-container {
+  min-height: 100%;
+  padding: 20px;
+  background-color: $background-color;
 }
 </style>

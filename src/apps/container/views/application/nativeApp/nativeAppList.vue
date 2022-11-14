@@ -1,6 +1,6 @@
 <template>
-  <div class="oam-container">
-    <div class="oam-main">
+  <div class="nativeApp-container">
+    <div class="nativeApp-main">
       <div class="card__header">
         <el-button type="primary" @click="openDialog">创建原生应用</el-button>
         <div class="flex-center">
@@ -95,7 +95,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.oam-container {
+.nativeApp-container {
   padding: 0 20px;
   background-color: $background-color;
   min-height: 100%;
@@ -107,7 +107,7 @@ export default {
       margin-bottom: 0;
     }
   }
-  .oam-main {
+  .nativeApp-main {
     background: #fff;
     padding: 20px;
   }
@@ -122,6 +122,7 @@ export default {
       border: 1px solid $border-color-one;
       border-radius: $border-radius-l;
       background: $color-primary-rgba1;
+      color: $color-primary;
     }
     span {
       display: block;

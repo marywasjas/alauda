@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="editor-toolbar">
-      <div class="editor-toolbar__language">YAML (读写)</div>
+      <div class="editor-toolbar__language">YAML ({{ readOnly?'只读':'读写' }})</div>
       <div class="editor-toolbar-wrap">
-        <el-button icon="el-icon-upload2" size="mini">导入</el-button>
+        <el-button v-if="readOnly" icon="el-icon-upload2" size="mini">导入</el-button>
         <el-button
-          v-if="btnFlag"
+          v-if="btnFlag || !readOnly"
           icon="el-icon-download"
           size="mini"
           @click="handleDownload"
@@ -17,12 +17,12 @@
           @click="resetCode"
         >清理</el-button>
         <el-button
-          v-if="btnFlag"
+          v-if="btnFlag || !readOnly"
           icon="el-icon-search"
           size="mini"
         >查找</el-button>
         <el-button
-          v-if="btnFlag"
+          v-if="btnFlag || !readOnly"
           icon="el-icon-copy-document"
           size="mini"
         >复制</el-button>
