@@ -29,7 +29,7 @@
         >
           <el-table-column label="名称">
             <template slot-scope="{row}">
-              <span class="cursor-pointer">{{ row.name }}</span>
+              <span class="cursor-pointer" @click="handleDetail(row)">{{ row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column label="规则" width="600">
@@ -112,6 +112,14 @@ export default {
         duration: 2000
       })
       this.list.splice(index, 1)
+    },
+    handleDetail(row) {
+      this.$router.push({
+        path: 'ingress/detail',
+        query: {
+          name: row.name
+        }
+      })
     }
   }
 }

@@ -3,7 +3,7 @@
     <line-alert :content="content" />
     <div class="oam-main">
       <div class="card__header">
-        <el-button type="primary">创建内部路由</el-button>
+        <el-button type="primary" @click="handleCreate()">创建内部路由</el-button>
         <div class="flex-center">
           <el-input
             v-model="listQuery.name"
@@ -30,7 +30,7 @@
           <el-table-column type="selection" width="55" />
           <el-table-column label="名称">
             <template slot-scope="{row}">
-              <span class="cursor-pointer">{{ row.name }}</span>
+              <span class="cursor-pointer" @click="handleDetail(row)">{{ row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column label="服务类型">
@@ -121,6 +121,18 @@ export default {
         duration: 2000
       })
       this.list.splice(index, 1)
+    },
+    handleCreate() {
+      console.log('create service')
+      // this.$router.push('service/create')
+    },
+    handleDetail(row) {
+      this.$router.push({
+        path: 'service/detail',
+        query: {
+          name: row.name
+        }
+      })
     }
   }
 }
