@@ -77,3 +77,22 @@
     margin-bottom:0;
   }
 }
+// help图标颜色
+.question-icon{
+  color: $icon-color;
+  font-size: $font-size-18;
+}
+// descriptions 样式
+.descriptions-div{
+  background:$background-color;
+  border-radius: $border-radius-l;
+  padding:20px;
+  .el-descriptions__body{
+    background:$background-color
+  }
+  .el-descriptions-item__label{
+    min-width: 100px;
+    display:inline-block;
+    text-align: right;
+  }
+}

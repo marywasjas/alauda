@@ -22,6 +22,10 @@
           <div id="monacoEditorContainerDialog" style="width:100%;height: 400px" />
         </div>
       </div>
+      <span v-if="submitTxt" slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">{{ submitTxt }}</el-button>
+        <el-button @click="closeDetailsDialog">取消</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -57,6 +61,10 @@ export default {
     readOnly: {
       type: Boolean,
       default: true
+    },
+    submitTxt: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -163,7 +171,10 @@ export default {
       // 监听内容变化
       this.monacoEditor.onDidChangeModelContent((e) => {})
       // 监听失去焦点事件
-      this.monacoEditor.onDidBlurEditorText((e) => {})
+      this.monacoEditor.onDidBlurEditorText((e) => {
+        const inputCode = this.monacoEditor.getValue()
+        this.$emit('handleBlur', inputCode)
+      })
     },
     // 更新数据
     updateMonacoEditor() {
@@ -179,6 +190,10 @@ export default {
         oldModel.dispose()
       }
       this.monacoEditor.setModel(newModel)
+    },
+    submitForm() {
+      const inputCode = this.monacoEditor.getValue()
+      this.$emit('submitForm', inputCode)
     }
   }
 }

@@ -3,10 +3,10 @@
 import Layout from '@/layout'
 
 const tableRouter = {
-  path: '/table',
+  path: '/network',
   component: Layout,
-  redirect: '/table/complex-table',
-  name: 'Table',
+  redirect: '/network/service',
+  name: 'Network',
   meta: {
     title: '网络',
     icon: 'table'
@@ -41,31 +41,31 @@ const tableRouter = {
       component: () => import('@/apps/container/views/network/load-balancer/list'),
       name: 'LoadBalancerList',
       meta: { title: '负载均衡' }
-    },
-    {
-      path: 'dynamic-table',
-      component: () => import('@/apps/container/views/table/dynamic-table/index'),
-      name: 'DynamicTable',
-      meta: { title: 'Dynamic Table' }
-    },
-    {
-      path: 'drag-table',
-      component: () => import('@/apps/container/views/table/drag-table'),
-      name: 'DragTable',
-      meta: { title: 'Drag Table' }
-    },
-    {
-      path: 'inline-edit-table',
-      component: () => import('@/apps/container/views/table/inline-edit-table'),
-      name: 'InlineEditTable',
-      meta: { title: 'Inline Edit' }
-    },
-    {
-      path: 'complex-table',
-      component: () => import('@/apps/container/views/table/complex-table'),
-      name: 'ComplexTable',
-      meta: { title: 'Complex Table' }
     }
+    // {
+    //   path: 'dynamic-table',
+    //   component: () => import('@/apps/container/views/table/dynamic-table/index'),
+    //   name: 'DynamicTable',
+    //   meta: { title: 'Dynamic Table' }
+    // },
+    // {
+    //   path: 'drag-table',
+    //   component: () => import('@/apps/container/views/table/drag-table'),
+    //   name: 'DragTable',
+    //   meta: { title: 'Drag Table' }
+    // },
+    // {
+    //   path: 'inline-edit-table',
+    //   component: () => import('@/apps/container/views/table/inline-edit-table'),
+    //   name: 'InlineEditTable',
+    //   meta: { title: 'Inline Edit' }
+    // },
+    // {
+    //   path: 'complex-table',
+    //   component: () => import('@/apps/container/views/table/complex-table'),
+    //   name: 'ComplexTable',
+    //   meta: { title: 'Complex Table' }
+    // }
   ]
 }
 export default tableRouter
