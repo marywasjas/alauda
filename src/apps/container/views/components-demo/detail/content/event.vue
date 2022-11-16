@@ -26,7 +26,20 @@
         <el-button>重置</el-button>
       </div>
     </div>
-    <div class="event-container" />
+    <div class="event-container">
+      <div class="flex-center">
+        <span>共10条</span>
+        <el-date-picker
+          v-model="value2"
+          type="datetimerange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          align="right"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -37,6 +50,84 @@ export default {
   props: {},
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '近30分钟',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 0.5)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近1小时',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 1)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近3小时',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 3)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近6小时',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 6)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近12小时',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 12)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近1天',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近3天',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 3)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '近7天',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          }
+        ]
+      },
+      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      value2: '',
       value: '',
       options: [
         {
@@ -66,6 +157,7 @@ export default {
   }
 }
 .event-container {
+  padding: 20px 10px;
   background-color: #fff;
 }
 </style>
