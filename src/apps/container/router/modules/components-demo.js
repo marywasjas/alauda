@@ -39,13 +39,13 @@ const componentsRouter = {
     },
     {
       path: '/job',
-      // component: () => import('@/apps/container/views/components-demo/split-pane'),
+      component: () => import('@/apps/container/views/components-demo/task/index.vue'),
       name: 'Job',
       meta: { title: '任务' }
     },
     {
       path: '/pod',
-      component: () => import('@/apps/container/views/components-demo/avatar-upload'),
+      component: () => import('@/apps/container/views/components-demo/containerGroup/index.vue'),
       name: 'Pod',
       meta: { title: '容器组' }
     },

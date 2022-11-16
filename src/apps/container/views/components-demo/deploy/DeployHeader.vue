@@ -33,7 +33,7 @@
           </el-table-column>
           <el-table-column prop="application" label="所属应用">
             <template slot-scope="scope">
-              <a class="link_name" href="#">{{ scope.row.application }}</a>
+              <a class="link_name">{{ scope.row.application }}</a>
             </template>
           </el-table-column>
           <el-table-column prop="create_time" label="创建时间" />
@@ -96,6 +96,7 @@ export default {
         }
       })
     },
+
     openDialog() {
       this.formVisible = true
     },

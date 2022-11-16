@@ -32,6 +32,9 @@
           <span class="title">停止耗时：</span><span>{{ form.stopTime }}</span>
         </div>
       </div>
+      <div class="chart-div">
+        <workload-status :number="number" @changeNumber="changeNumber" />
+      </div>
     </div>
     <div class="detail-center">
       <div style="font-weight: 700; font-size: 20px; margin-bottom: 20px; color: rgb(50, 52, 55)">容器</div>
@@ -74,19 +77,27 @@
         </el-descriptions>
 
         <div style="display: flex; justify-content: space-between; width: 120px">
-          <el-dropdown trigger="click">
-            <span class="el-dropdown-link">EXEC </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item disabled>全部容器组</el-dropdown-item>
-              <el-dropdown-item divided>容器组</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <el-dropdown trigger="click">
-            <span class="el-dropdown-link">日志</span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>容器组</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <el-popover placement="right" trigger="click">
+            <div class="container-popover">
+              <div class="title">全部容器组</div>
+              <div>
+                <p class="groupTitle">容器组</p>
+                <p v-for="con in containerList" :key="con.value">
+                  {{ con.label }}
+                </p>
+              </div>
+            </div>
+            <el-button slot="reference" type="text" icon="el-icon-receiving">EXEC</el-button>
+          </el-popover>
+          <el-popover placement="right" trigger="click">
+            <div class="container-popover">
+              <p class="groupTitle">容器组</p>
+              <p v-for="con in containerList" :key="con.value">
+                {{ con.label }}
+              </p>
+            </div>
+            <el-button slot="reference" type="text" icon="el-icon-timer">日志</el-button>
+          </el-popover>
         </div>
       </div>
       <el-button
@@ -95,7 +106,9 @@
         size="mini"
         style="color: #1890ff"
         @click="openTable"
-      >端口 <i class="el-icon-d-arrow-right" /></el-button>
+      >端口 <i
+        class="el-icon-d-arrow-right"
+      /></el-button>
       <div v-if="visible" class="detail-center-table">
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle">
           <el-table-column prop="agreement" label="协议" />
@@ -108,7 +121,10 @@
           type="primary"
           size="mini"
           @click="closeTable"
-        >端口 <i class="el-icon-d-arrow-right" style="transform: rotate(-90deg)" /></el-button>
+        >端口 <i
+          class="el-icon-d-arrow-right"
+          style="transform: rotate(-90deg)"
+        /></el-button>
       </div>
     </div>
     <div class="detail-footer">
@@ -121,9 +137,10 @@
 </template>
 
 <script>
+import WorkloadStatus from '@/apps/container/views/components/WorkloadStatus'
 export default {
   name: 'DetailInformation',
-  components: {},
+  components: { WorkloadStatus },
   props: {},
   data() {
     return {
@@ -145,7 +162,18 @@ export default {
         }
       ],
       visible: false,
-      buttonVisible: true
+      buttonVisible: true,
+      number: 5,
+      containerList: [
+        {
+          label: '123',
+          value: '123'
+        },
+        {
+          label: '234',
+          value: '234'
+        }
+      ]
     }
   },
   computed: {},
@@ -160,6 +188,9 @@ export default {
     closeTable() {
       this.visible = false
       this.buttonVisible = true
+    },
+    changeNumber(val) {
+      this.number = Number(val)
     }
   }
 }
@@ -170,6 +201,7 @@ export default {
   background-color: rgb(240, 242, 245);
   border: 1px solid #eee;
   .detail-header {
+    position: relative;
     margin-bottom: 10px;
     padding: 20px 20px;
     background-color: #fff;
@@ -183,6 +215,12 @@ export default {
       color: rgb(50, 52, 55);
       padding: 0 20px;
       line-height: 30px;
+    }
+    .chart-div {
+      width: 250px;
+      position: absolute;
+      top: 150px;
+      right: 0;
     }
   }
   .detail-center {
@@ -237,5 +275,19 @@ export default {
 }
 .el-icon-d-arrow-right {
   transform: rotate(90deg);
+}
+.container-popover {
+  .title {
+    border-bottom: 1px solid $border-color-one;
+    padding-bottom: 5px;
+  }
+  p {
+    margin: 2px 0;
+    line-height: $line-height-22;
+    cursor: pointer;
+  }
+  p:last-child {
+    margin-bottom: 0;
+  }
 }
 </style>
