@@ -1,5 +1,5 @@
 <template>
-  <div class="deploy-container">
+  <div class="daemon-container">
     <DeployHeader :drop="drop" :table-data="tableData" />
   </div>
 </template>
@@ -8,7 +8,7 @@
 import DeployHeader from '../deploy/DeployHeader.vue'
 
 export default {
-  name: 'Deploy',
+  name: 'Daemon',
   components: {
     DeployHeader
   },
