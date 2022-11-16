@@ -148,6 +148,8 @@
       @handleBlur="handleBlurDialog"
       @submitForm="submitForm"
     />
+    <add-internal-route :form-visible="interRouteVisible" @closeFormDialog="closeInterRouteFormDialog" />
+    <add-inbound-rule :form-visible="inboundRuleVisible" @closeFormDialog="closeInboundRuleFormDialog" />
   </div>
 </template>
 
@@ -156,10 +158,12 @@ import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
 import SelectMirror from '@/apps/container/views/components/SelectMirror'
 import MonacoEditorDialog from '@/apps/container/views/components/MonacoEditorDialog'
 import { descriptionsTableData } from '../constant/index'
+import addInternalRoute from './addInternalRoute.vue'
+import addInboundRule from './addInboundRule.vue'
 
 export default {
   name: 'NativeUpdate',
-  components: { MonacoEditor, SelectMirror, MonacoEditorDialog },
+  components: { MonacoEditor, SelectMirror, MonacoEditorDialog, addInternalRoute, addInboundRule },
   props: {},
   data() {
     return {
@@ -324,7 +328,9 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      interRouteVisible: false,
+      inboundRuleVisible: false
     }
   },
   computed: {},
@@ -367,6 +373,10 @@ export default {
       const txt = item.txt
       if (txt === '通过YAML添加') {
         this.yamlVisible = true
+      } else if (txt === '添加内部路由') {
+        this.interRouteVisible = true
+      } else if (txt === '添加入站规则') {
+        this.inboundRuleVisible = true
       }
     },
     closeYamlDialog() {
@@ -385,6 +395,12 @@ export default {
       this.$router.push({
         name: 'UpdateComponent'
       })
+    },
+    closeInterRouteFormDialog() {
+      this.interRouteVisible = false
+    },
+    closeInboundRuleFormDialog() {
+      this.inboundRuleVisible = false
     }
   }
 }
