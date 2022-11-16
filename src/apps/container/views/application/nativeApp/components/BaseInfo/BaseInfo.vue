@@ -236,8 +236,7 @@
               placement="top"
             >
               <i
-                class="el-icon-question"
-                style="font-size: 20px; margin-left: 10px"
+                class="el-icon-question question-icon margin-left10"
               />
             </el-tooltip>
           </div>

@@ -34,36 +34,51 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'nativeAppList',
-        component: () => import('@/apps/container/views/application/nativeApp/nativeAppList'),
-        name: 'NativeAppList',
+        component: () => import('@/apps/container/views/application/nativeApp/index'),
+        redirect: '/application/nativeAppList/list',
+        name: 'ApplicationMain',
         meta: {
           title: '原生应用',
           roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'yamlCreate',
-        component: () => import('@/apps/container/views/application/nativeApp/yamlCreate'),
-        name: 'YamlCreate',
-        meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
-        hidden: true
-      },
-      {
-        path: 'nativeDetail',
-        component: () => import('@/apps/container/views/application/nativeApp/nativeDetail'),
-        name: 'NativeDetail',
-        meta: { title: '应用详情', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
-        hidden: true
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/application/nativeApp/nativeAppList'),
+            name: 'nativeAppList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+            hidden: true
+          },
+          {
+            path: 'yamlCreate',
+            component: () => import('@/apps/container/views/application/nativeApp/yamlCreate'),
+            name: 'YamlCreate',
+            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+            hidden: true
+          },
+          {
+            path: 'nativeDetail',
+            component: () => import('@/apps/container/views/application/nativeApp/nativeDetail'),
+            name: 'NativeDetail',
+            meta: { title: '应用详情', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+            hidden: true
+          },
+          {
+            path: 'nativeUpdate',
+            component: () => import('@/apps/container/views/application/nativeApp/nativeUpdate/nativeUpdate'),
+            name: 'NativeUpdate',
+            meta: { title: '更新应用（预览）', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+            hidden: true
+          },
+          {
+            path: 'updateComponent',
+            component: () => import('@/apps/container/views/application/nativeApp/nativeUpdate/updateComponent'),
+            name: 'UpdateComponent',
+            meta: { title: '更新计算组件', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+            hidden: true
+          }
+        ]
       }
-      // {
-      //   path: 'directive',
-      //   component: () => import('@/apps/container/views/permission/directive'),
-      //   name: 'DirectivePermission',
-      //   meta: {
-      //     title: '模板应用'
-      //     // if do not set roles, means: this page does not require permission
-      //   }
-      // }
     ]
   },
   /** when your routing map is too long, you can split it into small modules **/

@@ -290,7 +290,7 @@ ul, li {
   width: 5px;
   height: 5px;
   margin-right: 8px;
-  background-color: green;
+  background-color: rgb(0, 194, 97);
 }
 .operation-cell{
   i{

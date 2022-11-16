@@ -29,3 +29,11 @@ export const tableData = Mock.mock({
     date: '@date'
   }]
 })
+export const descriptionsTableData = Mock.mock({
+  'data|2': [{
+    name: '@word(3, 7)',
+    mirror: '@word(3, 7)',
+    cpu: '1',
+    memory: '512Mi'
+  }]
+})

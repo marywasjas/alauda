@@ -1,8 +1,8 @@
 <template>
   <div class="oam-container">
+    <line-alert :content="content" />
     <div class="oam-main">
       <div class="card__header">
-        <el-button type="primary" @click="handleCreate">创建负载均衡</el-button>
         <div class="flex-center">
           <el-input
             v-model="listQuery.name"
@@ -60,10 +60,12 @@
 </template>
 
 <script>
+import LineAlert from '@/apps/container/views/components/LineAlert'
 import { list, create, update } from '@/api/network/service'
 import { balancerColumnList, balancerList } from '../const'
 export default {
   name: 'LoadBalancer',
+  components: { LineAlert },
   data() {
     return {
       balancerColumnList,
@@ -73,7 +75,8 @@ export default {
       listQuery: {
         name: ''
       },
-      temp: {}
+      temp: {},
+      content: '负载均衡器（Load Banalcer）将访问流量按照转发策略分发到对应实例的多个服务上，充当了客户端的单一接入点，从而提高应用程序的可用性。LB可灵活配置多重转发策略，满足复杂场景的转发控制功能。同时支持HTTP/HTTPS/TCP三种协议，增强了应用服务的防护能力。'
     }
   },
   created() {
@@ -157,6 +160,9 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    .flex-center {
+      margin-left: auto;
+    }
   }
   .oam-main {
     background: #fff;

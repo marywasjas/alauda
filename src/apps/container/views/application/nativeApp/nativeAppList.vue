@@ -4,10 +4,10 @@
       <div class="card__header">
         <el-button type="primary" @click="openDialog">创建原生应用</el-button>
         <div class="flex-center">
-          <el-input v-model="formInline.name" placeholder="按名称搜索" size="small" class="margin-right10">
+          <el-input v-model="formInline.name" placeholder="按名称搜索" class="margin-right10">
             <el-button slot="append" icon="el-icon-search" @click="onSearch" />
           </el-input>
-          <el-button icon="el-icon-refresh-right" size="small" @click="onSearch" />
+          <el-button icon="el-icon-refresh-right" @click="onSearch" />
         </div>
       </div>
       <div class="card__content">
@@ -37,8 +37,8 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>更新</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item command="update" @click.native="handleUpdate(scope.row)">更新</el-dropdown-item>
+                    <el-dropdown-item command="delete">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -81,9 +81,20 @@ export default {
     closeDialog() {
       this.visible = false
     },
+    // 详情
     goDetails(row) {
       this.$router.push({
         name: 'NativeDetail',
+        query: {
+          name: row.name,
+          desc: row.desc
+        }
+      })
+    },
+    // 更新
+    handleUpdate(row) {
+      this.$router.push({
+        name: 'NativeUpdate',
         query: {
           name: row.name,
           desc: row.desc
