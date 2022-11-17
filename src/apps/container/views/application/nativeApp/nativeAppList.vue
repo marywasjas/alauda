@@ -146,27 +146,5 @@ export default {
       margin-top: 6px;
     }
   }
-  .status-cell {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    i {
-      margin-right: 10px;
-      font-size: $font-size-20;
-    }
-    .running {
-      color: $button-color-success;
-    }
-    .stop {
-      color: $button-color-info;
-    }
-  }
-  .operation-cell {
-    i {
-      font-size: $font-size-20;
-      color: $color-primary;
-      cursor: pointer;
-    }
-  }
 }
 </style>

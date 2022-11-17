@@ -50,47 +50,52 @@
             </div>
           </header>
           <section v-if="activeTab === 'list'">
-            <el-descriptions
-              v-for="descriptions in descriptionsList"
-              :key="descriptions.id"
-              class="margin-top10 descriptions-div"
-              title=""
-              :column="1"
-            >
-              <template slot="extra">
-                <i class="el-icon-edit cursor-pointer margin-right10" @click="handleUpdateCom(descriptions)" />
-                <i class="el-icon-remove-outline cursor-pointer" @click="handleDelete(descriptions)" />
-              </template>
-              <el-descriptions-item
-                v-for="item in descriptions.descriptionsItems"
-                :key="item.label"
-                :label="item.label"
+            <div v-if="descriptionsList.length>0">
+              <el-descriptions
+                v-for="descriptions in descriptionsList"
+                :key="descriptions.id"
+                class="margin-top10 descriptions-div"
+                title=""
+                :column="1"
               >
-                <div v-if="item.type !== 'table'" style="width:100%;">{{ item.value }}</div>
-                <div v-else style="width:100%;">
-                  <el-table
-                    :data="item.table.tableData.data"
-                    style="width: 100%"
-                    header-row-class-name="headerStyle"
-                  >
-                    <el-table-column
-                      v-for="col in item.table.tableColumnList"
-                      :key="col.label"
-                      :label="col.label"
+                <template slot="extra">
+                  <i class="el-icon-edit cursor-pointer margin-right10" @click="handleUpdateCom(descriptions)" />
+                  <i class="el-icon-remove-outline cursor-pointer" @click="handleDelete(descriptions)" />
+                </template>
+                <el-descriptions-item
+                  v-for="item in descriptions.descriptionsItems"
+                  :key="item.label"
+                  :label="item.label"
+                >
+                  <div v-if="item.type !== 'table'" style="width:100%;">{{ item.value }}</div>
+                  <div v-else style="width:100%;">
+                    <el-table
+                      :data="item.table.tableData.data"
+                      style="width: 100%"
+                      header-row-class-name="headerStyle"
                     >
-                      <template slot-scope="scope">
-                        <div v-if="col.id === 'resource'">
-                          cpu:{{ scope.row.cpu }},内存:{{ scope.row.memory }}
-                        </div>
-                        <div v-else>
-                          {{ scope.row[col.id] }}
-                        </div>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </el-descriptions-item>
-            </el-descriptions>
+                      <el-table-column
+                        v-for="col in item.table.tableColumnList"
+                        :key="col.label"
+                        :label="col.label"
+                      >
+                        <template slot-scope="scope">
+                          <div v-if="col.id === 'resource'">
+                            cpu:{{ scope.row.cpu }},内存:{{ scope.row.memory }}
+                          </div>
+                          <div v-else>
+                            {{ scope.row[col.id] }}
+                          </div>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                </el-descriptions-item>
+              </el-descriptions>
+            </div>
+            <div class="empty-div">
+              无数据
+            </div>
           </section>
           <section v-if="activeTab === 'yaml'">
             <div class="yaml-div">
