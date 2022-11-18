@@ -26,6 +26,20 @@ const componentsRouter = {
       meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/detail/index' },
       hidden: true
     },
+    {
+      path: 'deploy/yamlCreat',
+      component: () => import('@/apps/container/views/components-demo/deploy/yamlCreat.vue'),
+      name: 'YamlCreat',
+      meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '' },
+      hidden: true
+    },
+    {
+      path: 'deploy/deployUpdate',
+      component: () => import('@/apps/container/views/components-demo/deploy/DeployUpdate.vue'),
+      name: 'DeployUpdate',
+      meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '' },
+      hidden: true
+    },
 
     {
       path: '/daemons_set',

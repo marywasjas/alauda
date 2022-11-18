@@ -40,7 +40,7 @@
           <el-table-column label="" align="center" width="70" class-name="small-padding fixed-width">
             <template slot-scope="{ row }">
               <div class="operation-cell">
-                <el-dropdown>
+                <el-dropdown @command="handleEdit(row.name.link_name)">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
@@ -87,7 +87,12 @@ export default {
     onSearch() {
       console.log(this.formInline)
     },
-    handleClick() {},
+    handleClick() {
+      this.$router.push({
+        path: 'deploy/yamlCreat',
+        query: {}
+      })
+    },
     detail(link_name) {
       this.$router.push({
         path: 'deploy/detail',
@@ -96,7 +101,14 @@ export default {
         }
       })
     },
-
+    handleEdit(link_name) {
+      this.$router.push({
+        path: 'deploy/deployUpdate',
+        query: {
+          link_name: link_name // 传递的参数: 键值对
+        }
+      })
+    },
     openDialog() {
       this.formVisible = true
     },
