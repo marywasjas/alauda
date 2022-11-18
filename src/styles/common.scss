@@ -27,6 +27,9 @@
 .margin-right{
   margin-right: 20px;
 }
+.margin-bottom{
+  margin-bottom: 20px;
+}
 .margin-right10{
   margin-right: 10px;
 }
@@ -95,4 +98,68 @@
     display:inline-block;
     text-align: right;
   }
+}
+.requireFlag{
+  color: #ff4949;
+  margin-right: 4px;
+}
+.text-center{
+  text-align: center;
+}
+.margin0{
+  margin: 0;
+}
+// 列表后 。。。 样式
+.operation-cell {
+  i {
+    font-size: $font-size-20;
+    color: $color-primary;
+    cursor: pointer;
+  }
+}
+// 列表中 状态列 样式
+.status-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  i {
+    margin-right: 10px;
+    font-size: $font-size-20;
+  }
+  .running {
+    color: $button-color-success;
+  }
+  .stop {
+    color: $button-color-info;
+  }
+  .pending {
+    color: $button-color-link;
+  }
+}
+// 表格内 expand 样式
+.inTable-desc{
+  background:$background-color;
+  border-radius: $border-radius-l;
+  padding: 10px 20px;
+  p{
+    margin: 0;
+    line-height: $line-height-24;
+  }
+}
+// 无数据展示样式
+.empty-div{
+  border: none;
+  padding: 14px 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 10px;
+  min-height: 60px;
+  font-size: $font-size-14;
+  line-height: $line-height-20;
+  color: $font-color-auxiliaryext;
+  background-color: $background-color2;
+  border-radius: $border-radius-l;
+  margin-top: 10px;
 }
