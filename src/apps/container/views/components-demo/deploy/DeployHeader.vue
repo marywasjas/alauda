@@ -90,7 +90,7 @@ export default {
     handleClick() {},
     detail(link_name) {
       this.$router.push({
-        path: '/detail',
+        path: 'deploy/detail',
         query: {
           link_name: link_name // 传递的参数: 键值对
         }

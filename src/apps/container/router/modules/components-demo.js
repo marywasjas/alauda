@@ -3,20 +3,28 @@
 import Layout from '@/layout'
 
 const componentsRouter = {
-  path: '/components-demo',
+  path: '/components',
   component: Layout,
-  redirect: 'noRedirect',
-  name: 'ComponentDemo',
+  redirect: '/components/deploy',
+  alwaysShow: true,
+  name: 'Component',
   meta: {
     title: '计算机组件',
     icon: 'component'
   },
   children: [
     {
-      path: '/deploy',
+      path: 'deploy',
       component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
       name: 'Deploy',
       meta: { title: '部署' }
+    },
+    {
+      path: 'deploy/detail',
+      component: () => import('@/apps/container/views/components-demo/detail/index.vue'),
+      name: 'Detail',
+      meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/detail/index' },
+      hidden: true
     },
 
     {
@@ -48,11 +56,6 @@ const componentsRouter = {
       component: () => import('@/apps/container/views/components-demo/containerGroup/index.vue'),
       name: 'Pod',
       meta: { title: '容器组' }
-    },
-    {
-      path: '/detail',
-      component: () => import('@/apps/container/views/components-demo/detail/index.vue'),
-      name: 'Detail'
     }
   ]
 }

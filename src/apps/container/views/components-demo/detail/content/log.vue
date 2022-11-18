@@ -25,10 +25,9 @@
 </template>
 
 <script>
-
 export default {
   name: 'Log',
-  components: { },
+  components: {},
   props: {},
   data() {
     return {
@@ -49,7 +48,8 @@ export default {
         showName: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
       currentCode: {},
-      defaultCode: ''
+      defaultCode: '',
+      value: ''
     }
   },
   computed: {},
