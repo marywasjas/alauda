@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="editor-toolbar">
-      <div class="editor-toolbar__language">YAML ({{ readOnly?'只读':'读写' }})</div>
+      <div class="editor-toolbar__language">{{ showTitle?`YAML (${readOnly}?'只读':'读写')`:'' }}</div>
       <div class="editor-toolbar-wrap">
+        <el-checkbox v-if="!showTitle" v-model="autoUpdate" label="自动更新" style="margin-right:10px;" />
         <el-button v-if="readOnly" icon="el-icon-upload2" size="mini">导入</el-button>
         <el-button
           v-if="btnFlag || !readOnly"
@@ -44,6 +45,14 @@ export default {
   name: 'MonacoEditor',
   components: {},
   props: {
+    showTitle: {
+      type: Boolean,
+      default: true
+    },
+    autoUpdate: {
+      type: Boolean,
+      default: true
+    },
     readOnly: {
       type: Boolean,
       default: true

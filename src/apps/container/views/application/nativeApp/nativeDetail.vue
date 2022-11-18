@@ -35,7 +35,7 @@ import VersionSnapshot from './components/VersionSnapshot/VersionSnapshot.vue'
 import Journal from './components/Journal.vue'
 import Event from './components/Event.vue'
 import Monitor from './components/Monitor.vue'
-import GiveAlarm from './components/GiveAlarm.vue'
+import GiveAlarm from './components/GiveAlarm/GiveAlarm.vue'
 
 export default {
   name: 'Detail',
