@@ -124,7 +124,7 @@ export default {
     },
     handleCreate() {
       console.log('create service')
-      // this.$router.push('service/create')
+      this.$router.push('service/create')
     },
     handleDetail(row) {
       this.$router.push({
