@@ -190,21 +190,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.tips-div{
-  p{
-    margin: 0;
-    font-size: $font-size-12;
-    line-height: $line-height-18;
-    margin-top: 6px;
-    i{
-      color:$color-primary;
-      font-size: $font-size-18;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  }
-  p:last-child{
-    margin-top: 0;
-  }
-}
 </style>

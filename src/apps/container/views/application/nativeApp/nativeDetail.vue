@@ -27,15 +27,16 @@
 
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
+import ContainerGroupTable from '@/apps/container/views/components/ContainerGroupTable/ContainerGroup.vue'
+
 import BaseInfo from './components/BaseInfo/BaseInfo.vue'
 import Topology from './components/Topology.vue'
 import Yaml from './components/Yaml.vue'
-import ContainerGroup from './components/ContainerGroup/ContainerGroup.vue'
 import VersionSnapshot from './components/VersionSnapshot/VersionSnapshot.vue'
 import Journal from './components/Journal.vue'
 import Event from './components/Event.vue'
 import Monitor from './components/Monitor.vue'
-import GiveAlarm from './components/GiveAlarm.vue'
+import GiveAlarm from './components/GiveAlarm/GiveAlarm.vue'
 
 export default {
   name: 'Detail',
@@ -44,7 +45,7 @@ export default {
     BaseInfo,
     Topology,
     Yaml,
-    ContainerGroup,
+    ContainerGroupTable,
     VersionSnapshot,
     Journal,
     Event,
@@ -74,7 +75,7 @@ export default {
         {
           label: '容器组',
           name: 'containerGroup',
-          com: 'ContainerGroup'
+          com: 'ContainerGroupTable'
         },
         {
           label: '版本快照',

@@ -93,7 +93,7 @@
                 </el-descriptions-item>
               </el-descriptions>
             </div>
-            <div class="empty-div">
+            <div v-else class="empty-div">
               无数据
             </div>
           </section>

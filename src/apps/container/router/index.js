@@ -1,12 +1,6 @@
 /* Layout */
 import Layout from '@/layout'
 
-/* Router Modules */
-import componentsRouter from './modules/components-demo'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
-
 export const containerAsyncRoutes = [
   {
     path: '/oam',
@@ -81,11 +75,183 @@ export const containerAsyncRoutes = [
       }
     ]
   },
-  /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
+  {
+    path: '/components',
+    component: Layout,
+    redirect: '/components/deploy',
+    alwaysShow: true,
+    name: 'Component',
+    meta: {
+      title: '计算机组件',
+      icon: 'component'
+    },
+    children: [
+      {
+        path: 'deploy',
+        component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
+        name: 'Deploy',
+        meta: { title: '部署' }
+      },
+      {
+        path: 'deploy/detail',
+        component: () => import('@/apps/container/views/components-demo/detail/index.vue'),
+        name: 'Detail',
+        meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/detail/index' },
+        hidden: true
+      },
+      {
+        path: 'deploy/yamlCreat',
+        component: () => import('@/apps/container/views/components-demo/deploy/yamlCreat.vue'),
+        name: 'YamlCreat',
+        meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '' },
+        hidden: true
+      },
+      {
+        path: 'deploy/deployUpdate',
+        component: () => import('@/apps/container/views/components-demo/deploy/DeployUpdate.vue'),
+        name: 'DeployUpdate',
+        meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '' },
+        hidden: true
+      },
+
+      {
+        path: '/daemons_set',
+        component: () => import('@/apps/container/views/components-demo/daemon/index.vue'),
+        name: 'DaemonsSet',
+        meta: { title: '守护进程集' }
+      },
+      {
+        path: '/stateful_set',
+        component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSet.vue'),
+        name: 'statefulSet',
+        meta: { title: '有状态副本集' }
+      },
+      {
+        path: '/cron_job',
+        component: () => import('@/apps/container/views/components-demo/timedTask/index.vue'),
+        name: 'CronJob',
+        meta: { title: '定时任务' }
+      },
+      {
+        path: '/job',
+        component: () => import('@/apps/container/views/components-demo/task/index.vue'),
+        name: 'Job',
+        meta: { title: '任务' }
+      },
+      {
+        path: '/pod',
+        component: () => import('@/apps/container/views/components-demo/containerGroup/index.vue'),
+        name: 'Pod',
+        meta: { title: '容器组' }
+      }
+    ]
+  },
+  {
+    path: '/configure',
+    component: Layout,
+    redirect: 'noRedirect',
+    name: 'Configure',
+    meta: {
+      title: '配置',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'keyboard',
+        component: () => import('@/apps/container/views/configure/keyboard'),
+        name: 'KeyboardChart',
+        meta: { title: '配置字典', noCache: true }
+      },
+      {
+        path: 'line',
+        component: () => import('@/apps/container/views/configure/line'),
+        name: 'LineChart',
+        meta: { title: '保密字典', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/network',
+    component: Layout,
+    redirect: '/network/service',
+    name: 'Network',
+    meta: {
+      title: '网络',
+      icon: 'table'
+    },
+    children: [
+      {
+        path: 'service',
+        component: () => import('@/apps/container/views/network/service/index'),
+        name: 'Service',
+        meta: { title: '内部路由' }
+      },
+      {
+        path: 'service/create',
+        component: () => import('@/apps/container/views/network/service/create'),
+        name: 'ServiceCreate',
+        meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/table/service' },
+        hidden: true
+      },
+      {
+        path: 'service/detail',
+        component: () => import('@/apps/container/views/network/service/detail'),
+        name: 'ServiceDetail',
+        meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/table/service' },
+        hidden: true
+      },
+      {
+        path: 'ingress',
+        component: () => import('@/apps/container/views/network/ingress/index'),
+        name: 'Ingress',
+        meta: { title: '入站规则' }
+      },
+      {
+        path: 'ingress/detail',
+        component: () => import('@/apps/container/views/network/ingress/detail'),
+        name: 'IngressDetail',
+        meta: { title: '入站规则详情', icon: 'icon', noCache: true, activeMenu: '/table/ingress' },
+        hidden: true
+      },
+      {
+        path: 'load_balancer',
+        component: () => import('@/apps/container/views/network/load-balancer/index'),
+        name: 'LoadBalancer',
+        meta: { title: '负载均衡器' }
+      },
+      {
+        path: 'policy',
+        component: () => import('@/apps/container/views/network/policy/index'),
+        name: 'Policy',
+        meta: { title: '网络策略' }
+      },
+      {
+        path: 'load_balancer_list',
+        component: () => import('@/apps/container/views/network/load-balancer/list'),
+        name: 'LoadBalancerList',
+        meta: { title: '负载均衡' }
+      }
+    ]
+  },
+  {
+    path: '/storage',
+    component: Layout,
+    redirect: '/storage/persistentVolume',
+    name: 'Storage',
+    alwaysShow: true,
+    meta: {
+      title: '存储',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'persistentVolume',
+        name: 'PersistentVolume',
+        component: () => import('@/apps/container/views/storage/persistentVolume/index'),
+        meta: { title: '持久卷声明（PVC）' }
+      }
+    ]
+  },
   {
     path: '/icon',
     component: Layout,
@@ -124,7 +290,13 @@ export const containerAsyncRoutes = [
         path: 'create',
         component: () => import('@/apps/container/views/example/create'),
         name: 'CreateArticle',
-        meta: { title: 'Create Article', icon: 'edit' }
+        meta: { title: '告警策略', icon: 'edit' }
+      },
+      {
+        path: 'list',
+        component: () => import('@/apps/container/views/example/list'),
+        name: 'ArticleList',
+        meta: { title: '告警历史', icon: 'list' }
       },
       {
         path: 'edit/:id(\\d+)',
@@ -132,12 +304,6 @@ export const containerAsyncRoutes = [
         name: 'EditArticle',
         meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
         hidden: true
-      },
-      {
-        path: 'list',
-        component: () => import('@/apps/container/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: 'Article List', icon: 'list' }
       }
     ]
   },
@@ -184,22 +350,9 @@ export const containerAsyncRoutes = [
         path: 'download',
         component: () => import('@/apps/container/views/zip/index'),
         name: 'ExportZip',
-        meta: { title: 'Zip' }
+        meta: { title: '备份' }
       }
     ]
   },
-  // 404 page must be placed at the end !!!
-  // {
-  //   path: '/401',
-  //   component: () => import('@/apps/container/views/error-page/401'),
-  //   name: 'Page401',
-  //   meta: { title: '401', noCache: true }
-  // },
-  // {
-  //   path: '/404',
-  //   component: () => import('@/apps/container/views/error-page/404'),
-  //   name: 'Page404',
-  //   meta: { title: '404', noCache: true }
-  // },
   { path: '*', redirect: '/404', hidden: true }
 ]
