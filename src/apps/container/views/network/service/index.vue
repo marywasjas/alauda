@@ -3,7 +3,7 @@
     <line-alert :content="content" />
     <div class="oam-main">
       <div class="card__header">
-        <el-button type="primary" @click="handleCreate()">创建内部路由</el-button>
+        <el-button type="primary" @click="handleCreate">创建内部路由</el-button>
         <div class="flex-center">
           <el-input
             v-model="listQuery.name"
