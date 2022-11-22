@@ -54,7 +54,7 @@ export default {
         container: '',
         logType: ''
       },
-      currentCode: '2022-11-18 无日志',
+      currentCode: '2022-11-21 无日志',
       language: 'javascript',
       containerGroupList: [
         { label: 'nginx-nginx-75b4568c7c-fphvc', value: 'nginx-nginx-75b4568c7c-fphvc' }

@@ -168,3 +168,18 @@
   border-radius: $border-radius-l;
   margin-top: 10px;
 }
+// 列表下提示信息 样式
+.tips-div{
+  p{
+    margin: 0;
+    font-size: $font-size-12;
+    line-height: $line-height-18;
+    margin-top: 6px;
+    i{
+      color:$color-primary;
+      font-size: $font-size-18;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
+}

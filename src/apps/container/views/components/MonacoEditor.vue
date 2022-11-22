@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="editor-toolbar">
-      <div class="editor-toolbar__language">{{ showTitle?`YAML (${readOnly}?'只读':'读写')`:'' }}</div>
+      <div v-if="showTitle" class="editor-toolbar__language">{{ (readOnly?'YAML只读':'YAML读写') }}</div>
+      <div v-else class="editor-toolbar__language">{{ '' }}</div>
       <div class="editor-toolbar-wrap">
         <el-checkbox v-if="!showTitle" v-model="autoUpdate" label="自动更新" style="margin-right:10px;" />
         <el-button v-if="readOnly" icon="el-icon-upload2" size="mini">导入</el-button>
