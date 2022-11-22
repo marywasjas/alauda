@@ -17,7 +17,8 @@ const componentsRouter = {
       path: 'deploy',
       component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
       name: 'Deploy',
-      meta: { title: '部署' }
+      meta: { title: '部署' },
+      children: []
     },
     {
       path: 'deploy/detail',

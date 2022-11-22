@@ -45,12 +45,12 @@
             <el-form :inline="true">
               <el-row>
                 <el-form-item label="更新策略:">
-                  <el-input v-model="input1" placeholder="数字或者百分比" style="width: 500px; margin-right: 10px">
+                  <el-input v-model="input1" placeholder="数字或者百分比" style="min-width: 300px; margin-right: 10px">
                     <template slot="prepend">最大可超出数</template>
                   </el-input>
                 </el-form-item>
                 <el-form-item label="">
-                  <el-input v-model="input2" placeholder="数字或者百分比" style="width: 500px">
+                  <el-input v-model="input2" placeholder="数字或者百分比" style="min-width: 300px">
                     <template slot="prepend">最多不可用数</template>
                   </el-input>
                 </el-form-item>
@@ -62,11 +62,33 @@
 
             <div style="display: flex">
               <span>标签：</span>
-              <el-table header-row-class-name="headerStyle" class="margin-top">
-                <el-table-column label="键" />
-                <el-table-column label="值" />
-              </el-table>
+              <div>
+                <el-table :data="tableDate" header-row-class-name="headerStyle" class="margin-top">
+                  <el-table-column label="键" min-width="450">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.key" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="值" min-width="450">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.value" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="" align="center" width="50" class-name="small-padding fixed-width">
+                    <template slot-scope="{ row }">
+                      <div class="operation-cell">
+                        <i class="el-icon-remove-outline" @click="remove(row.key)" />
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <div style="margin-top: 20px; width: 100%">
+                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
+                </div>
+              </div>
             </div>
+
             <el-button
               class="table-button"
               round
@@ -83,17 +105,143 @@
           <div class="info-title">容器组</div>
           <div style="display: flex; padding: 0 60px; margin-bottom: 10px">
             <span style="line-height: 80px">存储卷：</span>
-            <el-table header-row-class-name="headerStyle" class="margin-top">
-              <el-table-column label="名称" />
-              <el-table-column label="类型" />
-              <el-table-column label="相关配置" />
-            </el-table>
+            <div>
+              <el-table :data="tableDate2" header-row-class-name="headerStyle" class="margin-top">
+                <el-table-column label="名称" min-width="300">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.name" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="类型" min-width="300">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.type" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="相关配置" min-width="300">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.configuration" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="" align="center" width="80" class-name="small-padding fixed-width">
+                  <template slot-scope="{ row }">
+                    <div class="operation-cell">
+                      <i class="el-icon-edit" style="margin-right: 10px" />
+                      <i class="el-icon-remove-outline" @click="remove(row.key)" />
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div style="margin-top: 20px; width: 100%">
+                <el-button
+                  style="width: 100%"
+                  icon="el-icon-circle-plus-outline"
+                  @click="addContainerGroup"
+                >添加</el-button>
+              </div>
+            </div>
           </div>
-          <div style="padding: 0 60px">
-            <span>镜像凭据:</span>
+          <div style="padding: 0 50px">
+            <span style="margin-right: 6px">镜像凭据:</span>
             <el-select v-model="value" placeholder="请选择" style="width: 500px">
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
+          </div>
+          <el-button
+            v-if="buttonVisible"
+            round
+            size="mini"
+            style="color: #1890ff"
+            @click="openContainer"
+          >更多 <i
+            class="el-icon-d-arrow-right"
+          /></el-button>
+          <div v-if="visibleContainer" class="buttonBox">
+            <div style="display: flex">
+              <span>容器组标签：</span>
+              <div>
+                <el-table :data="tableDate" header-row-class-name="headerStyle" class="margin-top">
+                  <el-table-column label="键" min-width="450">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.key" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="值" min-width="450">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.value" />
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <div style="margin-top: 20px; width: 100%">
+                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; margin-bottom: 10px">
+              <span>容器组注解：</span>
+              <div>
+                <el-table :data="tableDate" header-row-class-name="headerStyle" class="margin-top">
+                  <el-table-column label="键" min-width="450">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.key" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="值" min-width="450">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.value" />
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <div style="margin-top: 20px; width: 100%">
+                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex">
+              <span style="line-height: 30px">主机选择器：</span>
+              <el-select v-model="value1" multiple placeholder="请选择" style="width: 800px">
+                <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </div>
+            <div style="display: flex; margin-left: 30px">
+              <span>亲和性：</span>
+              <div>
+                <el-table
+                  :data="tableDate3"
+                  header-row-class-name="headerStyle"
+                  class="margin-top"
+                  style="width: 1000px"
+                >
+                  <el-table-column label="类型" prop="type" />
+                  <el-table-column label="类别" prop="categories" />
+                  <el-table-column label="权重" prop="weight" />
+                  <el-table-column label="主机拓扑域" prop="topologyDomain" />
+                  <el-table-column label="匹配标签" prop="MatchingLabels" />
+                </el-table>
+                <div style="margin-top: 20px; width: 100%">
+                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline">添加亲和性</el-button>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex">
+              <span style="line-height: 70px">关闭宽限期：</span>
+              <span>
+                <el-input v-model="input3" style="width: 300px">
+                  <template slot="append">秒</template>
+                </el-input>
+              </span>
+            </div>
+
+            <el-button
+              class="table-button"
+              round
+              type="primary"
+              size="mini"
+              @click="closeContainer"
+            >收起 <i
+              class="el-icon-d-arrow-right"
+              style="transform: rotate(-90deg)"
+            /></el-button>
           </div>
         </div>
         <div>
@@ -135,13 +283,65 @@ export default {
       num: 0,
       input1: 1,
       input2: 2,
+      input3: 3,
       currentCode: '',
       inputCode: {},
       language: 'yaml',
       visible: false,
       buttonVisible: true,
-      options: [],
-      value: ''
+      options: [
+        {
+          value: '',
+          label: ''
+        }
+      ],
+      value: '',
+      obj: {
+        key: '',
+        value: ''
+      },
+      // 基本信息
+      tableDate: [
+        {
+          key: 'iiooo1',
+          value: 'looksLikeNumbers'
+        },
+        {
+          key: 'iiooo',
+          value: 'looksLikeNumbers'
+        }
+      ],
+      tableDate2: [
+        {
+          name: 'iiooo1',
+          type: '存储卷声明',
+          configuration: 'sjdksjs'
+        },
+        {
+          name: 'iiooo',
+          type: '存储卷声明',
+          configuration: 'sjdksjs'
+        }
+      ],
+      // 下拉框
+      options1: [
+        {
+          value: '',
+          label: ''
+        }
+      ],
+      value1: [],
+      // 亲和性
+      tableDate3: [
+        {
+          type: 'iiooo1',
+          categories: '存储卷声明',
+          weight: 'sjdksjs',
+          topologyDomain: '',
+          MatchingLabels: ''
+        }
+      ],
+      visibleContainer: false
     }
   },
   created() {
@@ -162,6 +362,23 @@ export default {
     closeTable() {
       this.visible = false
       this.buttonVisible = true
+    },
+    remove(key) {
+      console.log(key)
+    },
+    add() {
+      this.tableDate.push(JSON.parse(JSON.stringify(this.obj)))
+    },
+    addContainerGroup() {
+      this.tableDate2.push(JSON.parse(JSON.stringify(this.obj)))
+    },
+    openContainer() {
+      this.buttonVisible = false
+      this.visibleContainer = true
+    },
+    closeContainer() {
+      this.buttonVisible = true
+      this.visibleContainer = false
     }
   }
 }
