@@ -197,14 +197,14 @@ export const containerAsyncRoutes = [
         path: 'service/create',
         component: () => import('@/apps/container/views/network/service/create'),
         name: 'ServiceCreate',
-        meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/table/service' },
+        meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
         hidden: true
       },
       {
         path: 'service/detail',
         component: () => import('@/apps/container/views/network/service/detail'),
         name: 'ServiceDetail',
-        meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/table/service' },
+        meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/network/service' },
         hidden: true
       },
       {
@@ -214,10 +214,17 @@ export const containerAsyncRoutes = [
         meta: { title: '入站规则' }
       },
       {
+        path: 'ingress/create',
+        component: () => import('@/apps/container/views/network/ingress/create'),
+        name: 'IngressCreate',
+        meta: { title: '创建入站规则', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
+        hidden: true
+      },
+      {
         path: 'ingress/detail',
         component: () => import('@/apps/container/views/network/ingress/detail'),
         name: 'IngressDetail',
-        meta: { title: '入站规则详情', icon: 'icon', noCache: true, activeMenu: '/table/ingress' },
+        meta: { title: '入站规则详情', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
         hidden: true
       },
       {
