@@ -27,7 +27,7 @@
         </div>
       </div>
     </el-dialog>
-    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" />
+    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" @submitForm="submitForm" />
   </div>
 </template>
 
@@ -96,6 +96,11 @@ export default {
     },
     closeFormDialog() {
       this.formVisible = false
+    },
+    submitForm() {
+      this.$router.push({
+        name: 'CreateNativeApp'
+      })
     }
   }
 }

@@ -62,7 +62,7 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="distribute">
+                    <el-dropdown-item command="distribute" @click.native="handelDistribute(scope.row)">
                       分发
                     </el-dropdown-item>
                     <el-dropdown-item command="rollBack">
@@ -79,6 +79,7 @@
         </el-table>
       </section>
     </BaseCard>
+    <!-- 创建版本快照 -->
     <el-dialog
       title="创建版本快照"
       :visible.sync="formVisible"
@@ -110,6 +111,39 @@
         <el-button @click="closeFormDialog">取消</el-button>
       </span>
     </el-dialog>
+    <!-- 分发 -->
+    <el-dialog
+      title="分发"
+      :visible.sync="distributeFormVisible"
+      width="760px"
+      :before-close="closeFormDialog"
+      :close-on-click-modal="false"
+    >
+      <div class="formDialog__content">
+
+        <el-form
+          ref="ruleForm"
+          :model="ruleForm"
+          :rules="rules"
+          label-width="100px"
+          label-suffix=":"
+        >
+          <el-form-item label="注释" prop="remark">
+            <el-input
+              v-model="ruleForm.remark"
+              type="textarea"
+              placeholder="最多可输入30字"
+              maxlength="30"
+              show-word-limit
+            />
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitDistributeForm">创建</el-button>
+        <el-button @click="closeDistributeFormDialog">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -131,7 +165,8 @@ export default {
         remark: [
           { required: true, message: '最多可输入30字', trigger: 'blur' }
         ]
-      }
+      },
+      distributeFormVisible: false
     }
   },
   computed: {},
@@ -146,6 +181,23 @@ export default {
       this.formVisible = false
     },
     submitForm() {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          console.log(this.ruleForm)
+        } else {
+          return false
+        }
+      })
+    },
+    // 分发
+    handelDistribute(row) {
+      console.log(row)
+      this.distributeFormVisible = true
+    },
+    closeDistributeFormDialog() {
+      this.distributeFormVisible = false
+    },
+    submitDistributeForm() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           console.log(this.ruleForm)

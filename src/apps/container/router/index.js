@@ -70,6 +70,13 @@ export const containerAsyncRoutes = [
             name: 'UpdateComponent',
             meta: { title: '更新计算组件', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
             hidden: true
+          },
+          {
+            path: 'createNativeApp',
+            component: () => import('@/apps/container/views/application/nativeApp/createNativeApp'),
+            name: 'CreateNativeApp',
+            meta: { title: '创建应用', icon: 'icon', noCache: true, activeMenu: '/application/nativeAppList' },
+            hidden: true
           }
         ]
       }
