@@ -446,11 +446,6 @@ export default {
     .el-tooltip {
       margin-left: 5px;
     }
-    .el-table {
-      thead {
-        background-color: $background-color;
-      }
-    }
     .hover-div:hover{
       background:$color-primary-rgba1;
     }

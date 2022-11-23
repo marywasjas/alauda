@@ -3,7 +3,7 @@
     <line-alert :content="content" />
     <div class="oam-main">
       <div class="card__header">
-        <el-button type="primary">创建入站规则</el-button>
+        <el-button type="primary" @click="handleCreate">创建入站规则</el-button>
         <div class="flex-center">
           <el-input
             v-model="listQuery.name"
@@ -100,8 +100,8 @@ export default {
       this.getList()
     },
     handleCreate() {
+      this.$router.push('ingress/create')
     },
-
     handleUpdate(row) {
     },
     handleDelete(row, index) {

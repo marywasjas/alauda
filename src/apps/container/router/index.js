@@ -207,6 +207,13 @@ export const containerAsyncRoutes = [
         meta: { title: '入站规则' }
       },
       {
+        path: 'ingress/create',
+        component: () => import('@/apps/container/views/network/ingress/create'),
+        name: 'IngressCreate',
+        meta: { title: '创建入站规则', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
+        hidden: true
+      },
+      {
         path: 'ingress/detail',
         component: () => import('@/apps/container/views/network/ingress/detail'),
         name: 'IngressDetail',

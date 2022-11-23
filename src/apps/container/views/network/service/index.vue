@@ -123,7 +123,6 @@ export default {
       this.list.splice(index, 1)
     },
     handleCreate() {
-      console.log('create service')
       this.$router.push('service/create')
     },
     handleDetail(row) {
