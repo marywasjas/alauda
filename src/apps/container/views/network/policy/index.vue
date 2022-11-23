@@ -105,6 +105,7 @@ export default {
       this.getList()
     },
     handleCreate() {
+      this.$router.push('policy/create')
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {

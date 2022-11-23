@@ -240,6 +240,13 @@ export const containerAsyncRoutes = [
         meta: { title: '网络策略' }
       },
       {
+        path: 'policy/create',
+        component: () => import('@/apps/container/views/network/policy/create'),
+        name: 'PolicyCreate',
+        meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+        hidden: true
+      },
+      {
         path: 'load_balancer_list',
         component: () => import('@/apps/container/views/network/load-balancer/list'),
         name: 'LoadBalancerList',

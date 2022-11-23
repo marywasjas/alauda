@@ -81,7 +81,20 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="ruleForm.tagSelector.length == 0">
+                  <tr>
+                    <td colspan="3" class="no-data">无数据</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody v-if="ruleForm.tagSelector.length > 0">
                   <tr
                     v-for="(tag, index) in ruleForm.tagSelector"
                     :key="tag.id"
@@ -131,7 +144,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="5">
+                    <td colspan="3">
                       <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
                         <i class="el-icon-circle-plus-outline" />
                         添加
@@ -448,6 +461,10 @@ export default {
     }
     .hover-div:hover{
       background:$color-primary-rgba1;
+    }
+    .no-data {
+      text-align: center;
+      color: darkgray;
     }
   }
   .yaml-div {
