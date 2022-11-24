@@ -186,46 +186,73 @@ export const containerAsyncRoutes = [
       title: '网络',
       icon: 'table'
     },
+    alwaysShow: true, // will always show the root menu
     children: [
       {
         path: 'service',
         component: () => import('@/apps/container/views/network/service/index'),
-        name: 'Service',
-        meta: { title: '内部路由' }
-      },
-      {
-        path: 'service/create',
-        component: () => import('@/apps/container/views/network/service/create'),
-        name: 'ServiceCreate',
-        meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
-        hidden: true
-      },
-      {
-        path: 'service/detail',
-        component: () => import('@/apps/container/views/network/service/detail'),
-        name: 'ServiceDetail',
-        meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/network/service' },
-        hidden: true
+        redirect: '/network/service/list',
+        name: 'ServiceMain',
+        meta: {
+          title: '内部路由',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network/service/list'),
+            name: 'ServiceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/network/service/detail'),
+            name: 'ServiceDetail',
+            meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/network/service/create'),
+            name: 'ServiceCreate',
+            meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          }
+        ]
       },
       {
         path: 'ingress',
         component: () => import('@/apps/container/views/network/ingress/index'),
-        name: 'Ingress',
-        meta: { title: '入站规则' }
-      },
-      {
-        path: 'ingress/create',
-        component: () => import('@/apps/container/views/network/ingress/create'),
-        name: 'IngressCreate',
-        meta: { title: '创建入站规则', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
-        hidden: true
-      },
-      {
-        path: 'ingress/detail',
-        component: () => import('@/apps/container/views/network/ingress/detail'),
-        name: 'IngressDetail',
-        meta: { title: '入站规则详情', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
-        hidden: true
+        redirect: '/network/ingress/list',
+        name: 'IngressMain',
+        meta: {
+          title: '入站规则',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network/ingress/list'),
+            name: 'IngressList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/network/ingress/detail'),
+            name: 'IngressDetail',
+            meta: { title: '入站规则详情', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/network/ingress/create'),
+            name: 'IngressCreate',
+            meta: { title: '创建入站规则', icon: 'icon', noCache: true, activeMenu: '/network/serviingressce' },
+            hidden: true
+          }
+        ]
       },
       {
         path: 'load_balancer',
@@ -236,15 +263,28 @@ export const containerAsyncRoutes = [
       {
         path: 'policy',
         component: () => import('@/apps/container/views/network/policy/index'),
-        name: 'Policy',
-        meta: { title: '网络策略' }
-      },
-      {
-        path: 'policy/create',
-        component: () => import('@/apps/container/views/network/policy/create'),
-        name: 'PolicyCreate',
-        meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-        hidden: true
+        redirect: '/network/policy/list',
+        name: 'PolicyMain',
+        meta: {
+          title: '网络策略',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network/policy/list'),
+            name: 'PolicyList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/network/policy/create'),
+            name: 'PolicyCreate',
+            meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+            hidden: true
+          }
+        ]
       },
       {
         path: 'load_balancer_list',

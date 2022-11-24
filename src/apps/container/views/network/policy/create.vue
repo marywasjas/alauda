@@ -165,7 +165,7 @@
                     style="margin-bottom: 22px"
                     label-width="90px"
                   >
-                    <el-input v-model="item1.port" placeholder="1-65535" style="width:92%" />
+                    <el-input v-model="item1.port" placeholder="1-65535" style="width:90%" />
                     <el-tooltip content="访问端口" effect="dark" class="item" placement="top">
                       <i class="el-icon-question margin-left10 question-icon" />
                     </el-tooltip>
@@ -196,12 +196,14 @@
                     style="margin-bottom: 22px"
                     label-width="90px"
                   >
-                    <el-select v-model="item1.remote">
-                      <el-option label="部署" value="部署" />
-                    </el-select>
-                    <el-select v-model="item1.remoteNext" style="width: 76%">
-                      <el-option label="" value="" />
-                    </el-select>
+                    <div style="display:flex; width:95%">
+                      <el-select v-model="item1.remote">
+                        <el-option label="部署" value="部署" />
+                      </el-select>
+                      <el-select v-model="item1.remoteNext" style="flex-grow: 1;">
+                        <el-option label="" value="" />
+                      </el-select>
+                    </div>
                   </el-form-item>
                 </div>
                 <el-button
