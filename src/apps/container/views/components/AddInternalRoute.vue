@@ -196,7 +196,7 @@
 
 <script>
 import { nanoid } from 'nanoid'
-import { portColumnList } from './constant/index'
+import { portColumnList } from '../application/nativeApp/nativeUpdate/constant/index'
 export default {
   name: 'AddInternalRoute',
   components: {},
@@ -303,7 +303,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.hover-div:hover{
-  background:$color-primary-rgba1;
-}
 </style>

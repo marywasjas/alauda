@@ -236,7 +236,7 @@
 
 <script>
 import { nanoid } from 'nanoid'
-import { portColumnList } from './constant/index'
+import { portColumnList } from '../application/nativeApp/nativeUpdate/constant/index'
 export default {
   name: 'AddInboundRule',
   components: {},
@@ -339,9 +339,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.hover-div:hover {
-  background: $color-primary-rgba1;
-}
 .rules-div {
   background: $background-color;
   border-radius: $border-radius-l;

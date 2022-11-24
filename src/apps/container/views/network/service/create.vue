@@ -4,7 +4,7 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>创建内部路由</span>
-          <el-radio-group v-model="fillType" style="float: right;" @input="handleFilltypeChange">
+          <el-radio-group v-model="fillType" style="float: right;">
             <el-radio-button label="form">表单</el-radio-button>
             <el-radio-button label="ymal">YMAL</el-radio-button>
           </el-radio-group>
@@ -36,8 +36,8 @@
                 <i class="el-icon-question margin-left10 question-icon" />
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="外网访问" prop="outerAccess">
-              <el-switch v-model="ruleForm.outerAccess" />
+            <el-form-item label="外网访问" prop="internetAccess">
+              <el-switch v-model="ruleForm.internetAccess" />
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -51,12 +51,12 @@
               <el-radio v-model="ruleForm.targetComponents" label="计算组件">计算组件</el-radio>
               <el-radio v-model="ruleForm.targetComponents" label="标签选择器">标签选择器</el-radio>
             </el-form-item>
-            <el-form-item label="计算组件类型" prop="calculationType">
+            <el-form-item v-if="ruleForm.targetComponents=='计算组件'" label="计算组件类型" prop="calculationType">
               <el-radio v-model="ruleForm.calculationType" label="部署">部署</el-radio>
               <el-radio v-model="ruleForm.calculationType" label="守护进程集">守护进程集</el-radio>
               <el-radio v-model="ruleForm.calculationType" label="有状态副本集">有状态副本集</el-radio>
             </el-form-item>
-            <el-form-item label="计算组件名称" prop="calculationName">
+            <el-form-item v-if="ruleForm.targetComponents=='计算组件'" label="计算组件名称" prop="calculationName">
               <el-select v-model="ruleForm.calculationName" placeholder="请选择">
                 <el-option
                   v-for="item in calculationNameOption"
@@ -66,53 +66,228 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="端口" prop="ports">
-              <el-table :data="ruleForm.ports" style="width: 100%;">
-                <el-table-column prop="protocol" label="协议" min-width="6">
-                  <template slot-scope="scope">
-                    <el-select v-model="scope.row.protocol" placeholder="请选择" style="width:100%">
-                      <el-option label="TCP" value="TCP" />
-                      <el-option label="UDP" value="UDP" />
-                    </el-select>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="port" label="服务端口" min-width="6">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.port" autocomplete="off" size="small" placeholder="服务端口" />
-                  </template>
-                </el-table-column>
-                <el-table-column prop="containerPort" label="容器端口" min-width="6">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.containerPort" autocomplete="off" size="small" placeholder="容器端口" />
-                  </template>
-                </el-table-column>
-                <el-table-column prop="portName" min-width="6">
-                  <template slot="header" slot-scope="scope">
-                    <span>服务端口名称
-                      <el-tooltip :a="scope" effect="dark" content="服务端口名称提示" placement="top">
-                        <i class="el-icon-question margin-left10 question-icon" />
-                      </el-tooltip>
-                    </span>
-                  </template>
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.portName" autocomplete="off" size="small" placeholder="" />
-                  </template>
-                </el-table-column>
-                <el-table-column label="" min-width="1" style="text-algin: center">
-                  <template slot-scope="scope">
-                    <span @click="delrow(scope.$index, scope.row)">
-                      <i class="el-icon-remove-outline" />
-                    </span>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <div class="add-row" @click="addrow">
-                <div class="add-row-inner">
-                  <i class="el-icon-circle-plus-outline" />添加
-                </div>
-              </div>
+            <el-form-item v-if="ruleForm.targetComponents=='标签选择器'" label="选择器" prop="selector">
+              <table border="0" style="width:95%">
+                <thead>
+                  <tr class="headerStyle">
+                    <th>
+                      <div class="cell">键</div>
+                    </th>
+                    <th>
+                      <div class="cell">值</div>
+                    </th>
+                    <th>
+                      <div class="cell">操作</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody v-if="ruleForm.tagSelector.length == 0">
+                  <tr>
+                    <td colspan="3" class="no-data">无数据</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody v-if="ruleForm.tagSelector.length > 0">
+                  <tr
+                    v-for="(tag, index) in ruleForm.tagSelector"
+                    :key="tag.id"
+                  >
+                    <td>
+                      <el-form-item
+                        label=""
+                        :prop="'tagSelector.' + index + '.key'"
+                        :rules="{
+                          required: true,
+                          message: '键不能为空',
+                          trigger: 'blur',
+                        }"
+                      >
+                        <el-input
+                          v-model="tag.key"
+                          placeholder="键"
+                        />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item
+                        label=""
+                        :prop="'tagSelector.' + index + '.value'"
+                        :rules="{
+                          required: true,
+                          message: '值不能为空',
+                          trigger: 'blur',
+                        }"
+                      >
+                        <el-input
+                          v-model="tag.value"
+                          placeholder="值"
+                        />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        class="
+                        cursor-pointer
+                        margin-left10 margin-right10
+                      "
+                        type="text"
+                        @click="handleTagDelete(tag, index)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </el-form-item>
-            <el-form-item label="会话保持" prop="virtualIP">
+            <el-form-item label="端口" prop="port">
+              <table border="0" style="width:95%">
+                <thead>
+                  <tr class="headerStyle">
+                    <th>
+                      <div class="cell">协议</div>
+                    </th>
+                    <th>
+                      <div class="cell">
+                        <span class="requireFlag">*</span>
+                        服务端口
+                      </div>
+                    </th>
+                    <th>
+                      <div class="cell">
+                        <span class="requireFlag">*</span>
+                        容器端口
+                      </div>
+                    </th>
+                    <th>
+                      <div class="cell">
+                        服务端口名称
+                        <el-tooltip content="服务端口名称" effect="dark" class="item" placement="top">
+                          <i class="el-icon-question margin-left10 question-icon" />
+                        </el-tooltip>
+                      </div>
+                    </th>
+                    <th>
+                      <div class="cell">操作</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(domain, index) in ruleForm.domains"
+                    :key="domain.id"
+                  >
+                    <td>
+                      <el-form-item
+                        label=""
+                        :prop="'domains.' + index + '.agreement'"
+                        :rules="{
+                          required: false,
+                          message: '协议不能为空',
+                          trigger: 'blur',
+                        }"
+                      >
+                        <el-select
+                          v-model="domain.agreement"
+                          placeholder="请选择协议"
+                          style="width:100%"
+                          @change="changeTableItem(domain, index)"
+                        >
+                          <el-option
+                            v-for="com in agreementList"
+                            :key="com"
+                            :label="com"
+                            :value="com"
+                          />
+                        </el-select>
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item
+                        label=""
+                        :prop="'domains.' + index + '.serverPort'"
+                        :rules="{
+                          required: true,
+                          message: '服务端口不能为空',
+                          trigger: 'blur',
+                        }"
+                      >
+                        <el-input
+                          v-model="domain.serverPort"
+                          placeholder="服务端口"
+                          @input="changeTableItem(domain, index)"
+                        />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item
+                        label=""
+                        :prop="'domains.' + index + '.containerPort'"
+                        :rules="{
+                          required: true,
+                          message: '容器端口不能为空',
+                          trigger: 'blur',
+                        }"
+                      >
+                        <el-input
+                          v-model="domain.containerPort"
+                          placeholder="容器端口号或端口名称"
+                          @input="changeTableItem(domain, index)"
+                        />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item
+                        label=""
+                        :prop="'domains.' + index + '.servicePortName'"
+                        :rules="{
+                          required: false,
+                          message: '服务端口名称不能为空',
+                          trigger: 'blur',
+                        }"
+                      >
+                        <el-input v-model="domain.servicePortName" disabled />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        :disabled="deleteFlag"
+                        class="
+                        cursor-pointer
+                        margin-left10 margin-right10
+                      "
+                        type="text"
+                        @click="handleDelete(domain, index)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="5">
+                      <div class="cursor-pointer text-center hover-div" @click="handleAdd">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="会话保持" prop="keepSession">
               <el-switch v-model="ruleForm.keepSession" />
             </el-form-item>
           </el-form>
@@ -148,6 +323,7 @@
 
 <script>
 import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
+import { nanoid } from 'nanoid'
 
 export default {
   name: 'ServiceCreate',
@@ -158,23 +334,29 @@ export default {
       fillType: 'form',
       ruleForm: {
         virtualIP: true,
-        outerAccess: false,
+        internetAccess: false,
         targetComponents: '计算组件',
         calculationType: '部署',
         keepSession: false,
-        ports: [
-          { protocol: 'TCP', port: '', containerPort: '', portName: '' }
-        ]
+        domains: [
+          {
+            id: nanoid(),
+            agreement: 'TCP',
+            serverPort: '',
+            containerPort: '',
+            servicePortName: 'tcp'
+          }
+        ],
+        tagSelector: []
       },
+      agreementList: ['TCP', 'UDP', 'HTTP', 'HTTPS', 'HTTP2', 'gRPC'],
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
           { pattern: /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]$/, message: '以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-', trigger: 'blur' }
         ],
-        calculationName: [{ required: true, message: '请填写计算组件名称', trigger: 'blur' }],
-        ports: [{ required: true, message: '端口为必填', trigger: 'blur' }]
+        calculationName: [{ required: true, message: '请选择计算组件名称', trigger: 'blur' }]
       },
-      tempRoute: {},
       calculationNameOption: [
         {
           label: 'nginx-nginx',
@@ -182,7 +364,18 @@ export default {
         }
       ],
       currentCode: '',
-      inputCode: {}
+      inputCode: {},
+      port: '',
+      selector: ''
+    }
+  },
+  computed: {
+    deleteFlag: function() {
+      if (this.ruleForm.domains.length === 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   created() {
@@ -202,33 +395,41 @@ export default {
     cancelCreate() {
       this.$router.go(-1)
     },
-    addrow() {
-      this.ruleForm.ports.push(
-        {
-          protocol: 'TCP',
-          port: '',
-          containerPort: '',
-          portName: ''
-        })
+    changeTableItem(item, index) {
+      const oldItem = this.ruleForm.domains[index]
+      let str = `${oldItem.agreement}`
+      if (oldItem.serverPort) {
+        str += `-${oldItem.serverPort}`
+      }
+      if (oldItem.containerPort) {
+        str += `-${oldItem.containerPort}`
+      }
+      oldItem.servicePortName = str
+      this.$set(this.ruleForm.domains, [index], oldItem)
     },
-    delrow(index, row) {
-      this.$confirm('确认删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (this.ruleForm.ports.length > 1) {
-          this.ruleForm.ports.splice(index, 1)
-          // this.$message({ message: '删除成功', duration: 2000, type: 'success' });
-        } else {
-          return
-        }
-      }).catch(() => {
-        return
-      })
+    handleDelete(item, index) {
+      this.ruleForm.domains.splice(this.ruleForm.domains.indexOf(item), 1)
     },
-    handleFilltypeChange(val) {
-      console.log(val)
+    handleAdd() {
+      const obj = {
+        id: nanoid(),
+        agreement: 'TCP',
+        serverPort: '',
+        containerPort: '',
+        servicePortName: 'tcp'
+      }
+      this.ruleForm.domains.push(obj)
+    },
+    handleTagDelete(item, index) {
+      this.ruleForm.tagSelector.splice(this.ruleForm.tagSelector.indexOf(item), 1)
+    },
+    handleTagAdd() {
+      const obj = {
+        id: nanoid(),
+        key: '',
+        value: ''
+      }
+      this.ruleForm.tagSelector.push(obj)
     },
     // 编辑器失去焦点
     handleBlur(value) {
@@ -258,22 +459,12 @@ export default {
     .el-tooltip {
       margin-left: 5px;
     }
-    .el-table {
-      thead {
-        background-color: $background-color;
-      }
+    .hover-div:hover{
+      background:$color-primary-rgba1;
     }
-    .add-row {
-      color: $color-primary;
+    .no-data {
       text-align: center;
-      height: 30px;
-      line-height: 30px;
-      background-color: $background-color;
-    }
-    i {
-      font-size: 18px;
-      font-weight: 500;
-      cursor: pointer;
+      color: darkgray;
     }
   }
   .yaml-div {

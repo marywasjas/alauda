@@ -163,12 +163,12 @@ import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
 import SelectMirror from '@/apps/container/views/components/SelectMirror'
 import MonacoEditorDialog from '@/apps/container/views/components/MonacoEditorDialog'
 import { descriptionsTableData } from '../constant/index'
-import addInternalRoute from './addInternalRoute.vue'
-import addInboundRule from './addInboundRule.vue'
+import AddInternalRoute from '@/apps/container/views/components/AddInternalRoute'
+import AddInboundRule from '@/apps/container/views/components/AddInboundRule'
 
 export default {
   name: 'NativeUpdate',
-  components: { MonacoEditor, SelectMirror, MonacoEditorDialog, addInternalRoute, addInboundRule },
+  components: { MonacoEditor, SelectMirror, MonacoEditorDialog, AddInternalRoute, AddInboundRule },
   props: {},
   data() {
     return {
