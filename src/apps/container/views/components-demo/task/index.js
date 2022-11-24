@@ -28,7 +28,7 @@ export const tableData = Mock.mock({
       name: '@word(3, 7)',
       desc: '@cword(3, 7)',
       'status|1': ['running', 'stop'],
-      'statusText|1': ['运行中(3/4)', '已暂停(1/1)'],
+      'statusText|1': ['执行成功', '执行失败'],
       tasks: '@cword(3, 7)',
       date: '@date'
     }

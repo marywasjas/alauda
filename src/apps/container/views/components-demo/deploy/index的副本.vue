@@ -1,7 +1,6 @@
 <template>
   <div class="deploy-container">
-    <router-view :key="key" />
-    <DeployHeader v-if="$route.path === '/components/deploy'" :drop="drop" :table-data="tableData" />
+    <DeployHeader :drop="drop" :table-data="tableData" />
   </div>
 </template>
 
@@ -91,9 +90,7 @@ export default {
         }
       ]
     }
-  },
-  computed: {},
-  methods: {}
+  }
 }
 </script>
 

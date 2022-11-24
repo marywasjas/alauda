@@ -90,28 +90,30 @@ export const containerAsyncRoutes = [
         path: 'deploy',
         component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
         name: 'Deploy',
-        meta: { title: '部署' }
-      },
-      {
-        path: 'deploy/detail',
-        component: () => import('@/apps/container/views/components-demo/detail/index.vue'),
-        name: 'Detail',
-        meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/detail/index' },
-        hidden: true
-      },
-      {
-        path: 'deploy/yamlCreat',
-        component: () => import('@/apps/container/views/components-demo/deploy/yamlCreat.vue'),
-        name: 'YamlCreat',
-        meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '' },
-        hidden: true
-      },
-      {
-        path: 'deploy/deployUpdate',
-        component: () => import('@/apps/container/views/components-demo/deploy/DeployUpdate.vue'),
-        name: 'DeployUpdate',
-        meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '' },
-        hidden: true
+        meta: { title: '部署' },
+        children: [
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/components-demo/deploy/detail/index.vue'),
+            name: 'Detail',
+            meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '' },
+            hidden: true
+          },
+          {
+            path: 'yamlCreat',
+            component: () => import('@/apps/container/views/components-demo/deploy/yamlCreat.vue'),
+            name: 'YamlCreat',
+            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '' },
+            hidden: true
+          },
+          {
+            path: 'deployUpdate',
+            component: () => import('@/apps/container/views/components-demo/deploy/DeployUpdate.vue'),
+            name: 'DeployUpdate',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '' },
+            hidden: true
+          }
+        ]
       },
 
       {
@@ -133,10 +135,27 @@ export const containerAsyncRoutes = [
         meta: { title: '定时任务' }
       },
       {
-        path: '/job',
+        path: 'task',
         component: () => import('@/apps/container/views/components-demo/task/index.vue'),
-        name: 'Job',
-        meta: { title: '任务' }
+        name: 'TaskMain',
+        redirect: '/components/task/taskList',
+        meta: { title: '任务' },
+        children: [
+          {
+            path: 'taskList',
+            component: () => import('@/apps/container/views/components-demo/task/taskList.vue'),
+            name: 'TaskList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '' },
+            hidden: true
+          },
+          {
+            path: 'taskDetail',
+            component: () => import('@/apps/container/views/components-demo/task/taskDetail.vue'),
+            name: 'TaskDetail',
+            meta: { title: '任务详情', icon: 'icon', noCache: true, activeMenu: '' },
+            hidden: true
+          }
+        ]
       },
       {
         path: '/pod',

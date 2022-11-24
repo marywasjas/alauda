@@ -54,8 +54,17 @@
                     <template slot="prepend">最多不可用数</template>
                   </el-input>
                 </el-form-item>
+
                 <el-form-item label="">
-                  <i class="el-icon-question" />
+                  <el-col :span="5">
+                    <el-tooltip
+                      effect="dark"
+                      content="最大可超出数：Pods数量最大可以超出的值，支持输入实例数量或百分比；最多不可用数：Pods数量最多不可用的值。"
+                      placement="top"
+                    >
+                      <i class="el-icon-question margin-left10 question-icon" />
+                    </el-tooltip>
+                  </el-col>
                 </el-form-item>
               </el-row>
             </el-form>
@@ -218,10 +227,20 @@
                   <el-table-column label="主机拓扑域" prop="topologyDomain" />
                   <el-table-column label="匹配标签" prop="MatchingLabels" />
                 </el-table>
+
                 <div style="margin-top: 20px; width: 100%">
                   <el-button style="width: 100%" icon="el-icon-circle-plus-outline">添加亲和性</el-button>
                 </div>
               </div>
+
+              <el-popover
+                placement="left-start"
+                width="500"
+                trigger="hover"
+                content="基于与其他容器组的亲和或反亲和设置，调度当前计算组件中的容器组。"
+              >
+                <i slot="reference" class="el-icon-question" />
+              </el-popover>
             </div>
             <div style="display: flex">
               <span style="line-height: 70px">关闭宽限期：</span>
@@ -229,9 +248,39 @@
                 <el-input v-model="input3" style="width: 300px">
                   <template slot="append">秒</template>
                 </el-input>
+                <el-popover
+                  placement="left-start"
+                  width="500"
+                  trigger="hover"
+                  content="请求删除Pod时允许的最长等待时间。默认30秒。当设置0时强制删除。和PreStop组合使用，优雅下线应用或通知其他服务和应用。"
+                >
+                  <i slot="reference" class="el-icon-question" />
+                </el-popover>
               </span>
             </div>
-
+            <div style="display: flex">
+              <span style="line-height: 80px; padding-left: 15px">Host模式：</span>
+              <el-switch
+                v-model="value3"
+                style="margin-top: 30px"
+                active-color="#13ce66"
+                inactive-color="rgb(50, 52, 55)"
+              />
+            </div>
+            <div style="display: flex">
+              <span style="line-height: 70px; padding-left: 35px">固定IP：</span>
+              <span>
+                <el-input v-model="inputIP" style="width: 300px" placeholder="输入子网内有效IP 按回车确定" />
+                <el-popover
+                  placement="left-start"
+                  width="500"
+                  trigger="hover"
+                  content="容器组绑定的固定IP。当容器状态发生变化后，如升级、回滚、切换主机等，IP仍继续保留。"
+                >
+                  <i slot="reference" class="el-icon-question" />
+                </el-popover>
+              </span>
+            </div>
             <el-button
               class="table-button"
               round
@@ -248,6 +297,95 @@
           <div class="info-title">容器</div>
           <div style="height: 50px; background-color: #eee; margin-bottom: 30px">
             <div class="detail-center-container">kibana</div>
+          </div>
+          <div class="text item">
+            <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px">
+              <el-row><el-col :span="12">
+                <el-form-item label="名称:" prop="name">
+                  <el-input v-model="ruleForm.name" />
+                </el-form-item> </el-col></el-row>
+              <el-row><el-col :span="12">
+                        <el-form-item label="镜像地址:" prop="mirrorAddress">
+                          <el-input v-model="ruleForm.mirrorAddress" />
+                        </el-form-item>
+                      </el-col>
+                <el-col :span="12"> <el-button>选择镜像</el-button> </el-col></el-row>
+
+              <el-form-item label="资源限制:" prop="">
+                <el-col
+                  :span="5"
+                ><el-input v-model="input4" placeholder="请输入内容" class="input-with-select">
+                  <el-button slot="prepend">CPU</el-button>
+                  <el-select slot="append" v-model="select" placeholder="m">
+                    <el-option label="" value="1" />
+                  </el-select>
+                </el-input>
+                </el-col>
+                <el-col :span="5">
+                  <el-input v-model="input3" placeholder="请输入内容" class="input-with-select">
+                    <el-button slot="prepend">内存</el-button>
+                    <el-select slot="append" v-model="select" placeholder="Mi">
+                      <el-option label="" value="4" />
+                    </el-select>
+                  </el-input>
+                </el-col>
+                <el-col :span="5">
+                  <el-tooltip
+                    effect="dark"
+                    content="容器的限制值，限制容器实例运行过程中，最多可使用的节点计算资源值"
+                    placement="top"
+                  >
+                    <i class="el-icon-question margin-left10 question-icon" />
+                  </el-tooltip>
+                </el-col>
+              </el-form-item>
+
+              <el-form-item label="端口:" prop="ports">
+                <el-table
+                  :data="ruleForm.ports"
+                  style="width: 100%"
+                >e
+                  <el-table-column prop="protocol" label="协议" min-width="6">
+                    <template slot-scope="scope">
+                      <el-select v-model="scope.row.protocol" placeholder="请选择" style="width: 100%">
+                        <el-option label="TCP" value="TCP" />
+                        <el-option label="UDP" value="UDP" />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="port" label="端口" min-width="6">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.port" autocomplete="off" size="small" placeholder="服务端口" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="portName" min-width="6">
+                    <template slot="header">
+                      <span>端口名称: </span>
+                    </template>
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.portName" autocomplete="off" size="small" placeholder="" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="" min-width="1" style="text-algin: center">
+                    <template slot-scope="scope">
+                      <span @click="delrow(scope.$index, scope.row)">
+                        <i class="el-icon-remove-outline" />
+                      </span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <div class="add-row" @click="addrow">
+                  <div class="add-row-inner"><i class="el-icon-circle-plus-outline" />添加</div>
+                </div>
+              </el-form-item>
+              <el-form-item label="启动命令:">
+                <el-input v-model="startCommand" style="width: 600px" />
+              </el-form-item>
+              <el-form-item label="参数:">
+                <el-input v-model="parameter" style="width: 600px" />
+              </el-form-item>
+            </el-form>
           </div>
         </div>
       </section>
@@ -341,7 +479,30 @@ export default {
           MatchingLabels: ''
         }
       ],
-      visibleContainer: false
+      visibleContainer: false,
+      value3: false,
+      ruleForm: {
+        name: 'order',
+        mirrorAddress: 'regdev',
+        ports: [{ protocol: 'TCP', port: '', portName: '' }]
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入名称', trigger: 'blur' },
+          {
+            pattern: /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]$/,
+            message: '以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-',
+            trigger: 'blur'
+          }
+        ],
+
+        ports: [{ required: true, message: '端口为必填', trigger: 'blur' }]
+      },
+      input4: '250',
+      input5: '256',
+      select: '',
+      startCommand: 'orderer',
+      parameter: 'lll'
     }
   },
   created() {
@@ -379,6 +540,14 @@ export default {
     closeContainer() {
       this.buttonVisible = true
       this.visibleContainer = false
+    },
+    addrow() {
+      this.ruleForm.ports.push({
+        protocol: 'TCP',
+        port: '',
+        containerPort: '',
+        portName: ''
+      })
     }
   }
 }
@@ -443,6 +612,18 @@ export default {
     width: 100%;
     padding: 20px;
     background-color: #fff;
+  }
+  .add-row {
+    color: $color-primary;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    background-color: $background-color;
+  }
+  i {
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
   }
 }
 </style>

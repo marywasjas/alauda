@@ -18,15 +18,23 @@ const componentsRouter = {
       component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
       name: 'Deploy',
       meta: { title: '部署' },
-      children: []
+      children: [
+        {
+          path: 'detail',
+          component: () => import('@/apps/container/views/components-demo/deploy/detail/index.vue'),
+          name: 'Detail',
+          meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/detail/index' },
+          hidden: true
+        }
+      ]
     },
-    {
+    /* {
       path: 'deploy/detail',
       component: () => import('@/apps/container/views/components-demo/detail/index.vue'),
       name: 'Detail',
       meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/detail/index' },
       hidden: true
-    },
+    }, */
     {
       path: 'deploy/yamlCreat',
       component: () => import('@/apps/container/views/components-demo/deploy/yamlCreat.vue'),

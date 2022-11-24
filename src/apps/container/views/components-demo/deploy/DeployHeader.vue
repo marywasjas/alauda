@@ -136,7 +136,6 @@ export default {
     background: #fff;
     padding: 20px;
   }
-
   .link_name {
     color: #1890ff;
   }

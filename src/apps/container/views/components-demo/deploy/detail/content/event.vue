@@ -16,7 +16,7 @@
         <span>资源名称:</span>
         <el-select
           v-model="value"
-          style="width: 1250px; margin-right: 10px"
+          style="width: 1000px; margin-right: 10px"
           filterable
           placeholder="可输可选，按回车确定，支持添加多个资源名称"
         >
