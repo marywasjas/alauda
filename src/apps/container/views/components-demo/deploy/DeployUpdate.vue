@@ -13,381 +13,818 @@
       </div>
       <el-divider />
       <section v-if="activeTab === 'list'">
-        <div style="margin-bottom: 10px">
-          <div class="info-title">基本信息</div>
-          <el-form label-width="80px" class="formInfo">
-            <el-form-item label="名称:">
-              <span>{{ link_name }}</span>
-            </el-form-item>
-            <el-form-item label="显示名称:">
-              <el-input v-model="name" style="width: 500px" />
-            </el-form-item>
-            <el-form-item
-              label="实例数:"
-              :rules="[
-                { required: true, message: '年龄不能为空' },
-                { type: 'number', message: '年龄必须为数字值' }
-              ]"
-            >
-              <el-input-number v-model="num" :min="0" @change="handleChange" />
-            </el-form-item>
-          </el-form>
-          <el-button
-            v-if="buttonVisible"
-            round
-            size="mini"
-            style="color: #1890ff"
-            @click="openTable"
-          >更多 <i
-            class="el-icon-d-arrow-right"
-          /></el-button>
-          <div v-if="visible" class="buttonBox">
-            <el-form :inline="true">
-              <el-row>
-                <el-form-item label="更新策略:">
-                  <el-input v-model="input1" placeholder="数字或者百分比" style="min-width: 300px; margin-right: 10px">
-                    <template slot="prepend">最大可超出数</template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="">
-                  <el-input v-model="input2" placeholder="数字或者百分比" style="min-width: 300px">
-                    <template slot="prepend">最多不可用数</template>
-                  </el-input>
-                </el-form-item>
-
-                <el-form-item label="">
-                  <el-col :span="5">
-                    <el-tooltip
-                      effect="dark"
-                      content="最大可超出数：Pods数量最大可以超出的值，支持输入实例数量或百分比；最多不可用数：Pods数量最多不可用的值。"
-                      placement="top"
-                    >
-                      <i class="el-icon-question margin-left10 question-icon" />
-                    </el-tooltip>
-                  </el-col>
-                </el-form-item>
-              </el-row>
-            </el-form>
-
-            <div style="display: flex">
-              <span>标签：</span>
-              <div>
-                <el-table :data="tableDate" header-row-class-name="headerStyle" class="margin-top">
-                  <el-table-column label="键" min-width="450">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.key" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="值" min-width="450">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.value" />
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column label="" align="center" width="50" class-name="small-padding fixed-width">
-                    <template slot-scope="{ row }">
-                      <div class="operation-cell">
-                        <i class="el-icon-remove-outline" @click="remove(row.key)" />
+        <div class="info-title">基本信息</div>
+        <el-form ref="infoRuleForm" :model="infoRuleForm" label-width="100px" label-suffix=":">
+          <el-form-item label="名称" prop="name">
+            {{ infoRuleForm.name }}
+          </el-form-item>
+          <el-form-item label="显示名称">
+            <el-input style="width: 500px" />
+          </el-form-item>
+          <el-form-item label="实例数" prop="numberInstances">
+            <el-input-number v-model="infoRuleForm.numberInstances" :min="1" />
+          </el-form-item>
+          <foldable-block btn-tex="更多">
+            <div class="flex-start" style="margin-bottom: 10px">
+              <el-form-item label="更新策略" style="margin-bottom: 0">
+                <el-input v-model="infoRuleForm.limits" placeholder="数字或者百分比">
+                  <template slot="prepend">最大可超出数</template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="" label-width="0" class="margin-left10" style="margin-bottom: 0">
+                <el-input v-model="infoRuleForm.disabledNUumber" placeholder="数字或者百分比">
+                  <template slot="prepend">最多不可用数</template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="" label-width="0" class="margin-left10" style="margin-bottom: 0">
+                <el-tooltip class="item" effect="dark" placement="top">
+                  <div slot="content">
+                    最大可超出数：Pods 数量最大可以超出的值，支持输入实例数量或百分比；<br>最多不可用数：Pods
+                    数量最多不可用的值。
+                  </div>
+                  <i class="el-icon-question question-icon" />
+                </el-tooltip>
+              </el-form-item>
+            </div>
+            <el-form-item label="标签" prop="port" style="margin-bottom: 0">
+              <table border="0" style="width: 100%">
+                <thead>
+                  <tr class="headerStyle">
+                    <th>
+                      <div class="cell">键</div>
+                    </th>
+                    <th>
+                      <div class="cell">值</div>
+                    </th>
+                    <th>
+                      <div class="cell">操作</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(domain, index) in infoRuleForm.labels" :key="domain.id">
+                    <td>
+                      <el-form-item label="" :prop="'labels.' + index + '.key'">
+                        <el-input v-model="domain.key" />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item label="" :prop="'labels.' + index + '.value'">
+                        <el-input v-model="domain.value" placeholder="服务端口" />
+                      </el-form-item>
+                    </td>
+                    <td class="text-center">
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        class="cursor-pointer margin-left10 margin-right10"
+                        type="text"
+                        @click="handleDelete('labels', domain, index)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="5">
+                      <div class="cursor-pointer text-center hover-div" @click="handleAdd('labels')">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
                       </div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div style="margin-top: 20px; width: 100%">
-                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
-                </div>
-              </div>
-            </div>
-
-            <el-button
-              class="table-button"
-              round
-              type="primary"
-              size="mini"
-              @click="closeTable"
-            >收起 <i
-              class="el-icon-d-arrow-right"
-              style="transform: rotate(-90deg)"
-            /></el-button>
-          </div>
-        </div>
-        <div style="margin-bottom: 10px">
-          <div class="info-title">容器组</div>
-          <div style="display: flex; padding: 0 60px; margin-bottom: 10px">
-            <span style="line-height: 80px">存储卷：</span>
-            <div>
-              <el-table :data="tableDate2" header-row-class-name="headerStyle" class="margin-top">
-                <el-table-column label="名称" min-width="300">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.name" />
-                  </template>
-                </el-table-column>
-                <el-table-column label="类型" min-width="300">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.type" />
-                  </template>
-                </el-table-column>
-                <el-table-column label="相关配置" min-width="300">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.configuration" />
-                  </template>
-                </el-table-column>
-
-                <el-table-column label="" align="center" width="80" class-name="small-padding fixed-width">
-                  <template slot-scope="{ row }">
-                    <div class="operation-cell">
-                      <i class="el-icon-edit" style="margin-right: 10px" />
-                      <i class="el-icon-remove-outline" @click="remove(row.key)" />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+          </foldable-block>
+        </el-form>
+        <div class="info-title margin-top">容器组</div>
+        <el-form ref="infoRuleForm" :model="infoRuleForm" label-width="100px" label-suffix=":">
+          <el-form-item label="存储卷" style="margin-bottom: 0">
+            <table border="0" style="width: 100%">
+              <thead>
+                <tr class="headerStyle">
+                  <th>
+                    <div class="cell">名称</div>
+                  </th>
+                  <th>
+                    <div class="cell">类型</div>
+                  </th>
+                  <th>
+                    <div class="cell">相关配置</div>
+                  </th>
+                  <th>
+                    <div class="cell">操作</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(domain, index) in infoRuleForm.storageVolumes" :key="domain.id">
+                  <td>
+                    <el-form-item label="" :prop="'storageVolumes.' + index + '.name'">
+                      {{ domain.name }}
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item label="" :prop="'storageVolumes.' + index + '.type'">
+                      {{ domain.type }}
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item label="" :prop="'storageVolumes.' + index + '.configure'">
+                      {{ domain.configure }}
+                    </el-form-item>
+                  </td>
+                  <td class="text-center">
+                    <el-button
+                      icon="el-icon-edit"
+                      class="cursor-pointer margin-left10 margin-right10"
+                      type="text"
+                      @click="handleStorageVolumeEdit(domain, index)"
+                    />
+                    <el-button
+                      icon="el-icon-remove-outline"
+                      class="cursor-pointer margin-left10 margin-right10"
+                      type="text"
+                      @click="handleDelete('storageVolumes', domain, index)"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5">
+                    <div class="cursor-pointer text-center hover-div" @click="handleStorageVolumeAdd('storageVolumes')">
+                      <i class="el-icon-circle-plus-outline" />
+                      添加
                     </div>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <div style="margin-top: 20px; width: 100%">
-                <el-button
-                  style="width: 100%"
-                  icon="el-icon-circle-plus-outline"
-                  @click="addContainerGroup"
-                >添加</el-button>
-              </div>
-            </div>
-          </div>
-          <div style="padding: 0 50px">
-            <span style="margin-right: 6px">镜像凭据:</span>
-            <el-select v-model="value" placeholder="请选择" style="width: 500px">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </el-form-item>
+          <el-form-item label="镜像凭据">
+            <el-select v-model="infoRuleForm.mirrorCredentials" multiple collapse-tags placeholder="请选择镜像凭据">
+              <el-option
+                v-for="item in mirrorCredentialsOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
-          </div>
-          <el-button
-            v-if="buttonVisible"
-            round
-            size="mini"
-            style="color: #1890ff"
-            @click="openContainer"
-          >更多 <i
-            class="el-icon-d-arrow-right"
-          /></el-button>
-          <div v-if="visibleContainer" class="buttonBox">
-            <div style="display: flex">
-              <span>容器组标签：</span>
-              <div>
-                <el-table :data="tableDate" header-row-class-name="headerStyle" class="margin-top">
-                  <el-table-column label="键" min-width="450">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.key" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="值" min-width="450">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.value" />
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div style="margin-top: 20px; width: 100%">
-                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex; margin-bottom: 10px">
-              <span>容器组注解：</span>
-              <div>
-                <el-table :data="tableDate" header-row-class-name="headerStyle" class="margin-top">
-                  <el-table-column label="键" min-width="450">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.key" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="值" min-width="450">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.value" />
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div style="margin-top: 20px; width: 100%">
-                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex">
-              <span style="line-height: 30px">主机选择器：</span>
-              <el-select v-model="value1" multiple placeholder="请选择" style="width: 800px">
-                <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value" />
+          </el-form-item>
+          <foldable-block btn-tex="更多">
+            <el-form-item label="容器组标签" style="margin-bottom: 0">
+              <table border="0" style="width: 100%">
+                <thead>
+                  <tr class="headerStyle">
+                    <th>
+                      <div class="cell">键</div>
+                    </th>
+                    <th>
+                      <div class="cell">值</div>
+                    </th>
+                    <th>
+                      <div class="cell">操作</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(domain, index) in infoRuleForm.containerGroupLabels" :key="domain.id">
+                    <td>
+                      <el-form-item label="" :prop="'containerGroupLabels.' + index + '.key'">
+                        <el-input v-model="domain.key" />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item label="" :prop="'containerGroupLabels.' + index + '.value'">
+                        <el-input v-model="domain.value" placeholder="值" />
+                      </el-form-item>
+                    </td>
+                    <td class="text-center">
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        class="cursor-pointer margin-left10 margin-right10"
+                        type="text"
+                        @click="handleDelete('containerGroupLabels', domain, index)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="5">
+                      <div class="cursor-pointer text-center hover-div" @click="handleAdd('containerGroupLabels')">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="容器组注解" style="margin-bottom: 0">
+              <table border="0" style="width: 100%">
+                <thead>
+                  <tr class="headerStyle">
+                    <th>
+                      <div class="cell">键</div>
+                    </th>
+                    <th>
+                      <div class="cell">值</div>
+                    </th>
+                    <th>
+                      <div class="cell">操作</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(domain, index) in infoRuleForm.containerGroupNotes" :key="domain.id">
+                    <td>
+                      <el-form-item label="" :prop="'containerGroupNotes.' + index + '.key'">
+                        <el-input v-model="domain.key" />
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item label="" :prop="'containerGroupNotes.' + index + '.value'">
+                        <el-input v-model="domain.value" placeholder="值" />
+                      </el-form-item>
+                    </td>
+                    <td class="text-center">
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        class="cursor-pointer margin-left10 margin-right10"
+                        type="text"
+                        @click="handleDelete('containerGroupNotes', domain, index)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="5">
+                      <div class="cursor-pointer text-center hover-div" @click="handleAdd('containerGroupNotes')">
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </el-form-item>
+            <el-form-item label="主机选择器">
+              <el-select v-model="infoRuleForm.hostSelector" multiple collapse-tags placeholder="请选择主机选择器">
+                <el-option v-for="pro in hostSelectorOptions" :key="pro.value" :label="pro.label" :value="pro.value" />
               </el-select>
-            </div>
-            <div style="display: flex; margin-left: 30px">
-              <span>亲和性：</span>
-              <div>
-                <el-table
-                  :data="tableDate3"
-                  header-row-class-name="headerStyle"
-                  class="margin-top"
-                  style="width: 1000px"
-                >
-                  <el-table-column label="类型" prop="type" />
-                  <el-table-column label="类别" prop="categories" />
-                  <el-table-column label="权重" prop="weight" />
-                  <el-table-column label="主机拓扑域" prop="topologyDomain" />
-                  <el-table-column label="匹配标签" prop="MatchingLabels" />
-                </el-table>
-
-                <div style="margin-top: 20px; width: 100%">
-                  <el-button style="width: 100%" icon="el-icon-circle-plus-outline">添加亲和性</el-button>
-                </div>
+            </el-form-item>
+            <el-form-item label="亲和性" style="margin-bottom: 0">
+              <div class="flex-end" style="align-items: start">
+                <table border="0" style="width: 100%">
+                  <thead>
+                    <tr class="headerStyle">
+                      <th>
+                        <div class="cell">类型</div>
+                      </th>
+                      <th>
+                        <div class="cell">类别</div>
+                      </th>
+                      <th>
+                        <div class="cell">权重</div>
+                      </th>
+                      <th>
+                        <div class="cell">主机拓扑域</div>
+                      </th>
+                      <th>
+                        <div class="cell">匹配标签</div>
+                      </th>
+                      <th>
+                        <div class="cell">操作</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(domain, index) in infoRuleForm.affinity" :key="domain.id">
+                      <td>
+                        <el-form-item label="" :prop="'affinity.' + index + '.type'">
+                          {{ domain.type }}
+                        </el-form-item>
+                      </td>
+                      <td>
+                        <el-form-item label="" :prop="'affinity.' + index + '.category'">
+                          {{ domain.category }}
+                        </el-form-item>
+                      </td>
+                      <td>
+                        <el-form-item label="" :prop="'affinity.' + index + '.weight'">
+                          {{ domain.weight }}
+                        </el-form-item>
+                      </td>
+                      <td>
+                        <el-form-item label="" :prop="'affinity.' + index + '.hostTopologyDomain'">
+                          {{ domain.hostTopologyDomain }}
+                        </el-form-item>
+                      </td>
+                      <td>
+                        <el-form-item label="" :prop="'affinity.' + index + '.matchLabel'">
+                          <el-tag
+                            v-for="el in domain.matchLabel"
+                            :key="el.id"
+                            type="warning"
+                            class="margin-right10"
+                          >{{ el.key }}:{{ el.value }}</el-tag>
+                        </el-form-item>
+                      </td>
+                      <td class="text-center">
+                        <el-button
+                          icon="el-icon-edit"
+                          class="cursor-pointer margin-left10 margin-right10"
+                          type="text"
+                          @click="handleAffinityEdit(domain, index)"
+                        />
+                        <el-button
+                          icon="el-icon-remove-outline"
+                          class="cursor-pointer margin-left10 margin-right10"
+                          type="text"
+                          @click="handleDelete('affinity', domain, index)"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">
+                        <div class="cursor-pointer text-center hover-div" @click="handleAffinityAdd('affinity')">
+                          <i class="el-icon-circle-plus-outline" />
+                          添加亲和性
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <el-tooltip class="item" effect="dark" placement="top">
+                  <div slot="content">基于与其他容器组的亲和或反亲和设置，调度当前计算组件中的容器组。</div>
+                  <i class="el-icon-question question-icon margin-top10 margin-left10" />
+                </el-tooltip>
               </div>
-
-              <el-popover
-                placement="left-start"
-                width="500"
-                trigger="hover"
-                content="基于与其他容器组的亲和或反亲和设置，调度当前计算组件中的容器组。"
-              >
-                <i slot="reference" class="el-icon-question" />
-              </el-popover>
-            </div>
-            <div style="display: flex">
-              <span style="line-height: 70px">关闭宽限期：</span>
-              <span>
-                <el-input v-model="input3" style="width: 300px">
+            </el-form-item>
+            <el-form-item label="关闭宽限期">
+              <div class="flex-center">
+                <el-input v-model="infoRuleForm.closingGracePeriod" placeholder="关闭宽限期">
                   <template slot="append">秒</template>
                 </el-input>
-                <el-popover
-                  placement="left-start"
-                  width="500"
-                  trigger="hover"
-                  content="请求删除Pod时允许的最长等待时间。默认30秒。当设置0时强制删除。和PreStop组合使用，优雅下线应用或通知其他服务和应用。"
-                >
-                  <i slot="reference" class="el-icon-question" />
-                </el-popover>
-              </span>
-            </div>
-            <div style="display: flex">
-              <span style="line-height: 80px; padding-left: 15px">Host模式：</span>
-              <el-switch
-                v-model="value3"
-                style="margin-top: 30px"
-                active-color="#13ce66"
-                inactive-color="rgb(50, 52, 55)"
-              />
-            </div>
-            <div style="display: flex">
-              <span style="line-height: 70px; padding-left: 35px">固定IP：</span>
-              <span>
-                <el-input v-model="inputIP" style="width: 300px" placeholder="输入子网内有效IP 按回车确定" />
-                <el-popover
-                  placement="left-start"
-                  width="500"
-                  trigger="hover"
-                  content="容器组绑定的固定IP。当容器状态发生变化后，如升级、回滚、切换主机等，IP仍继续保留。"
-                >
-                  <i slot="reference" class="el-icon-question" />
-                </el-popover>
-              </span>
-            </div>
-            <el-button
-              class="table-button"
-              round
-              type="primary"
-              size="mini"
-              @click="closeContainer"
-            >收起 <i
-              class="el-icon-d-arrow-right"
-              style="transform: rotate(-90deg)"
-            /></el-button>
-          </div>
-        </div>
-        <div>
-          <div class="info-title">容器</div>
-          <div style="height: 50px; background-color: #eee; margin-bottom: 30px">
-            <div class="detail-center-container">kibana</div>
-          </div>
-          <div class="text item">
-            <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px">
-              <el-row><el-col :span="12">
-                <el-form-item label="名称:" prop="name">
-                  <el-input v-model="ruleForm.name" />
-                </el-form-item> </el-col></el-row>
-              <el-row><el-col :span="12">
-                        <el-form-item label="镜像地址:" prop="mirrorAddress">
-                          <el-input v-model="ruleForm.mirrorAddress" />
-                        </el-form-item>
-                      </el-col>
-                <el-col :span="12"> <el-button>选择镜像</el-button> </el-col></el-row>
-
-              <el-form-item label="资源限制:" prop="">
-                <el-col
-                  :span="5"
-                ><el-input v-model="input4" placeholder="请输入内容" class="input-with-select">
-                  <el-button slot="prepend">CPU</el-button>
-                  <el-select slot="append" v-model="select" placeholder="m">
-                    <el-option label="" value="1" />
-                  </el-select>
-                </el-input>
-                </el-col>
-                <el-col :span="5">
-                  <el-input v-model="input3" placeholder="请输入内容" class="input-with-select">
-                    <el-button slot="prepend">内存</el-button>
-                    <el-select slot="append" v-model="select" placeholder="Mi">
-                      <el-option label="" value="4" />
-                    </el-select>
-                  </el-input>
-                </el-col>
-                <el-col :span="5">
-                  <el-tooltip
-                    effect="dark"
-                    content="容器的限制值，限制容器实例运行过程中，最多可使用的节点计算资源值"
-                    placement="top"
-                  >
-                    <i class="el-icon-question margin-left10 question-icon" />
-                  </el-tooltip>
-                </el-col>
-              </el-form-item>
-
-              <el-form-item label="端口:" prop="ports">
-                <el-table
-                  :data="ruleForm.ports"
+                <el-tooltip class="item" effect="dark" placement="top">
+                  <div slot="content">
+                    请求删除 Pod 时允许的最长等待时间。默认30秒。当设置0时强制删除。和 PreStop
+                    组合使用，优雅下线应用或通知其他服务和应用。
+                  </div>
+                  <i class="el-icon-question question-icon margin-left10" />
+                </el-tooltip>
+              </div>
+            </el-form-item>
+            <el-form-item label="Host模式">
+              <el-switch v-model="infoRuleForm.isHost" />
+            </el-form-item>
+            <el-form-item v-if="!infoRuleForm.isHost" label="固定IP">
+              <div class="flex-center">
+                <el-select
+                  v-model="infoRuleForm.fixedIp"
+                  filterable
+                  multiple
+                  collapse-tags
+                  placeholder="输入子网内有效IP按回车确定"
                   style="width: 100%"
-                >e
-                  <el-table-column prop="protocol" label="协议" min-width="6">
-                    <template slot-scope="scope">
-                      <el-select v-model="scope.row.protocol" placeholder="请选择" style="width: 100%">
-                        <el-option label="TCP" value="TCP" />
-                        <el-option label="UDP" value="UDP" />
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="port" label="端口" min-width="6">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.port" autocomplete="off" size="small" placeholder="服务端口" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="portName" min-width="6">
-                    <template slot="header">
-                      <span>端口名称: </span>
-                    </template>
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.portName" autocomplete="off" size="small" placeholder="" />
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column label="" min-width="1" style="text-algin: center">
-                    <template slot-scope="scope">
-                      <span @click="delrow(scope.$index, scope.row)">
-                        <i class="el-icon-remove-outline" />
-                      </span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div class="add-row" @click="addrow">
-                  <div class="add-row-inner"><i class="el-icon-circle-plus-outline" />添加</div>
+                >
+                  <el-option v-for="item in fixedIpOptions" :key="item" :label="item" :value="item" />
+                </el-select>
+                <el-tooltip class="item" effect="dark" placement="top">
+                  <div slot="content">
+                    容器组绑定的固定 IP。当容器状态发生变化后，如升级、回滚、切换主机等，IP 仍继续保留。
+                  </div>
+                  <i class="el-icon-question question-icon margin-left10" />
+                </el-tooltip>
+              </div>
+            </el-form-item>
+          </foldable-block>
+        </el-form>
+        <div class="info-title margin-top">容器</div>
+        <div class="flex-end">
+          <el-dropdown split-button type="primary" trigger="click" @click="handleAddContainer">
+            添加容器
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="handleAddContainer">添加初始化容器</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+        <el-tabs v-model="currentTabsValue" type="card" class="margin-top10">
+          <el-tab-pane v-for="item in containerTabs" :key="item.name" :label="item.title" :name="item.name">
+            <el-form ref="infoRuleForm" :model="infoRuleForm" label-width="130px" label-suffix=":">
+              <el-form-item
+                label="名称"
+                prop="containerName"
+                :rules="{
+                  required: true,
+                  message: '名称不能为空',
+                  trigger: 'blur'
+                }"
+              >
+                <el-input v-model="infoRuleForm.containerName" />
+              </el-form-item>
+              <el-form-item
+                label="镜像地址"
+                prop="mirrorAddress"
+                :rules="{
+                  required: true,
+                  message: '请选择镜像地址',
+                  trigger: 'change'
+                }"
+              >
+                <div class="flex-center">
+                  <el-input v-model="infoRuleForm.mirrorAddress" disabled />
+                  <el-button type="info" class="margin-left10" @click="handleAddContainer">选择镜像</el-button>
                 </div>
               </el-form-item>
-              <el-form-item label="启动命令:">
-                <el-input v-model="startCommand" style="width: 600px" />
+              <div class="flex-center" style="justify-content: start">
+                <el-form-item
+                  label="资源限制"
+                  prop="cpu"
+                  :rules="{
+                    required: true,
+                    message: '请输入CPU限制',
+                    trigger: 'blur'
+                  }"
+                >
+                  <el-input v-model="infoRuleForm.cpu" placeholder="请输入CPU限制">
+                    <template slot="prepend">CPU</template>
+                    <el-select slot="append" v-model="infoRuleForm.cpuCompony" placeholder="请选择" style="width: 80px">
+                      <el-option label="核" value="核" />
+                      <el-option label="m" value="m" />
+                    </el-select>
+                  </el-input>
+                </el-form-item>
+                <el-form-item
+                  label=""
+                  prop="memory"
+                  label-width="10px"
+                  :rules="{
+                    required: true,
+                    message: '请输入内存限制',
+                    trigger: 'blur'
+                  }"
+                >
+                  <el-input v-model="infoRuleForm.memory" placeholder="请输入内存限制">
+                    <template slot="prepend">内存</template>
+                    <el-select
+                      slot="append"
+                      v-model="infoRuleForm.memoryCompony"
+                      placeholder="请选择"
+                      style="width: 80px"
+                    >
+                      <el-option label="Mi" value="Mi" />
+                      <el-option label="Gi" value="Gi" />
+                    </el-select>
+                  </el-input>
+                </el-form-item>
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="容器的限制值，限制容器实例运行过程中， 最多可使用的节点计算资源值。"
+                  placement="top"
+                >
+                  <i class="el-icon-question question-icon margin-left10" style="margin-bottom: 22px" />
+                </el-tooltip>
+              </div>
+              <el-form-item label="端口" prop="port">
+                <table border="0" style="width: 100%">
+                  <thead>
+                    <tr class="headerStyle">
+                      <th>
+                        <div class="cell">
+                          <span class="requireFlag">*</span>
+                          协议
+                        </div>
+                      </th>
+                      <th>
+                        <div class="cell">
+                          <span class="requireFlag">*</span>
+                          端口
+                        </div>
+                      </th>
+                      <th>
+                        <div class="cell">端口名称</div>
+                      </th>
+                      <th>
+                        <div class="cell">操作</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(domain, index) in infoRuleForm.containerPorts" :key="domain.id">
+                      <td>
+                        <el-form-item
+                          label=""
+                          :prop="'containerPorts.' + index + '.agreement'"
+                          :rules="{
+                            required: true,
+                            message: '协议不能为空',
+                            trigger: 'blur'
+                          }"
+                        >
+                          <el-select v-model="domain.agreement" placeholder="请选择协议" style="width: 100%">
+                            <el-option v-for="com in agreementList" :key="com" :label="com" :value="com" />
+                          </el-select>
+                        </el-form-item>
+                      </td>
+                      <td>
+                        <el-form-item
+                          label=""
+                          :prop="'containerPorts.' + index + '.serverPort'"
+                          :rules="{
+                            required: true,
+                            message: '端口不能为空',
+                            trigger: 'blur'
+                          }"
+                        >
+                          <el-input v-model="domain.serverPort" placeholder="端口" />
+                        </el-form-item>
+                      </td>
+                      <td>
+                        <el-form-item
+                          label=""
+                          :prop="'containerPorts.' + index + '.servicePortName'"
+                          :rules="{
+                            required: false,
+                            message: '端口名称不能为空',
+                            trigger: 'blur'
+                          }"
+                        >
+                          <el-input v-model="domain.servicePortName" />
+                        </el-form-item>
+                      </td>
+                      <td class="text-center">
+                        <el-button
+                          icon="el-icon-remove-outline"
+                          class="cursor-pointer margin-left10 margin-right10"
+                          type="text"
+                          @click="handleDelete('containerPorts', domain, index)"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">
+                        <div class="cursor-pointer text-center hover-div" @click="handleAdd('containerPorts')">
+                          <i class="el-icon-circle-plus-outline" />
+                          添加
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </el-form-item>
-              <el-form-item label="参数:">
-                <el-input v-model="parameter" style="width: 600px" />
+              <el-form-item label="启动命令" prop="startCommand">
+                <el-input v-model="infoRuleForm.startCommand" placeholder="启动命令" />
               </el-form-item>
+              <el-form-item label="参数" prop="parameter">
+                <el-input v-model="infoRuleForm.parameter" placeholder="参数" />
+              </el-form-item>
+              <foldable-block btn-tex="更多">
+                <el-form-item label="环境变量" style="margin-bottom: 0">
+                  <table border="0" style="width: 100%">
+                    <thead>
+                      <tr class="headerStyle">
+                        <th>
+                          <div class="cell">键</div>
+                        </th>
+                        <th>
+                          <div class="cell">值</div>
+                        </th>
+                        <th>
+                          <div class="cell">操作</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(domain, index) in infoRuleForm.environmentVariables" :key="domain.id">
+                        <td>
+                          <el-form-item label="" :prop="'environmentVariables.' + index + '.key'">
+                            <el-input v-model="domain.key" placeholder="键" />
+                          </el-form-item>
+                        </td>
+                        <td>
+                          <el-form-item label="" :prop="'environmentVariables.' + index + '.value'">
+                            <el-input v-model="domain.value" placeholder="值" />
+                          </el-form-item>
+                        </td>
+                        <td class="text-center">
+                          <el-button
+                            icon="el-icon-remove-outline"
+                            class="cursor-pointer margin-left10 margin-right10"
+                            type="text"
+                            @click="handleDelete('environmentVariables', domain, index)"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="5">
+                          <div class="cursor-pointer text-center hover-div" @click="handleAdd('environmentVariables')">
+                            <i class="el-icon-circle-plus-outline" />
+                            添加
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </el-form-item>
+                <el-form-item label="配置引用">
+                  <el-select
+                    v-model="infoRuleForm.configureReference"
+                    placeholder="请选择配置引用"
+                    multiple
+                    collapse-tags
+                  >
+                    <el-option-group v-for="group in configureReferenceOptions" :key="group.label" :label="group.label">
+                      <el-option v-for="el in group.options" :key="el.value" :label="el.label" :value="el.value" />
+                    </el-option-group>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="健康检查">
+                  <div>
+                    <div class="empty-div">无存活性健康检查</div>
+                    <div
+                      class="cursor-pointer text-center hover-div"
+                      @click="handleContainerPortAdd('environmentVariables')"
+                    >
+                      <i class="el-icon-circle-plus-outline" />
+                      添加
+                    </div>
+                  </div>
+                  <div>
+                    <div class="empty-div">无可用性健康检查</div>
+                    <div
+                      class="cursor-pointer text-center hover-div"
+                      @click="handleContainerPortAdd('environmentVariables')"
+                    >
+                      <i class="el-icon-circle-plus-outline" />
+                      添加
+                    </div>
+                  </div>
+                </el-form-item>
+                <el-form-item label="存储卷挂载" style="margin-bottom: 0">
+                  <table border="0" style="width: 100%">
+                    <thead>
+                      <tr class="headerStyle">
+                        <th>
+                          <div class="cell">
+                            <span class="requireFlag">*</span>
+                            存储卷名称
+                          </div>
+                        </th>
+                        <th>
+                          <div class="cell">子路径</div>
+                        </th>
+                        <th>
+                          <div class="cell">
+                            <span class="requireFlag">*</span>
+                            挂载路径
+                          </div>
+                        </th>
+                        <th>
+                          <div class="cell">只读</div>
+                        </th>
+                        <th>
+                          <div class="cell">操作</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(domain, index) in infoRuleForm.storageVolumeMounts" :key="domain.id">
+                        <td>
+                          <el-form-item label="" :prop="'storageVolumeMounts.' + index + '.name'">
+                            <el-input v-model="domain.name" placeholder="存储卷名称" />
+                          </el-form-item>
+                        </td>
+                        <td>
+                          <el-form-item label="" :prop="'storageVolumeMounts.' + index + '.path'">
+                            <el-input v-model="domain.path" placeholder="子路径" />
+                          </el-form-item>
+                        </td>
+                        <td>
+                          <el-form-item label="" :prop="'storageVolumeMounts.' + index + '.mountPath'">
+                            <el-input v-model="domain.mountPath" placeholder="挂载路径" />
+                          </el-form-item>
+                        </td>
+                        <td>
+                          <el-form-item
+                            label=""
+                            :prop="'storageVolumeMounts.' + index + '.readeOnly'"
+                            class="text-center"
+                          >
+                            <el-switch v-model="domain.readeOnly" />
+                          </el-form-item>
+                        </td>
+                        <td class="text-center">
+                          <el-button
+                            icon="el-icon-remove-outline"
+                            class="cursor-pointer margin-left10 margin-right10"
+                            type="text"
+                            @click="handleDelete('storageVolumeMounts', domain, index)"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="5">
+                          <div class="cursor-pointer text-center hover-div" @click="handleAdd('storageVolumeMounts')">
+                            <i class="el-icon-circle-plus-outline" />
+                            添加
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </el-form-item>
+                <el-form-item label="日志文件">
+                  <div v-if="infoRuleForm.logFiles.length > 0">
+                    <div v-for="(domain, index) in infoRuleForm.logFiles" :key="domain.id" class="flex-center">
+                      <el-form-item
+                        label=""
+                        label-width="0"
+                        :prop="'logFiles.' + index + '.value'"
+                        :rules="{
+                          required: true,
+                          message: '必填项不能为空',
+                          trigger: 'blur'
+                        }"
+                        style="margin-bottom: 22px; flex: 1"
+                      >
+                        <el-input v-model="domain.value" />
+                      </el-form-item>
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        class="cursor-pointer margin-left10"
+                        type="text"
+                        style="margin-bottom: 22px"
+                        @click="handleDelete('logFiles', domain, index)"
+                      />
+                    </div>
+                  </div>
+                  <div v-else class="empty-div">无日志文件</div>
+                  <div class="cursor-pointer text-center hover-div" @click="handleAdd('logFiles')">
+                    <i class="el-icon-circle-plus-outline" />
+                    添加
+                  </div>
+                </el-form-item>
+                <el-form-item label="排除日志文件">
+                  <div v-if="infoRuleForm.excludeLogFiles.length > 0">
+                    <div v-for="(domain, index) in infoRuleForm.excludeLogFiles" :key="domain.id" class="flex-center">
+                      <el-form-item
+                        label=""
+                        label-width="0"
+                        :prop="'excludeLogFiles.' + index + '.value'"
+                        :rules="{
+                          required: true,
+                          message: '必填项不能为空',
+                          trigger: 'blur'
+                        }"
+                        style="margin-bottom: 22px; flex: 1"
+                      >
+                        <el-input v-model="domain.value" />
+                      </el-form-item>
+                      <el-button
+                        icon="el-icon-remove-outline"
+                        class="cursor-pointer margin-left10"
+                        type="text"
+                        style="margin-bottom: 22px"
+                        @click="handleDelete('excludeLogFiles', domain, index)"
+                      />
+                    </div>
+                  </div>
+                  <div v-else class="empty-div">无排除日志文件</div>
+                  <div class="cursor-pointer text-center hover-div" @click="handleAdd('excludeLogFiles')">
+                    <i class="el-icon-circle-plus-outline" />
+                    添加
+                  </div>
+                </el-form-item>
+                <el-form-item label="停止前执行">
+                  <div class="flex-center">
+                    <el-input v-model="infoRuleForm.executeBeforeStopping" placeholder="停止前执行" />
+                    <el-tooltip class="item" effect="dark" placement="top">
+                      <div slot="content">停止容器前执行必要的清除操作，优雅下线应用或通知其他服务和应用。</div>
+                      <i class="el-icon-question question-icon margin-left10" />
+                    </el-tooltip>
+                  </div>
+                </el-form-item>
+              </foldable-block>
             </el-form>
-          </div>
-        </div>
+          </el-tab-pane>
+        </el-tabs>
+        <!-- 更新 添加存储卷 -->
+        <storage-volume-dialog
+          :storage-volumes-form-visible="storageVolumesFormVisible"
+          :storage-volumes-form-type="storageVolumesFormType"
+          :current-storage-volume="currentStorageVolume"
+          @closeStorageVolumesFormDialog="closeStorageVolumesFormDialog"
+          @submitStorageVolumesForm="submitStorageVolumesForm"
+        />
+        <!-- 添加亲和性 -->
+        <affinity-form-dialog
+          :affinity-form-visible="affinityFormVisible"
+          :affinity-form-type="affinityFormType"
+          :current-affinity-form="currentAffinityForm"
+          @closeAffinityFormDialog="closeAffinityFormDialog"
+          @submitAffinityForm="submitAffinityForm"
+        />
+        <!-- 添加健康检查 -->
+        <HealthFormDialog :health-form-visible.sync="healthFormVisible" />
+        <!-- 选择镜像 -->
+        <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" />
       </section>
       <section v-if="activeTab === 'yaml'">
         <div class="yaml-div">
@@ -410,144 +847,305 @@
 
 <script>
 import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
+import { nanoid } from 'nanoid'
+import FoldableBlock from '@/apps/container/views/components/FoldableBlock'
+import StorageVolumeDialog from '@/apps/container/views/components/ComputerComponentsForm/StorageVolumeDialog.vue'
+import AffinityFormDialog from '@/apps/container/views/components/ComputerComponentsForm/AffinityFormDialog.vue'
+import HealthFormDialog from '@/apps/container/views/components/ComputerComponentsForm/healthFormDialog.vue'
+import SelectMirror from '@/apps/container/views/components/SelectMirror'
+
 export default {
   name: 'DeployUpdate',
-  components: { MonacoEditor },
+  components: { SelectMirror, StorageVolumeDialog, AffinityFormDialog, MonacoEditor, FoldableBlock, HealthFormDialog },
   data() {
     return {
       link_name: '',
       activeTab: 'list',
       name: '',
-      num: 0,
-      input1: 1,
-      input2: 2,
-      input3: 3,
-      currentCode: '',
-      inputCode: {},
-      language: 'yaml',
-      visible: false,
-      buttonVisible: true,
-      options: [
-        {
-          value: '',
-          label: ''
-        }
-      ],
-      value: '',
-      obj: {
-        key: '',
-        value: ''
-      },
-      // 基本信息
-      tableDate: [
-        {
-          key: 'iiooo1',
-          value: 'looksLikeNumbers'
-        },
-        {
-          key: 'iiooo',
-          value: 'looksLikeNumbers'
-        }
-      ],
-      tableDate2: [
-        {
-          name: 'iiooo1',
-          type: '存储卷声明',
-          configuration: 'sjdksjs'
-        },
-        {
-          name: 'iiooo',
-          type: '存储卷声明',
-          configuration: 'sjdksjs'
-        }
-      ],
-      // 下拉框
-      options1: [
-        {
-          value: '',
-          label: ''
-        }
-      ],
-      value1: [],
-      // 亲和性
-      tableDate3: [
-        {
-          type: 'iiooo1',
-          categories: '存储卷声明',
-          weight: 'sjdksjs',
-          topologyDomain: '',
-          MatchingLabels: ''
-        }
-      ],
-      visibleContainer: false,
-      value3: false,
-      ruleForm: {
-        name: 'order',
-        mirrorAddress: 'regdev',
-        ports: [{ protocol: 'TCP', port: '', portName: '' }]
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
+      infoRuleForm: {
+        name: '',
+        numberInstances: 1,
+        labels: [
           {
-            pattern: /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]$/,
-            message: '以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-',
-            trigger: 'blur'
+            id: nanoid(),
+            key: '',
+            value: ''
           }
         ],
-
-        ports: [{ required: true, message: '端口为必填', trigger: 'blur' }]
+        disabledNUumber: 1,
+        limits: 1,
+        storageVolumes: [],
+        mirrorCredentials: [],
+        containerGroupLabels: [
+          {
+            id: nanoid(),
+            key: '',
+            value: ''
+          }
+        ],
+        containerGroupNotes: [
+          {
+            id: nanoid(),
+            type: '',
+            value: ''
+          }
+        ],
+        hostSelector: [],
+        affinity: [],
+        closingGracePeriod: 30,
+        isHost: false,
+        fixedIp: [],
+        containerName: '',
+        mirrorAddress: '',
+        cpu: '',
+        cpuCompony: 'm',
+        memory: '',
+        memoryCompony: 'Mi',
+        containerPorts: [
+          {
+            id: nanoid(),
+            agreement: 'TCP',
+            serverPort: '',
+            servicePortName: 'tcp'
+          }
+        ],
+        startCommand: '',
+        parameter: '',
+        environmentVariables: [
+          {
+            id: nanoid(),
+            key: '',
+            value: ''
+          }
+        ],
+        configureReference: [],
+        storageVolumeMounts: [
+          {
+            id: nanoid(),
+            name: '',
+            path: '',
+            mountPath: '',
+            readeOnly: false
+          }
+        ],
+        executeBeforeStopping: '',
+        logFiles: [],
+        excludeLogFiles: []
       },
-      input4: '250',
-      input5: '256',
-      select: '',
-      startCommand: 'orderer',
-      parameter: 'lll'
+      // 镜像凭据
+      mirrorCredentialsOptions: [
+        {
+          label: 'test',
+          value: 'test'
+        },
+        {
+          label: 'test1',
+          value: 'test1'
+        }
+      ],
+      // 选择镜像 弹窗数据
+      formVisible: false,
+      // 更新 增加 存储卷
+      storageVolumesFormVisible: false,
+      storageVolumesFormType: 'add',
+      currentStorageVolume: {},
+      // 主机选择器
+      hostSelectorOptions: [
+        {
+          label: 'test1',
+          value: 'test1'
+        },
+        {
+          label: 'test2',
+          value: 'test2'
+        }
+      ],
+      affinityFormVisible: false,
+      healthFormVisible: false,
+      affinityFormType: 'add',
+      currentAffinityForm: {},
+      fixedIpOptions: ['20.3.4.5', '22.2.3.4', '30.30.34.4'],
+      // 动态容器 数据
+      currentTabsValue: '',
+      containerTabs: [
+        {
+          title: '',
+          name: ''
+        }
+      ],
+      agreementList: ['TCP', 'UDP', 'HTTP', 'HTTPS', 'HTTP2', 'gRPC'],
+      // 配置引用
+      configureReferenceOptions: [
+        {
+          label: '配置字段',
+          options: [
+            {
+              value: 'harbor.kauto',
+              label: 'harbor.kauto'
+            }
+          ]
+        },
+        {
+          label: '保密字典（用户名/密码）',
+          options: [
+            {
+              value: 'kube-root-ca.crt',
+              label: 'kube-root-ca.crt'
+            }
+          ]
+        }
+      ]
     }
   },
   created() {
     this.link_name = this.$route.query.link_name
+    this.infoRuleForm.name = this.link_name
+    this.currentTabsValue = this.link_name
+    this.containerTabs[0].name = this.link_name
+    this.containerTabs[0].title = this.link_name
   },
   methods: {
-    // 编辑器失去焦点
-    handleBlur(value) {
-      this.inputCode = value
+    // 标签 删除
+    handleDelete(filed, item, index) {
+      this.infoRuleForm[filed].splice(index, 1)
     },
-    handleChange(value) {
-      console.log(value)
+    // 标签 增加
+    handleAdd(filed) {
+      let obj = {
+        id: nanoid(),
+        key: '',
+        value: ''
+      }
+      if (filed === 'storageVolumes') {
+        obj = {
+          id: nanoid(),
+          name: '',
+          type: '',
+          configure: ''
+        }
+      } else if (filed === 'containerPorts') {
+        obj = {
+          id: nanoid(),
+          agreement: 'TCP',
+          serverPort: '',
+          servicePortName: 'tcp'
+        }
+      } else if (filed === 'storageVolumeMounts') {
+        obj = {
+          id: nanoid(),
+          name: '',
+          path: '',
+          mountPath: '',
+          readeOnly: false
+        }
+      }
+      this.infoRuleForm[filed].push(obj)
     },
-    openTable() {
-      this.visible = true
-      this.buttonVisible = false
+    // 容器组 存储卷 编辑
+    handleStorageVolumeEdit(item, index) {
+      this.currentStorageVolume = {
+        ...item,
+        persistentVolume: item.configure,
+        configureDictionary: item.configure,
+        confidentialDictionary: item.configure,
+        hostPath: item.configure
+      }
+      this.storageVolumesFormVisible = true
+      this.storageVolumesFormType = 'edit'
     },
-    closeTable() {
-      this.visible = false
-      this.buttonVisible = true
+    // 容器组 存储卷 添加
+    handleStorageVolumeAdd() {
+      this.currentStorageVolume = {
+        name: 'text-hostname',
+        type: '持久卷声明',
+        persistentVolume: '',
+        configureDictionary: '',
+        confidentialDictionary: '',
+        hostPath: '',
+        configure: ''
+      }
+      this.storageVolumesFormVisible = true
+      this.storageVolumesFormType = 'add'
     },
-    remove(key) {
-      console.log(key)
+    // 容器组 存储卷 关闭弹窗
+    closeStorageVolumesFormDialog() {
+      this.storageVolumesFormVisible = false
     },
-    add() {
-      this.tableDate.push(JSON.parse(JSON.stringify(this.obj)))
+    // 容器组 存储卷 弹窗确定按钮
+    submitStorageVolumesForm(form) {
+      const obj = {
+        id: form.id ? form.id : nanoid(),
+        ...form,
+        configure: form.persistentVolume || form.configureDictionary || form.confidentialDictionary || form.hostPath
+      }
+      if (this.storageVolumesFormType === 'edit') {
+        const newData = JSON.parse(JSON.stringify(this.infoRuleForm.storageVolumes))
+        newData.map(el => {
+          if (el.id === form.id) {
+            el.name = form.name
+            el.type = form.type
+            el.configure =
+              form.persistentVolume || form.configureDictionary || form.confidentialDictionary || form.hostPath
+          }
+        })
+        this.$set(this.infoRuleForm, 'storageVolumes', newData)
+        console.log(this.infoRuleForm.storageVolumes)
+      } else {
+        this.infoRuleForm.storageVolumes.push(obj)
+      }
+      this.storageVolumesFormVisible = false
     },
-    addContainerGroup() {
-      this.tableDate2.push(JSON.parse(JSON.stringify(this.obj)))
+    // 添加亲和性
+    handleAffinityAdd() {
+      this.affinityFormType = 'add'
+      this.currentAffinityForm = {
+        type: 'pod亲和',
+        way: '基本',
+        category: 'Required',
+        hostTopologyDomain: 'hostname'
+      }
+      this.affinityFormVisible = true
     },
-    openContainer() {
-      this.buttonVisible = false
-      this.visibleContainer = true
+    // 编辑亲和性
+    handleAffinityEdit(item, index) {
+      this.affinityFormType = 'edit'
+      this.currentAffinityForm = { ...item }
+      this.affinityFormVisible = true
     },
-    closeContainer() {
-      this.buttonVisible = true
-      this.visibleContainer = false
+    // 容器组 亲和性 关闭弹窗
+    closeAffinityFormDialog() {
+      this.affinityFormVisible = false
     },
-    addrow() {
-      this.ruleForm.ports.push({
-        protocol: 'TCP',
-        port: '',
-        containerPort: '',
-        portName: ''
-      })
+    // 容器组 亲和性 弹窗确定按钮
+    submitAffinityForm(form) {
+      const obj = {
+        id: nanoid(),
+        ...form
+      }
+      if (this.affinityFormType === 'edit') {
+        const newData = JSON.parse(JSON.stringify(this.infoRuleForm.affinity))
+        newData.map(el => {
+          if (el.id === this.currentAffinityForm.id) {
+            el.hostTopologyDomain = form.hostTopologyDomain
+            el.matchLabel = form.matchLabel
+          }
+        })
+        this.$set(this.infoRuleForm, 'affinity', newData)
+      } else {
+        this.infoRuleForm.affinity.push(obj)
+      }
+      this.affinityFormVisible = false
+    },
+
+    // 添加容器
+    handleAddContainer() {
+      this.formVisible = true
+    },
+    closeFormDialog() {
+      this.formVisible = false
+    },
+    handleContainerPortAdd() {
+      this.healthFormVisible = true
     }
   }
 }

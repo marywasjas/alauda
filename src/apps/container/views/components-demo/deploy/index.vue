@@ -92,7 +92,12 @@ export default {
       ]
     }
   },
-  computed: {},
+  computed: {
+    key() {
+      return this.$route.path
+    }
+  },
+
   methods: {}
 }
 </script>
