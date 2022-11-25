@@ -229,7 +229,7 @@ import EventDialog from './components/EventDialog/index.vue'
 // 应用 圆角饼图组件
 import RadiusPieChart from './components/RadiusPieChart.vue'
 // 计算组件
-import TransverseBar from './components/TransverseBar.vue'
+import TransverseBar from '@/apps/container/views/components/TransverseBar'
 // 容器组+资源使用率
 import LineChart from '@/apps/container/views/components/LineChart'
 import {

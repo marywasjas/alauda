@@ -34,7 +34,7 @@ import Topology from './components/Topology.vue'
 import Yaml from './components/Yaml.vue'
 import VersionSnapshot from './components/VersionSnapshot/VersionSnapshot.vue'
 import Journal from './components/Journal.vue'
-import Event from './components/Event.vue'
+import Event from '@/apps/container/views/components/Event'
 import Monitor from './components/Monitor.vue'
 import GiveAlarm from './components/GiveAlarm/GiveAlarm.vue'
 
