@@ -928,23 +928,217 @@
                   </el-form-item>
                   <el-form-item label="健康检查">
                     <div>
-                      <div class="empty-div">无存活性健康检查</div>
-                      <div
-                        class="cursor-pointer text-center hover-div"
-                        @click=" handleContainerPortAdd('environmentVariables')"
-                      >
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
+                      <div v-if="infoRuleForm.viabilityHealthExamination.length>0">
+                        <el-descriptions
+                          v-for="(descriptions,index) in infoRuleForm.viabilityHealthExamination"
+                          :key="descriptions.id"
+                          class="margin-top10 descriptions-div"
+                          title=""
+                          :column="1"
+                        >
+                          <template slot="extra">
+                            <i class="el-icon-edit cursor-pointer margin-right10" @click="handleHealthExaminationUpdate('viabilityHealthExamination',descriptions)" />
+                            <i class="el-icon-remove-outline cursor-pointer" @click="handleDelete('viabilityHealthExamination',descriptions,index)" />
+                          </template>
+                          <el-descriptions-item
+                            :key="index"
+                            label="存活性健康检查"
+                            class="flex-center"
+                          >
+                            <el-descriptions
+                              title=""
+                              :column="2"
+                            >
+                              <el-descriptions-item
+                                :key="index"
+                                label="协议类型"
+                              >
+                                {{ descriptions.type }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="启动时间"
+                              >
+                                {{ descriptions.startTime }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="间隔"
+                              >
+                                {{ descriptions.interval }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="超时时间"
+                              >
+                                {{ descriptions.timeout }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="正常阈值"
+                              >
+                                {{ descriptions.normalThreshold }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="不正常阈值"
+                              >
+                                {{ descriptions.noNormalThreshold }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.agreement"
+                                :key="index"
+                                label="协议"
+                              >
+                                {{ descriptions.agreement }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="端口"
+                              >
+                                {{ descriptions.port }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.path"
+                                :key="index"
+                                label="路径"
+                              >
+                                {{ descriptions.path }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.requestHeader.length>0"
+                                :key="index"
+                                label="请求头"
+                              >
+                                <span v-for="el in descriptions.requestHeader" :key="el.id">{{ el.key }}:{{ el.value }};</span>
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.startCommand.length>0"
+                                :key="index"
+                                label="启动命令"
+                              >
+                                <span v-for="el in descriptions.startCommand" :key="el.id">{{ el.key }}:{{ el.value }};</span>
+                              </el-descriptions-item>
+                            </el-descriptions>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </div>
+                      <div v-else>
+                        <div class="empty-div">无存活性健康检查</div>
+                        <div
+                          class="cursor-pointer text-center hover-div"
+                          @click="handleHealthExaminationAdd('viabilityHealthExamination')"
+                        >
+                          <i class="el-icon-circle-plus-outline" />
+                          添加
+                        </div>
                       </div>
                     </div>
                     <div>
-                      <div class="empty-div">无可用性健康检查</div>
-                      <div
-                        class="cursor-pointer text-center hover-div"
-                        @click=" handleContainerPortAdd('environmentVariables')"
-                      >
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
+                      <div v-if="infoRuleForm.usabilityHealthExamination.length>0">
+                        <el-descriptions
+                          v-for="(descriptions,index) in infoRuleForm.usabilityHealthExamination"
+                          :key="descriptions.id"
+                          class="margin-top10 descriptions-div"
+                          title=""
+                          :column="1"
+                        >
+                          <template slot="extra">
+                            <i class="el-icon-edit cursor-pointer margin-right10" @click="handleHealthExaminationUpdate('usabilityHealthExamination',descriptions)" />
+                            <i class="el-icon-remove-outline cursor-pointer" @click="handleDelete('usabilityHealthExamination',descriptions,index)" />
+                          </template>
+                          <el-descriptions-item
+                            :key="index"
+                            label="可用性健康检查"
+                            class="flex-center"
+                          >
+                            <el-descriptions
+                              title=""
+                              :column="2"
+                            >
+                              <el-descriptions-item
+                                :key="index"
+                                label="协议类型"
+                              >
+                                {{ descriptions.type }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="启动时间"
+                              >
+                                {{ descriptions.startTime }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="间隔"
+                              >
+                                {{ descriptions.interval }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="超时时间"
+                              >
+                                {{ descriptions.timeout }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="正常阈值"
+                              >
+                                {{ descriptions.normalThreshold }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="不正常阈值"
+                              >
+                                {{ descriptions.noNormalThreshold }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.agreement"
+                                :key="index"
+                                label="协议"
+                              >
+                                {{ descriptions.agreement }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                :key="index"
+                                label="端口"
+                              >
+                                {{ descriptions.port }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.path"
+                                :key="index"
+                                label="路径"
+                              >
+                                {{ descriptions.path }}
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.requestHeader.length>0"
+                                :key="index"
+                                label="请求头"
+                              >
+                                <span v-for="el in descriptions.requestHeader" :key="el.id">{{ el.key }}:{{ el.value }};</span>
+                              </el-descriptions-item>
+                              <el-descriptions-item
+                                v-if="descriptions.startCommand.length>0"
+                                :key="index"
+                                label="启动命令"
+                              >
+                                <span v-for="el in descriptions.startCommand" :key="el.id">{{ el.key }}:{{ el.value }};</span>
+                              </el-descriptions-item>
+                            </el-descriptions>
+                          </el-descriptions-item>
+                        </el-descriptions>
+                      </div>
+                      <div v-else>
+                        <div class="empty-div">无可用性健康检查</div>
+                        <div
+                          class="cursor-pointer text-center hover-div"
+                          @click="handleHealthExaminationAdd('usabilityHealthExamination')"
+                        >
+                          <i class="el-icon-circle-plus-outline" />
+                          添加
+                        </div>
                       </div>
                     </div>
                   </el-form-item>
@@ -1150,6 +1344,8 @@
     <affinity-form-dialog :affinity-form-visible="affinityFormVisible" :affinity-form-type="affinityFormType" :current-affinity-form="currentAffinityForm" @closeAffinityFormDialog="closeAffinityFormDialog" @submitAffinityForm="submitAffinityForm" />
     <!-- 选择镜像 -->
     <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" />
+    <!-- 健康检查 -->
+    <health-examination-dialog :health-examination-form-visible="healthExaminationFormVisible" :health-examination-form-type="healthExaminationFormType" :current-health-examination-filed="currentHealthExaminationFiled" :current-health-examination="currentHealthExamination" @closeHealthExaminationFormDialog="closeHealthExaminationFormDialog" @submitHealthExaminationForm="submitHealthExaminationForm" />
   </div>
 </template>
 
@@ -1158,10 +1354,11 @@ import SelectMirror from '@/apps/container/views/components/SelectMirror'
 import FoldableBlock from '@/apps/container/views/components/FoldableBlock'
 import StorageVolumeDialog from './StorageVolumeDialog.vue'
 import AffinityFormDialog from './AffinityFormDialog.vue'
+import HealthExaminationDialog from './HealthExaminationDialog'
 import { nanoid } from 'nanoid'
 export default {
   name: 'ComputerComponentsForm',
-  components: { SelectMirror, FoldableBlock, StorageVolumeDialog, AffinityFormDialog },
+  components: { SelectMirror, FoldableBlock, StorageVolumeDialog, AffinityFormDialog, HealthExaminationDialog },
   props: {},
   data() {
     return {
@@ -1234,7 +1431,39 @@ export default {
         ],
         executeBeforeStopping: '',
         logFiles: [],
-        excludeLogFiles: []
+        excludeLogFiles: [],
+        viabilityHealthExamination: [
+          {
+            id: '1',
+            type: 'HTTP',
+            startTime: '300',
+            interval: '60',
+            timeout: '30',
+            normalThreshold: '1',
+            noNormalThreshold: '5',
+            agreement: 'HTTP',
+            port: '80',
+            path: '/',
+            requestHeader: [],
+            startCommand: []
+          }
+        ],
+        usabilityHealthExamination: [
+          {
+            id: '1',
+            type: 'HTTP',
+            startTime: '300',
+            interval: '60',
+            timeout: '30',
+            normalThreshold: '1',
+            noNormalThreshold: '5',
+            agreement: 'HTTP',
+            port: '80',
+            path: '/',
+            requestHeader: [],
+            startCommand: []
+          }
+        ]
       },
       // 镜像凭据
       mirrorCredentialsOptions: [
@@ -1301,7 +1530,12 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      // 健康检查 弹窗数据
+      healthExaminationFormVisible: false,
+      healthExaminationFormType: 'add',
+      currentHealthExamination: {},
+      currentHealthExaminationFiled: ''
     }
   },
   computed: {},
@@ -1466,6 +1700,43 @@ export default {
     },
     closeFormDialog() {
       this.formVisible = false
+    },
+    // 添加健康检查
+    handleHealthExaminationAdd(filed) {
+      this.healthExaminationFormVisible = true
+      this.healthExaminationFormType = 'add'
+      this.currentHealthExamination = {
+        type: 'HTTP',
+        startTime: '300',
+        interval: '60',
+        timeout: '30',
+        normalThreshold: '1',
+        noNormalThreshold: '5',
+        agreement: 'HTTP',
+        port: '80',
+        path: '/',
+        requestHeader: []
+      }
+      this.currentHealthExaminationFiled = filed
+    },
+    closeHealthExaminationFormDialog() {
+      this.healthExaminationFormVisible = false
+    },
+    submitHealthExaminationForm(filed, type, form) {
+      if (type === 'add') {
+        this.infoRuleForm[filed].push(form)
+      } else {
+        this.$set(this.infoRuleForm, filed, [{ ...form }])
+      }
+      this.healthExaminationFormVisible = false
+    },
+    handleHealthExaminationUpdate(filed, item) {
+      this.healthExaminationFormVisible = true
+      this.healthExaminationFormType = 'edit'
+      this.currentHealthExamination = {
+        ...item
+      }
+      this.currentHealthExaminationFiled = filed
     },
     // 取消 按钮
     cancelCreate() {
