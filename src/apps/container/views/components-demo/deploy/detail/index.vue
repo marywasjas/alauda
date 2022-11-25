@@ -32,7 +32,7 @@
           <el-menu-item index="4" @click="comName = 'Configuration'">配置</el-menu-item>
           <el-menu-item index="5" @click="comName = 'Log'">日志</el-menu-item>
           <el-menu-item index="6" @click="comName = 'Event'">事件</el-menu-item>
-          <el-menu-item index="7">监控</el-menu-item>
+          <el-menu-item index="7" @click="comName = 'Monitor'">监控</el-menu-item>
           <el-menu-item index="8" @click="comName = 'GiveAlarm'">告警</el-menu-item>
         </el-menu>
       </div>
@@ -51,6 +51,7 @@ import Configuration from './content/configuration.vue'
 import Log from './content/log.vue'
 import Event from './content/event.vue'
 import GiveAlarm from './content/giveAlarm.vue'
+import Monitor from './content/monitor.vue'
 
 export default {
   name: 'Detail',
@@ -61,7 +62,8 @@ export default {
     Configuration,
     Log,
     Event,
-    GiveAlarm
+    GiveAlarm,
+    Monitor
   },
   data() {
     return {

@@ -3,35 +3,31 @@ export const tableColumnList = [
   {
     id: 'name',
     label: '名称',
-    sortable: true
+    'show-overflow-tooltip': true
   },
   {
     id: 'status',
     label: '状态'
   },
   {
-    id: 'resourceLimit',
+    id: 'resource',
     label: '资源限额'
   },
   {
-    id: 'restartsCount',
-    label: '重启次数',
-    sortable: true
+    id: 'times',
+    label: '重启次数'
   },
   {
-    id: 'groupIP',
-    label: '容器组IP',
-    sortable: true
+    id: 'containerIp',
+    label: '容器组 IP'
   },
   {
     id: 'node',
-    label: '节点',
-    sortable: true
+    label: '节点'
   },
   {
     id: 'date',
-    label: '创建时间',
-    sortable: true
+    label: '创建时间'
   },
   {
     id: 'operation',
@@ -42,13 +38,17 @@ export const tableColumnList = [
 export const tableData = Mock.mock({
   'data|10': [
     {
-      name: '@word(3, 7)',
-      resourceLimit: '111',
-      status: 'running',
-      restartsCount: '123',
-      statusText: '运行中(0/1)',
-      groupIP: 'sssss',
-      node: 'dddaada',
+      name: '@word(7, 40)',
+      'status|1': ['pending', 'stop', 'running'],
+      'statusText|1': ['运行中(3/4)', '已暂停(1/1)', 'Pending(1/1)'],
+      resource: '@cword(3, 7)',
+      cpu: 1,
+      cpuCompony: '核',
+      memory: '512',
+      memoryCompony: 'Mi',
+      times: '@integer(1,10)',
+      containerIp: '@integer(1, 1000)',
+      node: '@word(3,7)',
       date: '@date'
     }
   ]

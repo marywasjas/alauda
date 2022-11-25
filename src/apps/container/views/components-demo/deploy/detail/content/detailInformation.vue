@@ -14,7 +14,10 @@
           <span class="title">所属应用：</span><a style="color: #1890ff">{{ form.pod }}</a>
         </div>
         <div>
-          <span class="title">标签：</span><span>{{ form.label }}</span>
+          <span class="title">标签：</span>
+          <el-tag type="info" size="mini" style="margin-right: 10px">app：build</el-tag>
+          <el-tag type="info" size="mini" style="margin-right: 10px">name：build</el-tag>
+          <i class="el-icon-edit" style="color: #1890ff" @click="handleUpdateLabels" />
         </div>
         <div>
           <span class="title">主机选择器：</span> <span>{{ form.hostSelector }}</span>
@@ -35,6 +38,32 @@
       <div class="chart-div">
         <workload-status :number="number" @changeNumber="changeNumber" />
       </div>
+      <el-button
+        v-if="storageVolumeInfoVisible"
+        round
+        size="mini"
+        style="color: #1890ff; margin-bottom: 10px"
+        @click="openStorageVolumeInfo"
+      >存储卷<i
+        class="el-icon-d-arrow-right"
+      /></el-button>
+      <div v-if="infoStorageVolumeVisible" class="detail-center-table">
+        <el-table :data="storageVolumeInfoData" style="width: 100%" header-row-class-name="headerStyle">
+          <el-table-column prop="storageVolumeName" label="名称" />
+          <el-table-column prop="type" label="类型" />
+          <el-table-column prop="configuration" label="相关配置" />
+        </el-table>
+        <el-button
+          class="table-button"
+          round
+          type="primary"
+          size="mini"
+          @click="closeStorageVolumeInfo"
+        >存储卷 <i
+          class="el-icon-d-arrow-right"
+          style="transform: rotate(-90deg)"
+        /></el-button>
+      </div>
     </div>
     <div class="detail-center">
       <div style="font-weight: 700; font-size: 20px; margin-bottom: 20px; color: rgb(50, 52, 55)">容器</div>
@@ -50,20 +79,22 @@
           >kooriookami <i
             class="el-icon-edit"
             style="color: #1890ff"
+            @click="openDialog('更新镜像版本')"
           /></el-descriptions-item>
           <el-descriptions-item
             label="资源限制"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >18100000000 <i
+          >- <i
             class="el-icon-edit"
             style="color: #1890ff"
+            @click="openDialog('更新资源限制')"
           /></el-descriptions-item>
           <el-descriptions-item
             label="启动命令"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >苏州市</el-descriptions-item>
+          >-</el-descriptions-item>
           <el-descriptions-item
             label="参数"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
@@ -73,7 +104,7 @@
             label="停止前执行"
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
-          >江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
+          >-</el-descriptions-item>
         </el-descriptions>
 
         <div style="display: flex; justify-content: space-between; width: 120px">
@@ -100,6 +131,36 @@
           </el-popover>
         </div>
       </div>
+
+      <el-button
+        v-if="storageVolumeButtonVisible"
+        round
+        size="mini"
+        style="color: #1890ff; margin-bottom: 10px"
+        @click="openStorageVolume"
+      >已挂载存储卷<i
+        class="el-icon-d-arrow-right"
+      /></el-button>
+      <div v-if="storageVolumeVisible" class="detail-center-table">
+        <el-table :data="storageVolumeData" style="width: 100%" header-row-class-name="headerStyle">
+          <el-table-column prop="storageVolumeName" label="存储卷名称" />
+          <el-table-column prop="subpath" label="子路径" />
+          <el-table-column prop="mountpath" label="挂载路径" />
+          <el-table-column prop="readOnly" label="只读" />
+        </el-table>
+        <el-button
+          class="table-button"
+          round
+          type="primary"
+          size="mini"
+          @click="closeStorageVolume"
+        >已挂载存储卷 <i
+          class="el-icon-d-arrow-right"
+          style="transform: rotate(-90deg)"
+        /></el-button>
+      </div>
+      <br>
+
       <el-button
         v-if="buttonVisible"
         round
@@ -130,17 +191,32 @@
     <div class="detail-footer">
       <div class="detail-footer-title">
         <div style="font-weight: 700; font-size: 20px; margin-bottom: 20px; color: rgb(50, 52, 55)">自动伸缩</div>
-        <el-button type="primary" plain>更新</el-button>
+        <el-button type="primary" plain @click="updateAutostretchDialog">更新</el-button>
       </div>
     </div>
+    <!-- 自动伸缩更新 对话框 -->
+    <UpdateAutostretchDialog :update-autostretch-visible.sync="updateAutostretchVisible" />
+    <!-- 更新标签 -->
+    <UpdateLabelsDialog :update-labels-visible.sync="updateLabelsVisible" />
+    <!-- 更新资源限制 弹窗 -->
+    <resources-image
+      :dialog-title="dialogTitle"
+      :resource-visible="resourceVisible"
+      @closeResourceDialog="closeResourceDialog"
+      @submitResourceDialog="submitResourceDialog"
+    />
   </div>
 </template>
 
 <script>
 import WorkloadStatus from '@/apps/container/views/components/WorkloadStatus'
+import UpdateLabelsDialog from '@/apps/container/views/components/UpdateLabelsDialog.vue'
+import UpdateAutostretchDialog from '@/apps/container/views/components/UpdateAutostretchDialog.vue'
+import ResourcesImage from '@/apps/container/views/components/ResourcesImage'
+
 export default {
   name: 'DetailInformation',
-  components: { WorkloadStatus },
+  components: { WorkloadStatus, UpdateLabelsDialog, ResourcesImage, UpdateAutostretchDialog },
   props: {},
   data() {
     return {
@@ -161,7 +237,37 @@ export default {
           portName: '-'
         }
       ],
+      storageVolumeData: [
+        {
+          storageVolumeName: 'hosts',
+          subpath: '-',
+          mountpath: '/var/run/docker',
+          readOnly: '否'
+        },
+        {
+          storageVolumeName: 'docker',
+          subpath: '-',
+          mountpath: '/etc/hosts',
+          readOnly: '否'
+        }
+      ],
+      storageVolumeInfoData: [
+        {
+          storageVolumeName: 'hosts',
+          type: '主机路径',
+          configuration: '/var/run/docker'
+        },
+        {
+          storageVolumeName: 'hosts',
+          type: '主机路径',
+          configuration: '/var/run/docker'
+        }
+      ],
       visible: false,
+      storageVolumeVisible: false,
+      storageVolumeButtonVisible: true,
+      infoStorageVolumeVisible: false,
+      storageVolumeInfoVisible: true,
       buttonVisible: true,
       number: 5,
       containerList: [
@@ -173,7 +279,12 @@ export default {
           label: '234',
           value: '234'
         }
-      ]
+      ],
+      updateLabelsVisible: false,
+      updateAutostretchVisible: false,
+      // 更新资源限制
+      dialogTitle: '',
+      resourceVisible: false
     }
   },
   computed: {},
@@ -189,8 +300,64 @@ export default {
       this.visible = false
       this.buttonVisible = true
     },
+    openStorageVolume() {
+      this.storageVolumeButtonVisible = false
+      this.storageVolumeVisible = true
+    },
+    closeStorageVolume() {
+      this.storageVolumeButtonVisible = true
+      this.storageVolumeVisible = false
+    },
+    openStorageVolumeInfo() {
+      this.infoStorageVolumeVisible = true
+      this.storageVolumeInfoVisible = false
+    },
+    closeStorageVolumeInfo() {
+      this.infoStorageVolumeVisible = false
+      this.storageVolumeInfoVisible = true
+    },
     changeNumber(val) {
       this.number = Number(val)
+    },
+    handleUpdateLabels() {
+      this.updateLabelsVisible = true
+    },
+    openDialog(item) {
+      // console.log(item)
+      if (item === '更新资源限制') {
+        this.dialogTitle = `更新资源限制`
+        this.resourceVisible = true
+        this.resourceForm = {
+          name: 'nginx',
+          cpu: 1,
+          cpuCompony: '核',
+          memory: 512,
+          memoryCompony: 'Mi'
+        }
+      } else {
+        this.dialogTitle = `更新镜像版本`
+        this.resourceVisible = true
+        this.resourceForm = {
+          name: 'nginx',
+          cpu: null,
+          cpuCompony: '',
+          memory: null,
+          memoryCompony: '',
+          monitor: 'nginx',
+          version: 'latest'
+        }
+      }
+    },
+    closeResourceDialog() {
+      this.resourceVisible = false
+    },
+    submitResourceDialog(val) {
+      console.log(this.resourceForm)
+      this.resourceVisible = false
+    },
+    // 自动伸缩更新 弹框
+    updateAutostretchDialog() {
+      this.updateAutostretchVisible = true
     }
   }
 }
@@ -206,6 +373,11 @@ export default {
     padding: 20px 20px;
     background-color: #fff;
     border: 1px solid #eee;
+    detail-center-table {
+      position: relative;
+      padding: 30px 30px 30px 30px;
+      border: 1px solid #1890ff;
+    }
     .title {
       color: rgb(50, 52, 55);
       font-size: 15px;
@@ -236,16 +408,6 @@ export default {
       text-align: center;
       line-height: 50px;
       margin-bottom: 30px;
-    }
-    .detail-center-table {
-      position: relative;
-      padding: 30px 30px 30px 30px;
-      border: 1px solid #1890ff;
-      .table-button {
-        position: absolute;
-        bottom: -15px;
-        left: 20px;
-      }
     }
   }
   .detail-footer {
@@ -288,6 +450,16 @@ export default {
   }
   p:last-child {
     margin-bottom: 0;
+  }
+}
+.detail-center-table {
+  position: relative;
+  padding: 30px 30px 30px 30px;
+  border: 1px solid #1890ff;
+  .table-button {
+    position: absolute;
+    bottom: -15px;
+    left: 20px;
   }
 }
 </style>
