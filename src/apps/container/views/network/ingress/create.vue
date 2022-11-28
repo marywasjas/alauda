@@ -3,7 +3,8 @@
     <div class="scroll-div">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>创建入站规则</span>
+          <span v-if="!isEdit">创建入站规则</span>
+          <span v-if="isEdit">更新{{ ruleForm.name }}</span>
           <el-radio-group v-model="fillType" style="float: right;">
             <el-radio-button label="form">表单</el-radio-button>
             <el-radio-button label="ymal">YMAL</el-radio-button>
@@ -20,7 +21,8 @@
           >
             <el-row><el-col :span="12">
               <el-form-item label="名称" prop="name">
-                <el-input v-model="ruleForm.name" placeholder="以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-" />
+                <span v-if="isEdit">{{ ruleForm.name }}</span>
+                <el-input v-if="!isEdit" v-model="ruleForm.name" placeholder="以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-" />
               </el-form-item>
             </el-col></el-row>
             <el-row><el-col :span="12">
@@ -51,11 +53,6 @@
                   <el-form-item
                     label="协议"
                     :prop="'rulesList.' + index1 + '.agreement'"
-                    :rules="{
-                      required: false,
-                      message: '协议不能为空',
-                      trigger: 'change',
-                    }"
                     style="margin-bottom: 22px"
                     label-width="60px"
                   >
@@ -63,6 +60,17 @@
                       <el-radio label="HTTP" />
                       <el-radio label="HTTPS" />
                     </el-radio-group>
+                  </el-form-item>
+                  <el-form-item
+                    v-if="item1.agreement=='HTTPS'"
+                    label="证书"
+                    :prop="'rulesList.' + index1 + '.certificate'"
+                    style="margin-bottom: 22px"
+                    label-width="60px"
+                  >
+                    <el-select style="width:50%">
+                      <option label="默认" value="默认" />
+                    </el-select>
                   </el-form-item>
                   <el-form-item
                     label="规则"
@@ -120,7 +128,7 @@
                                 placeholder="请选择匹配方式"
                               >
                                 <el-option
-                                  v-for="com in agreementList"
+                                  v-for="com in matchList"
                                   :key="com"
                                   :label="com"
                                   :value="com"
@@ -159,7 +167,7 @@
                                 placeholder="请选择内部路由"
                               >
                                 <el-option
-                                  v-for="com in agreementList"
+                                  v-for="com in routeList"
                                   :key="com"
                                   :label="com"
                                   :value="com"
@@ -182,7 +190,7 @@
                                 placeholder="请选择服务端口"
                               >
                                 <el-option
-                                  v-for="com in agreementList"
+                                  v-for="com in portList"
                                   :key="com"
                                   :label="com"
                                   :value="com"
@@ -256,7 +264,10 @@
       </el-card>
     </div>
     <div class="fixed-div">
-      <el-button type="primary" @click="submitCreate">创建</el-button>
+      <el-button type="primary" @click="submitCreate">
+        <span v-if="!isEdit">创建</span>
+        <span v-if="isEdit">更新</span>
+      </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
@@ -273,7 +284,7 @@ export default {
     return {
       isEdit: false,
       fillType: 'form',
-      agreementList: ['前缀', '精准', '控制器决定'],
+      matchList: ['前缀', '精准', '控制器决定'],
       ruleForm: {
         name: '',
         showName: '',
@@ -281,6 +292,7 @@ export default {
           {
             id: nanoid(),
             domain: '',
+            certificate: '',
             agreement: 'HTTP',
             subRuleList: [
               {
@@ -301,7 +313,9 @@ export default {
         ]
       },
       currentCode: '',
-      inputCode: {}
+      inputCode: {},
+      routeList: [],
+      portList: [80, 443, 22]
     }
   },
   computed: {
@@ -314,9 +328,35 @@ export default {
     }
   },
   created() {
+    this.ruleForm.name = this.$route.query.name
+    if (this.ruleForm.name) {
+      this.isEdit = true
+      this.fetchData()
+    }
   },
   methods: {
-    fetchData(id) {
+    fetchData() {
+      this.ruleForm = {
+        name: this.ruleForm.name,
+        showName: '',
+        rulesList: [
+          {
+            id: nanoid(),
+            domain: 'chaos.d.ebchina.com',
+            certificate: '',
+            agreement: 'HTTP',
+            subRuleList: [
+              {
+                id: nanoid(),
+                matchingMethod: '前缀',
+                path: '/',
+                interRoute: 'chaosblade-box',
+                servicePort: '80'
+              }
+            ]
+          }
+        ]
+      }
     },
     closeFormDialog() {
       this.$emit('closeFormDialog')

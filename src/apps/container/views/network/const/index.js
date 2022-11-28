@@ -102,7 +102,7 @@ export const policyColumnList = [{
 }]
 export const policyList = Mock.mock({
   'data|5': [{
-    name: '@cword(5, 10)',
+    name: '@word(5, 10)',
     ruleNum: '@integer(1,10)',
     targetUnit: '@word(10, 20)',
     creater: '@cname',

@@ -3,7 +3,8 @@
     <div class="scroll-div">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>创建网络策略</span>
+          <span v-if="!isEdit">创建网络策略</span>
+          <span v-if="isEdit">更新网络策略</span>
         </div>
 
         <div class="text item">
@@ -16,7 +17,8 @@
           >
             <el-row><el-col :span="12">
               <el-form-item label="名称" prop="name">
-                <el-input v-model="ruleForm.name" placeholder="以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-" />
+                <el-input v-if="!isEdit" v-model="ruleForm.name" placeholder="以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-" />
+                <span v-if="isEdit">{{ ruleForm.name }}</span>
               </el-form-item>
             </el-col></el-row>
             <el-row><el-col :span="12">
@@ -201,7 +203,7 @@
                         <el-option label="部署" value="部署" />
                       </el-select>
                       <el-select v-model="item1.remoteNext" style="flex-grow: 1;">
-                        <el-option label="" value="" />
+                        <el-option label="chaosblade-box" value="chaosblade-box" />
                       </el-select>
                     </div>
                   </el-form-item>
@@ -227,7 +229,10 @@
       </el-card>
     </div>
     <div class="fixed-div">
-      <el-button type="primary" @click="submitCreate">创建</el-button>
+      <el-button type="primary" @click="submitCreate">
+        <span v-if="!isEdit">创建</span>
+        <span v-if="isEdit">更新</span>
+      </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
@@ -283,9 +288,33 @@ export default {
     }
   },
   computed: {},
-  created() {},
+  created() {
+    this.ruleForm.name = this.$route.query.name
+    if (this.ruleForm.name) {
+      this.isEdit = true
+      this.fetchData()
+    }
+  },
   methods: {
-    fetchData(id) {
+    fetchData() {
+      this.ruleForm = {
+        name: this.ruleForm.name,
+        showName: '',
+        linkType: '计算组件',
+        calculationName: '全部',
+        tagSelector: [],
+        rulesList: [
+          {
+            id: nanoid(),
+            direction: '入站',
+            agreement: 'TCP',
+            port: '1024',
+            remoteType: '计算组件(当前NS)',
+            remote: '部署',
+            remoteNext: 'chaosblade-box'
+          }
+        ]
+      }
     },
     submitCreate() {
       this.$refs['ruleForm'].validate((valid) => {
