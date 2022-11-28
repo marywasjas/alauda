@@ -64,7 +64,7 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item @click.native="handleUpdate(row)">更新</el-dropdown-item>
                     <el-dropdown-item>删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -112,6 +112,12 @@ export default {
       this.getList()
     },
     handleUpdate(row) {
+      this.$router.push({
+        name: 'ServiceUpdate',
+        query: {
+          name: row.name
+        }
+      })
     },
     handleDelete(row, index) {
       this.$notify({

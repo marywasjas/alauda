@@ -3,7 +3,8 @@
     <div class="scroll-div">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>创建内部路由</span>
+          <span v-if="!isEdit">创建内部路由</span>
+          <span v-if="isEdit">更新{{ ruleForm.name }}</span>
           <el-radio-group v-model="fillType" style="float: right;">
             <el-radio-button label="form">表单</el-radio-button>
             <el-radio-button label="ymal">YMAL</el-radio-button>
@@ -19,7 +20,9 @@
           >
             <el-row><el-col :span="12">
               <el-form-item label="名称" prop="name">
+                <span v-if="isEdit">{{ ruleForm.name }}</span>
                 <el-input
+                  v-if="!isEdit"
                   v-model="ruleForm.name"
                   placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
                 />
@@ -315,7 +318,10 @@
       </el-card>
     </div>
     <div class="fixed-div">
-      <el-button type="primary" @click="submitCreate">创建</el-button>
+      <el-button type="primary" @click="submitCreate">
+        <span v-if="!isEdit">创建</span>
+        <span v-if="isEdit">更新</span>
+      </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
@@ -379,9 +385,39 @@ export default {
     }
   },
   created() {
+    this.ruleForm.name = this.$route.query.name
+    if (this.ruleForm.name) {
+      this.isEdit = true
+      this.fetchData()
+    }
   },
   methods: {
-    fetchData(id) {
+    fetchData() {
+      this.ruleForm = {
+        name: this.ruleForm.name,
+        virtualIP: true,
+        internetAccess: false,
+        targetComponents: '计算组件',
+        calculationType: '部署',
+        keepSession: false,
+        domains: [
+          {
+            id: nanoid(),
+            agreement: 'TCP',
+            serverPort: '5201',
+            containerPort: '443',
+            servicePortName: 'tcp-5201-443'
+          },
+          {
+            id: nanoid(),
+            agreement: 'TCP',
+            serverPort: '5202',
+            containerPort: '80',
+            servicePortName: 'tcp-5202-80'
+          }
+        ],
+        tagSelector: []
+      }
     },
     submitCreate() {
       this.$refs['ruleForm'].validate((valid) => {

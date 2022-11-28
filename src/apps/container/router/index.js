@@ -237,6 +237,13 @@ export const containerAsyncRoutes = [
             name: 'ServiceCreate',
             meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
             hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/network/service/create'),
+            name: 'ServiceUpdate',
+            meta: { title: '更新内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
           }
         ]
       },
@@ -268,7 +275,14 @@ export const containerAsyncRoutes = [
             path: 'create',
             component: () => import('@/apps/container/views/network/ingress/create'),
             name: 'IngressCreate',
-            meta: { title: '创建入站规则', icon: 'icon', noCache: true, activeMenu: '/network/serviingressce' },
+            meta: { title: '创建入站规则', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/network/ingress/create'),
+            name: 'IngressUpdate',
+            meta: { title: '更新入站规则', icon: 'icon', noCache: true, activeMenu: '/network/ingress' },
             hidden: true
           }
         ]
@@ -301,6 +315,20 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/network/policy/create'),
             name: 'PolicyCreate',
             meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/network/policy/create'),
+            name: 'PolicyUpdate',
+            meta: { title: '更新网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/network/policy/detail'),
+            name: 'PolicyDetail',
+            meta: { title: '网络策略详情', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
             hidden: true
           }
         ]

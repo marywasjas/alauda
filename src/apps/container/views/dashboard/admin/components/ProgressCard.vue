@@ -82,6 +82,9 @@ export default {
       dataList: []
     }
   },
+  computed: {
+    ...mapGetters(['name', 'avatar', 'roles'])
+  },
   watch: {
     chartData: {
       handler(newVal, oldVal) {
@@ -92,9 +95,6 @@ export default {
   },
   mounted() {
     this.dataList = this.chartData
-  },
-  computed: {
-    ...mapGetters(['name', 'avatar', 'roles'])
   }
 }
 </script>

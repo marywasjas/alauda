@@ -40,19 +40,6 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-            <template slot-scope="{row}">
-              <div class="operation-cell">
-                <el-dropdown>
-                  <i class="el-icon-more" />
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </div>
-            </template>
-          </el-table-column>
         </el-table>
       </div>
     </div>

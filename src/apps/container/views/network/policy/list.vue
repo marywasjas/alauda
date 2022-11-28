@@ -42,8 +42,8 @@
             :sortable="col.sortable"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'" class="cursor-pointer">
-                {{ scope.row[col.id] }}
+              <div v-if="col.id === 'name'">
+                <span class="cursor-pointer" @click="handleDetail(scope.row)">{{ scope.row[col.id] }}</span>
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
@@ -56,7 +56,7 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item @click.native="handleUpdate(row)">更新</el-dropdown-item>
                     <el-dropdown-item>删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -109,6 +109,14 @@ export default {
         name: 'PolicyCreate'
       })
     },
+    handleDetail(row) {
+      this.$router.push({
+        name: 'PolicyDetail',
+        query: {
+          name: row.name
+        }
+      })
+    },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -126,9 +134,11 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+      this.$router.push({
+        name: 'PolicyUpdate',
+        query: {
+          name: row.name
+        }
       })
     },
     updateData() {
