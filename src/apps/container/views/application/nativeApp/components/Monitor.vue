@@ -44,64 +44,39 @@
             <el-tab-pane>
               <span slot="label">
                 系统面板
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  content="使用率 = 使用值/限制值"
-                  placement="top"
-                >
-                  <i
-                    class="el-icon-question question-icon margin-left10"
-                  />
+                <el-tooltip class="item" effect="dark" content="使用率 = 使用值/限制值" placement="top">
+                  <i class="el-icon-question question-icon margin-left10" />
                 </el-tooltip>
               </span>
               <div>
                 <div class="text-right">
-                  <el-select
-                    v-model="containerTime"
-                    filterable
-                    placeholder="请选择"
-                    size="mini"
-                  >
+                  <el-select v-model="containerTime" filterable placeholder="请选择" size="mini">
                     <i slot="prefix" class="el-input__icon el-icon-search" />
-                    <el-option
-                      v-for="item in timeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
+                    <el-option v-for="item in timeOptions" :key="item.value" :label="item.label" :value="item.value" />
                   </el-select>
                 </div>
                 <el-card class="box-card margin-top">
                   <div slot="header" class="flex-center">
-                    <span>CPU{{ cpuType }}{{ cpuType==='使用率'?'（%）':'（m）' }}</span>
+                    <span>CPU{{ cpuType }}{{ cpuType === '使用率' ? '（%）' : '（m）' }}</span>
                     <el-radio-group v-model="cpuType" size="small" style="float: right; padding: 3px 0">
                       <el-radio-button label="使用率" />
                       <el-radio-button label="使用量" />
                     </el-radio-group>
                   </div>
                   <div class="text item">
-                    <line-chart
-                      :chart-data="containerLineData"
-                      :show-total="false"
-                      style="height: 200px"
-                    />
+                    <line-chart :chart-data="containerLineData" :show-total="false" style="height: 200px" />
                   </div>
                 </el-card>
                 <el-card class="box-card margin-top">
                   <div slot="header" class="flex-center">
-                    <span>内存{{ memoryType }}{{ memoryType==='使用率'?'（%）':'（m）' }}</span>
+                    <span>内存{{ memoryType }}{{ memoryType === '使用率' ? '（%）' : '（m）' }}</span>
                     <el-radio-group v-model="memoryType" size="small" style="float: right; padding: 3px 0">
                       <el-radio-button label="使用率" />
                       <el-radio-button label="使用量" />
                     </el-radio-group>
                   </div>
                   <div class="text item">
-                    <line-chart
-                      :chart-data="containerLineData"
-                      :show-total="false"
-                      style="height: 200px"
-                    />
+                    <line-chart :chart-data="containerLineData" :show-total="false" style="height: 200px" />
                   </div>
                 </el-card>
                 <el-card class="box-card margin-top">
@@ -113,9 +88,7 @@
                         content="网络流量速率 = 计算组件中每个容器组的网络流量速率总和"
                         placement="top"
                       >
-                        <i
-                          class="el-icon-question question-icon margin-left10"
-                        />
+                        <i class="el-icon-question question-icon margin-left10" />
                       </el-tooltip>
                     </span>
                     <el-radio-group v-model="networkFlowType" size="small" style="float: right; padding: 3px 0">
@@ -124,11 +97,7 @@
                     </el-radio-group>
                   </div>
                   <div class="text item">
-                    <line-chart
-                      :chart-data="containerLineData"
-                      :show-total="false"
-                      style="height: 200px"
-                    />
+                    <line-chart :chart-data="containerLineData" :show-total="false" style="height: 200px" />
                   </div>
                 </el-card>
                 <el-card class="box-card margin-top">
@@ -140,22 +109,20 @@
                         content="网络报文量速率 = 计算组件中每个容器组的网络报文量速率总和"
                         placement="top"
                       >
-                        <i
-                          class="el-icon-question question-icon margin-left10"
-                        />
+                        <i class="el-icon-question question-icon margin-left10" />
                       </el-tooltip>
                     </span>
-                    <el-radio-group v-model="NetworkMessageVolumeType" size="small" style="float: right; padding: 3px 0">
+                    <el-radio-group
+                      v-model="NetworkMessageVolumeType"
+                      size="small"
+                      style="float: right; padding: 3px 0"
+                    >
                       <el-radio-button label="接收" />
                       <el-radio-button label="发送" />
                     </el-radio-group>
                   </div>
                   <div class="text item">
-                    <line-chart
-                      :chart-data="containerLineData"
-                      :show-total="false"
-                      style="height: 200px"
-                    />
+                    <line-chart :chart-data="containerLineData" :show-total="false" style="height: 200px" />
                   </div>
                 </el-card>
                 <el-card class="box-card margin-top">
@@ -167,9 +134,7 @@
                         content="磁盘读写速率 = 计算组件中每个容器组挂载的分区的读写速率总和"
                         placement="top"
                       >
-                        <i
-                          class="el-icon-question question-icon margin-left10"
-                        />
+                        <i class="el-icon-question question-icon margin-left10" />
                       </el-tooltip>
                     </span>
                     <el-radio-group v-model="diskType" size="small" style="float: right; padding: 3px 0">
@@ -178,11 +143,7 @@
                     </el-radio-group>
                   </div>
                   <div class="text item">
-                    <line-chart
-                      :chart-data="containerLineData"
-                      :show-total="false"
-                      style="height: 200px"
-                    />
+                    <line-chart :chart-data="containerLineData" :show-total="false" style="height: 200px" />
                   </div>
                 </el-card>
                 <el-card class="box-card margin-top">
@@ -194,9 +155,7 @@
                         content="磁盘 IOPS = 计算组件中每个容器组挂载的分区的 IOPS 总和"
                         placement="top"
                       >
-                        <i
-                          class="el-icon-question question-icon margin-left10"
-                        />
+                        <i class="el-icon-question question-icon margin-left10" />
                       </el-tooltip>
                     </span>
                     <el-radio-group v-model="diskIOPSType" size="small" style="float: right; padding: 3px 0">
@@ -205,11 +164,7 @@
                     </el-radio-group>
                   </div>
                   <div class="text item">
-                    <line-chart
-                      :chart-data="containerLineData"
-                      :show-total="false"
-                      style="height: 200px"
-                    />
+                    <line-chart :chart-data="containerLineData" :show-total="false" style="height: 200px" />
                   </div>
                 </el-card>
               </div>

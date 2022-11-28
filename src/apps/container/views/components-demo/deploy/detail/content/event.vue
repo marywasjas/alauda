@@ -38,16 +38,59 @@
               <el-button>重置</el-button>
             </el-form-item>
           </div>
-          <div>
-            <div class="text-right">
-              <el-select v-model="containerTime" filterable placeholder="请选择" size="mini">
-                <i slot="prefix" class="el-input__icon el-icon-search" />
-                <el-option v-for="item in timeOptions" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </div>
-            <line-chart :chart-data="containerLineData" :show-total="true" class="margin-top10" style="height: 400px" />
-          </div>
         </el-form>
+      </section>
+    </BaseCard>
+    <BaseCard>
+      <header>
+        <div class="card-title left-header">
+          <span>共{{ page.total }}条</span>
+        </div>
+      </header>
+      <section class="component-div">
+        <div>
+          <div class="text-right">
+            <el-select v-model="containerTime" filterable placeholder="请选择" size="mini">
+              <i slot="prefix" class="el-input__icon el-icon-search" />
+              <el-option v-for="item in timeOptions" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+          </div>
+          <div>
+            <div class="event-list-wrapper">
+              <div v-for="event in eventData.data" :key="event.id" class="event-card">
+                <div class="card-header flex-center">
+                  <div class="resource flex-center">
+                    <el-tag effect="dark">{{ event.type }}</el-tag>
+                    <div class="text margin-left10">
+                      <span>{{ event.title }}</span>
+                      <i class="el-icon-thumb cursor-pointer margin-left10" />
+                    </div>
+                  </div>
+                  <div class="time" title="触发时间">
+                    <i class="el-icon-stopwatch margin-right10" />
+                    <span>{{ event.time }}</span>
+                  </div>
+                </div>
+                <div class="card-context flex-center margin-top10">
+                  <div class="detail">
+                    <span class="circle" />
+                    <span class="message">{{ event.message }}</span>
+                  </div>
+                  <div class="number">过去{{ event.date }}天发生{{ event.number }}次</div>
+                </div>
+              </div>
+            </div>
+            <el-pagination
+              :current-page="page.current"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="page.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="page.total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </div>
       </section>
     </BaseCard>
   </div>
@@ -55,28 +98,21 @@
 
 <script>
 import Mock from 'mockjs'
-import LineChart from '@/apps/container/views/components/LineChart'
 export default {
   name: 'Event',
-  components: { LineChart },
+  components: {},
   props: {},
   data() {
-    const containerLineData = Mock.mock({
-      fields: [
-        {
-          name: '运行中',
-          flied: 'yxz'
-        },
-        {
-          name: '异常',
-          flied: 'yc'
-        }
-      ],
+    const eventData = Mock.mock({
       'data|10': [
         {
-          name: '@date',
-          yxz: '@integer(0 ,10)',
-          yc: '@integer(0 ,10)'
+          'id|+1': 1,
+          type: 'pod',
+          title: '@word(10,30)',
+          time: '@time',
+          message: '@word(10,30)',
+          number: '@integer(0 ,1000)',
+          date: '@integer(0 ,10)'
         }
       ]
     })
@@ -122,17 +158,61 @@ export default {
           label: '近 7 天'
         }
       ],
-      containerLineData
+      eventData,
+      page: {
+        total: 10,
+        current: 1,
+        pageSize: 10
+      }
     }
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    handleSizeChange(val) {
+      this.page.pageSize = val
+    },
+    handleCurrentChange(val) {
+      this.page.current = val
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
 .event-container {
+  .event-list-wrapper {
+    margin-top: 10px;
+    .event-card {
+      border-radius: 2px;
+      margin-bottom: 8px;
+      padding: 20px;
+      border: 1px solid $border-color-one;
+      .card-header {
+        box-sizing: border-box;
+      }
+      .text {
+        color: $font-color-title;
+        font-weight: bold;
+      }
+      .number,
+      .time {
+        color: $font-color-text;
+        font-size: $font-size-14;
+      }
+      .circle {
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: $color-primary;
+        margin-right: 8px;
+      }
+    }
+  }
+  .el-pagination {
+    text-align: right;
+  }
 }
 </style>

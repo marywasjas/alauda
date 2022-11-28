@@ -1,6 +1,7 @@
 <template>
   <div class="daemon-container">
-    <DeployHeader :drop="drop" :table-data="tableData" />
+    <router-view :key="key" />
+    <DeployHeader v-if="$route.path === '/components/daemons_set'" :drop="drop" :table-data="tableData" />
   </div>
 </template>
 
@@ -86,6 +87,11 @@ export default {
           application: 'gzvhs-s1-km'
         }
       ]
+    }
+  },
+  computed: {
+    key() {
+      return this.$route.path
     }
   }
 }

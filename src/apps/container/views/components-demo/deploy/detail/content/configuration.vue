@@ -6,7 +6,7 @@
     </div>
     <div class="flex-center">
       <span>环境变量</span>
-      <el-button>更新</el-button>
+      <el-button @click="updateEnvionment">更新</el-button>
     </div>
     <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
       <el-table-column label="键" prop="key" />
@@ -15,19 +15,24 @@
     </el-table>
     <div class="flex-center" style="margin-top: 20px">
       <span>配置引用</span>
-      <el-button>更新</el-button>
+      <el-button @click="updateCite">更新</el-button>
     </div>
     <el-table :data="tableData1" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
       <el-table-column label="类型" prop="type" />
 
       <el-table-column prop="name" label="名称" />
     </el-table>
+    <UpdateConfigurationDialog :configuration-visible.sync="configurationVisible" />
+    <UpdateEnvionmentDialog :envionment-visible.sync="envionmentVisible" />
   </div>
 </template>
 
 <script>
+import UpdateConfigurationDialog from '@/apps/container/views/components/UpdateConfiguration.vue'
+import UpdateEnvionmentDialog from '@/apps/container/views/components/updateEnvionmentDialog.vue'
 export default {
   name: 'Configuration',
+  components: { UpdateConfigurationDialog, UpdateEnvionmentDialog },
   data() {
     return {
       tableData: [
@@ -49,7 +54,17 @@ export default {
           type: 'sjjjsjs',
           name: 'sjakasjajsj'
         }
-      ]
+      ],
+      configurationVisible: false,
+      envionmentVisible: false
+    }
+  },
+  methods: {
+    updateCite() {
+      this.configurationVisible = true
+    },
+    updateEnvionment() {
+      this.envionmentVisible = true
     }
   }
 }

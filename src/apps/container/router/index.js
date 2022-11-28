@@ -124,19 +124,19 @@ export const containerAsyncRoutes = [
       },
 
       {
-        path: '/daemons_set',
+        path: 'daemons_set',
         component: () => import('@/apps/container/views/components-demo/daemon/index.vue'),
         name: 'DaemonsSet',
         meta: { title: '守护进程集' }
       },
       {
-        path: '/stateful_set',
+        path: 'stateful_set',
         component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSet.vue'),
         name: 'statefulSet',
         meta: { title: '有状态副本集' }
       },
       {
-        path: '/cron_job',
+        path: 'cron_job',
         component: () => import('@/apps/container/views/components-demo/timedTask/index.vue'),
         name: 'CronJob',
         meta: { title: '定时任务' }
@@ -165,7 +165,7 @@ export const containerAsyncRoutes = [
         ]
       },
       {
-        path: '/pod',
+        path: 'pod',
         component: () => import('@/apps/container/views/components-demo/containerGroup/index.vue'),
         name: 'Pod',
         meta: { title: '容器组' }
