@@ -103,8 +103,9 @@ export const policyColumnList = [{
 export const policyList = Mock.mock({
   'data|5': [{
     name: '@word(5, 10)',
+    showName: 'test-data',
     ruleNum: '@integer(1,10)',
-    targetUnit: '@word(10, 20)',
+    targetUnit: '全部(当前NS)',
     creater: '@cname',
     createtime: '@date',
     'symbolSize': '@integer(50, 100)',
