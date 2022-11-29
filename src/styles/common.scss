@@ -24,6 +24,9 @@
 .margin-top10{
   margin-top: 10px;
 }
+.margin-bottom10{
+  margin-bottom: 10px;
+}
 .margin-right{
   margin-right: 20px;
 }
@@ -89,6 +92,7 @@
 .question-icon{
   color: $icon-color;
   font-size: $font-size-18;
+  cursor: pointer;
 }
 // descriptions 样式
 .descriptions-div{
