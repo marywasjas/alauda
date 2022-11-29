@@ -34,3 +34,35 @@ export const tableData = Mock.mock({
     }
   ]
 })
+export const tableColumnList1 = [
+  {
+    id: 'type',
+    label: '类型'
+  },
+  {
+    id: 'status',
+    label: '状态'
+  },
+  {
+    id: 'cause',
+    label: '原因'
+  },
+  {
+    id: 'message',
+    label: '消息'
+  },
+  {
+    id: 'lastDate',
+    label: '最后更新时间'
+  }
+]
+export const tableData1 = Mock.mock({
+  'data|10': [
+    {
+      type: '@word(3, 7)',
+      status: 'True',
+      message: '-',
+      lastDate: '3天前'
+    }
+  ]
+})

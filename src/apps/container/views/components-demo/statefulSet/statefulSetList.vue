@@ -1,9 +1,9 @@
 <template>
-  <div class="deamon-container">
-    <div class="deamon-main">
+  <div class="stateful-container">
+    <div class="stateful-main">
       <div class="card__header">
         <el-dropdown split-button type="primary" trigger="click" @command="handleClick" @click="openDialog">
-          创建守护进程集
+          创建有状态副本集
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item split-button>YAML创建</el-dropdown-item>
           </el-dropdown-menu>
@@ -58,7 +58,7 @@
 <script>
 import SelectMirror from '@/apps/container/views/components/SelectMirror'
 export default {
-  name: 'DeamonList',
+  name: 'StatefulSetList',
   components: { SelectMirror },
   props: {},
   data() {
@@ -147,26 +147,26 @@ export default {
     },
     handleClick() {
       this.$router.push({
-        name: 'DeamonYamlCreat',
+        name: 'StatefulYamlCreat',
         query: {}
       })
     },
     detail(link_name) {
       this.$router.push({
-        name: 'DeamonDetail',
+        name: 'StatefulSetDetail',
         query: {
           link_name: link_name // 传递的参数: 键值对
         }
       })
     },
-    handleEdit(link_name) {
-      this.$router.push({
-        path: 'deploy/deployUpdate',
-        query: {
-          link_name: link_name // 传递的参数: 键值对
-        }
-      })
-    },
+    // handleEdit(link_name) {
+    //   this.$router.push({
+    //     path: 'deploy/deployUpdate',
+    //     query: {
+    //       link_name: link_name // 传递的参数: 键值对
+    //     }
+    //   })
+    // },
     openDialog() {
       this.formVisible = true
     },
@@ -178,7 +178,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.deamon-container {
+.stateful-container {
   padding: 0 20px;
   background-color: $background-color;
   min-height: 100%;
@@ -190,7 +190,7 @@ export default {
       margin-bottom: 0;
     }
   }
-  .deamon-main {
+  .stateful-main {
     background: #fff;
     padding: 20px;
   }

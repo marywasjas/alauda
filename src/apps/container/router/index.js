@@ -103,21 +103,21 @@ export const containerAsyncRoutes = [
             path: 'detail',
             component: () => import('@/apps/container/views/components-demo/deploy/detail/index.vue'),
             name: 'Detail',
-            meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '' },
+            meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
           },
           {
             path: 'yamlCreat',
             component: () => import('@/apps/container/views/components-demo/deploy/yamlCreat.vue'),
             name: 'YamlCreat',
-            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '' },
+            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
           },
           {
             path: 'deployUpdate',
             component: () => import('@/apps/container/views/components-demo/deploy/DeployUpdate.vue'),
             name: 'DeployUpdate',
-            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '' },
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
           }
         ]
@@ -126,20 +126,92 @@ export const containerAsyncRoutes = [
       {
         path: 'daemons_set',
         component: () => import('@/apps/container/views/components-demo/daemon/index.vue'),
-        name: 'DaemonsSet',
-        meta: { title: '守护进程集' }
+        name: 'DaemonMain',
+        redirect: '/components/daemons_set/List',
+        meta: { title: '守护进程集' },
+        children: [
+          {
+            path: 'List',
+            component: () => import('@/apps/container/views/components-demo/daemon/deamonList.vue'),
+            name: 'DeamonList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
+            hidden: true
+          },
+          {
+            path: 'Detail',
+            component: () => import('@/apps/container/views/components-demo/daemon/deamonDetail.vue'),
+            name: 'DeamonDetail',
+            meta: { title: '守护进程集详情', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
+            hidden: true
+          },
+          {
+            path: 'yamlCreat',
+            component: () => import('@/apps/container/views/components-demo/daemon/YamlCreate.vue'),
+            name: 'DeamonYamlCreat',
+            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
+            hidden: true
+          }
+        ]
       },
       {
         path: 'stateful_set',
-        component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSet.vue'),
+        component: () => import('@/apps/container/views/components-demo/statefulSet/index.vue'),
         name: 'statefulSet',
-        meta: { title: '有状态副本集' }
+        redirect: '/components/stateful_set/List',
+        meta: { title: '有状态副本集' },
+        children: [
+          {
+            path: 'List',
+            component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSetList.vue'),
+            name: 'StatefulSetList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
+            hidden: true
+          },
+          {
+            path: 'Detail',
+            component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSetDetail.vue'),
+            name: 'StatefulSetDetail',
+            meta: { title: '有状态副本集详情', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
+            hidden: true
+          },
+          {
+            path: 'yamlCreat',
+            component: () => import('@/apps/container/views/components-demo/statefulSet/YamlCreate.vue'),
+            name: 'StatefulYamlCreat',
+            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
+            hidden: true
+          }
+        ]
       },
       {
         path: 'cron_job',
         component: () => import('@/apps/container/views/components-demo/timedTask/index.vue'),
         name: 'CronJob',
-        meta: { title: '定时任务' }
+        redirect: '/components/cron_job/List',
+        meta: { title: '定时任务' },
+        children: [
+          {
+            path: 'List',
+            component: () => import('@/apps/container/views/components-demo/timedTask/timedTaskList.vue'),
+            name: 'TimedTaskList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            hidden: true
+          },
+          {
+            path: 'Detail',
+            component: () => import('@/apps/container/views/components-demo/timedTask/timedTaskDetail.vue'),
+            name: 'TimedTasktDetail',
+            meta: { title: '定时任务详情', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            hidden: true
+          },
+          {
+            path: 'yamlCreat',
+            component: () => import('@/apps/container/views/components-demo/timedTask/YamlCreate.vue'),
+            name: 'TimedTaskYamlCreat',
+            meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            hidden: true
+          }
+        ]
       },
       {
         path: 'task',
@@ -152,14 +224,14 @@ export const containerAsyncRoutes = [
             path: 'taskList',
             component: () => import('@/apps/container/views/components-demo/task/taskList.vue'),
             name: 'TaskList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '' },
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/task' },
             hidden: true
           },
           {
             path: 'taskDetail',
             component: () => import('@/apps/container/views/components-demo/task/taskDetail.vue'),
             name: 'TaskDetail',
-            meta: { title: '任务详情', icon: 'icon', noCache: true, activeMenu: '' },
+            meta: { title: '任务详情', icon: 'icon', noCache: true, activeMenu: '/components/task' },
             hidden: true
           }
         ]
@@ -168,7 +240,24 @@ export const containerAsyncRoutes = [
         path: 'pod',
         component: () => import('@/apps/container/views/components-demo/containerGroup/index.vue'),
         name: 'Pod',
-        meta: { title: '容器组' }
+        redirect: '/components/pod/containerGroupList',
+        meta: { title: '容器组' },
+        children: [
+          {
+            path: 'containerGroupList',
+            component: () => import('@/apps/container/views/components-demo/containerGroup/containerGroupList.vue'),
+            name: 'ContainerGroupList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/pod' },
+            hidden: true
+          },
+          {
+            path: 'containerGroupDetail',
+            component: () => import('@/apps/container/views/components-demo/containerGroup/containerDetail.vue'),
+            name: 'ContainerGroupDetail',
+            meta: { title: '容器组详情', icon: 'icon', noCache: true, activeMenu: '/components/pod' },
+            hidden: true
+          }
+        ]
       }
     ]
   },
