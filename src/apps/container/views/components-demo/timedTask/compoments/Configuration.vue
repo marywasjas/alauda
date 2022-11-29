@@ -72,8 +72,8 @@ export default {
 
 <style lang="scss" scoped>
 .configuration-center {
-  margin-bottom: 10px;
   margin-top: 20px;
+  margin-bottom: 10px;
   padding: 20px 20px;
   background-color: #fff;
   border: 1px solid #eee;

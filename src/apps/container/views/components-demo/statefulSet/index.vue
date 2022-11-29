@@ -1,5 +1,5 @@
 <template>
-  <section class="timetask-main">
+  <section class="stateful-main">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'TimeTaskMain',
+  name: 'StatefulSetMain',
   components: {},
   computed: {
     cachedViews() {
@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.timetask-main {
+.stateful-main {
   width: 100%;
   height: 100%;
 }

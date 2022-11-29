@@ -1,9 +1,9 @@
 <template>
-  <div class="deamon-container">
-    <div class="deamon-main">
+  <div class="timed-container">
+    <div class="timed-main">
       <div class="card__header">
         <el-dropdown split-button type="primary" trigger="click" @command="handleClick" @click="openDialog">
-          创建守护进程集
+          创建定时任务
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item split-button>YAML创建</el-dropdown-item>
           </el-dropdown-menu>
@@ -58,7 +58,7 @@
 <script>
 import SelectMirror from '@/apps/container/views/components/SelectMirror'
 export default {
-  name: 'DeamonList',
+  name: 'TimedTaskList',
   components: { SelectMirror },
   props: {},
   data() {
@@ -147,13 +147,13 @@ export default {
     },
     handleClick() {
       this.$router.push({
-        name: 'DeamonYamlCreat',
+        name: 'TimedTaskYamlCreat',
         query: {}
       })
     },
     detail(link_name) {
       this.$router.push({
-        name: 'DeamonDetail',
+        name: 'TimedTasktDetail',
         query: {
           link_name: link_name // 传递的参数: 键值对
         }
@@ -178,7 +178,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.deamon-container {
+.timed-container {
   padding: 0 20px;
   background-color: $background-color;
   min-height: 100%;
@@ -190,7 +190,7 @@ export default {
       margin-bottom: 0;
     }
   }
-  .deamon-main {
+  .timed-main {
     background: #fff;
     padding: 20px;
   }

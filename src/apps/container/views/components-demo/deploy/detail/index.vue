@@ -24,6 +24,7 @@
           active-text-color="#1890ff"
           class="el-menu-demo"
           mode="horizontal"
+          :default-active="activeIndex"
           @select="handleSelect"
         >
           <el-menu-item index="1" @click="comName = 'DetailInformation'">详情信息</el-menu-item>
@@ -67,6 +68,7 @@ export default {
   },
   data() {
     return {
+      activeIndex: '1',
       link_name: '',
       comName: 'DetailInformation'
     }
@@ -90,7 +92,7 @@ export default {
   .detail-header {
     background-color: #fff;
     border: 1px solid #eee;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     .detail-header-top {
       padding: 0 17px;
 
