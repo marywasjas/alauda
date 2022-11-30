@@ -15,7 +15,18 @@
             class="label-value"
           >
             <span>{{ item.label }}</span>: &nbsp;&nbsp;
-            <span>
+            <span v-if="item.label=='标签'">
+              <span v-if="tagSelector.length>0">
+                <el-tag v-for="el in tagSelector" :key="el.key" type="info" class="margin-right10">
+                  {{ el.value }}
+                </el-tag>
+              </span>
+              <span v-else>-</span>
+              <span v-if="targetComponents=='标签选择器'" @click="editTag">
+                <i class="el-icon-edit cursor-pointer margin-left10" />
+              </span>
+            </span>
+            <span v-else>
               <i :class="item.frontIcon" />
               {{ item.value ? item.value : "-" }}
             </span>
@@ -112,11 +123,106 @@
         </el-table>
       </section>
     </BaseCard>
+    <el-dialog
+      title="更新标签"
+      :visible.sync="tagVisible"
+      width="840px"
+      :close-on-click-modal="false"
+      :before-close="closeTagDialog"
+    >
+      <div>
+        <el-form
+          ref="ruleForm"
+          :model="ruleForm"
+          label-suffix=":"
+        >
+          <table border="0" style="width:95%">
+            <thead>
+              <tr class="headerStyle">
+                <th>
+                  <div class="cell">键</div>
+                </th>
+                <th>
+                  <div class="cell">值</div>
+                </th>
+                <th>
+                  <div class="cell">操作</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(tag, index) in ruleForm.editTags"
+                :key="tag.id"
+              >
+                <td>
+                  <el-form-item
+                    label=""
+                    :prop="'editTags.' + index + '.key'"
+                    :rules="{
+                      required: true,
+                      message: '键不能为空',
+                      trigger: 'blur',
+                    }"
+                  >
+                    <el-input
+                      v-model="tag.key"
+                      placeholder="键"
+                    />
+                  </el-form-item>
+                </td>
+                <td>
+                  <el-form-item
+                    label=""
+                    :prop="'editTags.' + index + '.value'"
+                    :rules="{
+                      required: true,
+                      message: '值不能为空',
+                      trigger: 'blur',
+                    }"
+                  >
+                    <el-input
+                      v-model="tag.value"
+                      placeholder="值"
+                    />
+                  </el-form-item>
+                </td>
+                <td>
+                  <el-button
+                    icon="el-icon-remove-outline"
+                    class="
+                            cursor-pointer
+                            margin-left10 margin-right10
+                          "
+                    type="text"
+                    @click="handleTagDelete(tag, index)"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
+                    <i class="el-icon-circle-plus-outline" />
+                    添加
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitTagDialog">更新</el-button>
+        <el-button @click="closeTagDialog">关闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { portColumnList, portData, containerColumnList, containerData } from './constant/index'
+import { nanoid } from 'nanoid'
+
 export default {
   name: 'BaseInfo',
   props: {},
@@ -133,7 +239,7 @@ export default {
         },
         {
           label: '标签',
-          value: ''
+          value: []
         },
         {
           label: '会话保持',
@@ -174,7 +280,16 @@ export default {
       portColumnList,
       portData,
       containerColumnList,
-      containerData
+      containerData,
+      targetComponents: '标签选择器',
+      tagVisible: false,
+      ruleForm: {
+        editTags: []
+      },
+      tagSelector: [
+        { key: 'tag-1', value: 'test-1' },
+        { key: 'tag-2', value: 'test-2' }
+      ]
     }
   },
   computed: {},
@@ -187,6 +302,34 @@ export default {
     },
     handleFilter() {
       console.log('search container')
+    },
+    editTag() {
+      this.ruleForm.editTags = JSON.parse(JSON.stringify(this.tagSelector))
+      this.tagVisible = true
+    },
+    handleTagDelete(item, index) {
+      this.ruleForm.editTags.splice(this.ruleForm.editTags.indexOf(item), 1)
+    },
+    handleTagAdd() {
+      const obj = {
+        id: nanoid(),
+        key: '',
+        value: ''
+      }
+      this.ruleForm.editTags.push(obj)
+    },
+    submitTagDialog() {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.tagSelector = this.ruleForm.editTags
+          this.tagVisible = false
+        } else {
+          return false
+        }
+      })
+    },
+    closeTagDialog() {
+      this.tagVisible = false
     }
   }
 }
@@ -209,57 +352,18 @@ export default {
     font-weight: 400;
   }
 }
-.resource__header {
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  > div {
-    width: 100%;
-    box-sizing: border-box;
-  }
-  .label-value {
-    margin-bottom: 0;
-  }
-  .resource__header__front {
-    span {
-      color: $color-primary;
-      cursor: pointer;
-      font-size: $font-size-16;
-    }
-  }
-  .resource__header__last {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    .last-label {
-      flex: 1;
-    }
-    .chart-div {
-      width: 250px;
-    }
-  }
+.headerStyle {
+  height: 36px;
 }
-.resource__content {
-  margin-top: 12px;
-  padding: 8px 8px 0 8px;
-  background: $background-color;
-  .el-row {
-    padding: 0 20px;
-  }
+.el-form-item {
+  margin-bottom: 0px;
+  line-height: 36px;
 }
-.container-popover{
-  .title{
-    border-bottom: 1px solid $border-color-one;
-    padding-bottom: 5px;
-  }
-  p{
-    margin: 2px 0;
-    line-height: $line-height-22;
-    cursor: pointer;
-  }
-  p:last-child {
-    margin-bottom: 0;
-  }
+.hover-div{
+  height: 36px;
+  line-height: 36px;
+}
+.hover-div:hover{
+  background:$color-primary-rgba1;
 }
 </style>
