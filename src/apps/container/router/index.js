@@ -293,16 +293,64 @@ export const containerAsyncRoutes = [
     },
     children: [
       {
-        path: 'keyboard',
-        component: () => import('@/apps/container/views/configure/keyboard'),
-        name: 'KeyboardChart',
-        meta: { title: '配置字典', noCache: true }
+        path: 'configureDictionary',
+        component: () => import('@/apps/container/views/configure/configureDictionary/index'),
+        redirect: '/configure/configureDictionary/list',
+        name: 'ConfigureDictionary',
+        meta: { title: '配置字典', noCache: true },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/configure/configureDictionary/list'),
+            name: 'ConfigureDictionaryList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionary' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/configure/configureDictionary/detail'),
+            name: 'ConfigureDictionaryDetail',
+            meta: { title: '配置字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionaryt' },
+            hidden: true
+          },
+          {
+            path: 'createUpdate',
+            component: () => import('@/apps/container/views/configure/configureDictionary/createUpdate'),
+            name: 'ConfigureDictionaryCreateUpdate',
+            meta: { title: '创建/更新', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionary' },
+            hidden: true
+          }
+        ]
       },
       {
-        path: 'line',
-        component: () => import('@/apps/container/views/configure/line'),
-        name: 'LineChart',
-        meta: { title: '保密字典', noCache: true }
+        path: 'confidentialDictionary',
+        component: () => import('@/apps/container/views/configure/confidentialDictionary/index'),
+        redirect: '/configure/confidentialDictionary/list',
+        name: 'ConfidentialDictionary',
+        meta: { title: '保密字典', noCache: true },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/configure/confidentialDictionary/list'),
+            name: 'ConfidentialDictionaryList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/configure/confidentialDictionary' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/configure/confidentialDictionary/detail'),
+            name: 'ConfidentialDictionaryDetail',
+            meta: { title: '保密字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/confidentialDictionary' },
+            hidden: true
+          },
+          {
+            path: 'createUpdate',
+            component: () => import('@/apps/container/views/configure/confidentialDictionary/createUpdate'),
+            name: 'ConfidentialDictionaryCreateUpdate',
+            meta: { title: '创建/更新', icon: 'icon', noCache: true, activeMenu: '/configure/confidentialDictionary' },
+            hidden: true
+          }
+        ]
       }
     ]
   },
