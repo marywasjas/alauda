@@ -38,11 +38,12 @@
           <el-table-column label="" align="center" width="70" class-name="small-padding fixed-width">
             <template slot-scope="{ row }">
               <div class="operation-cell">
-                <el-dropdown @command="handleEdit(row.name.link_name)">
+                <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item command="update" @click.native="handleUpdate(row)">更新</el-dropdown-item>
+                    <el-dropdown-item command="execute" @click.native="open(row)">立即执行</el-dropdown-item>
+                    <el-dropdown-item command="delete">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -160,18 +161,42 @@ export default {
       })
     },
     handleEdit(link_name) {
-      this.$router.push({
-        path: 'deploy/deployUpdate',
-        query: {
-          link_name: link_name // 传递的参数: 键值对
-        }
-      })
+      console.log(link_name)
     },
     openDialog() {
       this.formVisible = true
     },
     closeFormDialog() {
       this.formVisible = false
+    },
+    // 更新
+    handleUpdate(row) {
+      this.$router.push({
+        name: 'TimedUpdate',
+        query: {
+          name: row.name
+        }
+      })
+    },
+    // 立即执行对话框
+    open(row) {
+      this.$confirm('确定立即执行定时任务timeout吗?', {
+        cancelButtonText: '取消',
+        confirmButtonText: '立即执行',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '立即执行成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消立即执行'
+          })
+        })
     }
   }
 }

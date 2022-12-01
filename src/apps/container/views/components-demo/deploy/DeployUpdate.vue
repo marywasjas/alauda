@@ -840,7 +840,7 @@
     </div>
     <div class="update-foot">
       <el-button type="primary" style="margin-left: auto">更新</el-button>
-      <el-button>取消</el-button>
+      <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
 </template>
@@ -1005,6 +1005,10 @@ export default {
     this.containerTabs[0].title = this.link_name
   },
   methods: {
+    // 取消 按钮
+    cancelCreate() {
+      this.$router.go(-1)
+    },
     // 标签 删除
     handleDelete(filed, item, index) {
       this.infoRuleForm[filed].splice(index, 1)

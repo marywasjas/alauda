@@ -161,7 +161,7 @@ export default {
     },
     handleEdit(link_name) {
       this.$router.push({
-        path: 'deploy/deployUpdate',
+        name: 'DeamonUpdate',
         query: {
           link_name: link_name // 传递的参数: 键值对
         }

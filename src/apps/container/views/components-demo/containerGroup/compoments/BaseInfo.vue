@@ -27,14 +27,13 @@
             <span v-else style="font-size: 14px">
               <i style="color: #1890ff" :class="item.frontIcon" />
               {{ item.value ? item.value : '-' }}
-              <i style="color: #1890ff" :class="item.afterIcon" class="cursor-pointer" @click="handleUpdateLabels" />
             </span>
           </el-col>
         </el-row>
       </section>
       <header>
-        <div class="card-title left-header" style="margin-bottom: 10px">
-          <span>容器组标签</span>
+        <div class="card-title left-header" style="margin-bottom: 20px">
+          <span>容器组</span>
         </div>
       </header>
       <section>
@@ -42,6 +41,51 @@
         <el-tag type="info" style="margin-right: 10px">name:chaosblade-box</el-tag>
         <el-tag type="info" style="margin-right: 10px">pod:chaosblade-box</el-tag>
       </section>
+      <header>
+        <div class="card-title left-header" style="margin: 20px 0">
+          <span>容器组注解</span>
+        </div>
+      </header>
+      <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle">
+        <el-table-column prop="key" label="键" />
+        <el-table-column prop="value" label="值" />
+      </el-table>
+      <header>
+        <div class="card-title left-header" style="margin: 20px 0">
+          <span>主机选择器</span>
+        </div>
+      </header>
+      <el-button
+        v-if="storageVolumeInfoVisible"
+        round
+        size="mini"
+        style="color: #1890ff; margin-bottom: 10px"
+        @click="openStorageVolumeInfo"
+      >存储卷<i
+        class="el-icon-d-arrow-right"
+      /></el-button>
+      <div
+        v-if="infoStorageVolumeVisible"
+        class="detail-center-table"
+        style="position: relative; border: 1px solid #1890ff; padding: 30px"
+      >
+        <el-table :data="storageVolumeInfoData" style="width: 100%" header-row-class-name="headerStyle">
+          <el-table-column prop="storageVolumeName" label="名称" />
+          <el-table-column prop="type" label="类型" />
+          <el-table-column prop="configuration" label="相关配置" />
+        </el-table>
+        <el-button
+          style="position: absolute; bottom: -15px; left: 0"
+          class="table-button"
+          round
+          type="primary"
+          size="mini"
+          @click="closeStorageVolumeInfo"
+        >存储卷 <i
+          class="el-icon-d-arrow-right"
+          style="transform: rotate(-90deg)"
+        /></el-button>
+      </div>
     </BaseCard>
 
     <BaseCard>
@@ -254,14 +298,42 @@ export default {
         }
       ],
       tableColumnList1,
-      tableData1
+      tableData1,
+      tableData: [
+        { key: 'djdjdjddjskk', value: 'jdjjdjdjdj' },
+        { key: 'djdjdjddjskk', value: 'jdjjdjdjdj' },
+        { key: 'djdjdjddjskk', value: 'jdjjdjdjdj' }
+      ],
+      storageVolumeInfoData: [
+        {
+          storageVolumeName: 'hosts',
+          type: '主机路径',
+          configuration: '/var/run/docker'
+        },
+        {
+          storageVolumeName: 'hosts',
+          type: '主机路径',
+          configuration: '/var/run/docker'
+        }
+      ],
+      infoStorageVolumeVisible: false,
+      storageVolumeInfoVisible: true
     }
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    openStorageVolumeInfo() {
+      this.infoStorageVolumeVisible = true
+      this.storageVolumeInfoVisible = false
+    },
+    closeStorageVolumeInfo() {
+      this.infoStorageVolumeVisible = false
+      this.storageVolumeInfoVisible = true
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -302,6 +374,7 @@ export default {
   .container-header {
     margin-top: 20px;
     background-color: #eee;
+
     span {
       display: inline-block;
       width: 200px;
@@ -309,6 +382,9 @@ export default {
       padding: 10px 10px;
       border-top: 3px solid #1890ff;
       text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   .button-log {

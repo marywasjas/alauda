@@ -1,47 +1,95 @@
 <template>
   <div class="group-container">
     <LineAlert :content="content" />
-    <div class="group-main">
-      <div class="card__header">
-        <div class="flex-center">
-          <el-input v-model="formInline.name" placeholder="按名称搜索" size="small" class="margin-right10">
-            <el-button slot="append" icon="el-icon-search" @click="onSearch" />
-          </el-input>
-          <el-button icon="el-icon-refresh-right" size="small" @click="onSearch" />
-        </div>
-      </div>
-      <div class="card__content">
-        <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
-          <el-table-column label="名称">
-            <template slot-scope="scope">
-              <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
-              <div class="v_name">{{ scope.row.name.txt }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="状态">
-            <template slot-scope="scope">
-              <i :class="scope.row.status.done === '运行中' ? 'el-icon-success' : 'el-icon-warning'" />
-              <span class="v_txt">{{ scope.row.status.done }}{{ scope.row.status.desc }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="resource_limit" label="资源限额">
-            <template slot-scope="scope">
-              <a class="link_name">{{ scope.row.application }}</a>
-            </template>
-          </el-table-column>
-          <el-table-column prop="restarts_number" label="重启次数" />
-          <el-table-column prop="ip" label="容器组IP" />
-          <el-table-column prop="node" label="节点" />
-          <el-table-column prop="create_time" label="创建时间" />
-        </el-table>
-      </div>
+    <div class="container-group">
+      <BaseCard>
+        <header>
+          <div class="card-title right-header">
+            <span />
+            <div>
+              <el-input v-model="filterName" placeholder="请输入名称或容器组 IP" size="small" style="width: 300px">
+                <el-button slot="append" icon="el-icon-search" />
+              </el-input>
+              <el-button icon="el-icon-refresh-right" size="small" class="margin-left10" />
+            </div>
+          </div>
+        </header>
+        <section>
+          <el-table
+            class="margin-top"
+            :data="tableData.data"
+            style="width: 100%"
+            height="100%"
+            header-row-class-name="headerStyle"
+          >
+            <el-table-column
+              v-for="col in tableColumnList"
+              :key="col.id"
+              :label="col.label"
+              :width="col.width"
+              :show-overflow-tooltip="col['show-overflow-tooltip']"
+            >
+              <template slot-scope="scope">
+                <div v-if="col.id === 'name'" class="cursor-pointer" @click="detail(scope.row.name)">
+                  {{ scope.row[col.id] }}
+                </div>
+                <div v-else-if="col.id === 'resource'">
+                  <p class="margin0">
+                    <i class="el-icon-cpu primary2-text" />
+                    {{ scope.row.cpu }}{{ scope.row.cpuCompony }}
+                  </p>
+                  <p class="margin0">
+                    <i class="el-icon-bank-card primary-text" />
+                    {{ scope.row.memory }}{{ scope.row.memoryCompony }}
+                  </p>
+                </div>
+                <div v-else-if="col.id === 'status'" class="status-cell">
+                  <i v-if="scope.row.status === 'running'" class="el-icon-video-play running" />
+                  <i v-else-if="scope.row.status === 'stop'" class="el-icon-video-pause stop" />
+                  <i v-else-if="scope.row.status === 'pending'" class="el-icon-loading pending" />
+                  <span>{{ scope.row.statusText }}</span>
+                </div>
+                <div v-else-if="col.id === 'operation'" class="operation-cell">
+                  <el-dropdown>
+                    <i class="el-icon-more" />
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="update">
+                        <el-tooltip placement="left" effect="light" :visible-arrow="false">
+                          <div slot="content">
+                            <el-button type="text">nginx</el-button>
+                          </div>
+                          <el-button type="text">查看日志<i class="el-icon-arrow-right" /></el-button>
+                        </el-tooltip>
+                      </el-dropdown-item>
+                      <el-dropdown-item command="update">
+                        <el-tooltip placement="left" effect="light" :visible-arrow="false">
+                          <div slot="content">
+                            <el-button type="text" disabled>nginx</el-button>
+                          </div>
+                          <el-button type="text">EXEC<i class="el-icon-arrow-right" /></el-button>
+                        </el-tooltip>
+                      </el-dropdown-item>
+                      <el-dropdown-item command="delete">
+                        <el-button type="text">删除</el-button>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+                <div v-else>
+                  {{ scope.row[col.id] }}
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </section>
+      </BaseCard>
     </div>
   </div>
 </template>
 
 <script>
 import LineAlert from '@/apps/container/views/components/LineAlert/index.vue'
-
+import { tableColumnList, tableData } from '@/apps/container/views/components/ContainerGroupTable/constant/index'
 export default {
   name: 'ContainerGroupList',
   components: { LineAlert },
@@ -52,26 +100,9 @@ export default {
       formInline: {
         name: ''
       },
-      tableData: [
-        {
-          name: { txt: '测试', link_name: 'builder-python' },
-          create_time: '2016-05-03',
-          status: { done: '运行中', desc: '（1/1）' },
-          resource_limit: '',
-          restarts_number: '',
-          ip: '',
-          node: ''
-        },
-        {
-          name: { txt: '测试', link_name: 'builder-python' },
-          create_time: '2016-05-03',
-          status: { done: '运行中', desc: '（1/1）' },
-          resource_limit: '',
-          restarts_number: '',
-          ip: '',
-          node: ''
-        }
-      ]
+      filterName: '',
+      tableColumnList,
+      tableData
     }
   },
   computed: {},
@@ -98,26 +129,5 @@ export default {
   padding: 0 20px;
   background-color: $background-color;
   min-height: 100%;
-  .group-main {
-    background-color: #fff;
-    .card__header {
-      display: flex;
-      width: 300px;
-      padding-top: 20px;
-      margin-left: auto;
-    }
-    .card__content {
-      padding: 10px;
-    }
-  }
-  .link_name {
-    color: #1890ff;
-  }
-  .el-icon-success {
-    color: #1890ff;
-  }
-  .el-icon-more {
-    color: #1890ff;
-  }
 }
 </style>

@@ -159,14 +159,14 @@ export default {
         }
       })
     },
-    // handleEdit(link_name) {
-    //   this.$router.push({
-    //     path: 'deploy/deployUpdate',
-    //     query: {
-    //       link_name: link_name // 传递的参数: 键值对
-    //     }
-    //   })
-    // },
+    handleEdit(link_name) {
+      this.$router.push({
+        path: 'StatefulSetUpdate',
+        query: {
+          link_name: link_name // 传递的参数: 键值对
+        }
+      })
+    },
     openDialog() {
       this.formVisible = true
     },

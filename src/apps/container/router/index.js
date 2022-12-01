@@ -150,6 +150,13 @@ export const containerAsyncRoutes = [
             name: 'DeamonYamlCreat',
             meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
             hidden: true
+          },
+          {
+            path: 'deamonUpdate',
+            component: () => import('@/apps/container/views/components-demo/daemon/deamonUpdate.vue'),
+            name: 'DeamonUpdate',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
+            hidden: true
           }
         ]
       },
@@ -180,6 +187,13 @@ export const containerAsyncRoutes = [
             name: 'StatefulYamlCreat',
             meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
             hidden: true
+          },
+          {
+            path: 'statefulSetUpdate',
+            component: () => import('@/apps/container/views/components-demo/statefulSet/statefulSetUpdate.vue'),
+            name: 'StatefulSetUpdate',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
+            hidden: true
           }
         ]
       },
@@ -209,6 +223,13 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/components-demo/timedTask/YamlCreate.vue'),
             name: 'TimedTaskYamlCreat',
             meta: { title: 'YAML创建', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            hidden: true
+          },
+          {
+            path: 'timedUpdate',
+            component: () => import('@/apps/container/views/components-demo/timedTask/timedUpdate.vue'),
+            name: 'TimedUpdate',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
             hidden: true
           }
         ]
