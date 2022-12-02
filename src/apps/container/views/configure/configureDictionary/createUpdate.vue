@@ -114,7 +114,7 @@
                 </div>
               </div>
               <div v-else class="empty-div">
-                无配置项
+                无二进制数据
               </div>
               <div class="flex-center">
                 <div

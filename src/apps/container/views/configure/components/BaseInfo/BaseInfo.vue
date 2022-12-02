@@ -70,14 +70,20 @@
     </BaseCard>
     <!-- 更新标签 -->
     <update-labels-dialog :update-labels-visible.sync="updateLabelsVisible" />
+    <!-- 添加配置项 -->
+    <add-configuration-items :form-visible="addConfigurationItemsVisible" @closeFormDialog="closeAddConfigurationItemsFormDialog" @submitForm="submitAddConfigurationItemsForm" />
+    <!-- 添加二进制配置项 -->
+    <add-binary-configuration-items :form-visible="addBinaryConfigurationItemsVisible" @closeFormDialog="closeBinaryAddConfigurationItemsFormDialog" @submitForm="submitBinaryAddConfigurationItemsForm" />
   </div>
 </template>
 
 <script>
 import UpdateLabelsDialog from '@/apps/container/views/components/UpdateLabelsDialog'
+import AddConfigurationItems from '../AddConfigurationItems.vue'
+import AddBinaryConfigurationItems from '../AddBinaryConfigurationItems.vue'
 export default {
   name: 'BaseInfo',
-  components: { UpdateLabelsDialog },
+  components: { UpdateLabelsDialog, AddConfigurationItems, AddBinaryConfigurationItems },
   props: {},
   data() {
     return {
@@ -121,7 +127,9 @@ export default {
           key: '2',
           value: 'qdkasnallksnaldknaldkajsdlasd'
         }
-      ]
+      ],
+      addConfigurationItemsVisible: false,
+      addBinaryConfigurationItemsVisible: false
     }
   },
   computed: {},
@@ -133,10 +141,24 @@ export default {
       this.updateLabelsVisible = true
     },
     handleAddConfig() {
-
+      this.addConfigurationItemsVisible = true
+    },
+    closeAddConfigurationItemsFormDialog() {
+      this.addConfigurationItemsVisible = false
+    },
+    submitAddConfigurationItemsForm(form) {
+      console.log(form)
+      this.addConfigurationItemsVisible = true
     },
     handleAddBinary() {
-
+      this.addBinaryConfigurationItemsVisible = true
+    },
+    closeBinaryAddConfigurationItemsFormDialog() {
+      this.addBinaryConfigurationItemsVisible = false
+    },
+    submitBinaryAddConfigurationItemsForm(form) {
+      console.log(form)
+      this.addBinaryConfigurationItemsVisible = true
     }
   }
 }
