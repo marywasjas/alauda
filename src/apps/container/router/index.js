@@ -548,33 +548,60 @@ export const containerAsyncRoutes = [
     ]
   },
   {
-    path: '/example',
+    path: '/alarm',
     component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
+    redirect: '/alarm/index',
+    name: 'Alarm',
     meta: {
       title: '告警',
       icon: 'el-icon-s-help'
     },
     children: [
       {
-        path: 'create',
-        component: () => import('@/apps/container/views/example/create'),
-        name: 'CreateArticle',
-        meta: { title: '告警策略', icon: 'edit' }
+        path: 'policy',
+        component: () => import('@/apps/container/views/alarm/policy/index'),
+        redirect: '/alarm/policy/list',
+        name: 'AlarmMain',
+        meta: {
+          title: '告警策略',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/alarm/policy/list'),
+            name: 'AlarmList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/alarm/policy/create'),
+            name: 'AlarmCreate',
+            meta: { title: '创建告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/alarm/policy/create'),
+            name: 'AlarmUpdate',
+            meta: { title: '更新告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/alarm/policy/detail'),
+            name: 'AlarmDetail',
+            meta: { title: '告警策略详情', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          }
+        ]
       },
       {
-        path: 'list',
-        component: () => import('@/apps/container/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: '告警历史', icon: 'list' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/apps/container/views/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
-        hidden: true
+        path: 'history',
+        component: () => import('@/apps/container/views/alarm/history/list'),
+        name: 'AlarmHistory',
+        meta: { title: '告警历史' }
       }
     ]
   },
