@@ -512,9 +512,36 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'persistentVolume',
-        name: 'PersistentVolume',
         component: () => import('@/apps/container/views/storage/persistentVolume/index'),
-        meta: { title: '持久卷声明（PVC）' }
+        redirect: '/storage/persistentVolume/list',
+        name: 'PersistentVolumeMain',
+        meta: {
+          title: '持久卷声明（PVC）',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage/persistentVolume/list'),
+            name: 'nativeAppList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/storage/persistentVolume' },
+            hidden: true
+          },
+          {
+            path: 'createUpdate',
+            component: () => import('@/apps/container/views/storage/persistentVolume/createUpdate'),
+            name: 'PersistentVolumeCreateUpdate',
+            meta: { title: '创建/更新', icon: 'icon', noCache: true, activeMenu: '/storage/persistentVolume' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/storage/persistentVolume/detail'),
+            name: 'PersistentVolumeDetail',
+            meta: { title: '持久卷声明详情', icon: 'icon', noCache: true, activeMenu: '/storage/persistentVolume' },
+            hidden: true
+          }
+        ]
       }
     ]
   },
