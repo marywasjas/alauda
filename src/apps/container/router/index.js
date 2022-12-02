@@ -340,7 +340,12 @@ export const containerAsyncRoutes = [
             path: 'detail',
             component: () => import('@/apps/container/views/configure/confidentialDictionary/detail'),
             name: 'ConfidentialDictionaryDetail',
-            meta: { title: '保密字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/confidentialDictionary' },
+            meta: {
+              title: '保密字典详情',
+              icon: 'icon',
+              noCache: true,
+              activeMenu: '/configure/confidentialDictionary'
+            },
             hidden: true
           },
           {
