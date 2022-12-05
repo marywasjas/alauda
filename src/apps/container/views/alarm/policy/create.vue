@@ -80,7 +80,7 @@
                     <td colspan="5">
                       <div class="cursor-pointer text-center hover-div" @click="handleAdd">
                         <i class="el-icon-circle-plus-outline" />
-                        添加
+                        添加告警规则
                       </div>
                     </td>
                   </tr>
