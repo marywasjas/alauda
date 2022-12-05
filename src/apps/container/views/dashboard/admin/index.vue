@@ -88,7 +88,7 @@
       <section>
         <div class="container-top flexbox">
           <div class="container-top-left">
-            <radius-pie-chart :chart-data="containerData" />
+            <radius-pie-chart :chart-data="containerData" title="总数" />
           </div>
           <div class="container-top-right">
             <div class="text-right">
@@ -227,7 +227,7 @@ import ProgressCard from './components/ProgressCard'
 import BarChartSignle from './components/BarChartSingle.vue'
 import EventDialog from './components/EventDialog/index.vue'
 // 应用 圆角饼图组件
-import RadiusPieChart from './components/RadiusPieChart.vue'
+import RadiusPieChart from '@/apps/container/views/components/RadiusPieChart'
 // 计算组件
 import TransverseBar from '@/apps/container/views/components/TransverseBar'
 // 容器组+资源使用率

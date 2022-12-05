@@ -310,7 +310,7 @@ export const containerAsyncRoutes = [
             path: 'detail',
             component: () => import('@/apps/container/views/configure/configureDictionary/detail'),
             name: 'ConfigureDictionaryDetail',
-            meta: { title: '配置字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionaryt' },
+            meta: { title: '配置字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionary' },
             hidden: true
           },
           {
@@ -547,6 +547,55 @@ export const containerAsyncRoutes = [
             hidden: true
           }
         ]
+      }
+    ]
+  },
+  {
+    path: '/dataService',
+    component: Layout,
+    redirect: '/dataService/mysql',
+    name: 'DataService',
+    alwaysShow: true,
+    meta: {
+      title: '数据服务',
+      icon: 'el-icon-coin'
+    },
+    children: [
+      {
+        path: 'mysql',
+        component: () => import('@/apps/container/views/dataService/mysql/index'),
+        name: 'DataServiceMysql',
+        meta: {
+          title: 'MySQL-PXC',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'redis',
+        component: () => import('@/apps/container/views/dataService/redis/index'),
+        name: 'DataServiceRedis',
+        meta: {
+          title: 'Redis',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'kafka',
+        component: () => import('@/apps/container/views/dataService/kafka/index'),
+        name: 'DataServiceKafka',
+        meta: {
+          title: 'Kafka',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'rabbitMQ',
+        component: () => import('@/apps/container/views/dataService/rabbitMQ/index'),
+        name: 'DataServiceRabbitMQ',
+        meta: {
+          title: 'RabbitMQ',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
       }
     ]
   },

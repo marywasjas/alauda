@@ -6,7 +6,7 @@
 <script>
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-import resize from './mixins/resize'
+import resize from '../dashboard/admin/components/mixins/resize'
 
 export default {
   name: 'RadiusPieChart',
@@ -38,6 +38,10 @@ export default {
           }
         ]
       }
+    },
+    title: {
+      type: String,
+      default: '总数'
     }
   },
   data() {
@@ -84,8 +88,8 @@ export default {
         },
         title: {
           show: true,
-          text: `${total}个`,
-          subtext: '总数',
+          text: `${total}`,
+          subtext: this.title,
           left: 'center',
           top: 'center',
           textVerticalAlign: 'middle'
