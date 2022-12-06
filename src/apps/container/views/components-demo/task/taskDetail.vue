@@ -21,11 +21,11 @@
 
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
-import ContainerGroup from './components/ContainerGroup.vue'
+import ContainerGroup from '@/apps/container/views/components/ContainerGroupTable/ContainerGroup.vue'
 import BaseInfo from './components/BaseInfo.vue'
-import Yaml from './components/Yaml.vue'
-import Journal from './components/Journal.vue'
-import Event from './components/Event.vue'
+import Yaml from '@/apps/container/views/components/Details/Yaml'
+import Journal from '@/apps/container/views/components/Details/Journal'
+import Event from '@/apps/container/views/components/Details/Event'
 import Configuration from './components/Configuration.vue'
 
 export default {

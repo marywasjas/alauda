@@ -33,7 +33,7 @@
 
 <script>
 import formCreate from '@/apps/container/assets/images/nativeApp/form-create.svg'
-import templateCreate from '@/apps/container/assets/images/nativeApp/template-create.svg'
+// import templateCreate from '@/apps/container/assets/images/nativeApp/template-create.svg'
 import yamlCreate from '@/apps/container/assets/images/nativeApp/yaml-create.svg'
 import SelectMirror from '@/apps/container/views/components/SelectMirror'
 export default {
@@ -55,11 +55,11 @@ export default {
           title: '表单创建',
           desc: '通过表单界面手动创建应用，并在该应用下添加组件'
         },
-        {
-          img: templateCreate,
-          title: '模板部署',
-          desc: '通过应用市场内的应用模板，快速部署定制化的应用实例'
-        },
+        // {
+        //   img: templateCreate,
+        //   title: '模板部署',
+        //   desc: '通过应用市场内的应用模板，快速部署定制化的应用实例'
+        // },
         {
           img: yamlCreate,
           title: 'YAML一键创建',

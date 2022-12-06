@@ -73,7 +73,7 @@
         <i class="el-icon-question question-icon" />
       </el-tooltip>
     </div>
-    <div>
+    <!-- <div>
       <el-radio v-model="radio" label="定时调节" value="targetRadio" />
       <div class="Autostretchcontainer">
         <el-table style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
@@ -88,7 +88,7 @@
           <i class="el-icon-question question-icon" />
         </el-tooltip>
       </div>
-    </div>
+    </div> -->
 
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="closeUpdateAutostretchDialog">更新</el-button>

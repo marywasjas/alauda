@@ -15,19 +15,19 @@
         </template>
       </tab-header>
     </div>
-    <component :is="comName" :name="name" />
+    <component :is="comName" :name="name" :card-num="1" />
   </div>
 </template>
 
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
-import ContainerGroup from './compoments/ContainerGroup.vue'
+import ContainerGroup from '@/apps/container/views/components/ContainerGroupTable/ContainerGroup.vue'
 import BaseInfo from './compoments/BaseInfo.vue'
-import Yaml from './compoments/Yaml.vue'
-import Journal from './compoments/Journal.vue'
-import Event from './compoments/Event.vue'
+import Yaml from '@/apps/container/views/components/Details/Yaml'
+import Journal from '@/apps/container/views/components/Details/Journal'
+import Event from '@/apps/container/views/components/Details/Event'
 import Configuration from './compoments/Configuration.vue'
-import Monitor from './compoments/Monitor.vue'
+import Monitor from '@/apps/container/views/components/Details/Monitor'
 import GiveAlarm from './compoments/GiveAlarm.vue'
 
 export default {
@@ -83,12 +83,12 @@ export default {
           label: '监控',
           name: 'monitor',
           com: 'Monitor'
-        },
-        {
-          label: '告警',
-          name: 'giveAlarm',
-          com: 'giveAlarm'
         }
+        // {
+        //   label: '告警',
+        //   name: 'giveAlarm',
+        //   com: 'giveAlarm'
+        // }
       ],
       activeName: ''
     }
