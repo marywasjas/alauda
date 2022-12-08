@@ -34,11 +34,11 @@
           <el-menu-item index="5" @click="comName = 'Log'">日志</el-menu-item>
           <el-menu-item index="6" @click="comName = 'Event'">事件</el-menu-item>
           <el-menu-item index="7" @click="comName = 'Monitor'">监控</el-menu-item>
-          <el-menu-item index="8" @click="comName = 'GiveAlarm'">告警</el-menu-item>
+          <!-- <el-menu-item index="8" @click="comName = 'GiveAlarm'">告警</el-menu-item> -->
         </el-menu>
       </div>
     </div>
-    <component :is="comName" />
+    <component :is="comName" :card-num="1" />
     <!-- <DetailInformation /> -->
     <!-- <yamlInfor></yamlInfor> -->
   </div>
@@ -46,13 +46,13 @@
 
 <script>
 import DetailInformation from './content/detailInformation.vue'
-import YamlInfor from './content/yamlInfor.vue'
-import ContainerGroup from './content/containerGroup.vue'
+import ContainerGroup from '@/apps/container/views/components/ContainerGroupTable/ContainerGroup.vue'
 import Configuration from './content/configuration.vue'
-import Log from './content/log.vue'
-import Event from './content/event.vue'
+import Log from '@/apps/container/views/components/Details/Journal'
+import Event from '@/apps/container/views/components/Details/Event'
 import GiveAlarm from './content/giveAlarm.vue'
-import Monitor from './content/monitor.vue'
+import Monitor from '@/apps/container/views/components/Details/Monitor'
+import YamlInfor from '@/apps/container/views/components/Details/Yaml'
 
 export default {
   name: 'Detail',

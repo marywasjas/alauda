@@ -34,7 +34,7 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="cursor-pointer">
-                {{ scope.row[col.id] }}
+                <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
               </div>
               <div v-else-if="col.id === 'resource'">
                 <p class="margin0">
@@ -106,7 +106,16 @@ export default {
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    handelDetails(row) {
+      this.$router.push({
+        name: 'ContainerGroupDetail',
+        query: {
+          name: row.name
+        }
+      })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

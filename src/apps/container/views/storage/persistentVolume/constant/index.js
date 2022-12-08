@@ -23,7 +23,7 @@ export const tableColumnList = [{
 }]
 export const tableData = Mock.mock({
   'data|10': [{
-    name: '@cword(3, 7)',
+    name: '@word(3, 7)',
     status: 'CrashLoopBackOff(0/1)',
     tag: '@cword(3, 7)',
     date: '@date',

@@ -2,18 +2,18 @@
 import Layout from '@/layout'
 
 export const containerAsyncRoutes = [
-  {
-    path: '/oam',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/apps/container/views/oam/index'),
-        name: 'OAM',
-        meta: { title: 'OAM应用', icon: 'documentation', affix: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/oam',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/apps/container/views/oam/index'),
+  //       name: 'OAM',
+  //       meta: { title: 'OAM应用', icon: 'documentation', affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/application',
     component: Layout,
@@ -102,7 +102,7 @@ export const containerAsyncRoutes = [
           {
             path: 'detail',
             component: () => import('@/apps/container/views/components-demo/deploy/detail/index.vue'),
-            name: 'Detail',
+            name: 'DeployDetail',
             meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
           },
@@ -122,7 +122,6 @@ export const containerAsyncRoutes = [
           }
         ]
       },
-
       {
         path: 'daemons_set',
         component: () => import('@/apps/container/views/components-demo/daemon/index.vue'),
@@ -310,7 +309,7 @@ export const containerAsyncRoutes = [
             path: 'detail',
             component: () => import('@/apps/container/views/configure/configureDictionary/detail'),
             name: 'ConfigureDictionaryDetail',
-            meta: { title: '配置字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionaryt' },
+            meta: { title: '配置字典详情', icon: 'icon', noCache: true, activeMenu: '/configure/configureDictionary' },
             hidden: true
           },
           {
@@ -449,59 +448,59 @@ export const containerAsyncRoutes = [
             hidden: true
           }
         ]
-      },
-      {
-        path: 'load_balancer',
-        component: () => import('@/apps/container/views/network/load-balancer/index'),
-        name: 'LoadBalancer',
-        meta: { title: '负载均衡器' }
-      },
-      {
-        path: 'policy',
-        component: () => import('@/apps/container/views/network/policy/index'),
-        redirect: '/network/policy/list',
-        name: 'PolicyMain',
-        meta: {
-          title: '网络策略',
-          roles: ['admin'] // or you can only set roles in sub nav
-        },
-        children: [
-          {
-            path: 'list',
-            component: () => import('@/apps/container/views/network/policy/list'),
-            name: 'PolicyList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          },
-          {
-            path: 'create',
-            component: () => import('@/apps/container/views/network/policy/create'),
-            name: 'PolicyCreate',
-            meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          },
-          {
-            path: 'update',
-            component: () => import('@/apps/container/views/network/policy/create'),
-            name: 'PolicyUpdate',
-            meta: { title: '更新网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          },
-          {
-            path: 'detail',
-            component: () => import('@/apps/container/views/network/policy/detail'),
-            name: 'PolicyDetail',
-            meta: { title: '网络策略详情', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          }
-        ]
-      },
-      {
-        path: 'load_balancer_list',
-        component: () => import('@/apps/container/views/network/load-balancer/list'),
-        name: 'LoadBalancerList',
-        meta: { title: '负载均衡' }
       }
+      // {
+      //   path: 'load_balancer',
+      //   component: () => import('@/apps/container/views/network/load-balancer/index'),
+      //   name: 'LoadBalancer',
+      //   meta: { title: '负载均衡器' }
+      // },
+      // {
+      //   path: 'policy',
+      //   component: () => import('@/apps/container/views/network/policy/index'),
+      //   redirect: '/network/policy/list',
+      //   name: 'PolicyMain',
+      //   meta: {
+      //     title: '网络策略',
+      //     roles: ['admin'] // or you can only set roles in sub nav
+      //   },
+      //   children: [
+      //     {
+      //       path: 'list',
+      //       component: () => import('@/apps/container/views/network/policy/list'),
+      //       name: 'PolicyList',
+      //       meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'create',
+      //       component: () => import('@/apps/container/views/network/policy/create'),
+      //       name: 'PolicyCreate',
+      //       meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'update',
+      //       component: () => import('@/apps/container/views/network/policy/create'),
+      //       name: 'PolicyUpdate',
+      //       meta: { title: '更新网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'detail',
+      //       component: () => import('@/apps/container/views/network/policy/detail'),
+      //       name: 'PolicyDetail',
+      //       meta: { title: '网络策略详情', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     }
+      //   ]
+      // },
+      // {
+      //   path: 'load_balancer_list',
+      //   component: () => import('@/apps/container/views/network/load-balancer/list'),
+      //   name: 'LoadBalancerList',
+      //   meta: { title: '负载均衡' }
+      // }
     ]
   },
   {
@@ -517,12 +516,88 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'persistentVolume',
-        name: 'PersistentVolume',
         component: () => import('@/apps/container/views/storage/persistentVolume/index'),
-        meta: { title: '持久卷声明（PVC）' }
+        redirect: '/storage/persistentVolume/list',
+        name: 'PersistentVolumeMain',
+        meta: {
+          title: '持久卷声明（PVC）',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage/persistentVolume/list'),
+            name: 'nativeAppList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/storage/persistentVolume' },
+            hidden: true
+          },
+          {
+            path: 'createUpdate',
+            component: () => import('@/apps/container/views/storage/persistentVolume/createUpdate'),
+            name: 'PersistentVolumeCreateUpdate',
+            meta: { title: '创建/更新', icon: 'icon', noCache: true, activeMenu: '/storage/persistentVolume' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/storage/persistentVolume/detail'),
+            name: 'PersistentVolumeDetail',
+            meta: { title: '持久卷声明详情', icon: 'icon', noCache: true, activeMenu: '/storage/persistentVolume' },
+            hidden: true
+          }
+        ]
       }
     ]
   },
+  // {
+  //   path: '/dataService',
+  //   component: Layout,
+  //   redirect: '/dataService/mysql',
+  //   name: 'DataService',
+  //   alwaysShow: true,
+  //   meta: {
+  //     title: '数据服务',
+  //     icon: 'el-icon-coin'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'mysql',
+  //       component: () => import('@/apps/container/views/dataService/mysql/index'),
+  //       name: 'DataServiceMysql',
+  //       meta: {
+  //         title: 'MySQL-PXC',
+  //         roles: ['admin'] // or you can only set roles in sub nav
+  //       }
+  //     },
+  //     {
+  //       path: 'redis',
+  //       component: () => import('@/apps/container/views/dataService/redis/index'),
+  //       name: 'DataServiceRedis',
+  //       meta: {
+  //         title: 'Redis',
+  //         roles: ['admin'] // or you can only set roles in sub nav
+  //       }
+  //     },
+  //     {
+  //       path: 'kafka',
+  //       component: () => import('@/apps/container/views/dataService/kafka/index'),
+  //       name: 'DataServiceKafka',
+  //       meta: {
+  //         title: 'Kafka',
+  //         roles: ['admin'] // or you can only set roles in sub nav
+  //       }
+  //     },
+  //     {
+  //       path: 'rabbitMQ',
+  //       component: () => import('@/apps/container/views/dataService/rabbitMQ/index'),
+  //       name: 'DataServiceRabbitMQ',
+  //       meta: {
+  //         title: 'RabbitMQ',
+  //         roles: ['admin'] // or you can only set roles in sub nav
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/icon',
     component: Layout,
@@ -548,34 +623,61 @@ export const containerAsyncRoutes = [
     ]
   },
   {
-    path: '/example',
+    path: '/alarm',
     component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
+    redirect: '/alarm/index',
+    name: 'Alarm',
     meta: {
       title: '告警',
       icon: 'el-icon-s-help'
     },
     children: [
       {
-        path: 'create',
-        component: () => import('@/apps/container/views/example/create'),
-        name: 'CreateArticle',
-        meta: { title: '告警策略', icon: 'edit' }
-      },
-      {
-        path: 'list',
-        component: () => import('@/apps/container/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: '告警历史', icon: 'list' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/apps/container/views/example/edit'),
-        name: 'EditArticle',
-        meta: { title: 'Edit Article', noCache: true, activeMenu: '/example/list' },
-        hidden: true
+        path: 'policy',
+        component: () => import('@/apps/container/views/alarm/policy/index'),
+        redirect: '/alarm/policy/list',
+        name: 'AlarmMain',
+        meta: {
+          title: '告警策略',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/alarm/policy/list'),
+            name: 'AlarmList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/alarm/policy/create'),
+            name: 'AlarmCreate',
+            meta: { title: '创建告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/alarm/policy/create'),
+            name: 'AlarmUpdate',
+            meta: { title: '更新告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/alarm/policy/detail'),
+            name: 'AlarmDetail',
+            meta: { title: '告警策略详情', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            hidden: true
+          }
+        ]
       }
+      // {
+      //   path: 'history',
+      //   component: () => import('@/apps/container/views/alarm/history/list'),
+      //   name: 'AlarmHistory',
+      //   meta: { title: '告警历史' }
+      // }
     ]
   },
   {

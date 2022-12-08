@@ -38,7 +38,7 @@
       <section>
         <div class="resource__header">
           <div class="resource__header__front">
-            <span>nginx-nginx</span>
+            <span @click="handelDetails('nginx-nginx')">nginx-nginx</span>
           </div>
           <div class="resource__header__last">
             <div class="last-label label-value">
@@ -314,6 +314,14 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    handelDetails(name) {
+      this.$router.push({
+        name: 'DeployDetail',
+        query: {
+          link_name: name
+        }
+      })
+    },
     changeNumber(val) {
       this.number = Number(val)
     },

@@ -26,11 +26,14 @@
       </el-card>
       <div class="yaml-div">
         <monaco-editor
-          ref="monacoEditor"
+          id="monacoEditorYaml"
           :code="currentCode"
           :read-only="false"
+          :is-fullscreen="false"
+          :btn-visible="btnVisible"
           :language="language"
           @handleBlur="handleBlur"
+          @changeFull="changeFull"
         />
         <div class="tips-div">
           YAML样例:
@@ -53,12 +56,14 @@
       v-if="detailVisible"
       title="YAML样例"
       :visible="detailVisible"
-      sub-title="YAML (只读)"
       :code="defaultCodeStr"
+      :read-only="readOnly"
+      :btn-visible="defaultBtnVisible"
       :language="language"
+      :big-full="bigFull"
       @closeDetailsDialog="closeDetailsDialog"
+      @handleBlurDialog="handleBlurDialog"
     />
-
   </div>
 </template>
 
@@ -135,34 +140,97 @@ export default {
         time: '1667783895000000'
       },
       language: 'yaml',
-      detailVisible: false
+      btnVisible: {
+        autoUpdate: false,
+        import: true,
+        export: false,
+        find: false,
+        reset: false,
+        copy: false,
+        full: true,
+        exit: true
+      },
+      defaultBtnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        find: true,
+        reset: false,
+        copy: true,
+        full: true,
+        exit: true
+      },
+      detailVisible: false,
+      isFullscreen: false,
+      readOnly: true,
+      bigFull: false
     }
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {
-    this.defaultCodeStr = JSON.stringify(this.defaultCode, null, 2)
   },
   methods: {
     // 写入
     quickInput() {
-      this.currentCode = this.defaultCodeStr
-      this.$refs.monacoEditor.btnFlag = true
+      this.currentCode = JSON.stringify(this.defaultCode, null, 2)
+      const obj = {
+        autoUpdate: false,
+        import: true,
+        export: true,
+        reset: true,
+        find: true,
+        copy: true
+      }
+      this.$set(this, 'btnVisible', obj)
     },
     // 查看
     viewYaml() {
       this.detailVisible = true
+      this.readOnly = true
+      this.bigFull = false
+      this.defaultBtnVisible = {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        find: true,
+        reset: false,
+        copy: true,
+        full: true,
+        exit: true
+      }
+      this.defaultCodeStr = JSON.stringify(this.defaultCode, null, 2)
     },
     // 编辑器失去焦点
     handleBlur(value) {
       this.inputCode = value
     },
+    // 改变全屏
+    changeFull(val) {
+      this.detailVisible = true
+      this.readOnly = false
+      this.bigFull = true
+      this.defaultBtnVisible = {
+        autoUpdate: false,
+        import: true,
+        export: false,
+        find: false,
+        reset: false,
+        copy: false,
+        full: false,
+        exit: true
+      }
+      this.defaultCodeStr = JSON.stringify(this.inputCode, null, 2)
+    },
+    // 改变全屏 弹窗
+    changeFullDialog(val) {
+      this.isFullscreen = val
+    },
     // 取消 按钮
     cancelCreate() {
       this.$router.go(-1)
     },
-
     submitCreate() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
@@ -175,6 +243,20 @@ export default {
     },
     closeDetailsDialog() {
       this.detailVisible = false
+      this.bigFull = false
+      this.defaultBtnVisible = {
+        autoUpdate: false,
+        import: true,
+        export: false,
+        find: false,
+        reset: false,
+        copy: false,
+        full: true,
+        exit: true
+      }
+    },
+    handleBlurDialog(code) {
+      this.currentCode = code
     }
   }
 }

@@ -22,8 +22,8 @@
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
 import BaseInfo from './compoments/BaseInfo.vue'
-import Yaml from './compoments/Yaml.vue'
-import Event from './compoments/Event.vue'
+import Yaml from '@/apps/container/views/components/Details/Yaml'
+import Event from '@/apps/container/views/components/Details/Event'
 import Configuration from './compoments/Configuration.vue'
 import Task from './compoments/task.vue'
 

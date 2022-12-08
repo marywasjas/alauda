@@ -28,14 +28,13 @@
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
 import ContainerGroupTable from '@/apps/container/views/components/ContainerGroupTable/ContainerGroup.vue'
-
 import BaseInfo from './components/BaseInfo/BaseInfo.vue'
 import Topology from './components/Topology.vue'
-import Yaml from './components/Yaml.vue'
+import Yaml from '@/apps/container/views/components/Details/Yaml'
 import VersionSnapshot from './components/VersionSnapshot/VersionSnapshot.vue'
-import Journal from './components/Journal.vue'
-import Event from '@/apps/container/views/components/Event'
-import Monitor from './components/Monitor.vue'
+import Journal from '@/apps/container/views/components/Details/Journal'
+import Event from '@/apps/container/views/components/Details/Event'
+import Monitor from '@/apps/container/views/components/Details/Monitor'
 import GiveAlarm from './components/GiveAlarm/GiveAlarm.vue'
 
 export default {
@@ -96,12 +95,12 @@ export default {
           label: '监控',
           name: 'monitor',
           com: 'Monitor'
-        },
-        {
-          label: '告警',
-          name: 'giveAlarm',
-          com: 'GiveAlarm'
         }
+        // {
+        //   label: '告警',
+        //   name: 'giveAlarm',
+        //   com: 'GiveAlarm'
+        // }
       ],
       activeName: ''
     }

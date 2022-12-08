@@ -88,7 +88,7 @@
       <section>
         <div class="container-top flexbox">
           <div class="container-top-left">
-            <radius-pie-chart :chart-data="containerData" />
+            <radius-pie-chart :chart-data="containerData" title="总数" />
           </div>
           <div class="container-top-right">
             <div class="text-right">
@@ -127,7 +127,7 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'name'" class="cursor-pointer">
-                  {{ scope.row[col.id] }}
+                  <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
                 </div>
                 <div v-else>
                   {{ scope.row[col.id] }}
@@ -199,9 +199,35 @@
                 :key="col.id"
                 :label="col.label"
               >
+                <template v-if="col.id === 'zb'" slot="header">
+                  <div class="flex-start">
+                    <span>内存(Mi)</span>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="实际内存/分配内存 (占比)"
+                      placement="top"
+                    >
+                      <i class="el-icon-question question-icon margin-left10" />
+                    </el-tooltip>
+                  </div>
+                </template>
+                <template v-if="col.id === 'pre'" slot="header">
+                  <div class="flex-start">
+                    <span>CPU(m)</span>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="实际 CPU / 分配 CPU (占比)"
+                      placement="top"
+                    >
+                      <i class="el-icon-question question-icon margin-left10" />
+                    </el-tooltip>
+                  </div>
+                </template>
                 <template slot-scope="scope">
                   <div v-if="col.id === 'name'" class="cursor-pointer">
-                    {{ scope.row[col.id] }}
+                    <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
                   </div>
                   <div v-else>
                     {{ scope.row[col.id] }}
@@ -227,7 +253,7 @@ import ProgressCard from './components/ProgressCard'
 import BarChartSignle from './components/BarChartSingle.vue'
 import EventDialog from './components/EventDialog/index.vue'
 // 应用 圆角饼图组件
-import RadiusPieChart from './components/RadiusPieChart.vue'
+import RadiusPieChart from '@/apps/container/views/components/RadiusPieChart'
 // 计算组件
 import TransverseBar from '@/apps/container/views/components/TransverseBar'
 // 容器组+资源使用率
@@ -330,6 +356,14 @@ export default {
     },
     openDialog() {
       this.eventDialogVisible = true
+    },
+    handelDetails(row) {
+      this.$router.push({
+        name: 'ContainerGroupDetail',
+        query: {
+          name: row.name
+        }
+      })
     }
   }
 }

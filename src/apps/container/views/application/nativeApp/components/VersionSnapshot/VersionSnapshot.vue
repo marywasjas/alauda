@@ -62,9 +62,9 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="distribute" @click.native="handelDistribute(scope.row)">
+                    <!-- <el-dropdown-item command="distribute" @click.native="handelDistribute(scope.row)">
                       分发
-                    </el-dropdown-item>
+                    </el-dropdown-item> -->
                     <el-dropdown-item command="rollBack">
                       回滚至改版本
                     </el-dropdown-item>

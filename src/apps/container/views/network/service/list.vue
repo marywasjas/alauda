@@ -27,7 +27,7 @@
           header-row-class-name="headerStyle"
           class="margin-top"
         >
-          <el-table-column type="selection" width="55" />
+          <!-- <el-table-column type="selection" width="55" /> -->
           <el-table-column label="名称">
             <template slot-scope="{row}">
               <span class="cursor-pointer" @click="handleDetail(row)">{{ row.name }}</span>

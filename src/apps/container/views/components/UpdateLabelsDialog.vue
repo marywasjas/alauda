@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="更新标签" :visible="updateLabelsVisible" width="50%" @close="closeUpdateLabelsDialog">
+  <el-dialog :title="title" :visible="updateLabelsVisible" width="50%" @close="closeUpdateLabelsDialog">
     <table border="0" style="width: 100%">
       <thead>
         <tr class="headerStyle">
@@ -59,6 +59,10 @@ export default {
       default: () => {
         return false
       }
+    },
+    title: {
+      type: String,
+      default: '更新标签'
     }
   },
   data() {

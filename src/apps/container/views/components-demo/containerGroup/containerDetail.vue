@@ -15,18 +15,18 @@
         </template>
       </tab-header>
     </div>
-    <component :is="comName" :name="name" />
+    <component :is="comName" :name="name" :card-num="0" />
   </div>
 </template>
 
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
 import BaseInfo from './compoments/BaseInfo.vue'
-import Yaml from './compoments/Yaml.vue'
-import Journal from './compoments/Journal.vue'
-import Event from './compoments/Event.vue'
+import Yaml from '@/apps/container/views/components/Details/Yaml'
+import Journal from '@/apps/container/views/components/Details/Journal'
+import Event from '@/apps/container/views/components/Details/Event'
 import Configuration from './compoments/Configuration.vue'
-import Monitor from './compoments/Monitor.vue'
+import Monitor from '@/apps/container/views/components/Details/Monitor'
 
 export default {
   name: 'ContainerGroupDetail',
