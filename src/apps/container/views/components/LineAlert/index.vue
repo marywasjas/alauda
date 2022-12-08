@@ -20,8 +20,7 @@ export default {
     }
   },
   data() {
-    return {
-    }
+    return {}
   },
   computed: {},
   watch: {},
@@ -31,15 +30,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.line-alert{
+.line-alert {
   background-color: $background-color2;
-  border:1px solid $color-primary;
+  border: 1px solid $color-primary;
   display: flex;
   margin-bottom: 16px;
   padding: 11px 15px;
   border-radius: $border-radius-m;
   box-sizing: border-box;
-  i{
+  i {
     color: $color-primary;
     margin-right: 8px;
   }
@@ -49,7 +48,7 @@ export default {
     overflow: hidden;
     .line-alert__content {
       font-size: $font-size-14;
-      line-height:$line-height-20;
+      line-height: $line-height-20;
       color: $color-main-text;
     }
   }
