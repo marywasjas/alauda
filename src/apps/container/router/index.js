@@ -102,7 +102,7 @@ export const containerAsyncRoutes = [
           {
             path: 'detail',
             component: () => import('@/apps/container/views/components-demo/deploy/detail/index.vue'),
-            name: 'Detail',
+            name: 'DeployDetail',
             meta: { title: '部署详情', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
           },

@@ -4,37 +4,45 @@
       <div v-if="showTitle" class="editor-toolbar__language">{{ (readOnly?'YAML只读':'YAML读写') }}</div>
       <div v-else class="editor-toolbar__language">{{ '' }}</div>
       <div class="editor-toolbar-wrap">
-        <el-checkbox v-if="!showTitle" v-model="autoUpdate" label="自动更新" style="margin-right:10px;" />
-        <el-button v-if="readOnly" icon="el-icon-upload2" size="mini">导入</el-button>
-        <el-button
-          v-if="btnFlag || !readOnly"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleDownload"
-        >导出</el-button>
-        <el-button
-          v-if="btnFlag"
-          icon="el-icon-circle-close"
-          size="mini"
-          @click="resetCode"
-        >清理</el-button>
-        <el-button
-          v-if="btnFlag || !readOnly"
-          icon="el-icon-search"
-          size="mini"
-        >查找</el-button>
-        <el-button
-          v-if="btnFlag || !readOnly"
-          icon="el-icon-copy-document"
-          size="mini"
-        >复制</el-button>
+        <el-checkbox v-if="btnVisible.autoUpdate" v-model="autoUpdate" label="自动更新" style="margin-right:10px;" />
+        <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
+        <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
+        <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCode">清理</el-button>
+        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
+        <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini">复制</el-button>
         <el-button icon="el-icon-thumb" size="mini">自动</el-button>
-        <el-button icon="el-icon-full-screen" size="mini">全屏</el-button>
+        <el-button v-if="btnVisible.full" icon="el-icon-full-screen" size="mini" @click="handleFull">全屏</el-button>
       </div>
     </div>
     <div class="border-box">
-      <div id="monacoEditorContainer" style="height: 400px" />
+      <div :id="id" :style="{width:'100%',height:editHeight}" />
     </div>
+    <el-dialog
+      v-if="visible"
+      :title="readOnly?'YAML只读':'YAML读写'"
+      :visible="visible"
+      width="900px"
+      :fullscreen="isFullscreen"
+      :before-close="closeDetailsDialog"
+      :close-on-click-modal="false"
+    >
+      <div class="editor-toolbar">
+        <div class="editor-toolbar__language">{{ '' }}</div>
+        <div class="editor-toolbar-wrap">
+          <el-checkbox v-if="btnVisible.autoUpdate" v-model="autoUpdate" label="自动更新" style="margin-right:10px;" />
+          <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
+          <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
+          <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCodeDialog">清理</el-button>
+          <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
+          <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini">复制</el-button>
+          <el-button icon="el-icon-thumb" size="mini">自动</el-button>
+          <el-button icon="el-icon-document-delete" size="mini" @click="handleFullExit">退出</el-button>
+        </div>
+      </div>
+      <div class="border-box">
+        <div :id="id+'dialog'" :style="{width:'100%',height:editHeight}" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -46,32 +54,58 @@ export default {
   name: 'MonacoEditor',
   components: {},
   props: {
+    id: {
+      type: String,
+      default: 'monacoEditorContainer'
+    },
+    // 是否展示标题
     showTitle: {
       type: Boolean,
       default: true
     },
-    autoUpdate: {
-      type: Boolean,
-      default: true
-    },
+    // 是否读写
     readOnly: {
       type: Boolean,
       default: true
     },
+    // 当前内容
     code: {
       type: String,
       default: ''
     },
+    // 代码语言类型
     language: {
       type: String,
       default: 'javascript'
+    },
+    // 按钮显示状态
+    btnVisible: {
+      type: Object,
+      default: () => {
+        return {
+          autoUpdate: false,
+          export: false,
+          import: true,
+          reset: false,
+          find: false,
+          copy: false,
+          full: true,
+          exit: true
+        }
+      }
+    },
+    bigFull: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
+      editHeight: '400px',
+      autoUpdate: true,
       monacoEditor: null,
       value: '',
-      btnFlag: false,
+      visible: false,
       standaloneEditorConstructionOptions: {
         acceptSuggestionOnCommitCharacter: true, // 接受关于提交字符的建议
         acceptSuggestionOnEnter: 'on', // 接受输入建议 "on" | "off" | "smart"
@@ -137,31 +171,36 @@ export default {
         this.updateMonacoEditor()
       },
       deep: true
+    },
+    isFullscreen: {
+      handler(newVal, oldVal) {
+        if (newVal) {
+          this.editHeight = '600px'
+        } else {
+          this.editHeight = '400px'
+        }
+      },
+      deep: true
     }
   },
-  created() {},
+  created() {
+  },
   mounted() {
     this.value = this.code
-    this.createMonacoEditor()
+    setTimeout(() => {
+      this.createMonacoEditor()
+    }, 0)
   },
   beforeDestroy() {
     this.$set(this.standaloneEditorConstructionOptions, 'value', '')
   },
   methods: {
+    // 创建 editor
     createMonacoEditor() {
-      this.$set(this.standaloneEditorConstructionOptions, 'value', '')
-      this.$set(
-        this.standaloneEditorConstructionOptions,
-        'readOnly',
-        this.readOnly
-      )
-      this.$set(
-        this.standaloneEditorConstructionOptions,
-        'language',
-        this.language
-      )
+      this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
+      this.$set(this.standaloneEditorConstructionOptions, 'language', this.language)
       this.$set(this.standaloneEditorConstructionOptions, 'value', this.value)
-      const container = document.getElementById('monacoEditorContainer')
+      const container = document.getElementById(this.id)
       this.monacoEditor = monaco.editor.create(
         container,
         this.standaloneEditorConstructionOptions
@@ -171,32 +210,91 @@ export default {
       // 监听失去焦点事件
       this.monacoEditor.onDidBlurEditorText((e) => {
         const inputCode = this.monacoEditor.getValue()
-        this.btnFlag = !!inputCode
         this.$emit('handleBlur', inputCode)
       })
     },
+    // 更新数据
     updateMonacoEditor() {
       if (this.monacoEditor === null) {
         this.createMonacoEditor()
       }
       const oldModel = this.monacoEditor.getModel()
-      const newModel = monaco.editor.createModel(this.value, this.language)
+      const newModel = monaco.editor.createModel(
+        this.value,
+        this.language
+      )
       if (oldModel) {
         oldModel.dispose()
       }
       this.monacoEditor.setModel(newModel)
+    },
+    // 创建 editor
+    createMonacoEditorDialog() {
+      this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
+      this.$set(this.standaloneEditorConstructionOptions, 'language', this.language)
+      this.$set(this.standaloneEditorConstructionOptions, 'value', this.value)
+      const container = document.getElementById(this.id + 'dialog')
+      this.monacoEditorDialog = monaco.editor.create(
+        container,
+        this.standaloneEditorConstructionOptions
+      )
+      // 监听内容变化
+      this.monacoEditorDialog.onDidChangeModelContent((e) => {})
+      // 监听失去焦点事件
+      this.monacoEditorDialog.onDidBlurEditorText((e) => {
+        const inputCode = this.monacoEditorDialog.getValue()
+        this.$emit('handleBlur', inputCode)
+      })
+    },
+    // 更新数据
+    updateMonacoEditorDialog() {
+      if (this.monacoEditorDialog === null) {
+        this.createMonacoEditorDialog()
+      }
+      const oldModel = this.monacoEditorDialog.getModel()
+      const newModel = monaco.editor.createModel(
+        this.value,
+        this.language
+      )
+      if (oldModel) {
+        oldModel.dispose()
+      }
+      this.monacoEditorDialog.setModel(newModel)
     },
     // 清理
     resetCode() {
       this.value = ''
       this.updateMonacoEditor()
     },
+    resetCodeDialog() {
+      this.value = ''
+      this.updateMonacoEditorDialog()
+    },
     // 导出
     handleDownload() {
       const blob = new Blob([this.value], {
         type: 'application/json'
       })
-      FileSaver.saveAs(blob, `default.yaml`)
+      FileSaver.saveAs(blob, `default.json`)
+    },
+    // 全屏
+    handleFull() {
+      this.visible = true
+      this.isFullscreen = true
+      setTimeout(() => {
+        this.createMonacoEditorDialog()
+      }, 0)
+    },
+    // 退出
+    handleFullExit() {
+      this.visible = false
+      this.isFullscreen = false
+    },
+    handleFullBig() {
+      this.$emit('closeDetailsDialog')
+    },
+    closeDetailsDialog() {
+      this.visible = false
     }
   }
 }

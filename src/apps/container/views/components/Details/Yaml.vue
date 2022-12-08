@@ -1,9 +1,11 @@
 <template>
   <div class="yaml-main">
     <monaco-editor
-      ref="monacoEditor"
+      id="monacoEditorYaml"
       :code="currentCode"
       :read-only="true"
+      :is-fullscreen="false"
+      :btn-visible="btnVisible"
       :language="language"
     />
   </div>
@@ -61,7 +63,17 @@ export default {
         }
       },
       currentCode: '',
-      language: 'yaml'
+      language: 'yaml',
+      btnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        find: true,
+        reset: false,
+        copy: true,
+        full: true,
+        exit: false
+      }
     }
   },
   computed: {},

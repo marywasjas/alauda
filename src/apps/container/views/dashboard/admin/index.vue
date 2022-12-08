@@ -127,7 +127,7 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'name'" class="cursor-pointer">
-                  {{ scope.row[col.id] }}
+                  <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
                 </div>
                 <div v-else>
                   {{ scope.row[col.id] }}
@@ -199,9 +199,35 @@
                 :key="col.id"
                 :label="col.label"
               >
+                <template v-if="col.id === 'zb'" slot="header">
+                  <div class="flex-start">
+                    <span>内存(Mi)</span>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="实际内存/分配内存 (占比)"
+                      placement="top"
+                    >
+                      <i class="el-icon-question question-icon margin-left10" />
+                    </el-tooltip>
+                  </div>
+                </template>
+                <template v-if="col.id === 'pre'" slot="header">
+                  <div class="flex-start">
+                    <span>CPU(m)</span>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="实际 CPU / 分配 CPU (占比)"
+                      placement="top"
+                    >
+                      <i class="el-icon-question question-icon margin-left10" />
+                    </el-tooltip>
+                  </div>
+                </template>
                 <template slot-scope="scope">
                   <div v-if="col.id === 'name'" class="cursor-pointer">
-                    {{ scope.row[col.id] }}
+                    <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
                   </div>
                   <div v-else>
                     {{ scope.row[col.id] }}
@@ -330,6 +356,14 @@ export default {
     },
     openDialog() {
       this.eventDialogVisible = true
+    },
+    handelDetails(row) {
+      this.$router.push({
+        name: 'ContainerGroupDetail',
+        query: {
+          name: row.name
+        }
+      })
     }
   }
 }

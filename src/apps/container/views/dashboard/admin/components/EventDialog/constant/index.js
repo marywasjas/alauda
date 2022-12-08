@@ -40,7 +40,7 @@ export const tableData = Mock.mock({
       startTime: '@date',
       endTime: '@date',
       category: 'Warning',
-      name: '@cword(3, 7)',
+      name: '@word(3, 7)',
       type: 'Pod',
       number: '@integer(0 ,10000)',
       reason: 'BackOff',

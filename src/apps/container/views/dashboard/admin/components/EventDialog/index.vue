@@ -63,7 +63,7 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="cursor-pointer">
-                {{ scope.row[col.id] }}
+                <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
               </div>
               <div v-else-if="col.id === 'time'">
                 {{ scope.row.startTime }}~{{ scope.row.endTime }}
@@ -87,10 +87,12 @@
     </el-dialog>
     <monaco-editor-dialog
       v-if="detailVisible"
+      id="eventMonacoEditorDialog"
       title="事件详情"
       :visible="detailVisible"
-      sub-title="JSON (只读)"
-      :code="currentCode"
+      :code="code"
+      :read-only="true"
+      :btn-visible="btnVisible"
       :language="language"
       @closeDetailsDialog="closeDetailsDialog"
     />
@@ -114,7 +116,7 @@ export default {
   data() {
     return {
       formInline: {
-        time: '',
+        time: '近 1 小时',
         zdyTime: [],
         type: []
       },
@@ -210,8 +212,16 @@ export default {
       tableData,
       // 事件详情数据
       detailVisible: false,
-      currentCode: '',
-      language: 'json'
+      code: '',
+      language: 'json',
+      btnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        reset: false,
+        find: true,
+        copy: true
+      }
     }
   },
   computed: {},
@@ -231,10 +241,18 @@ export default {
     onSearch() {
       console.log(this.formInline)
     },
+    handelDetails(row) {
+      this.$router.push({
+        name: 'ContainerGroupDetail',
+        query: {
+          name: row.name
+        }
+      })
+    },
     // 事件详情
     openDetails(row) {
       this.detailVisible = true
-      this.currentCode = JSON.stringify(row.spec, null, 2)
+      this.code = JSON.stringify(row.spec, null, 2)
       this.closeDialog()
     },
     closeDetailsDialog() {

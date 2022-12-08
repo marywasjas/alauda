@@ -91,7 +91,7 @@
                     <el-tag effect="dark">{{ event.type }}</el-tag>
                     <div class="text margin-left10">
                       <span>{{ event.title }}</span>
-                      <i class="el-icon-thumb cursor-pointer margin-left10" />
+                      <i class="el-icon-thumb cursor-pointer margin-left10" @click="openDetails(event)" />
                     </div>
                   </div>
                   <div class="time" title="触发时间">
@@ -121,14 +121,27 @@
         </div>
       </section>
     </BaseCard>
+    <monaco-editor-dialog
+      v-if="detailVisible"
+      id="eventMonacoEditorDialog"
+      title="事件详情"
+      :visible="detailVisible"
+      :code="code"
+      :read-only="true"
+      :btn-visible="btnVisible"
+      :language="language"
+      @closeDetailsDialog="closeDetailsDialog"
+    />
   </div>
 </template>
 
 <script>
 import Mock from 'mockjs'
+import MonacoEditorDialog from '@/apps/container/views/components/MonacoEditorDialog'
+
 export default {
   name: 'Event',
-  components: { },
+  components: { MonacoEditorDialog },
   props: {},
   data() {
     const eventData = Mock.mock({
@@ -139,7 +152,51 @@ export default {
         time: '@time',
         message: '@word(10,30)',
         number: '@integer(0 ,1000)',
-        date: '@integer(0 ,10)'
+        date: '@integer(0 ,10)',
+        spec: {
+          detail: {
+            cluster_name: 'global',
+            event: {
+              count: 6713,
+              eventTime: null,
+              firstTimestamp: '2022-10-14T05:33:11Z',
+              involvedObject: {
+                apiVersion: 'v1',
+                fieldPath: 'spec.containers{ubuntu}',
+                kind: 'Pod',
+                name: 'ubuntu-bq84l',
+                namespace: 'toda-elasticsearch-system',
+                resourceVersion: '519516627',
+                uid: '441f41bd-77d5-4f1d-90c4-2b0aee37e7e0'
+              },
+              lastTimestamp: '2022-11-07T01:33:22Z',
+              message:
+                'Container image "index.docker.io/library/ubuntu:latest" already present on machine',
+              metadata: {
+                creationTimestamp: '2022-11-07T01:18:15Z',
+                name: 'ubuntu-bq84l.171dd899b971f3ab',
+                namespace: 'toda-elasticsearch-system',
+                resourceVersion: '603142979',
+                uid: 'c61582db-0ce2-469d-8606-9854962ffc82'
+              },
+              reason: 'Pulled',
+              reportingComponent: '',
+              reportingInstance: '',
+              source: {
+                component: 'kubelet',
+                host: '172.16.129.51'
+              },
+              type: 'Normal'
+            },
+            operation: 'Pulled',
+            operator: 'kubelet@172.16.129.51',
+            source: 'kubernetes'
+          },
+          log_level: 0,
+          resource_id: '441f41bd-77d5-4f1d-90c4-2b0aee37e7e0',
+          resource_type: 'Pod',
+          time: '1667783895000000'
+        }
       }]
     })
     return {
@@ -148,8 +205,6 @@ export default {
         container: '',
         logType: ''
       },
-      currentCode: '2022-11-18 无日志',
-      language: 'javascript',
       containerGroupList: [
         {
           label: 'nginx-nginx-75b4568c7c-fphvc',
@@ -189,6 +244,18 @@ export default {
         total: 10,
         current: 1,
         pageSize: 10
+      },
+      // 事件详情数据
+      detailVisible: false,
+      code: '',
+      language: 'json',
+      btnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        reset: false,
+        find: true,
+        copy: true
       }
     }
   },
@@ -197,6 +264,14 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    // 事件详情
+    openDetails(row) {
+      this.detailVisible = true
+      this.code = JSON.stringify(row.spec, null, 2)
+    },
+    closeDetailsDialog() {
+      this.detailVisible = false
+    },
     handleSizeChange(val) {
       this.page.pageSize = val
     },

@@ -139,7 +139,7 @@ export const containerColumnList = [{
 }]
 export const containerList = Mock.mock({
   'data|10': [{
-    name: '@cword(3, 7)',
+    name: '@word(3, 7)',
     status: 'CrashLoopBackOff(0/1)',
     reason: 'back-off 5m0s restarting failed container=ubuntu pod=ubuntu-rdkrb_toda-elasticsearch-system(4e048e5a-1903-43e3-bd18-853a39c92e23)',
     date: '@date',
@@ -202,7 +202,7 @@ export const topColumnListcpu = [{
 }]
 export const topList = Mock.mock({
   'data|5': [{
-    name: '@cword(3, 7)',
+    name: '@word(3, 7)',
     znc: '@integer(0 ,10000)',
     zync: '@integer(0 ,1000)',
     zb: '@integer(0 ,100)',

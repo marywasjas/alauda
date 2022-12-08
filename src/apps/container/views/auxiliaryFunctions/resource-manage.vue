@@ -1,9 +1,12 @@
 <template>
   <div class="resource-management-container">
     <el-row>
-      <el-col :span="6">
+      <el-col :span="5">
         <div class="group-pannel">
           <el-form>
+            <el-form-item label="">
+              <el-button type="primary" @click="handelAdd">创建资源对象</el-button>
+            </el-form-item>
             <el-form-item label="">
               <el-select v-model="selectedGroup" style="width: 100%;" size="small" @change="handleGroupChange">
                 <el-option
@@ -41,7 +44,7 @@
           </ul>
         </div>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="19">
         <div class="filter-container">
           <el-button
             icon="el-icon-refresh-right"
@@ -70,36 +73,36 @@
             </el-select>
           </div>
         </div>
-        <el-table :data="list" style="width: 100%;" header-row-class-name="headerStyle">
-          <el-table-column width="180" label="名称">
+        <el-table :data="list.data" style="width: 100%;" header-row-class-name="headerStyle">
+          <el-table-column label="名称">
             <template slot-scope="scope">
-              <span class="cursor-pointer">{{ scope.row.name }}</span>
+              <span class="cursor-pointer" @click="openDetails(scope.row)">{{ scope.row.name }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="标签">
+          <el-table-column label="标签" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>
-                <el-tag v-for="item in scope.row.tag" :key="item" type="info" class="tagItem">{{ item }}</el-tag>
+                <el-tag v-for="item in scope.row.tag" :key="item" type="info" class="tagItem" style="margin:5px;10px;">{{ item }}</el-tag>
               </span>
             </template>
           </el-table-column>
-          <el-table-column width="200" label="命名空间">
+          <el-table-column label="命名空间">
             <template slot-scope="scope">
               <span>{{ scope.row.namespace }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" width="180">
+          <el-table-column label="创建时间">
             <template slot-scope="scope">
               <span>{{ scope.row.createtime }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="" width="180">
+          <el-table-column align="center" label="" width="60">
             <template slot-scope="scope">
               <div class="operation-cell">
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(scope.row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item @click.native="handleEdit(scope.row)">更新</el-dropdown-item>
                     <el-dropdown-item>删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -109,13 +112,81 @@
         </el-table>
       </el-col>
     </el-row>
+    <monaco-editor-dialog
+      v-if="detailVisible"
+      id="eventMonacoEditorDialog"
+      title="详情"
+      :visible="detailVisible"
+      :code="code"
+      :read-only="readOnly"
+      :btn-visible="btnVisible"
+      :language="language"
+      :submit-txt="submitTxt"
+      @closeDetailsDialog="closeDetailsDialog"
+    />
   </div>
 </template>
 
 <script>
+import Mock from 'mockjs'
+import MonacoEditorDialog from '@/apps/container/views/components/MonacoEditorDialog'
 export default {
   name: 'ResourceManagement',
+  components: { MonacoEditorDialog },
   data() {
+    const list = Mock.mock({
+      'data|10': [{
+        'id|+1': 1,
+        name: '@word(10,30)',
+        tag: ['app.kubernetes.io/instance: test', 'app.kubernetes.io/managed-by: Helm'],
+        namespace: 'toda-elasticsearch-system',
+        createtime: '2022-04-25 16:52:56',
+        spec: {
+          detail: {
+            cluster_name: 'global',
+            event: {
+              count: 6713,
+              eventTime: null,
+              firstTimestamp: '2022-10-14T05:33:11Z',
+              involvedObject: {
+                apiVersion: 'v1',
+                fieldPath: 'spec.containers{ubuntu}',
+                kind: 'Pod',
+                name: 'ubuntu-bq84l',
+                namespace: 'toda-elasticsearch-system',
+                resourceVersion: '519516627',
+                uid: '441f41bd-77d5-4f1d-90c4-2b0aee37e7e0'
+              },
+              lastTimestamp: '2022-11-07T01:33:22Z',
+              message:
+                'Container image "index.docker.io/library/ubuntu:latest" already present on machine',
+              metadata: {
+                creationTimestamp: '2022-11-07T01:18:15Z',
+                name: 'ubuntu-bq84l.171dd899b971f3ab',
+                namespace: 'toda-elasticsearch-system',
+                resourceVersion: '603142979',
+                uid: 'c61582db-0ce2-469d-8606-9854962ffc82'
+              },
+              reason: 'Pulled',
+              reportingComponent: '',
+              reportingInstance: '',
+              source: {
+                component: 'kubelet',
+                host: '172.16.129.51'
+              },
+              type: 'Normal'
+            },
+            operation: 'Pulled',
+            operator: 'kubelet@172.16.129.51',
+            source: 'kubernetes'
+          },
+          log_level: 0,
+          resource_id: '441f41bd-77d5-4f1d-90c4-2b0aee37e7e0',
+          resource_type: 'Pod',
+          time: '1667783895000000'
+        }
+      }]
+    })
     return {
       selectedGroup: 'all',
       version: '',
@@ -133,11 +204,25 @@ export default {
         { id: 4, name: 'Endpoints', version: ['v1', 'v2', 'v3'] },
         { id: 5, name: 'Frontend', version: ['core.oam.dev'] }
       ],
-      list: null,
+      list,
       listQuery: {
         page: 1,
         limit: 20,
         title: ''
+      },
+      // 事件详情数据
+      detailVisible: false,
+      readOnly: true,
+      code: '',
+      language: 'json',
+      submitTxt: null,
+      btnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        reset: false,
+        find: true,
+        copy: true
       }
     }
   },
@@ -145,42 +230,17 @@ export default {
     this.resourceList = this.initResourceList
     this.resource = this.resourceList[0]
     this.version = this.resource.version[0]
-    this.getList()
   },
   methods: {
-    getList() {
-      this.list = [{
-        id: 1,
-        name: 'test-memcached',
-        tag: ['app.kubernetes.io/instance: test', 'app.kubernetes.io/managed-by: Helm'],
-        namespace: 'toda-elasticsearch-system',
-        createtime: '2022-04-25 16:52:56'
-      }, {
-        id: 2,
-        name: 'test-memcached-metric',
-        tag: ['app.kubernetes.io/component: metrics', 'app.kubernetes.io/instance: test'],
-        namespace: 'toda-elasticsearch-system',
-        createtime: '2022-04-25 16:52:56'
-      }, {
-        id: 3,
-        name: 'toda-kibana-svc',
-        tag: ['app.kubernetes.io/component: metrics'],
-        namespace: 'toda-elasticsearch-system',
-        createtime: '2022-04-06 15:06:14'
-      },
-      {
-        id: 4,
-        name: 'test-memcached',
-        tag: ['app.kubernetes.io/instance: test', 'app.kubernetes.io/managed-by: Helm'],
-        namespace: 'toda-elasticsearch-system',
-        createtime: '2022-04-25 16:52:56'
-      }, {
-        id: 5,
-        name: 'test-memcached-metric',
-        tag: ['app.kubernetes.io/component: metrics', 'app.kubernetes.io/instance: test'],
-        namespace: 'toda-elasticsearch-system',
-        createtime: '2022-04-25 16:52:56'
-      }]
+    // 事件详情
+    openDetails(row) {
+      this.detailVisible = true
+      this.readOnly = true
+      this.submitTxt = null
+      this.code = JSON.stringify(row.spec, null, 2)
+    },
+    closeDetailsDialog() {
+      this.detailVisible = false
     },
     handleRefresh() {
       console.log(this.ResourceList)
@@ -212,8 +272,17 @@ export default {
     handleVersionChange(val) {
       console.log(val)
     },
-    handleEdit(id) {
-      console.log(id)
+    handleEdit(row) {
+      this.detailVisible = true
+      this.readOnly = false
+      this.submitTxt = '更新'
+      this.code = JSON.stringify(row.spec, null, 2)
+    },
+    handelAdd() {
+      this.detailVisible = true
+      this.readOnly = false
+      this.submitTxt = '创建'
+      this.code = JSON.stringify('', null, 2)
     },
     handleDelete(id) {
       console.log(id)
