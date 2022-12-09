@@ -91,15 +91,16 @@
         </el-table-column>
       </el-table>
     </BaseCard>
+    <DetailDialog :dialog-visible.sync="dialogVisible" />
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts'
-
+import DetailDialog from './components/DetailDialog.vue'
 export default {
   name: 'Tab',
-  components: {},
+  components: { DetailDialog },
   data() {
     return {
       tabForm: {
@@ -237,7 +238,8 @@ export default {
           label: '路径（Paths）',
           checked: true
         }
-      ]
+      ],
+      dialogVisible: false
     }
   },
   computed: {},
@@ -302,7 +304,9 @@ export default {
         return item
       })
     },
-    openDialog() {}
+    openDialog() {
+      this.dialogVisible = true
+    }
   }
 }
 </script>
