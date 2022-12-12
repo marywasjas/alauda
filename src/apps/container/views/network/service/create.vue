@@ -491,7 +491,7 @@ export default {
   min-height: 100%;
   position: relative;
   .scroll-div {
-    padding-bottom: 86px;
+    padding-bottom: 106px;
     .el-tooltip {
       margin-left: 5px;
     }

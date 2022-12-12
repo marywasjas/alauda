@@ -55,7 +55,7 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'url'" class="cursor-pointer">
-                {{ scope.row[col.id] }}
+                <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
@@ -91,108 +91,18 @@
         </el-table>
       </section>
     </BaseCard>
-    <el-dialog
-      title="更新标签"
-      :visible.sync="tagVisible"
-      width="840px"
-      :close-on-click-modal="false"
-      :before-close="closeTagDialog"
-    >
-      <div>
-        <el-form
-          ref="ruleForm"
-          :model="ruleForm"
-          label-suffix=":"
-        >
-          <table border="0" style="width:95%">
-            <thead>
-              <tr class="headerStyle">
-                <th>
-                  <div class="cell">键</div>
-                </th>
-                <th>
-                  <div class="cell">值</div>
-                </th>
-                <th>
-                  <div class="cell">操作</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(tag, index) in ruleForm.editTags"
-                :key="tag.id"
-              >
-                <td>
-                  <el-form-item
-                    label=""
-                    :prop="'editTags.' + index + '.key'"
-                    :rules="{
-                      required: true,
-                      message: '键不能为空',
-                      trigger: 'blur',
-                    }"
-                  >
-                    <el-input
-                      v-model="tag.key"
-                      placeholder="键"
-                    />
-                  </el-form-item>
-                </td>
-                <td>
-                  <el-form-item
-                    label=""
-                    :prop="'editTags.' + index + '.value'"
-                    :rules="{
-                      required: true,
-                      message: '值不能为空',
-                      trigger: 'blur',
-                    }"
-                  >
-                    <el-input
-                      v-model="tag.value"
-                      placeholder="值"
-                    />
-                  </el-form-item>
-                </td>
-                <td>
-                  <el-button
-                    icon="el-icon-remove-outline"
-                    class="
-                            cursor-pointer
-                            margin-left10 margin-right10
-                          "
-                    type="text"
-                    @click="handleTagDelete(tag, index)"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
-                    <i class="el-icon-circle-plus-outline" />
-                    添加
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitTagDialog">更新</el-button>
-        <el-button @click="closeTagDialog">关闭</el-button>
-      </span>
-    </el-dialog>
+    <!-- 更新标签 -->
+    <update-labels-dialog :update-labels-visible.sync="updateLabelsVisible" title="更新标签" />
   </div>
 </template>
 
 <script>
 import { ruleColumnList, ruleData, certiColumnList, certiData } from './constant/index'
-import { nanoid } from 'nanoid'
+import UpdateLabelsDialog from '@/apps/container/views/components/UpdateLabelsDialog'
 
 export default {
   name: 'BaseInfo',
+  components: { UpdateLabelsDialog },
   props: {},
   data() {
     return {
@@ -245,10 +155,7 @@ export default {
       ruleData,
       certiColumnList,
       certiData,
-      tagVisible: false,
-      ruleForm: {
-        editTags: []
-      },
+      updateLabelsVisible: false,
       tagSelector: []
     }
   },
@@ -257,6 +164,14 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    handelDetails(row) {
+      this.$router.push({
+        name: 'ServiceDetail',
+        query: {
+          name: row.name
+        }
+      })
+    },
     handleRefresh() {
       console.log('resfresh container list')
     },
@@ -264,32 +179,7 @@ export default {
       console.log('search container')
     },
     editTag() {
-      this.ruleForm.editTags = JSON.parse(JSON.stringify(this.tagSelector))
-      this.tagVisible = true
-    },
-    handleTagDelete(item, index) {
-      this.ruleForm.editTags.splice(this.ruleForm.editTags.indexOf(item), 1)
-    },
-    handleTagAdd() {
-      const obj = {
-        id: nanoid(),
-        key: '',
-        value: ''
-      }
-      this.ruleForm.editTags.push(obj)
-    },
-    submitTagDialog() {
-      this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          this.tagSelector = this.ruleForm.editTags
-          this.tagVisible = false
-        } else {
-          return false
-        }
-      })
-    },
-    closeTagDialog() {
-      this.tagVisible = false
+      this.updateLabelsVisible = true
     }
   }
 }

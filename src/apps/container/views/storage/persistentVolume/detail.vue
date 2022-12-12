@@ -10,6 +10,7 @@
             >操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>扩容</el-dropdown-item>
               <el-dropdown-item>更新</el-dropdown-item>
               <el-dropdown-item>删除</el-dropdown-item>
             </el-dropdown-menu>

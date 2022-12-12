@@ -3,7 +3,8 @@
     <BaseCard>
       <header>
         <div class="card-title right-header">
-          <span />
+          <span v-if="title">{{ title }}</span>
+          <span v-else />
           <div>
             <el-input
               v-model="filterName"
@@ -94,7 +95,12 @@ import { tableColumnList, tableData } from './constant/index'
 export default {
   name: 'ContainerGroup',
   components: {},
-  props: {},
+  props: {
+    title: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tableColumnList,

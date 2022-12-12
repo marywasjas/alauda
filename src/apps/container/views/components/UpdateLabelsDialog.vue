@@ -1,5 +1,12 @@
 <template>
-  <el-dialog :title="title" :visible="updateLabelsVisible" width="50%" @close="closeUpdateLabelsDialog">
+  <el-dialog
+    width="840px"
+    :close-on-click-modal="false"
+    :before-close="closeUpdateLabelsDialog"
+    :title="title"
+    :visible="updateLabelsVisible"
+    @close="closeUpdateLabelsDialog"
+  >
     <table border="0" style="width: 100%">
       <thead>
         <tr class="headerStyle">
@@ -33,7 +40,7 @@
         </tr>
         <tr>
           <td colspan="5">
-            <div class="cursor-pointer text-center hover-div" @click="handleUpdateLabelsAdd">
+            <div class="cursor-pointer text-center hover-div" style="height:36px;line-height: 36px;" @click="handleUpdateLabelsAdd">
               <i class="el-icon-circle-plus-outline" />
               添加
             </div>

@@ -27,7 +27,6 @@
           header-row-class-name="headerStyle"
           class="margin-top"
         >
-          <!-- <el-table-column type="selection" width="55" /> -->
           <el-table-column label="名称">
             <template slot-scope="{row}">
               <span class="cursor-pointer" @click="handleDetail(row)">{{ row.name }}</span>
@@ -58,7 +57,7 @@
               <span>{{ row.createtime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center" width="60" class-name="small-padding fixed-width">
             <template slot-scope="{row}">
               <div class="operation-cell">
                 <el-dropdown>
