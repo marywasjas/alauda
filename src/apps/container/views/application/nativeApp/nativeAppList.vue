@@ -38,7 +38,7 @@
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="update" @click.native="handleUpdate(scope.row)">更新</el-dropdown-item>
-                    <el-dropdown-item command="delete">删除</el-dropdown-item>
+                    <el-dropdown-item command="delete" @click.native="handelDelete(scope.row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -99,6 +99,30 @@ export default {
           name: row.name,
           desc: row.desc
         }
+      })
+    },
+    handelDelete(row) {
+      const returnMsgList = [
+        `确定删除应用${row.name}吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     }
   }

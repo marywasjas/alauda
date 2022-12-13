@@ -14,7 +14,11 @@
             >
               <el-button slot="append" icon="el-icon-search" />
             </el-input>
-            <el-button icon="el-icon-refresh-right" size="small" class="margin-left10" />
+            <el-button
+              icon="el-icon-refresh-right"
+              size="small"
+              class="margin-left10"
+            />
           </div>
         </div>
       </header>
@@ -35,7 +39,9 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="cursor-pointer">
-                <span @click="handelDetails(scope.row)">{{ scope.row[col.id] }}</span>
+                <span @click="handelDetails(scope.row)">{{
+                  scope.row[col.id]
+                }}</span>
               </div>
               <div v-else-if="col.id === 'resource'">
                 <p class="margin0">
@@ -48,33 +54,85 @@
                 </p>
               </div>
               <div v-else-if="col.id === 'status'" class="status-cell">
-                <i v-if="scope.row.status === 'running'" class="el-icon-video-play running" />
-                <i v-else-if="scope.row.status === 'stop'" class="el-icon-video-pause stop" />
-                <i v-else-if="scope.row.status === 'pending'" class="el-icon-loading pending" />
+                <i
+                  v-if="scope.row.status === 'running'"
+                  class="el-icon-video-play running"
+                />
+                <i
+                  v-else-if="scope.row.status === 'stop'"
+                  class="el-icon-video-pause stop"
+                />
+                <i
+                  v-else-if="scope.row.status === 'pending'"
+                  class="el-icon-loading pending"
+                />
                 <span>{{ scope.row.statusText }}</span>
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
-                <el-dropdown>
+                <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="update">
-                      <el-tooltip placement="left" effect="light" :visible-arrow="false">
-                        <div slot="content">
-                          <el-button type="text">nginx</el-button>
+                      <el-tooltip
+                        placement="left"
+                        effect="light"
+                        :visible-arrow="false"
+                      >
+                        <div
+                          slot="content"
+                          style="display: flex; flex-direction: column"
+                        >
+                          <el-button
+                            type="text"
+                            style="padding: 5px 0"
+                            @click="handelLog('nginx')"
+                          >nginx</el-button>
+                          <el-button
+                            type="text"
+                            style="padding: 5px 0"
+                            @click="handelLog('nginx')"
+                          >nginx2</el-button>
                         </div>
-                        <el-button type="text">查看日志<i class="el-icon-arrow-right" /></el-button>
+                        <el-button
+                          type="text"
+                        >查看日志<i
+                          class="el-icon-arrow-right"
+                        /></el-button>
                       </el-tooltip>
                     </el-dropdown-item>
                     <el-dropdown-item command="update">
-                      <el-tooltip placement="left" effect="light" :visible-arrow="false">
-                        <div slot="content">
-                          <el-button type="text" disabled>nginx</el-button>
+                      <el-tooltip
+                        placement="left"
+                        effect="light"
+                        :visible-arrow="false"
+                      >
+                        <div
+                          slot="content"
+                          style="display: flex; flex-direction: column"
+                        >
+                          <el-button
+                            type="text"
+                            style="padding: 5px 0"
+                            @click="handelExec('nginx')"
+                          >nginx</el-button>
+                          <el-button
+                            type="text"
+                            style="padding: 5px 0"
+                            @click="handelExec('nginx')"
+                          >nginx2</el-button>
                         </div>
-                        <el-button type="text">EXEC<i class="el-icon-arrow-right" /></el-button>
+                        <el-button
+                          type="text"
+                        >EXEC<i
+                          class="el-icon-arrow-right"
+                        /></el-button>
                       </el-tooltip>
                     </el-dropdown-item>
                     <el-dropdown-item command="delete">
-                      <el-button type="text">删除</el-button>
+                      <el-button
+                        type="text"
+                        @click.native="handelDelete(scope.row)"
+                      >删除</el-button>
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -87,25 +145,37 @@
         </el-table>
       </section>
     </BaseCard>
+    <execute-command-dialog
+      :form-visible="formVisible"
+      title="执行命令"
+      @closeFormDialog="closeFormDialog"
+      @submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import { tableColumnList, tableData } from './constant/index'
+import ExecuteCommandDialog from '@/apps/container/views/components/ExecuteCommandDialog'
 export default {
   name: 'ContainerGroup',
-  components: {},
+  components: { ExecuteCommandDialog },
   props: {
     title: {
       type: String,
       default: ''
+    },
+    logBackName: {
+      type: String,
+      default: 'ContainerGroupDetail'
     }
   },
   data() {
     return {
       tableColumnList,
       tableData,
-      filterName: ''
+      filterName: '',
+      formVisible: false
     }
   },
   computed: {},
@@ -119,6 +189,49 @@ export default {
         query: {
           name: row.name
         }
+      })
+    },
+    handelLog(name) {
+      this.$router.push({
+        name: this.logBackName,
+        query: {
+          name: name,
+          activeName: 'journal'
+        }
+      })
+    },
+    closeFormDialog() {
+      this.formVisible = false
+    },
+    submitForm(form) {
+      this.formVisible = false
+    },
+    handelExec(name) {
+      this.formVisible = true
+    },
+    handelDelete(row) {
+      const returnMsgList = [
+        `确定删除容器组${row.name}吗？`,
+        '删除后，系统会根据当前配置情况进行容器组调度或重建。'
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     }
   }

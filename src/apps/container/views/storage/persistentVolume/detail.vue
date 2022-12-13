@@ -12,7 +12,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>扩容</el-dropdown-item>
               <el-dropdown-item>更新</el-dropdown-item>
-              <el-dropdown-item>删除</el-dropdown-item>
+              <el-dropdown-item @click.native="handelDelete">删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -76,6 +76,38 @@ export default {
   methods: {
     changeActive(value) {
       this.activeName = value
+    },
+    handelDelete() {
+      const returnMsgList = [
+        `确定删除${this.name}持久卷声明吗？删除后持久卷中的数据将被清除。`,
+        `请输入${this.name}确定删除`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$prompt(h('div', null, newData), '删除持久卷声明', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'error',
+        inputValidator: (val) => {
+          if (val === this.name) {
+            return true
+          }
+          return false
+        },
+        inputErrorMessage: '输入不正确'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     }
   }
 }

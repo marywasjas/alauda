@@ -31,7 +31,7 @@
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="update" @click.native="handleUpdate(scope.row)">更新</el-dropdown-item>
-                    <el-dropdown-item command="delete">删除</el-dropdown-item>
+                    <el-dropdown-item command="delete" @click.native="handelDelete(scope.row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -43,21 +43,28 @@
         </el-table>
       </div>
     </div>
+    <delete-item-dialog :dialog-table-visible="dialogTableVisible" :dialog-table-title="dialogTableTitle" :dialog-table-name="dialogTableName" @closeDialogTable="closeDialogTable" @submitDialogTable="submitDialogTable" />
   </div>
 </template>
 
 <script>
 import { tableData, tableColumnList } from './constant/index'
+import DeleteItemDialog from '../components/DeleteItemDialog.vue'
+
 export default {
   name: 'NativeAppList',
-  components: { },
+  components: { DeleteItemDialog },
   data() {
     return {
       tableData,
       tableColumnList,
       formInline: {
         name: ''
-      }
+      },
+      dialogTableVisible: false,
+      dialogTableTitle: `确定删除配置字典吗？`,
+      dialogTableName: '',
+      currentObj: {}
     }
   },
   methods: {
@@ -92,6 +99,54 @@ export default {
           type: 'edit'
         }
       })
+    },
+    handelDelete(row) {
+      if (row.id === 1) {
+        this.dialogTableVisible = true
+        this.dialogTableTitle = `确定删除保密字典${row.name}吗？`
+        this.dialogTableName = row.name
+        this.currentObj = row
+      } else {
+        const returnMsgList = [
+          `确定删除保密字典${row.name}吗？`
+        ]
+        const newData = []; const h = this.$createElement
+        for (const i in returnMsgList) {
+          newData.push(h('p', null, returnMsgList[i]))
+        }
+        this.$confirm(h('div', null, newData), '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '已删除'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+      }
+    },
+    closeDialogTable() {
+      this.$message({
+        type: 'info',
+        message: '已取消'
+      })
+      this.dialogTableVisible = false
+      this.currentObj = {}
+    },
+    submitDialogTable() {
+      console.log(this.currentObj.id)
+      this.$message({
+        type: 'success',
+        message: '已删除'
+      })
+      this.dialogTableVisible = false
+      this.currentObj = {}
     }
   }
 }

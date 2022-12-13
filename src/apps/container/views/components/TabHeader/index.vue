@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="tab-header__header-wrapper">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tabs v-model="subActiveName" @tab-click="handleClick">
         <el-tab-pane v-for="tab in tabList" :key="tab.name" :label="tab.label" :name="tab.name" />
       </el-tabs>
     </div>
@@ -37,24 +37,30 @@ export default {
       default: () => {
         return []
       }
+    },
+    activeName: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      activeName: ''
+      subActiveName: ''
     }
   },
   computed: {},
   watch: {
-
+    activeName: function(newVal, oldVal) {
+      this.subActiveName = newVal
+    }
   },
   created() {
-    this.activeName = this.tabList[0].name
+    this.subActiveName = this.activeName
   },
   mounted() {},
   methods: {
     handleClick(tab, event) {
-      this.$emit('changeActive', this.activeName)
+      this.$emit('changeActive', this.subActiveName)
     }
   }
 }

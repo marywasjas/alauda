@@ -39,53 +39,22 @@
         </el-table>
       </section>
     </BaseCard>
-    <el-dialog
-      title="加载配置"
-      :visible.sync="formVisible"
-      width="800px"
-      :before-close="closeFormDialog"
-      :close-on-click-modal="false"
-    >
-      <div class="formDialog__content">
-        <el-form
-          ref="ruleForm"
-          :model="ruleForm"
-          :rules="rules"
-          label-width="120px"
-          class="margin-top"
-        >
-          <el-form-item label="执行命令" prop="command">
-            <el-input v-model="ruleForm.command" placeholder="执行命令" />
-          </el-form-item>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确定</el-button>
-        <el-button @click="closeFormDialog">取消</el-button>
-      </span>
-    </el-dialog>
+    <execute-command-dialog :form-visible="formVisible" title="加载配置" @closeFormDialog="closeFormDialog" @submitForm="submitForm" />
   </div>
 </template>
 
 <script>
 import { tableColumnList, tableData } from './constant/index'
+import ExecuteCommandDialog from '@/apps/container/views/components/ExecuteCommandDialog'
 export default {
   name: 'CalculationComponent',
-  components: { },
+  components: { ExecuteCommandDialog },
   props: {},
   data() {
     return {
       tableColumnList,
       tableData,
-      formVisible: false,
-      ruleForm: {
-        command: '/bin/bash'
-      },
-      rules: {
-        command: [
-          { required: true, message: '请输入执行命令', trigger: 'blur' }
-        ]
-      }
+      formVisible: false
     }
   },
   computed: {},
@@ -94,21 +63,14 @@ export default {
   mounted() {},
   methods: {
     handelConfig(row) {
-      console.log(row)
       this.formVisible = true
     },
     closeFormDialog() {
       this.formVisible = false
     },
-    submitForm() {
-      this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          console.log(this.ruleForm)
-          this.formVisible = false
-        } else {
-          return false
-        }
-      })
+    submitForm(form) {
+      console.log(form)
+      this.formVisible = false
     }
   }
 }
