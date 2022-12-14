@@ -6,6 +6,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import NoSliderLayout from '@/layout/noSlider/index'
 
 /**
  * constantRoutes
@@ -33,6 +34,34 @@ export const constantRoutes = [
     path: '/auth-redirect',
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
+  },
+  {
+    path: '/personal',
+    component: NoSliderLayout,
+    redirect: '/personal/information',
+    hidden: true,
+    children: [
+      {
+        path: 'information',
+        component: () => import('@/views/personal-information/index'),
+        name: 'PersonalInformation',
+        meta: { title: '个人信息' }
+      }
+    ]
+  },
+  {
+    path: '/platform',
+    component: NoSliderLayout,
+    redirect: '/platform/healthStatus',
+    hidden: true,
+    children: [
+      {
+        path: 'healthStatus',
+        component: () => import('@/views/health-status/index'),
+        name: 'PlatformHealthStatus',
+        meta: { title: '平台健康状态' }
+      }
+    ]
   },
   {
     path: '/404',
@@ -66,7 +95,7 @@ export const constantRoutes = [
 export const asyncRoutes = [...containerAsyncRoutes]
 console.log(devOpsAsyncRoutes)
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'hash', // require service support  history hash
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

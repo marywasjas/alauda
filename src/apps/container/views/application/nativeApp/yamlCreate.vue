@@ -205,6 +205,32 @@ export default {
     // 编辑器失去焦点
     handleBlur(value) {
       this.inputCode = value
+      this.currentCode = this.inputCode
+      if (this.inputCode) {
+        const obj = {
+          autoUpdate: false,
+          import: true,
+          export: true,
+          find: true,
+          reset: true,
+          copy: true,
+          full: true,
+          exit: true
+        }
+        this.$set(this, 'btnVisible', obj)
+      } else {
+        const obj = {
+          autoUpdate: false,
+          import: true,
+          export: false,
+          find: false,
+          reset: false,
+          copy: false,
+          full: true,
+          exit: true
+        }
+        this.$set(this, 'btnVisible', obj)
+      }
     },
     // 改变全屏
     changeFull(val) {
