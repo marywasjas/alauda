@@ -151,15 +151,17 @@
       @closeFormDialog="closeFormDialog"
       @submitForm="submitForm"
     />
+    <log-xterm v-if="xtermVisible" :xterm-visible="xtermVisible" :xterm-title="xtermTitle" @handleClose="handleClose" />
   </div>
 </template>
 
 <script>
 import { tableColumnList, tableData } from './constant/index'
 import ExecuteCommandDialog from '@/apps/container/views/components/ExecuteCommandDialog'
+import LogXterm from '@/apps/container/views/components/LogXterm/index.vue'
 export default {
   name: 'ContainerGroup',
-  components: { ExecuteCommandDialog },
+  components: { ExecuteCommandDialog, LogXterm },
   props: {
     title: {
       type: String,
@@ -175,7 +177,9 @@ export default {
       tableColumnList,
       tableData,
       filterName: '',
-      formVisible: false
+      formVisible: false,
+      xtermVisible: false,
+      xtermTitle: ''
     }
   },
   computed: {},
@@ -205,9 +209,14 @@ export default {
     },
     submitForm(form) {
       this.formVisible = false
+      this.xtermVisible = true
+    },
+    handleClose() {
+      this.xtermVisible = false
     },
     handelExec(name) {
       this.formVisible = true
+      this.xtermTitle = name
     },
     handelDelete(row) {
       const returnMsgList = [

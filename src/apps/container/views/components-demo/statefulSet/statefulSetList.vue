@@ -38,11 +38,11 @@
           <el-table-column label="" align="center" width="70" class-name="small-padding fixed-width">
             <template slot-scope="{ row }">
               <div class="operation-cell">
-                <el-dropdown @command="handleEdit(row.name.link_name)">
+                <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item @click.native="handleEdit(row.name.link_name)">更新</el-dropdown-item>
+                    <el-dropdown-item @click.native="handelDelete(row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -165,6 +165,30 @@ export default {
         query: {
           link_name: link_name // 传递的参数: 键值对
         }
+      })
+    },
+    handelDelete(row) {
+      const returnMsgList = [
+        `确定删除有状态副本集${row.name.link_name}吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     },
     openDialog() {

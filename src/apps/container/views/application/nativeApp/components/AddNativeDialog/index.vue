@@ -108,10 +108,13 @@ export default {
 <style lang="scss" scoped>
 .dialog__content {
   .select-cards {
-    display: grid;
-    grid: 112px 112px/350px 350px;
-    grid-gap: 20px;
-    margin: 20px;
+    // display: grid;
+    // grid: 112px 112px/350px 350px;
+    // grid-gap: 20px;
+    // margin: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
     .select-cards__item {
       display: grid;
       padding: 20px 12px 20px 28px;

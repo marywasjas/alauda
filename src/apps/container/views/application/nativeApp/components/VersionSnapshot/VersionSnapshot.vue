@@ -65,7 +65,7 @@
                     <!-- <el-dropdown-item command="distribute" @click.native="handelDistribute(scope.row)">
                       分发
                     </el-dropdown-item> -->
-                    <el-dropdown-item command="rollBack">
+                    <el-dropdown-item command="rollBack" @click.native="handelBack(scope.row)">
                       回滚至改版本
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -254,6 +254,30 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    handelBack(row) {
+      const returnMsgList = [
+        `确定回滚应用至${row.name}吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '回滚',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已回滚'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
