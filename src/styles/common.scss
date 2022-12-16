@@ -146,6 +146,15 @@
     color: $button-color-link;
   }
 }
+.running {
+  color: $button-color-success;
+}
+.stop {
+  color: $button-color-info;
+}
+.pending {
+  color: $button-color-link;
+}
 // 表格内 expand 样式
 .inTable-desc{
   background:$background-color;

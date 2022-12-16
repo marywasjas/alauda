@@ -1,23 +1,42 @@
 import Mock from 'mockjs'
 export const portColumnList = [{
-  id: 'ip',
-  label: '服务访问'
+  id: 'rule',
+  label: '规则'
 }, {
-  id: 'protocol',
-  label: '协议'
+  id: 'warningType',
+  label: '告警类型'
 }, {
-  id: 'port',
-  label: '端口'
+  id: 'level',
+  label: '等级'
 }, {
-  id: 'hostPort',
-  label: '主机端口'
+  id: 'status',
+  label: '状态'
+},
+{
+  id: 'isEnable',
+  label: '启用/禁用'
 }]
 export const portData = Mock.mock({
-  'data|3': [{
-    ip: '@ip',
-    protocol: "@pick(['TCP', 'UDP'])",
-    port: "@pick(['80', '443'])",
-    hostPort: "@pick(['32407', '32408'])"
+  'data|5': [{
+    'id|+1': 1,
+    rule: '@word(3, 7)',
+    'warningType|1': ['指标告警'],
+    'level|1': ['严重'],
+    'status|1': ['正常'],
+    'isEnable|1': [false, true],
+    filterTime: '近 1 小时',
+    containerLineData: {
+      fields: [
+        {
+          name: 'test',
+          flied: 'yxz'
+        }
+      ],
+      'data|10': [{
+        name: '@date',
+        yxz: '@integer(0 ,10)'
+      }]
+    }
   }]
 })
 export const containerColumnList = [{

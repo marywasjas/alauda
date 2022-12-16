@@ -15,9 +15,31 @@
         <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
         <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
         <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCode">清理</el-button>
-        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
+        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini" @click="find">查找</el-button>
         <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini" @click="handleCopy(null,$event)">复制</el-button>
-        <el-button icon="el-icon-thumb" size="mini">自动</el-button>
+        <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+          <el-button icon="el-icon-thumb" size="mini" class="margin-left10 margin-right10">{{ currentThemeObj.label }}</el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="autoTheme({label:'自动',value:currentThemeObj.value})">
+              <div class="flex-start">
+                <i class="el-icon-user" />
+                <span>自动</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="autoTheme({label:'日间',value:'vs'})">
+              <div class="flex-start">
+                <i class="el-icon-monitor" />
+                <span>日间</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="autoTheme({label:'日间',value:'vs-dark'})">
+              <div class="flex-start">
+                <i class="el-icon-refresh" />
+                <span>夜间</span>
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-button v-if="!isFullscreen" icon="el-icon-full-screen" size="mini" @click="handleFull">全屏</el-button>
         <el-button v-if="isFullscreen" icon="el-icon-document-delete" size="mini" @click="handleFullExit">退出</el-button>
 
@@ -94,6 +116,10 @@ export default {
       inputCode: '',
       isFullscreen: false,
       editHeight: '400px',
+      currentThemeObj: {
+        label: '自动',
+        value: 'vs'
+      },
       standaloneEditorConstructionOptions: {
         acceptSuggestionOnCommitCharacter: true, // 接受关于提交字符的建议
         acceptSuggestionOnEnter: 'on', // 接受输入建议 "on" | "off" | "smart"
@@ -184,17 +210,21 @@ export default {
       this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
       this.$set(this.standaloneEditorConstructionOptions, 'language', this.language)
       this.$set(this.standaloneEditorConstructionOptions, 'value', this.currentCode)
+      this.$set(this.standaloneEditorConstructionOptions, 'theme', this.currentThemeObj.value)
       const container = document.getElementById(this.id)
       this.monacoEditor = monaco.editor.create(
         container,
         this.standaloneEditorConstructionOptions
       )
       // 监听内容变化
-      this.monacoEditor.onDidChangeModelContent((e) => {})
+      this.monacoEditor.onDidChangeModelContent((e) => {
+        // this.inputCode = this.monacoEditor.getValue()
+        // this.$emit('handleBlur', this.inputCode)
+      })
       // 监听失去焦点事件
       this.monacoEditor.onDidBlurEditorText((e) => {
-        const inputCode = this.monacoEditor.getValue()
-        this.$emit('handleBlur', inputCode)
+        this.inputCode = this.monacoEditor.getValue()
+        this.$emit('handleBlur', this.inputCode)
       })
     },
     // 更新数据
@@ -217,8 +247,18 @@ export default {
       this.value = ''
       this.updateMonacoEditor()
     },
+    // 查找
+    find() {
+      this.monacoEditor.getAction('actions.find').run()
+    },
+    // 复制
     handleCopy(text, event) {
       clip(this.currentCode, event)
+    },
+    // 改变主题
+    autoTheme(obj) {
+      this.currentThemeObj = obj
+      this.monacoEditor._themeService.setTheme(this.currentThemeObj.value)
     },
     // 导出
     handleDownload() {
@@ -244,12 +284,8 @@ export default {
       this.inputCode = value
       this.$emit('handleBlurDialog', this.inputCode)
     },
-    // 改变全屏
-    changeFull(val) {
-      this.isFullscreen = val
-    },
     submitForm() {
-      this.$emit('submitForm', '')
+      this.$emit('submitForm', this.inputCode)
     }
   }
 }

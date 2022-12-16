@@ -15,15 +15,10 @@
             class="label-value"
           >
             <span>{{ item.label }}</span>: &nbsp;&nbsp;
-            <span v-if="item.label=='标签'">
-              <span v-if="tagSelector.length>0">
-                <el-tag v-for="el in tagSelector" :key="el.key" type="info" class="margin-right10">
-                  {{ el.value }}
-                </el-tag>
-              </span>
-              <span v-else>-</span>
-              <span v-if="targetComponents=='标签选择器'" @click="editTag">
-                <i class="el-icon-edit cursor-pointer margin-left10" />
+            <span v-if="item.label=='关联资源'" class="cursor-pointer" @click="handleResource">
+              <i class="el-icon-document-copy" />
+              <span>
+                {{ item.value }}
               </span>
             </span>
             <span v-else>
@@ -37,7 +32,7 @@
     <BaseCard>
       <header>
         <div class="card-title right-header">
-          <span>端口</span>
+          <span>告警规则</span>
         </div>
       </header>
       <section>
@@ -45,16 +40,50 @@
           class="margin-top"
           :data="portData.data"
           style="width: 100%"
-          height="100%"
           header-row-class-name="headerStyle"
         >
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <div class="container-top-right">
+                <div class="text-right">
+                  <el-select
+                    v-model="scope.row.filterTime"
+                    filterable
+                    placeholder="请选择"
+                    size="mini"
+                  >
+                    <i slot="prefix" class="el-input__icon el-icon-search" />
+                    <el-option
+                      v-for="item in timeOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </div>
+                <line-chart :chart-data="scope.row.containerLineData" :show-total="false" />
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             v-for="col in portColumnList"
             :key="col.id"
             :label="col.label"
           >
             <template slot-scope="scope">
-              {{ scope.row[col.id] }}
+              <div v-if="col.id === 'level'">
+                <el-tag type="danger">{{ scope.row[col.id] }}</el-tag>
+              </div>
+              <div v-else-if="col.id === 'status'">
+                <i class="el-icon-message-solid running" />
+                {{ scope.row[col.id] }}
+              </div>
+              <div v-else-if="col.id === 'isEnable'">
+                <el-switch v-model="scope.row[col.id]" @change="changeIsEnable(scope.row)" />
+              </div>
+              <div v-else>
+                {{ scope.row[col.id] }}
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -63,7 +92,7 @@
     <BaseCard>
       <header>
         <div class="card-title left-header">
-          <span>配置信息</span>
+          <span>策略配置</span>
         </div>
       </header>
       <section class="component-div">
@@ -71,7 +100,7 @@
           <el-col
             v-for="item in configData"
             :key="item.label"
-            :span="12"
+            :span="24"
             class="label-value"
           >
             <span>{{ item.label }}</span>: &nbsp;&nbsp;
@@ -83,253 +112,130 @@
         </el-row>
       </section>
     </BaseCard>
-    <BaseCard>
-      <header>
-        <div class="card-title right-header">
-          <span>容器组</span>
-          <el-input
-            v-model="filterContainer"
-            placeholder="请输入名称或容器组IP"
-            size="small"
-            class="margin-right10"
-            style="width: 300px; margin-left: auto;"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
-          </el-input>
-          <el-button
-            icon="el-icon-refresh-right"
-            size="small"
-            @click="handleRefresh"
-          />
-        </div>
-      </header>
-      <section>
-        <el-table
-          class="margin-top"
-          :data="containerData.data"
-          style="width: 100%"
-          height="100%"
-          header-row-class-name="headerStyle"
-        >
-          <el-table-column
-            v-for="col in containerColumnList"
-            :key="col.id"
-            :label="col.label"
-          >
-            <template slot-scope="scope">
-              {{ scope.row[col.id] }}
-            </template>
-          </el-table-column>
-        </el-table>
-      </section>
-    </BaseCard>
-    <el-dialog
-      title="更新标签"
-      :visible.sync="tagVisible"
-      width="840px"
-      :close-on-click-modal="false"
-      :before-close="closeTagDialog"
-    >
-      <div>
-        <el-form
-          ref="ruleForm"
-          :model="ruleForm"
-          label-suffix=":"
-        >
-          <table border="0" style="width:95%">
-            <thead>
-              <tr class="headerStyle">
-                <th>
-                  <div class="cell">键</div>
-                </th>
-                <th>
-                  <div class="cell">值</div>
-                </th>
-                <th>
-                  <div class="cell">操作</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(tag, index) in ruleForm.editTags"
-                :key="tag.id"
-              >
-                <td>
-                  <el-form-item
-                    label=""
-                    :prop="'editTags.' + index + '.key'"
-                    :rules="{
-                      required: true,
-                      message: '键不能为空',
-                      trigger: 'blur',
-                    }"
-                  >
-                    <el-input
-                      v-model="tag.key"
-                      placeholder="键"
-                    />
-                  </el-form-item>
-                </td>
-                <td>
-                  <el-form-item
-                    label=""
-                    :prop="'editTags.' + index + '.value'"
-                    :rules="{
-                      required: true,
-                      message: '值不能为空',
-                      trigger: 'blur',
-                    }"
-                  >
-                    <el-input
-                      v-model="tag.value"
-                      placeholder="值"
-                    />
-                  </el-form-item>
-                </td>
-                <td>
-                  <el-button
-                    icon="el-icon-remove-outline"
-                    class="
-                            cursor-pointer
-                            margin-left10 margin-right10
-                          "
-                    type="text"
-                    @click="handleTagDelete(tag, index)"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
-                    <i class="el-icon-circle-plus-outline" />
-                    添加
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitTagDialog">更新</el-button>
-        <el-button @click="closeTagDialog">关闭</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { portColumnList, portData, containerColumnList, containerData } from './constant/index'
-import { nanoid } from 'nanoid'
+import { portColumnList, portData } from './constant/index'
+import LineChart from '@/apps/container/views/components/LineChart'
 
 export default {
   name: 'BaseInfo',
+  components: { LineChart },
   props: {},
   data() {
     return {
+      name: '',
       baseInfoData: [
+        {
+          label: '名称',
+          value: 'hhh'
+        },
         {
           label: '显示名称',
           value: 'hhh'
         },
         {
-          label: '来源',
-          value: ''
+          label: '关联资源',
+          value: 'test'
         },
         {
-          label: '标签',
-          value: []
-        },
-        {
-          label: '会话保持',
-          value: '否'
-        },
-        {
-          label: '计算组件',
-          value: 'airm-c-anomaly-detecti-airm-c-anomaly-detecti'
-        },
-        {
-          label: '创建人',
-          value: 'admin@cpaas.io'
+          label: '策略命名空间',
+          value: 'chaos-dev'
         },
         {
           label: '创建时间',
-          value: '2022-09-28 16:06:17'
+          value: '2022-12-16 17:23:34'
         },
         {
           label: '更新时间',
-          value: '2022-09-28 16:05:55'
+          value: '2022-12-16 17:23:34'
+        },
+        {
+          label: '描述',
+          value: ''
         }
       ],
       configData: [
         {
-          label: '虚拟 IP',
-          value: '10.4.52.209'
+          label: '通知策略',
+          value: ''
         },
         {
-          label: '会话保持',
-          value: '否'
-        },
-        {
-          label: 'lb',
-          value: '111111'
+          label: '告警发送间隔',
+          value: '全局（灾难告警5分钟，严重告警15分钟，警告告警10分钟，提示告警20分钟）'
         }
       ],
       filterContainer: '',
       portColumnList,
       portData,
-      containerColumnList,
-      containerData,
-      targetComponents: '标签选择器',
-      tagVisible: false,
-      ruleForm: {
-        editTags: []
-      },
-      tagSelector: [
-        { key: 'tag-1', value: 'test-1' },
-        { key: 'tag-2', value: 'test-2' }
+      timeOptions: [
+        {
+          value: '近 1 小时',
+          label: '近 1 小时'
+        },
+        {
+          value: '近 3 小时',
+          label: '近 3 小时'
+        },
+        {
+          value: '近 12 小时',
+          label: '近 12 小时'
+        },
+        {
+          value: '近 1 天',
+          label: '近 1 天'
+        },
+        {
+          value: '近 3 天',
+          label: '近 3 天'
+        },
+        {
+          value: '近 7 天',
+          label: '近 7 天'
+        }
       ]
     }
   },
   computed: {},
   watch: {},
-  created() {},
+  created() {
+    this.name = this.$route.query.name
+  },
   mounted() {},
   methods: {
-    handleRefresh() {
-      console.log('resfresh container list')
-    },
-    handleFilter() {
-      console.log('search container')
-    },
-    editTag() {
-      this.ruleForm.editTags = JSON.parse(JSON.stringify(this.tagSelector))
-      this.tagVisible = true
-    },
-    handleTagDelete(item, index) {
-      this.ruleForm.editTags.splice(this.ruleForm.editTags.indexOf(item), 1)
-    },
-    handleTagAdd() {
-      const obj = {
-        id: nanoid(),
-        key: '',
-        value: ''
+    changeIsEnable(row) {
+      const str = row.isEnable ? '关闭' : '开启'
+      const returnMsgList = [
+        `确定${str}${row.rule}规则吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
       }
-      this.ruleForm.editTags.push(obj)
-    },
-    submitTagDialog() {
-      this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          this.tagSelector = this.ruleForm.editTags
-          this.tagVisible = false
-        } else {
-          return false
-        }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: `已${str}`
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     },
-    closeTagDialog() {
-      this.tagVisible = false
+    handleResource() {
+      this.$router.push({
+        name: 'DeployDetail',
+        query: {
+          link_name: this.name
+        }
+      })
     }
   }
 }
@@ -365,5 +271,15 @@ export default {
 }
 .hover-div:hover{
   background:$color-primary-rgba1;
+}
+.container-top-right {
+  flex: 1;
+  height: 250px;
+  .el-select{
+    margin-bottom: 20px;
+  }
+  .chart{
+    height: 200px !important;
+  }
 }
 </style>

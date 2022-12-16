@@ -653,7 +653,7 @@ export const containerAsyncRoutes = [
             path: 'create',
             component: () => import('@/apps/container/views/alarm/policy/create'),
             name: 'AlarmCreate',
-            meta: { title: '创建告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            meta: { title: '创建/更新告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
             hidden: true
           },
           {
