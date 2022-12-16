@@ -193,157 +193,159 @@ export default {
             },
             name: 'card-node-keyshape'
           })
-          // const titleRect = group.addShape('rect', {
-          //   attrs: {
-          //     x: 0,
-          //     y: 0,
-          //     width: 250,
-          //     height: 20,
-          //     fill: '#fff',
-          //     stroke: '#696969',
-          //     lineDash: cfg.lineDash
-          //   },
-          //   name: 'card-node-title'
-          // })
-          // const title = group.addShape('text', {
-          //   attrs: {
-          //     text: cfg.title,
-          //     x: 10,
-          //     y: 3,
-          //     fill: 'black',
-          //     textBaseline: 'top'
-          //   }
-          // })
-          // if (cfg.isRoot === true) {
-          //   const containerRect = group.addShape('rect', {
-          //     attrs: {
-          //       x: 0,
-          //       y: 20,
-          //       width: 250,
-          //       height: 150,
-          //       stroke: '#696969',
-          //       fill: '#fff',
-          //       radius: 2
-          //     },
-          //     name: 'card-node-containerRect',
-          //     draggable: true
-          //   })
-          //   const container = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.name,
-          //       x: 10,
-          //       y: 30,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 12
-          //     },
-          //     name: 'card-node-container',
-          //     draggable: true
-          //   })
-          //   const state = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.state,
-          //       x: 10,
-          //       y: 50,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 13
-          //     },
-          //     name: 'card-node-container',
-          //     draggable: true
-          //   })
-          //   const containerGroup = group.addShape('rect', {
-          //     attrs: {
-          //       x: 25,
-          //       y: 70,
-          //       width: 200,
-          //       height: 100,
-          //       stroke: '#696969',
-          //       fill: 'pink',
-          //       radius: 2
-          //     },
-          //     name: 'card-node-containerRect',
-          //     draggable: true
-          //   })
-          //   const containerGroupTitle = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.containerGroupTitle,
-          //       x: 30,
-          //       y: 80,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 13
-          //     },
-          //     name: 'card-node-container',
-          //     draggable: true
-          //   })
-          //   const containerGroupName = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.containerGroupName,
-          //       x: 30,
-          //       y: 100,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 13
-          //       // overflow: hidden
-          //     },
-          //     name: 'card-node-container',
-          //     draggable: true
-          //   })
-          //   const containerGroupState = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.containerGroupState,
-          //       x: 30,
-          //       y: 130,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 13
-          //       // overflow: hidden
-          //     },
-          //     name: 'card-node-container',
-          //     draggable: true
-          //   })
-          // } else {
-          //   const containerRect = group.addShape('rect', {
-          //     attrs: {
-          //       x: 0,
-          //       y: 20,
-          //       width: 250,
-          //       height: 60,
-          //       stroke: '#696969',
-          //       fill: '#fff',
-          //       radius: 2,
-          //       lineDash: cfg.lineDash
-          //     },
-          //     name: 'card-node-containerRect',
-          //     draggable: true
-          //   })
-          //   const container = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.name,
-          //       x: 10,
-          //       y: 30,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 12
-          //     },
-          //     name: 'card-node-container',
-          //     draggable: true
-          //   })
-          //   const desc = group.addShape('text', {
-          //     attrs: {
-          //       text: cfg.desc,
-          //       x: 10,
-          //       y: 45,
-          //       fill: 'black',
-          //       textBaseline: 'top',
-          //       fontSize: 10
-          //     },
-          //     name: 'card-node-desc',
-          //     draggable: true
-          //   })
-          // }
-
+          const titleRect = group.addShape('rect', {
+            attrs: {
+              x: 0,
+              y: 0,
+              width: 250,
+              height: 20,
+              fill: '#fff',
+              stroke: '#696969',
+              lineDash: cfg.lineDash
+            },
+            name: 'card-node-title'
+          })
+          const title = group.addShape('text', {
+            attrs: {
+              text: cfg.title,
+              x: 10,
+              y: 3,
+              fill: 'black',
+              textBaseline: 'top'
+            }
+          })
+          if (cfg.isRoot === true) {
+            const containerRect = group.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 20,
+                width: 250,
+                height: 150,
+                stroke: '#696969',
+                fill: '#fff',
+                radius: 2
+              },
+              name: 'card-node-containerRect',
+              draggable: true
+            })
+            const container = group.addShape('text', {
+              attrs: {
+                text: cfg.name,
+                x: 10,
+                y: 30,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 12
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            const state = group.addShape('text', {
+              attrs: {
+                text: cfg.state,
+                x: 10,
+                y: 50,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            const containerGroup = group.addShape('rect', {
+              attrs: {
+                x: 25,
+                y: 70,
+                width: 200,
+                height: 100,
+                stroke: '#696969',
+                fill: 'pink',
+                radius: 2
+              },
+              name: 'card-node-containerRect',
+              draggable: true
+            })
+            const containerGroupTitle = group.addShape('text', {
+              attrs: {
+                text: cfg.containerGroupTitle,
+                x: 30,
+                y: 80,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            const containerGroupName = group.addShape('text', {
+              attrs: {
+                text: cfg.containerGroupName,
+                x: 30,
+                y: 100,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+                // overflow: hidden
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            const containerGroupState = group.addShape('text', {
+              attrs: {
+                text: cfg.containerGroupState,
+                x: 30,
+                y: 130,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+                // overflow: hidden
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            console.log(containerRect, container, state, containerGroup, containerGroupTitle, containerGroupName, containerGroupState)
+          } else {
+            const containerRect = group.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 20,
+                width: 250,
+                height: 60,
+                stroke: '#696969',
+                fill: '#fff',
+                radius: 2,
+                lineDash: cfg.lineDash
+              },
+              name: 'card-node-containerRect',
+              draggable: true
+            })
+            const container = group.addShape('text', {
+              attrs: {
+                text: cfg.name,
+                x: 10,
+                y: 30,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 12
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            const desc = group.addShape('text', {
+              attrs: {
+                text: cfg.desc,
+                x: 10,
+                y: 45,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 10
+              },
+              name: 'card-node-desc',
+              draggable: true
+            })
+            console.log(containerRect, container, desc)
+          }
+          console.log(titleRect, title)
           return keyShape
         }
       })
