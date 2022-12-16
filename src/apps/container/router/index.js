@@ -727,5 +727,22 @@ export const containerAsyncRoutes = [
       }
     ]
   },
+
+  // 测试--流程图
+  {
+    path: '/test',
+    // name: "Test",
+    redirect: '/test/index',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'TestIndex',
+        component: () => import('@/apps/container/views/test/index'),
+        meta: { title: '流程图', icon: 'tree', roles: ['admin'] }
+      }
+    ]
+  },
+
   { path: '*', redirect: '/404', hidden: true }
 ]

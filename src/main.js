@@ -20,6 +20,8 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 
+import VueDrawioPreview from 'vue-drawio-preview'
+Vue.use(VueDrawioPreview)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
