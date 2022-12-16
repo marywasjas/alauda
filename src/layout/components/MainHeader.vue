@@ -7,9 +7,9 @@
         </a>
       </div>
       <div class="page-header__separator" />
-      <product-select />
+      <product-select :is-show-namespace="isShowNamespace" :product-select-title="productSelectTitle" />
     </div>
-    <div class="page-header__center">
+    <div v-if="isShowNamespace" class="page-header__center">
       <namespace-selector />
     </div>
     <div class="page-header__right">
@@ -30,7 +30,16 @@ export default {
     RightMenu,
     NamespaceSelector
   },
-  props: {},
+  props: {
+    isShowNamespace: {
+      type: Boolean,
+      default: true
+    },
+    productSelectTitle: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       logoSrc

@@ -41,11 +41,17 @@ export const resourceData = Mock.mock([
 export const eventData = Mock.mock([
   {
     label: '警告',
-    value: '@integer(0 ,100)'
+    value: '@integer(0 ,100)',
+    itemStyle: {
+      color: '#F56C6C'
+    }
   },
   {
     label: '正常',
-    value: '@integer(0 ,100)'
+    value: '@integer(0 ,100)',
+    itemStyle: {
+      color: '#29C78E'
+    }
   }
 ])
 // 应用
@@ -116,11 +122,17 @@ export const computeData = Mock.mock({
 export const containerData = Mock.mock([
   {
     label: '运行中',
-    value: '@integer(0 ,100)'
+    value: '@integer(0 ,100)',
+    itemStyle: {
+      color: '#29C78E'
+    }
   },
   {
     label: '异常',
-    value: '@integer(0 ,100)'
+    value: '@integer(0 ,100)',
+    itemStyle: {
+      color: '#F56C6C'
+    }
   }
 ])
 export const containerColumnList = [{

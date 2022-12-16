@@ -85,7 +85,8 @@ export default {
             // 柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
             normal: {
               // 柱形图圆角，初始化效果
-              barBorderRadius: [30, 30, 0, 0]
+              barBorderRadius: [30, 30, 0, 0],
+              ...item.itemStyle
             }
           }
         }

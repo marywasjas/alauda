@@ -3,7 +3,7 @@ import Clipboard from 'clipboard'
 
 function clipboardSuccess() {
   Vue.prototype.$message({
-    message: 'Copy successfully',
+    message: '已复制到剪切板中',
     type: 'success',
     duration: 1500
   })
@@ -11,7 +11,7 @@ function clipboardSuccess() {
 
 function clipboardError() {
   Vue.prototype.$message({
-    message: 'Copy failed',
+    message: '复制失败，请重试',
     type: 'error'
   })
 }

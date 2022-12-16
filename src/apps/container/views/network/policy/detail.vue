@@ -24,14 +24,14 @@
 <script>
 import TabHeader from '@/apps/container/views/components/TabHeader'
 import BaseInfo from './components/BaseInfo/BaseInfo.vue'
-import Yaml from './components/Yaml.vue'
+import StrategyMap from './components/StrategyMap.vue'
 
 export default {
   name: 'Detail',
   components: {
     TabHeader,
     BaseInfo,
-    Yaml
+    StrategyMap
   },
   data() {
     return {
@@ -45,8 +45,8 @@ export default {
         },
         {
           label: '策略图',
-          name: 'yaml',
-          com: 'Yaml'
+          name: 'strategyMap',
+          com: 'StrategyMap'
         }
       ],
       activeName: ''

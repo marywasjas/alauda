@@ -20,7 +20,8 @@
         </div>
       </div>
       <div slot="reference" class="click-product-select">
-        <span>{{ currentProductTitle }}</span>
+        <span v-if="productSelectTitle">{{ productSelectTitle }}</span>
+        <span v-else>{{ currentProductTitle }}</span>
         <i class="el-icon-s-grid" />
       </div>
     </el-popover>
@@ -34,7 +35,16 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'ProductSelect',
   components: {},
-  props: {},
+  props: {
+    isShowNamespace: {
+      type: Boolean,
+      default: true
+    },
+    productSelectTitle: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       devOpsAsyncRoutes,

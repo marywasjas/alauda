@@ -16,7 +16,7 @@
         <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
         <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCode">清理</el-button>
         <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
-        <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini">复制</el-button>
+        <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini" @click="handleCopy(null,$event)">复制</el-button>
         <el-button icon="el-icon-thumb" size="mini">自动</el-button>
         <el-button v-if="!isFullscreen" icon="el-icon-full-screen" size="mini" @click="handleFull">全屏</el-button>
         <el-button v-if="isFullscreen" icon="el-icon-document-delete" size="mini" @click="handleFullExit">退出</el-button>
@@ -36,6 +36,7 @@
 <script>
 import * as monaco from 'monaco-editor'
 import FileSaver from 'file-saver'
+import clip from '@/utils/clipboard'
 
 export default {
   name: 'MonacoEditorDialog',
@@ -215,6 +216,9 @@ export default {
     resetCode() {
       this.value = ''
       this.updateMonacoEditor()
+    },
+    handleCopy(text, event) {
+      clip(this.currentCode, event)
     },
     // 导出
     handleDownload() {
