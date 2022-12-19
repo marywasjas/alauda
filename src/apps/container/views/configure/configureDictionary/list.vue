@@ -23,7 +23,7 @@
               <div v-if="col.id === 'name'" class="name-cell">
                 <div>
                   <span class="cursor-pointer" @click="goDetails(scope.row)">{{ scope.row.name }}</span>
-                  <span>{{ scope.row.desc }}</span>
+                  <!-- <span>{{ scope.row.desc }}</span> -->
                 </div>
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
@@ -186,11 +186,11 @@ export default {
       margin: 0;
       font-size: $font-size-18;
     }
-    span:last-child {
-      color: $font-color-text;
-      font-size: $font-size-14;
-      margin-top: 6px;
-    }
+    // span:last-child {
+    //   color: $font-color-text;
+    //   font-size: $font-size-14;
+    //   margin-top: 6px;
+    // }
   }
 }
 </style>

@@ -168,7 +168,7 @@ export default {
       this.$router.push({
         name: 'ServiceDetail',
         query: {
-          name: row.name
+          name: row.url
         }
       })
     },

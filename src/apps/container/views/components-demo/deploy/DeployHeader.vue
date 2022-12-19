@@ -19,10 +19,10 @@
       </div>
       <div class="card__content">
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
-          <el-table-column label="姓名">
+          <el-table-column label="名称">
             <template slot-scope="scope">
               <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
-              <div class="v_name">{{ scope.row.name.txt }}</div>
+              <!-- <div class="v_name">{{ scope.row.name.txt }}</div> -->
             </template>
           </el-table-column>
           <el-table-column label="状态">
@@ -33,7 +33,7 @@
           </el-table-column>
           <el-table-column prop="application" label="所属应用">
             <template slot-scope="scope">
-              <a class="link_name">{{ scope.row.application }}</a>
+              <a class="link_name" @click="handleApp(scope.row)">{{ scope.row.application }}</a>
             </template>
           </el-table-column>
           <el-table-column prop="create_time" label="创建时间" />
@@ -98,6 +98,15 @@ export default {
         path: 'deploy/detail',
         query: {
           link_name: link_name // 传递的参数: 键值对
+        }
+      })
+    },
+    handleApp(row) {
+      this.$router.push({
+        name: 'NativeDetail',
+        query: {
+          name: row.name.link_name,
+          desc: row.name.txt
         }
       })
     },

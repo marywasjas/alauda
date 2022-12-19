@@ -69,6 +69,14 @@
               <div v-if="col.id === 'name'" class="cursor-pointer" @click="handleDetail(scope.row)">
                 {{ scope.row[col.id] }}
               </div>
+              <div v-else-if="col.id === 'status'" style="text-align: center;">
+                <span>1/1</span>
+                <el-progress
+                  :percentage="100"
+                  :show-text="false"
+                  :stroke-width="10"
+                />
+              </div>
               <div v-else>
                 {{ scope.row[col.id] }}
               </div>
