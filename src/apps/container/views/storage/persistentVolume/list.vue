@@ -34,7 +34,7 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="update" @click.native="handleUpdate(scope.row)">扩容</el-dropdown-item>
+                    <el-dropdown-item command="update" @click.native="handleCapacityExpansion(scope.row)">扩容</el-dropdown-item>
                     <el-dropdown-item command="delete" @click.native="handleUpdate(scope.row)">更新</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -96,6 +96,17 @@ export default {
         name: 'PersistentVolumeDetail',
         query: {
           name: row.name
+        }
+      })
+    },
+    handleCapacityExpansion() {
+
+    },
+    handleUpdate(row) {
+      this.$router.push({
+        name: 'PersistentVolumeCreateUpdate',
+        query: {
+          type: 'edit'
         }
       })
     }

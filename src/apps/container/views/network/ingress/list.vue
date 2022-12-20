@@ -46,14 +46,14 @@
               <span>{{ row.createtime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center" width="60" class-name="small-padding fixed-width">
             <template slot-scope="{row}">
               <div class="operation-cell">
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native="handleUpdate(row)">更新</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item @click.native="handelDelete(row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -112,14 +112,29 @@ export default {
         }
       })
     },
-    handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+    handelDelete(row) {
+      const returnMsgList = [
+        `确定删除入站规则${row.name}吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
-      this.list.splice(index, 1)
     },
     handleDetail(row) {
       this.$router.push({

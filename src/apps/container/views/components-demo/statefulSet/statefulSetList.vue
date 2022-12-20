@@ -20,7 +20,7 @@
           <el-table-column label="名称">
             <template slot-scope="scope">
               <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
-              <div class="v_name">{{ scope.row.name.txt }}</div>
+              <!-- <div class="v_name">{{ scope.row.name.txt }}</div> -->
             </template>
           </el-table-column>
           <el-table-column label="状态">
