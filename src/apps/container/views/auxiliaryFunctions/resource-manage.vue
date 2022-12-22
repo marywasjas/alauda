@@ -339,8 +339,8 @@ ul, li {
   color: rgb(50, 52, 55);
 }
 .li-link:hover, .isActive{
-  color: rgb(0, 122, 245);
-  background-color: rgb(229, 241, 254);
+  color: $color-primary;
+  background-color: $background-color;
 }
 .li-version {
   font-size: 14px;

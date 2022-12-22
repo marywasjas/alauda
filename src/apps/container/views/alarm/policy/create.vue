@@ -220,7 +220,6 @@
 </template>
 
 <script>
-import { nanoid } from 'nanoid'
 import AlarmRulesDialog from './components/AlarmRulesDialog.vue'
 
 export default {
@@ -290,28 +289,9 @@ export default {
     this.ruleForm.name = this.$route.query.name
     if (this.ruleForm.name) {
       this.isEdit = true
-      this.fetchData()
     }
   },
   methods: {
-    fetchData() {
-      this.ruleForm = {
-        name: '',
-        showName: '',
-        describe: '',
-        resourec: 'chaosblade-box',
-        sendInterval: '全局',
-        ruleList: [
-          {
-            id: nanoid(),
-            name: '',
-            type: '',
-            level: '',
-            enable: true
-          }
-        ]
-      }
-    },
     submitCreate() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {

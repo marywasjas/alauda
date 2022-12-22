@@ -11,13 +11,13 @@
           <span v-else>已停止</span>
         </div>
         <div>
-          <span class="title">所属应用：</span><a style="color: #1890ff">{{ form.pod }}</a>
+          <span class="title">所属应用：</span><a class="cursor-pointer">{{ form.pod }}</a>
         </div>
         <div>
           <span class="title">标签：</span>
           <el-tag type="info" size="mini" style="margin-right: 10px">app：build</el-tag>
           <el-tag type="info" size="mini" style="margin-right: 10px">name：build</el-tag>
-          <i class="el-icon-edit" style="color: #1890ff" @click="handleUpdateLabels" />
+          <i class="el-icon-edit cursor-pointer" @click="handleUpdateLabels" />
         </div>
         <div>
           <span class="title">主机选择器：</span> <span>{{ form.hostSelector }}</span>
@@ -77,8 +77,7 @@
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
           >kooriookami <i
-            class="el-icon-edit"
-            style="color: #1890ff"
+            class="el-icon-edit cursor-pointer margin-left10"
             @click="openDialog('更新镜像版本')"
           /></el-descriptions-item>
           <el-descriptions-item
@@ -86,8 +85,7 @@
             :label-style="{ 'font-size': '16px', 'font-weight': '500' }"
             :content-style="{ 'font-size': '16px', 'font-weight': '500' }"
           >- <i
-            class="el-icon-edit"
-            style="color: #1890ff"
+            class="el-icon-edit cursor-pointer margin-left10"
             @click="openDialog('更新资源限制')"
           /></el-descriptions-item>
           <el-descriptions-item

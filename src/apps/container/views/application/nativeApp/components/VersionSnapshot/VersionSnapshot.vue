@@ -30,7 +30,7 @@
             :show-overflow-tooltip="col['show-overflow-tooltip']"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'" class="cursor-pointer">
+              <div v-if="col.id === 'name'">
                 {{ scope.row[col.id] }}
               </div>
               <div v-else-if="col.id === 'resource'">

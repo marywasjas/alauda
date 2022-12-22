@@ -13,7 +13,7 @@
             <span>
               <i style="color: #1890ff" :class="item.frontIcon" />
               {{ item.value ? item.value : '-' }}
-              <i style="color: #1890ff" :class="item.afterIcon" class="cursor-pointer" @click="handleUpdateLabels" />
+              <i :class="item.afterIcon" class="cursor-pointer" @click="handleUpdateLabels" />
             </span>
           </el-col>
         </el-row>

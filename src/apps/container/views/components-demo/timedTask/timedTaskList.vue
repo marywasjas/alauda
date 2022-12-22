@@ -19,7 +19,7 @@
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
           <el-table-column label="名称">
             <template slot-scope="scope">
-              <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
+              <a class="cursor-pointer" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
               <!-- <div class="v_name">{{ scope.row.name.txt }}</div> -->
             </template>
           </el-table-column>
@@ -238,15 +238,6 @@ export default {
   .timed-main {
     background: #fff;
     padding: 20px;
-  }
-  .link_name {
-    color: #1890ff;
-  }
-  .el-icon-success {
-    color: #1890ff;
-  }
-  .el-icon-more {
-    color: #1890ff;
   }
 }
 </style>
