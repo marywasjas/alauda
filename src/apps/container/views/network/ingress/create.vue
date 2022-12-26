@@ -68,7 +68,7 @@
                     style="margin-bottom: 22px"
                     label-width="60px"
                   >
-                    <el-select style="width:50%">
+                    <el-select v-model="item1.certificate" style="width:50%">
                       <option label="默认" value="默认" />
                     </el-select>
                   </el-form-item>
@@ -430,7 +430,7 @@ export default {
   min-height: 100%;
   position: relative;
   .scroll-div {
-    padding-bottom: 86px;
+    padding-bottom: 106px;
     .hover-div:hover{
       background:$color-primary-rgba1;
     }

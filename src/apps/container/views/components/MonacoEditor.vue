@@ -8,9 +8,31 @@
         <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
         <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
         <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCode">清理</el-button>
-        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
-        <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini">复制</el-button>
-        <el-button icon="el-icon-thumb" size="mini">自动</el-button>
+        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini" @click="find">查找</el-button>
+        <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini" @click="handleCopy(value,$event)">复制</el-button>
+        <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+          <el-button icon="el-icon-thumb" size="mini" class="margin-left10 margin-right10">{{ currentThemeObj.label }}</el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="autoTheme({label:'自动',value:currentThemeObj.value})">
+              <div class="flex-start">
+                <i class="el-icon-user" />
+                <span>自动</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="autoTheme({label:'日间',value:'vs'})">
+              <div class="flex-start">
+                <i class="el-icon-monitor" />
+                <span>日间</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="autoTheme({label:'日间',value:'vs-dark'})">
+              <div class="flex-start">
+                <i class="el-icon-refresh" />
+                <span>夜间</span>
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-button v-if="btnVisible.full" icon="el-icon-full-screen" size="mini" @click="handleFull">全屏</el-button>
       </div>
     </div>
@@ -33,9 +55,31 @@
           <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
           <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
           <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCodeDialog">清理</el-button>
-          <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
-          <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini">复制</el-button>
-          <el-button icon="el-icon-thumb" size="mini">自动</el-button>
+          <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini" @click="findDialog">查找</el-button>
+          <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini" @click="handleCopy(value,$event)">复制</el-button>
+          <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+            <el-button icon="el-icon-thumb" size="mini" class="margin-left10 margin-right10">{{ currentThemeObj.label }}</el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="autoTheme({label:'自动',value:currentThemeObj.value})">
+                <div class="flex-start">
+                  <i class="el-icon-user" />
+                  <span>自动</span>
+                </div>
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="autoTheme({label:'日间',value:'vs'})">
+                <div class="flex-start">
+                  <i class="el-icon-monitor" />
+                  <span>日间</span>
+                </div>
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="autoTheme({label:'日间',value:'vs-dark'})">
+                <div class="flex-start">
+                  <i class="el-icon-refresh" />
+                  <span>夜间</span>
+                </div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <el-button icon="el-icon-document-delete" size="mini" @click="handleFullExit">退出</el-button>
         </div>
       </div>
@@ -49,7 +93,7 @@
 <script>
 import * as monaco from 'monaco-editor'
 import FileSaver from 'file-saver'
-
+import clip from '@/utils/clipboard'
 export default {
   name: 'MonacoEditor',
   components: {},
@@ -101,11 +145,16 @@ export default {
   },
   data() {
     return {
+      inputCode: '',
       editHeight: '400px',
       autoUpdate: true,
       monacoEditor: null,
       value: '',
       visible: false,
+      currentThemeObj: {
+        label: '自动',
+        value: 'vs'
+      },
       standaloneEditorConstructionOptions: {
         acceptSuggestionOnCommitCharacter: true, // 接受关于提交字符的建议
         acceptSuggestionOnEnter: 'on', // 接受输入建议 "on" | "off" | "smart"
@@ -145,6 +194,7 @@ export default {
         roundedSelection: false, // 选区是否有圆角
         scrollBeyondLastLine: false, // 设置编辑器是否可以滚动到最后一行之后
         fontSize: 12,
+        // find: true,
         find: {
           seedSearchStringFromSelection: 'never',
           autoFindInSelection: 'never'
@@ -157,7 +207,7 @@ export default {
         fixedOverflowWidgets: true,
         value: '', // 编辑器的值
         language: 'javascript', // 语言
-        theme: 'hc-dark', // 编辑器主题：vs, hc-black, or vs-dark
+        theme: 'vs', // 编辑器主题：vs, hc-black, or vs-dark
         // autoIndent: true, // 自动缩进
         readOnly: true // 是否只读
       }
@@ -200,17 +250,21 @@ export default {
       this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
       this.$set(this.standaloneEditorConstructionOptions, 'language', this.language)
       this.$set(this.standaloneEditorConstructionOptions, 'value', this.value)
+      this.$set(this.standaloneEditorConstructionOptions, 'theme', this.currentThemeObj.value)
       const container = document.getElementById(this.id)
       this.monacoEditor = monaco.editor.create(
         container,
         this.standaloneEditorConstructionOptions
       )
       // 监听内容变化
-      this.monacoEditor.onDidChangeModelContent((e) => {})
+      this.monacoEditor.onDidChangeModelContent((e) => {
+        // this.inputCode = this.monacoEditor.getValue()
+        // this.$emit('handleBlur', this.inputCode)
+      })
       // 监听失去焦点事件
       this.monacoEditor.onDidBlurEditorText((e) => {
-        const inputCode = this.monacoEditor.getValue()
-        this.$emit('handleBlur', inputCode)
+        this.inputCode = this.monacoEditor.getValue()
+        this.$emit('handleBlur', this.inputCode)
       })
     },
     // 更新数据
@@ -233,17 +287,21 @@ export default {
       this.$set(this.standaloneEditorConstructionOptions, 'readOnly', this.readOnly)
       this.$set(this.standaloneEditorConstructionOptions, 'language', this.language)
       this.$set(this.standaloneEditorConstructionOptions, 'value', this.value)
+      this.$set(this.standaloneEditorConstructionOptions, 'theme', this.currentThemeObj.value)
       const container = document.getElementById(this.id + 'dialog')
       this.monacoEditorDialog = monaco.editor.create(
         container,
         this.standaloneEditorConstructionOptions
       )
       // 监听内容变化
-      this.monacoEditorDialog.onDidChangeModelContent((e) => {})
+      this.monacoEditorDialog.onDidChangeModelContent((e) => {
+        // this.inputCode = this.monacoEditorDialog.getValue()
+        // this.$emit('handleBlur', this.inputCode)
+      })
       // 监听失去焦点事件
       this.monacoEditorDialog.onDidBlurEditorText((e) => {
-        const inputCode = this.monacoEditorDialog.getValue()
-        this.$emit('handleBlur', inputCode)
+        this.inputCode = this.monacoEditorDialog.getValue()
+        this.$emit('handleBlur', this.inputCode)
       })
     },
     // 更新数据
@@ -266,9 +324,26 @@ export default {
       this.value = ''
       this.updateMonacoEditor()
     },
+    // 查找
+    find() {
+      this.monacoEditor.getAction('actions.find').run()
+    },
+    // 清理 弹窗
     resetCodeDialog() {
       this.value = ''
       this.updateMonacoEditorDialog()
+    },
+    // 查找 弹窗
+    findDialog() {
+      this.monacoEditorDialog.getAction('actions.find').run()
+    },
+    handleCopy(text, event) {
+      clip(text, event)
+    },
+    // 改变主题
+    autoTheme(obj) {
+      this.currentThemeObj = obj
+      this.monacoEditor._themeService.setTheme(this.currentThemeObj.value)
     },
     // 导出
     handleDownload() {

@@ -19,9 +19,16 @@ export const alarmColumnList = [{
   id: 'createTime',
   label: '创建时间'
 }]
-export const alarmList = {
-  data: []
-}
+export const alarmList = Mock.mock({
+  'data|10': [{
+    name: '@word(3, 7)',
+    resource: '@word(3, 7)',
+    policy: '@word(3, 7)',
+    status: '',
+    creater: '@word(3, 7)',
+    createTime: '@date'
+  }]
+})
 
 export const historyColumnList = [{
   id: 'resource',

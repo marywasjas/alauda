@@ -4,18 +4,12 @@
     <div class="oam-main">
       <div class="card__header">
         <el-button type="primary" @click="handelCreate">创建持久卷声明</el-button>
-        <el-form :inline="true" :model="formInline" class="form-inline">
-          <el-form-item label="">
-            <el-input
-              v-model="formInline.name"
-              placeholder="按名称搜索"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSearch">搜索</el-button>
-            <el-button type="primary" @click="onSearch">刷新</el-button>
-          </el-form-item>
-        </el-form>
+        <div class="flex-center">
+          <el-input v-model="formInline.name" placeholder="按名称搜索" class="margin-right10">
+            <el-button slot="append" icon="el-icon-search" @click="onSearch" />
+          </el-input>
+          <el-button icon="el-icon-refresh-right" @click="onSearch" />
+        </div>
       </div>
       <div class="card__content">
         <el-table
@@ -40,7 +34,7 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="update" @click.native="handleUpdate(scope.row)">扩容</el-dropdown-item>
+                    <el-dropdown-item command="update" @click.native="handleCapacityExpansion(scope.row)">扩容</el-dropdown-item>
                     <el-dropdown-item command="delete" @click.native="handleUpdate(scope.row)">更新</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -102,6 +96,17 @@ export default {
         name: 'PersistentVolumeDetail',
         query: {
           name: row.name
+        }
+      })
+    },
+    handleCapacityExpansion() {
+
+    },
+    handleUpdate(row) {
+      this.$router.push({
+        name: 'PersistentVolumeCreateUpdate',
+        query: {
+          type: 'edit'
         }
       })
     }

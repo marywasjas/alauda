@@ -21,7 +21,7 @@
         </template>
       </tab-header>
     </div>
-    <component :is="comName" />
+    <component :is="comName" log-back-name="NativeDetail" />
   </div>
 </template>
 
@@ -102,20 +102,28 @@ export default {
         //   com: 'GiveAlarm'
         // }
       ],
-      activeName: ''
+      activeName: '',
+      comName: ''
     }
   },
   computed: {
-    comName: function() {
-      if (!this.activeName) return ''
-      const item = this.tabList.filter(el => el.name === this.activeName)
-      return item[0].com
+  },
+  watch: {
+    activeName: function(newVal, oldVal) {
+      const item = this.tabList.filter(el => el.name === newVal)
+      this.comName = item[0].com
     }
   },
   created() {
     this.name = this.$route.query.name
     this.desc = this.$route.query.desc
-    this.activeName = this.tabList[0].name
+    if (this.$route.query.activeName) {
+      this.activeName = this.$route.query.activeName
+      this.comName = this.tabList.filter(el => el.name === this.$route.query.activeName)[0].com
+    } else {
+      this.activeName = this.tabList[0].name
+      this.comName = this.tabList[0].com
+    }
   },
   methods: {
     changeActive(value) {

@@ -611,12 +611,12 @@ export const containerAsyncRoutes = [
     ]
   },
   {
-    path: '/tab',
+    path: '/log',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/apps/container/views/tab/index'),
+        component: () => import('@/apps/container/views/log/index'),
         name: 'Tab',
         meta: { title: '日志', icon: 'tab' }
       }
@@ -653,7 +653,7 @@ export const containerAsyncRoutes = [
             path: 'create',
             component: () => import('@/apps/container/views/alarm/policy/create'),
             name: 'AlarmCreate',
-            meta: { title: '创建告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            meta: { title: '创建/更新告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
             hidden: true
           },
           {
@@ -727,5 +727,22 @@ export const containerAsyncRoutes = [
       }
     ]
   },
+
+  // 测试--流程图
+  // {
+  //   path: '/test',
+  //   // name: "Test",
+  //   redirect: '/test/index',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'TestIndex',
+  //       component: () => import('@/apps/container/views/test/index'),
+  //       meta: { title: '流程图', icon: 'tree', roles: ['admin'] }
+  //     }
+  //   ]
+  // },
+
   { path: '*', redirect: '/404', hidden: true }
 ]

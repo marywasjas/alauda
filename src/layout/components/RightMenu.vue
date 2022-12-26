@@ -2,21 +2,24 @@
   <div class="navbar">
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
+        <notice />
+        <help />
+        <!-- <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" /> -->
 
         <!-- <el-tooltip content="Global Size" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip> -->
 
       </template>
-
+      <div class="page-header__separator" />
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="logoSrc" class="user-avatar">
+          <span>k01027</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -32,8 +35,29 @@
           <!-- <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->
+          <el-dropdown-item @click.native="userInfo">
+            <div class="flex-start">
+              <i class="el-icon-user" />
+              <span>个人信息</span>
+            </div>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <div class="flex-start">
+              <i class="el-icon-monitor" />
+              <span>外观</span>
+            </div>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <div class="flex-start">
+              <i class="el-icon-refresh" />
+              <span>English</span>
+            </div>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <div class="flex-start">
+              <i class="el-icon-circle-close" />
+              <span>退出登录</span>
+            </div>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -43,19 +67,23 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
+// import ErrorLog from '@/components/ErrorLog'
+// import Screenfull from '@/components/Screenfull'
 // import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
+// import Search from '@/components/HeaderSearch'
+import Notice from '@/components/HeaderNotice'
+import Help from '@/components/HeaderHelp'
 import logoSrc from '@/assets/logo/logo.png'
 
 export default {
   name: 'RightMenu',
   components: {
-    ErrorLog,
-    Screenfull,
+    // ErrorLog,
+    // Screenfull,
     // SizeSelect,
-    Search
+    // Search,
+    Notice,
+    Help
   },
   data() {
     return {
@@ -76,6 +104,11 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    userInfo() {
+      this.$router.push({
+        name: 'PersonalInformation'
+      })
     }
   }
 }
@@ -115,6 +148,8 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
+    display: flex;
+    align-items:center;
 
     &:focus {
       outline: none;
@@ -139,28 +174,32 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      // margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 8px;
-        position: relative;
-
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
         .user-avatar {
           cursor: pointer;
           width: 30px;
           height: 30px;
           border-radius: 50%;
+          margin: 0 5px 0 0;
         }
-
         .el-icon-caret-bottom {
           cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 20px;
           font-size: 12px;
         }
       }
     }
+  }
+  .page-header__separator {
+    height: 32px;
+    width: 1px;
+    background-color: #646669;
+    margin: 0 16px 0 8px;
+    opacity: 0.1;
   }
 }
 </style>

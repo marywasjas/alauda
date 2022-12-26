@@ -1,4 +1,5 @@
 .headerStyle{
+  height: 36px;
   th{
     background-color: rgb(247,249,252) !important;
     color: $font-color-title;
@@ -145,6 +146,15 @@
     color: $button-color-link;
   }
 }
+.running {
+  color: $button-color-success;
+}
+.stop {
+  color: $button-color-info;
+}
+.pending {
+  color: $button-color-link;
+}
 // 表格内 expand 样式
 .inTable-desc{
   background:$background-color;
@@ -190,4 +200,7 @@
 // 表单 添加 划过效果
 .hover-div:hover {
   background: $color-primary-rgba1;
+}
+.back-color-primary{
+  background-color: $color-primary;
 }

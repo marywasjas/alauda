@@ -94,7 +94,16 @@
                     <td>{{ rule.Type }}</td>
                     <td>{{ rule.alarmLevel }}</td>
                     <td>{{ rule.enable }}</td>
-                    <td>
+                    <td style="text-align:center;">
+                      <el-button
+                        icon="el-icon-edit"
+                        class="
+                        cursor-pointer
+                        margin-left10 margin-right10
+                      "
+                        type="text"
+                        @click="handleEdit(rule)"
+                      />
                       <el-button
                         icon="el-icon-remove-outline"
                         class="
@@ -102,7 +111,7 @@
                         margin-left10 margin-right10
                       "
                         type="text"
-                        @click="handleDelete(domain, index)"
+                        @click="handleDelete(index)"
                       />
                     </td>
                   </tr>
@@ -140,15 +149,60 @@
             <el-form-item label="告警发送间隔" prop="sendInterval">
               <el-radio v-model="ruleForm.sendInterval" label="全局">全局</el-radio>
               <el-radio v-model="ruleForm.sendInterval" label="自定义">自定义</el-radio>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="告警发送间隔"
-                placement="top"
-              >
-                <i class="el-icon-question margin-left10 question-icon" />
+              <el-tooltip class="item" effect="dark" placement="top">
+                <div slot="content">
+                  如告警发生后未恢复正常，可设置间隔多久发送一次告警消息；<br>
+                  如设置为“不重复”，则只在告警和恢复时发送告警消息；
+                </div>
+                <i class="el-icon-question question-icon" />
               </el-tooltip>
               <span v-if="ruleForm.sendInterval=='全局'" class="overall-info">灾难告警5分钟，严重告警15分钟，警告告警30分钟，提示告警1小时</span>
+            </el-form-item>
+            <el-form-item v-if="ruleForm.sendInterval==='自定义'" label="">
+              <div class="flex-start" style="margin-bottom:22px;">
+                <el-form-item label="灾难告警" prop="disasterWarning" label-width="80px">
+                  <el-select v-model="ruleForm.disasterWarning" placeholder="请选择">
+                    <el-option
+                      v-for="item in disasterWarningOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="严重告警" prop="criticalAlarm" class="margin-left" label-width="100px">
+                  <el-select v-model="ruleForm.criticalAlarm" placeholder="请选择">
+                    <el-option
+                      v-for="item in disasterWarningOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </div>
+              <div class="flex-start">
+                <el-form-item label="警告告警" prop="alarmWarning" label-width="80px">
+                  <el-select v-model="ruleForm.alarmWarning" placeholder="请选择">
+                    <el-option
+                      v-for="item in disasterWarningOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="提示告警" prop="tipsAlarm" class="margin-left" label-width="100px">
+                  <el-select v-model="ruleForm.tipsAlarm" placeholder="请选择">
+                    <el-option
+                      v-for="item in disasterWarningOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </div>
             </el-form-item>
           </div>
         </el-card>
@@ -161,229 +215,16 @@
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
-    <el-dialog
-      title="添加告警规则(部署)"
-      :visible.sync="tagVisible"
-      width="840px"
-      :close-on-click-modal="false"
-      :before-close="closeTagDialog"
-    >
-      <div>
-        <el-form
-          ref="dialogForm"
-          :model="dialogForm"
-          label-suffix=":"
-          :rules="dialogRule"
-          label-width="90px"
-        >
-          <el-form-item label="指标名称" prop="ruleName">
-            <el-select v-model="dialogForm.ruleName" style="width: 100%">
-              <el-option label="工作负载的CPU使用率(workload.cpu.utilization)" value="工作负载的CPU使用率" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="触发条件" prop="condition">
-            <el-row>
-              <el-col :span="8">
-                <el-select v-model="dialogForm.condition" placeholder="请选择" style="width: 100%;">
-                  <el-option label=">" value=">" />
-                  <el-option label="<" value="<" />
-                  <el-option label="=" value="=" />
-                </el-select>
-              </el-col>
-              <el-col :span="8">
-                <el-input v-model="dialogForm.percent" placeholder="仅支持数字，最多17位整数、4位小数">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-col>
-              <el-col :span="8">
-                <el-select v-model="dialogForm.durarion" placeholder="请选择" style="width: 100%;">
-                  <el-option label="持续30秒" value="持续30秒" />
-                  <el-option label="持续60秒" value="持续60秒" />
-                </el-select>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <el-form-item label="告警等级" prop="alarmLevel">
-            <el-radio v-model="dialogForm.alarmLevel" label="灾难告警">灾难告警</el-radio>
-            <el-radio v-model="dialogForm.alarmLevel" label="严重告警">严重告警</el-radio>
-            <el-radio v-model="dialogForm.alarmLevel" label="警告告警">警告告警</el-radio>
-            <el-radio v-model="dialogForm.alarmLevel" label="提示告警">提示告警</el-radio>
-          </el-form-item>
-          <foldable-block>
-            <el-form-item label="标签" prop="tags">
-              <table border="0" style="width:100%">
-                <thead>
-                  <tr class="headerStyle">
-                    <th>
-                      <div class="cell">键</div>
-                    </th>
-                    <th>
-                      <div class="cell">值</div>
-                    </th>
-                    <th>
-                      <div class="cell">操作</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-if="dialogForm.tags.length==0">
-                    <td colspan="3" class="no-data">无标签</td>
-                  </tr>
-                  <tr
-                    v-for="(tag, index) in dialogForm.tags"
-                    :key="tag.id"
-                  >
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'tags.' + index + '.key'"
-                        :rules="{
-                          required: true,
-                          message: '键不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input
-                          v-model="tag.key"
-                          placeholder="键"
-                        />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'tags.' + index + '.value'"
-                        :rules="{
-                          required: true,
-                          message: '值不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input
-                          v-model="tag.value"
-                          placeholder="值"
-                        />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-button
-                        icon="el-icon-remove-outline"
-                        class="
-                                cursor-pointer
-                                margin-left10 margin-right10
-                              "
-                        type="text"
-                        @click="handleTagDelete(tag, index)"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">
-                      <div class="cursor-pointer text-center hover-div" @click="handleTagAdd">
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </el-form-item>
-            <el-form-item label="注解" prop="annotation">
-              <table border="0" style="width:100%">
-                <thead>
-                  <tr class="headerStyle">
-                    <th>
-                      <div class="cell">键</div>
-                    </th>
-                    <th>
-                      <div class="cell">值</div>
-                    </th>
-                    <th>
-                      <div class="cell">操作</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-if="dialogForm.annotation.length==0">
-                    <td colspan="3" class="no-data">无注解</td>
-                  </tr>
-                  <tr
-                    v-for="(row, index) in dialogForm.annotation"
-                    :key="row.id"
-                  >
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'annotation.' + index + '.key'"
-                        :rules="{
-                          required: true,
-                          message: '键不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input
-                          v-model="row.key"
-                          placeholder="键"
-                        />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'annotation.' + index + '.value'"
-                        :rules="{
-                          required: true,
-                          message: '值不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input
-                          v-model="row.value"
-                          placeholder="值"
-                        />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-button
-                        icon="el-icon-remove-outline"
-                        class="
-                                cursor-pointer
-                                margin-left10 margin-right10
-                              "
-                        type="text"
-                        @click="handleAnnotDelete(row, index)"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">
-                      <div class="cursor-pointer text-center hover-div" @click="handleAnnotAdd">
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </el-form-item>
-          </foldable-block>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitTagDialog">添加</el-button>
-        <el-button @click="closeTagDialog">关闭</el-button>
-      </span>
-    </el-dialog>
+    <alarm-rules-dialog :tag-visible="tagVisible" @closeTagDialog="closeTagDialog" @submitTagDialog="submitTagDialog" />
   </div>
 </template>
 
 <script>
-import { nanoid } from 'nanoid'
-import FoldableBlock from '@/apps/container/views/components/FoldableBlock'
+import AlarmRulesDialog from './components/AlarmRulesDialog.vue'
 
 export default {
   name: 'AlarmCreate',
-  components: { FoldableBlock },
+  components: { AlarmRulesDialog },
   data() {
     return {
       isEdit: false,
@@ -394,8 +235,26 @@ export default {
         resource: 'chaosblade-box',
         noticeMethod: [],
         sendInterval: '全局',
-        ruleList: []
+        ruleList: [],
+        disasterWarning: '',
+        criticalAlarm: '',
+        alarmWarning: '',
+        tipsAlarm: ''
       },
+      disasterWarningOptions: [
+        {
+          label: '5分钟',
+          value: '5分钟'
+        },
+        {
+          label: '10分钟',
+          value: '10分钟'
+        },
+        {
+          label: '1小时',
+          value: '1小时'
+        }
+      ],
       agreementList: ['TCP', 'UDP', 'HTTP', 'HTTPS', 'HTTP2', 'gRPC'],
       rules: {
         name: [
@@ -406,31 +265,13 @@ export default {
           { required: true, message: '请输入显示名称', trigger: 'blur' },
           { max: 64, message: '最多64个字符', trigger: 'blur' }
         ],
-        resource: [{ required: true, message: '请选择资源对象', trigger: 'blur' }]
-      },
-      dialogRule: {
-        ruleName: [
-          { required: true, message: '请输入指标名称', trigger: 'blur' }
-        ],
-        condition: [
-          { required: true, message: '请选择触发条件', trigger: 'blur' }
-        ],
-        alarmLevel: [
-          { required: true, message: '请选择告警等级', trigger: 'blur' }
-        ]
+        resource: [{ required: true, message: '请选择资源对象', trigger: 'blur' }],
+        disasterWarning: [{ required: true, message: '请选择灾难告警', trigger: 'blur' }],
+        criticalAlarm: [{ required: true, message: '请选择严重告警', trigger: 'blur' }],
+        alarmWarning: [{ required: true, message: '请选择警告告警', trigger: 'blur' }],
+        tipsAlarm: [{ required: true, message: '请选择提示告警', trigger: 'blur' }]
       },
       tagVisible: false,
-      dialogForm: {
-        ruleName: '工作负载的CPU使用率',
-        condition: '>',
-        percent: '',
-        durarion: '持续30秒',
-        alarmLevel: '严重告警',
-        tags: [],
-        annotation: [],
-        type: 'default',
-        enable: '否'
-      },
       resourceOption: [
         {
           label: 'chaosblade-box',
@@ -448,28 +289,9 @@ export default {
     this.ruleForm.name = this.$route.query.name
     if (this.ruleForm.name) {
       this.isEdit = true
-      this.fetchData()
     }
   },
   methods: {
-    fetchData() {
-      this.ruleForm = {
-        name: '',
-        showName: '',
-        describe: '',
-        resourec: 'chaosblade-box',
-        sendInterval: '全局',
-        ruleList: [
-          {
-            id: nanoid(),
-            name: '',
-            type: '',
-            level: '',
-            enable: true
-          }
-        ]
-      }
-    },
     submitCreate() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
@@ -479,46 +301,22 @@ export default {
         }
       })
     },
-    submitTagDialog() {
-      this.$refs['dialogForm'].validate((valid) => {
-        if (valid) {
-          this.ruleForm.ruleList.push(this.dialogForm)
-          this.tagVisible = false
-        } else {
-          return false
-        }
-      })
+    submitTagDialog(form) {
+      this.ruleForm.ruleList.push(form)
+      this.tagVisible = false
     },
     closeTagDialog() {
       this.tagVisible = false
     },
-    handleTagDelete(item, index) {
-      this.dialogForm.tags.splice(this.dialogForm.tags.indexOf(item), 1)
-    },
-    handleTagAdd() {
-      const obj = {
-        id: nanoid(),
-        key: '',
-        value: ''
-      }
-      this.dialogForm.tags.push(obj)
-    },
-    handleAnnotDelete(item, index) {
-      this.dialogForm.annotation.splice(this.dialogForm.annotation.indexOf(item), 1)
-    },
-    handleAnnotAdd() {
-      const obj = {
-        id: nanoid(),
-        key: '',
-        value: ''
-      }
-      this.dialogForm.annotation.push(obj)
-    },
     cancelCreate() {
       this.$router.go(-1)
     },
-    handleDelete(item, index) {
-      this.ruleForm.domains.splice(this.ruleForm.domains.indexOf(item), 1)
+    handleDelete(index) {
+      this.ruleForm.ruleList.splice(index, 1)
+    },
+    handleEdit(item) {
+      console.log(item)
+      this.tagVisible = true
     },
     handleAdd() {
       this.tagVisible = true

@@ -17,23 +17,19 @@
       </div>
       <div class="card__content">
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
-          <el-table-column label="姓名">
+          <el-table-column label="名称">
             <template slot-scope="scope">
-              <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
-              <div class="v_name">{{ scope.row.name.txt }}</div>
+              <a class="cursor-pointer" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
+              <!-- <div class="v_name">{{ scope.row.name.txt }}</div> -->
             </template>
           </el-table-column>
-          <el-table-column label="状态">
+          <el-table-column label="执行方式">
             <template slot-scope="scope">
-              <i :class="scope.row.status.done === '运行中' ? 'el-icon-success' : 'el-icon-warning'" />
               <span class="v_txt">{{ scope.row.status.done }}{{ scope.row.status.desc }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="application" label="所属应用">
-            <template slot-scope="scope">
-              <a class="link_name">{{ scope.row.application }}</a>
-            </template>
-          </el-table-column>
+          <el-table-column prop="application" label="下次触发时间" />
+          <el-table-column prop="create_time" label="最近执行时间" />
           <el-table-column prop="create_time" label="创建时间" />
           <el-table-column label="" align="center" width="70" class-name="small-padding fixed-width">
             <template slot-scope="{ row }">
@@ -43,7 +39,7 @@
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="update" @click.native="handleUpdate(row)">更新</el-dropdown-item>
                     <el-dropdown-item command="execute" @click.native="open(row)">立即执行</el-dropdown-item>
-                    <el-dropdown-item command="delete">删除</el-dropdown-item>
+                    <el-dropdown-item command="delete" @click.native="handelDelete(row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -180,7 +176,7 @@ export default {
     },
     // 立即执行对话框
     open(row) {
-      this.$confirm('确定立即执行定时任务timeout吗?', {
+      this.$confirm(`确定立即执行定时任务${row.name.link_name}吗?`, {
         cancelButtonText: '取消',
         confirmButtonText: '立即执行',
         type: 'warning'
@@ -197,6 +193,30 @@ export default {
             message: '已取消立即执行'
           })
         })
+    },
+    handelDelete(row) {
+      const returnMsgList = [
+        `确定删除定时任务${row.name.link_name}吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     }
   }
 }
@@ -218,15 +238,6 @@ export default {
   .timed-main {
     background: #fff;
     padding: 20px;
-  }
-  .link_name {
-    color: #1890ff;
-  }
-  .el-icon-success {
-    color: #1890ff;
-  }
-  .el-icon-more {
-    color: #1890ff;
   }
 }
 </style>

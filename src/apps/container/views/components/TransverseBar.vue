@@ -105,7 +105,8 @@ export default {
           barWidth: 20,
           itemStyle: {
             borderColor: '#fff',
-            borderWidth: 3
+            borderWidth: 3,
+            ...n.itemStyle
           },
           emphasis: {
             focus: 'series'

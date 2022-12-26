@@ -13,6 +13,7 @@ export const tableColumnList = [{
 }]
 export const tableData = Mock.mock({
   'data|10': [{
+    'id|+1': 1,
     name: '@word(3, 7)',
     desc: '@cword(3, 7)',
     'status|1': ['running', 'stop'],
