@@ -25,12 +25,14 @@
         <el-button icon="el-icon-refresh-right" size="mini" style="box-shadow: 0 0 5px #d1d2d4; margin-left: 5px" />
       </div>
       <div id="container" />
+      <TopoTooltip :dialog-visible.sync="dialogVisible" />
     </div>
   </div>
 </template>
 
 <script>
 import G6 from '@antv/g6'
+import TopoTooltip from './TopoTooltip.vue'
 
 const result = {
   dependency_graph: [
@@ -50,26 +52,45 @@ const result = {
       code: '1'
     }
   ],
-  svc_sequence_diagrams: {
-    node3: {
+  svc_sequence_diagrams: [
+    {
+      id: 'node3',
+      title: '内部路由',
+      name: 'nrcp-afterloan-manage-1',
+      desc: 'nrcp-afterloan-deployment',
+      lineDash: [5, 5],
       type: 'right'
     },
-
-    node2: {
+    {
+      title: '配置字典',
+      name: 'nrcp-afterloan-manage-2',
+      lineDash: [],
+      id: 'node4',
       type: 'right'
     },
-    node1: {
+    {
+      title: '持久卷声明',
+      name: 'nrcp-afterloan-manage-3',
+      id: 'node2',
+      type: 'right',
+      lineDash: [5, 5]
+    },
+    {
+      isRoot: true,
+      title: '部署',
+      name: 'nrcp-afterloan-deployment',
+      state: '运行中（0/2）',
+      containerGroupName: 'nrcp-afterloan-deployment',
+      containerGroupTitle: '容器组',
+      containerGroupState: '处理中',
+      id: 'node1',
       type: 'left'
-    },
-    node4: {
-      type: 'right'
     }
-  }
+  ]
 }
-
 export default {
   name: 'Topology',
-  components: {},
+  components: { TopoTooltip },
   props: {},
   data() {
     return {
@@ -79,7 +100,8 @@ export default {
         edges: []
       },
       dataLeft: [],
-      dataRight: []
+      dataRight: [],
+      dialogVisible: false
     }
   },
   computed: {},
@@ -92,33 +114,43 @@ export default {
   },
   methods: {
     getAjax() {
-      const idVaule = Object.keys(result.svc_sequence_diagrams)
-      const sed = result.svc_sequence_diagrams
-      console.log(idVaule)
-      console.log(sed)
+      const array = result.svc_sequence_diagrams
+      // console.log(array)
       const x = 200
       const y = 100
-      idVaule.forEach((item, i) => {
-        if (sed[item].type === 'left') {
+      array.forEach((item, i) => {
+        if (item.type === 'left') {
           this.dataLeft.push(item)
         } else {
           this.dataRight.push(item)
         }
-        console.log(this.dataLeft)
-        console.log(this.dataRight)
+        // console.log(this.dataLeft)
+        // console.log(this.dataRight)
       })
       this.dataLeft.forEach((item, i) => {
         this.data.nodes.push({
-          id: item,
-          label: item,
+          id: item.id,
+          title: item.title,
+          name: item.name,
+          desc: item.desc,
+          lineDash: item.lineDash,
+          state: item.state,
+          containerGroupName: item.containerGroupName,
+          containerGroupTitle: item.containerGroupTitle,
+          containerGroupState: item.containerGroupState,
+          isRoot: item.isRoot,
           x: x,
           y: y + 100 * i
         })
       })
+
       this.dataRight.forEach((item, i) => {
         this.data.nodes.push({
-          id: item,
-          label: item,
+          id: item.id,
+          title: item.title,
+          name: item.name,
+          desc: item.desc,
+          lineDash: item.lineDash,
           x: x + 400,
           y: y + 100 * i
         })
@@ -149,8 +181,231 @@ export default {
           this.graph.render()
         }
       })
+
+      this.data.nodes.forEach(node => {
+        node.type = node.isRoot === true ? 'card-node1' : 'card-node'
+      })
     },
     initG6() {
+      G6.registerNode(
+        'card-node',
+        {
+          draw: (cfg, group) => {
+            const keyShape = group.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 0,
+                width: 250,
+                height: 80,
+                fill: '#fff',
+                stroke: '#C0C0C0',
+                lineDash: cfg.lineDash,
+                cursor: 'pointer'
+              },
+              name: 'card-node-keyshape'
+            })
+            group.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 0,
+                width: 250,
+                height: 30,
+                fill: '#fff',
+                stroke: '#C0C0C0',
+                lineDash: cfg.lineDash,
+                cursor: 'pointer'
+              },
+              name: 'card-node-title'
+            })
+
+            group.addShape('text', {
+              attrs: {
+                text: cfg.title,
+                x: 10,
+                y: 10,
+                fill: 'black',
+                textBaseline: 'top'
+              }
+            })
+            group.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 30,
+                width: 250,
+                height: 50,
+                fill: '#fff',
+                stroke: '#C0C0C0',
+                lineDash: cfg.lineDash,
+                cursor: 'pointer'
+              },
+              name: 'card-node-containerRect',
+              draggable: true
+            })
+            group.addShape('text', {
+              attrs: {
+                text: cfg.name,
+                x: 10,
+                y: 40,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 12
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            group.addShape('text', {
+              attrs: {
+                text: cfg.desc,
+                x: 10,
+                y: 60,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 12
+              },
+              name: 'card-node-desc',
+              draggable: true
+            })
+
+            return keyShape
+          }
+        },
+        'rect'
+      )
+
+      G6.registerNode(
+        'card-node1',
+        {
+          draw: (cfg, group) => {
+            const keyShape = group.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 0,
+                width: 250,
+                height: 180,
+                fill: '#fff',
+                stroke: '#C0C0C0',
+                cursor: 'pointer'
+              },
+              name: 'card-node1-keyshape'
+            })
+            const subGroup = group.addGroup()
+            subGroup.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 0,
+                width: 250,
+                height: 30,
+                fill: '#fff',
+                stroke: '#C0C0C0',
+                cursor: 'pointer'
+              },
+              name: 'card-node-title'
+            })
+
+            subGroup.addShape('text', {
+              attrs: {
+                text: cfg.title,
+                x: 10,
+                y: 10,
+                fill: 'black',
+                textBaseline: 'top'
+              }
+            })
+
+            subGroup.addShape('rect', {
+              attrs: {
+                x: 0,
+                y: 30,
+                width: 250,
+                height: 40,
+                fill: '#fff',
+                //  stroke: '#C0C0C0',
+                cursor: 'pointer'
+              },
+              name: 'card-node-containerRect',
+              draggable: true
+            })
+            subGroup.addShape('text', {
+              attrs: {
+                text: cfg.name,
+                x: 10,
+                y: 35,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 12
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            subGroup.addShape('text', {
+              attrs: {
+                text: cfg.state,
+                x: 10,
+                y: 55,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            subGroup.addShape('rect', {
+              attrs: {
+                x: 25,
+                y: 80,
+                width: 200,
+                height: 100,
+                stroke: '#C0C0C0',
+                fill: 'rgb(247,249,252)'
+              },
+              name: 'card-node-containerRect',
+              draggable: true
+            })
+            subGroup.addShape('text', {
+              attrs: {
+                text: cfg.containerGroupTitle,
+                x: 30,
+                y: 90,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            subGroup.addShape('text', {
+              attrs: {
+                text: cfg.containerGroupName,
+                x: 30,
+                y: 110,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+                // overflow: hidden
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+            subGroup.addShape('text', {
+              attrs: {
+                text: cfg.containerGroupState,
+                x: 30,
+                y: 130,
+                fill: 'black',
+                textBaseline: 'top',
+                fontSize: 13
+                // overflow: hidden
+              },
+              name: 'card-node-container',
+              draggable: true
+            })
+
+            return keyShape
+          }
+        },
+        'rect'
+      )
+
       const container = document.getElementById('container')
       const width = container.scrollWidth
       const height = container.scrollHeight || 500
@@ -158,15 +413,25 @@ export default {
         container: 'container',
         width,
         height,
+        groupByTypes: false,
         modes: {
           default: ['drag-canvas', 'zoom-canvas', 'drag-node'] // 允许拖拽画布、放缩画布、拖拽节点
         },
         defaultNode: {
-          type: 'rect',
-          anchorPoints: [[0.5, 0.5]]
+          anchorPoints: [
+            [0, 0.5],
+            [1, 0.5]
+          ]
         },
         defaultEdge: {
           type: 'cubic-horizontal'
+        },
+
+        nodeStateStyles: {
+          hover: {
+            stroke: '#1890ff',
+            lineWidth: 4
+          }
         }
       })
 
@@ -174,6 +439,25 @@ export default {
 
       this.graph.data(data)
       this.graph.render()
+      const that = this // 改变this指向
+
+      this.graph.on('node:mouseenter', evt => {
+        const { item } = evt
+        that.graph.setItemState(item, 'hover', true)
+        item.toFront()
+        if (item._cfg.model.isRoot === true) {
+          this.dialogVisible = true
+        }
+      })
+      this.graph.on('node:mouseleave', evt => {
+        const { item } = evt
+        that.graph.setItemState(item, 'hover', false)
+      })
+      // this.graph.on('card-node1-keyshape:mouseenter', evt => {
+      //   const { item } = evt
+      //   console.log(item)
+      //   that.graph.setItemState(item, 'hover', true)
+      // })
 
       function refreshDragedNodePosition(e) {
         const model = e.item.get('model')
