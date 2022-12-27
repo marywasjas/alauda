@@ -714,35 +714,26 @@ export const containerAsyncRoutes = [
   {
     path: '/zip',
     component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    name: 'Zip',
-    meta: { title: '备份恢复', icon: 'zip' },
     children: [
       {
         path: 'download',
         component: () => import('@/apps/container/views/zip/index'),
         name: 'ExportZip',
-        meta: { title: '备份' }
+        meta: { title: '备份恢复', icon: 'zip', affix: true }
       }
     ]
   },
-
-  // 测试--流程图
-  // {
-  //   path: '/test',
-  //   // name: "Test",
-  //   redirect: '/test/index',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'TestIndex',
-  //       component: () => import('@/apps/container/views/test/index'),
-  //       meta: { title: '流程图', icon: 'tree', roles: ['admin'] }
-  //     }
-  //   ]
-  // },
-
+  {
+    path: '/yamlConversion',
+    component: Layout,
+    children: [
+      {
+        path: 'conversion',
+        component: () => import('@/apps/container/views/test/index'),
+        name: 'ExportZip',
+        meta: { title: 'YAML转换', icon: 'zip', affix: true }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
