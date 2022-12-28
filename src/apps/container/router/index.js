@@ -119,6 +119,13 @@ export const containerAsyncRoutes = [
             name: 'DeployUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
+          },
+          {
+            path: 'createDeploy',
+            component: () => import('@/apps/container/views/components-demo/deploy/CreateDeploy.vue'),
+            name: 'CreateDeploy',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
+            hidden: true
           }
         ]
       },
@@ -155,6 +162,13 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/components-demo/daemon/deamonUpdate.vue'),
             name: 'DeamonUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
+            hidden: true
+          },
+          {
+            path: 'createDeamon',
+            component: () => import('@/apps/container/views/components-demo/daemon/createDeamon.vue'),
+            name: 'CreateDeamon',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
             hidden: true
           }
         ]
@@ -193,6 +207,13 @@ export const containerAsyncRoutes = [
             name: 'StatefulSetUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
             hidden: true
+          },
+          {
+            path: 'createStatefulSet',
+            component: () => import('@/apps/container/views/components-demo/statefulSet/createStatefulSet.vue'),
+            name: 'CreateStatefulSet',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
+            hidden: true
           }
         ]
       },
@@ -229,6 +250,13 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/components-demo/timedTask/timedUpdate.vue'),
             name: 'TimedUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            hidden: true
+          },
+          {
+            path: 'createTimedJob',
+            component: () => import('@/apps/container/views/components-demo/timedTask/createTimedJob.vue'),
+            name: 'CreateTimedJob',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
             hidden: true
           }
         ]

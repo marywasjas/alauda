@@ -48,7 +48,7 @@
         </el-table>
       </div>
     </div>
-    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" />
+    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" @submitForm="submitForm" />
   </div>
 </template>
 
@@ -165,6 +165,11 @@ export default {
     closeFormDialog() {
       this.formVisible = false
     },
+    submitForm() {
+      this.$router.push({
+        name: 'CreateTimedJob'
+      })
+    },
     // 更新
     handleUpdate(row) {
       this.$router.push({
@@ -195,10 +200,9 @@ export default {
         })
     },
     handelDelete(row) {
-      const returnMsgList = [
-        `确定删除定时任务${row.name.link_name}吗？`
-      ]
-      const newData = []; const h = this.$createElement
+      const returnMsgList = [`确定删除定时任务${row.name.link_name}吗？`]
+      const newData = []
+      const h = this.$createElement
       for (const i in returnMsgList) {
         newData.push(h('p', null, returnMsgList[i]))
       }
@@ -206,17 +210,19 @@ export default {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '已删除'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '已删除'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   }
 }
