@@ -13,7 +13,7 @@
             <span>帮助文档</span>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item>
+        <el-dropdown-item @click.native="aboutPlatforms">
           <div class="flex-start">
             <i class="el-icon-info" />
             <span>关于平台</span>
@@ -27,19 +27,31 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+    <about-platforms-dialog :visible="visible" @closeDialog="closeDialog" />
   </div>
 </template>
 
 <script>
+import AboutPlatformsDialog from './AboutPlatformsDialog.vue'
 export default {
   name: 'HeaderHelp',
+  components: { AboutPlatformsDialog },
   data() {
-    return {}
+    return {
+      visible: false
+    }
   },
   computed: {},
   watch: {},
   mounted() {},
   methods: {
+    // 关于平台
+    aboutPlatforms() {
+      this.visible = true
+    },
+    closeDialog() {
+      this.visible = false
+    },
     healthStatus() {
       this.$router.push({
         name: 'PlatformHealthStatus'
