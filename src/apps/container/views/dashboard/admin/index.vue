@@ -258,9 +258,10 @@ import RadiusPieChart from '@/apps/container/views/components/RadiusPieChart'
 import TransverseBar from '@/apps/container/views/components/TransverseBar'
 // 容器组+资源使用率
 import LineChart from '@/apps/container/views/components/LineChart'
+import { getResourceData, getEventData } from '../../../api/dashboard/index'
 import {
-  resourceData,
-  eventData,
+  // resourceData,
+  // eventData,
   applicationData,
   computeData,
   containerData,
@@ -285,12 +286,11 @@ export default {
   },
   data() {
     return {
-      // 资源配额
-      resourceData,
+      resourceData: [],
       // 事件 数据
       eventDialogVisible: false,
       total: 0,
-      eventData,
+      eventData: [],
       // 应用
       applicationData,
       // 计算组件
@@ -343,11 +343,36 @@ export default {
     }
   },
   created() {
-    this.total = this.eventData.reduce((pre, cur) => {
-      return pre + cur.value
-    }, 0)
+    // 资源配额
+    this.getResourceData()
+    // 事件
+    this.getEventData()
   },
   methods: {
+    // 获取资源配额
+    getResourceData() {
+      getResourceData().then(res => {
+        if (res.code === 20000) {
+          this.resourceData = res.data || []
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取事件
+    getEventData() {
+      getEventData().then(res => {
+        if (res.code === 20000) {
+          this.eventData = res.data || []
+          this.total = this.eventData.reduce((pre, cur) => {
+            return pre + cur.value
+          }, 0)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 打开事件弹窗
     openEvent() {
       this.eventDialogVisible = true
     },
