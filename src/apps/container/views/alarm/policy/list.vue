@@ -48,12 +48,8 @@
               class="filter-item"
               style="text-align: right"
             >
-<<<<<<< HEAD
-              <!-- <el-button type="primary">搜索</el-button> -->
               <el-button type="primary" @click="handleFilter">搜索</el-button>
-=======
-              <el-button type="primary">搜索</el-button>
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
+              <!-- <el-button type="primary">搜索</el-button> -->
               <el-button>重置</el-button>
             </el-form-item>
           </div>
@@ -75,10 +71,14 @@
             :label="col.label"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'" class="cursor-pointer" @click="handleDetail(scope.row)">
+              <div
+                v-if="col.id === 'name'"
+                class="cursor-pointer"
+                @click="handleDetail(scope.row)"
+              >
                 {{ scope.row[col.id] }}
               </div>
-              <div v-else-if="col.id === 'status'" style="text-align: center;">
+              <div v-else-if="col.id === 'status'" style="text-align: center">
                 <span>1/1</span>
                 <el-progress
                   :percentage="100"
@@ -91,18 +91,11 @@
               </div>
             </template>
           </el-table-column>
-<<<<<<< HEAD
           <!-- 3.2 -->
           <el-table-column
             label="操作"
             align="center"
-            width="180"
-=======
-          <el-table-column
-            label="操作"
-            align="center"
             width="80"
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
             class-name="small-padding fixed-width"
           >
             <template slot-scope="{ row }">
@@ -110,26 +103,22 @@
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-<<<<<<< HEAD
-                    <!-- <el-dropdown-item @click="handleEdit(row.id)">
-                      更新
-                    </el-dropdown-item> -->
-                    <el-dropdown-item @click.native="handleUpdate(row)">
+                    <!-- <el-dropdown-item @click.native="handleUpdate(row)">
                       更新
                     </el-dropdown-item>
                     <el-dropdown-item
                       @click.native="handleDelete(row, row.id)"
                     >删除
-                    </el-dropdown-item>
-=======
+                    </el-dropdown-item> -->
                     <el-dropdown-item
                       @click.native="handleUpdate(row)"
                     >更新</el-dropdown-item>
                     <el-dropdown-item
                       @click.native="handlesSilence(row)"
                     >设置静默</el-dropdown-item>
-                    <el-dropdown-item @click.native="handelDelete(row)">删除</el-dropdown-item>
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
+                    <el-dropdown-item
+                      @click.native="handelDelete(row)"
+                    >删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -138,20 +127,19 @@
         </el-table>
       </div>
     </div>
-<<<<<<< HEAD
-=======
-    <set-silence-dialog :visible="visible" :current-obj="currentObj" @closeDialog="closeDialog" @submitForm="submitForm" />
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
+    <set-silence-dialog
+      :visible="visible"
+      :current-obj="currentObj"
+      @closeDialog="closeDialog"
+      @submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import { alarmColumnList, alarmList } from '../const'
-<<<<<<< HEAD
 import axios from 'axios'
-=======
 import SetSilenceDialog from './components/SetSilenceDialog.vue'
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
 
 export default {
   name: 'AlarmList',
@@ -173,10 +161,8 @@ export default {
       currentObj: {}
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
-<<<<<<< HEAD
     getList() {
       // "/api/data"为mock/index.js设置的接口
       axios.get('/api/alarmlist').then((res) => {
@@ -191,8 +177,6 @@ export default {
       console.log('@')
     },
     // 更新
-=======
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
     handleUpdate(row) {
       this.$router.push({
         name: 'AlarmCreate',
@@ -201,7 +185,6 @@ export default {
         }
       })
     },
-<<<<<<< HEAD
     // 删除--index其实是row.id
     // handleDelete(row, index) {
     //   this.$notify({
@@ -212,38 +195,40 @@ export default {
     //   });
     //   this.list.splice(index, 1);
     // },
-    handleDelete(row) {
-      // this.$notify({
-      //   title: "Success",
-      //   message: "Delete Successfully",
-      //   type: "success",
-      //   duration: 2000,
-      // });
-      // this.list.splice(index, 1);
-      console.log('删除alarmList', row)
-      this.$confirm(`确认删除当前${row.name}?`)
-        .then(() => {
-          axios
-            .post('/api/deleteAlarmlist', row)
-            .then((res) => {
-              if (res.data.code === '0') {
-                this.$message.success('删除成功！')
-                this.alarmList.data.splice(+row.id, 1)
-                this.getList()
-              }
-              console.log(alarmList.data)
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-=======
+    // handleDelete(row) {
+    //   // this.$notify({
+    //   //   title: "Success",
+    //   //   message: "Delete Successfully",
+    //   //   type: "success",
+    //   //   duration: 2000,
+    //   // });
+    //   // this.list.splice(index, 1);
+    //   console.log('删除alarmList', row)
+    //   this.$confirm(`确认删除当前${row.name}?`)
+    //     .then(() => {
+    //       axios
+    //         .post('/api/deleteAlarmlist', row)
+    //         .then((res) => {
+    //           if (res.data.code === '0') {
+    //             this.$message.success('删除成功！')
+    //             this.alarmList.data.splice(+row.id, 1)
+    //             this.getList()
+    //           }
+    //           console.log(alarmList.data)
+    //         })
+    //         .catch((err) => {
+    //           console.log(err)
+    //         })
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       })
+    //     })
+
+    // },
+
     // 设置静默
     handlesSilence(row) {
       this.currentObj = row
@@ -261,7 +246,8 @@ export default {
         `确定删除告警策略${row.name}吗？`,
         `删除后不可恢复。`
       ]
-      const newData = []; const h = this.$createElement
+      const newData = []
+      const h = this.$createElement
       for (const i in returnMsgList) {
         newData.push(h('p', null, returnMsgList[i]))
       }
@@ -269,20 +255,20 @@ export default {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '已删除'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
->>>>>>> c96f9b7f7e5384dadf71bbd3c175132b997bdde6
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '已删除'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     },
-
     handleCreate() {
       this.$router.push({
         name: 'AlarmCreate'
