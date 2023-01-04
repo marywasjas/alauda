@@ -11,7 +11,7 @@
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>扩容</el-dropdown-item>
-              <el-dropdown-item>更新</el-dropdown-item>
+              <el-dropdown-item @click.native="handleUpdate">更新</el-dropdown-item>
               <el-dropdown-item @click.native="handelDelete">删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -76,6 +76,14 @@ export default {
   methods: {
     changeActive(value) {
       this.activeName = value
+    },
+    handleUpdate(row) {
+      this.$router.push({
+        name: 'PersistentVolumeCreateUpdate',
+        query: {
+          type: 'edit'
+        }
+      })
     },
     handelDelete() {
       const returnMsgList = [

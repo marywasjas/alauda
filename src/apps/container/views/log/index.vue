@@ -216,7 +216,7 @@ export default {
         {
           prop: 'applicationName',
           label: '应用名称（ApplicationName）',
-          checked: true
+          checked: false
         },
         {
           prop: 'node',
@@ -287,6 +287,7 @@ export default {
       option && myChart.setOption(option)
     },
     changes(e, index) {
+      console.log(e)
       const unChecked = []
       for (let i = 0; i < this.checkboxList.length; i++) {
         if (JSON.stringify(e).indexOf(JSON.stringify(this.checkboxList[i])) === -1) {

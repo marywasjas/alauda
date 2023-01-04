@@ -6,9 +6,7 @@
           <el-dropdown>
             <el-button class="margin-left10">操作<i class="el-icon-arrow-down el-icon--right" /> </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>更新</el-dropdown-item>
-              <el-dropdown-item>管理资源</el-dropdown-item>
-              <el-dropdown-item>分发</el-dropdown-item>
+              <el-dropdown-item>EXEC</el-dropdown-item>
               <el-dropdown-item>删除</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

@@ -8,7 +8,7 @@
         <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
         <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
         <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCode">清理</el-button>
-        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
+        <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini" @click="find">查找</el-button>
         <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini" @click="handleCopy(value,$event)">复制</el-button>
         <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
           <el-button icon="el-icon-thumb" size="mini" class="margin-left10 margin-right10">{{ currentThemeObj.label }}</el-button>
@@ -55,7 +55,7 @@
           <el-button v-if="btnVisible.import" icon="el-icon-upload2" size="mini">导入</el-button>
           <el-button v-if="btnVisible.export" icon="el-icon-download" size="mini" @click="handleDownload">导出</el-button>
           <el-button v-if="btnVisible.reset" icon="el-icon-circle-close" size="mini" @click="resetCodeDialog">清理</el-button>
-          <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini">查找</el-button>
+          <el-button v-if="btnVisible.find" icon="el-icon-search" size="mini" @click="findDialog">查找</el-button>
           <el-button v-if="btnVisible.copy" icon="el-icon-copy-document" size="mini" @click="handleCopy(value,$event)">复制</el-button>
           <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
             <el-button icon="el-icon-thumb" size="mini" class="margin-left10 margin-right10">{{ currentThemeObj.label }}</el-button>
@@ -145,6 +145,7 @@ export default {
   },
   data() {
     return {
+      inputCode: '',
       editHeight: '400px',
       autoUpdate: true,
       monacoEditor: null,
@@ -193,6 +194,7 @@ export default {
         roundedSelection: false, // 选区是否有圆角
         scrollBeyondLastLine: false, // 设置编辑器是否可以滚动到最后一行之后
         fontSize: 12,
+        // find: true,
         find: {
           seedSearchStringFromSelection: 'never',
           autoFindInSelection: 'never'
@@ -255,11 +257,14 @@ export default {
         this.standaloneEditorConstructionOptions
       )
       // 监听内容变化
-      this.monacoEditor.onDidChangeModelContent((e) => {})
+      this.monacoEditor.onDidChangeModelContent((e) => {
+        // this.inputCode = this.monacoEditor.getValue()
+        // this.$emit('handleBlur', this.inputCode)
+      })
       // 监听失去焦点事件
       this.monacoEditor.onDidBlurEditorText((e) => {
-        const inputCode = this.monacoEditor.getValue()
-        this.$emit('handleBlur', inputCode)
+        this.inputCode = this.monacoEditor.getValue()
+        this.$emit('handleBlur', this.inputCode)
       })
     },
     // 更新数据
@@ -289,11 +294,14 @@ export default {
         this.standaloneEditorConstructionOptions
       )
       // 监听内容变化
-      this.monacoEditorDialog.onDidChangeModelContent((e) => {})
+      this.monacoEditorDialog.onDidChangeModelContent((e) => {
+        // this.inputCode = this.monacoEditorDialog.getValue()
+        // this.$emit('handleBlur', this.inputCode)
+      })
       // 监听失去焦点事件
       this.monacoEditorDialog.onDidBlurEditorText((e) => {
-        const inputCode = this.monacoEditorDialog.getValue()
-        this.$emit('handleBlur', inputCode)
+        this.inputCode = this.monacoEditorDialog.getValue()
+        this.$emit('handleBlur', this.inputCode)
       })
     },
     // 更新数据
@@ -316,9 +324,18 @@ export default {
       this.value = ''
       this.updateMonacoEditor()
     },
+    // 查找
+    find() {
+      this.monacoEditor.getAction('actions.find').run()
+    },
+    // 清理 弹窗
     resetCodeDialog() {
       this.value = ''
       this.updateMonacoEditorDialog()
+    },
+    // 查找 弹窗
+    findDialog() {
+      this.monacoEditorDialog.getAction('actions.find').run()
     },
     handleCopy(text, event) {
       clip(text, event)

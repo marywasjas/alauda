@@ -20,11 +20,9 @@
             :width="col.width"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'" class="name-cell">
-                <div>
-                  <span class="cursor-pointer" @click="goDetails(scope.row)">{{ scope.row.name }}</span>
-                  <span>{{ scope.row.desc }}</span>
-                </div>
+              <div v-if="col.id === 'name'">
+                <span class="cursor-pointer" @click="goDetails(scope.row)">{{ scope.row.name }}</span>
+                <!-- <span>{{ scope.row.desc }}</span> -->
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
                 <el-dropdown>
@@ -168,30 +166,6 @@ export default {
   .nativeApp-main {
     background: #fff;
     padding: 20px;
-  }
-  .name-cell {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    i {
-      margin-right: 10px;
-      font-size: $font-size-20;
-      padding: 1px;
-      border: 1px solid $border-color-one;
-      border-radius: $border-radius-l;
-      background: $color-primary-rgba1;
-      color: $color-primary;
-    }
-    span {
-      display: block;
-      margin: 0;
-      font-size: $font-size-18;
-    }
-    span:last-child {
-      color: $font-color-text;
-      font-size: $font-size-14;
-      margin-top: 6px;
-    }
   }
 }
 </style>

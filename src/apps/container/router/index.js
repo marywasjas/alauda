@@ -119,6 +119,13 @@ export const containerAsyncRoutes = [
             name: 'DeployUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
             hidden: true
+          },
+          {
+            path: 'createDeploy',
+            component: () => import('@/apps/container/views/components-demo/deploy/CreateDeploy.vue'),
+            name: 'CreateDeploy',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
+            hidden: true
           }
         ]
       },
@@ -155,6 +162,13 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/components-demo/daemon/deamonUpdate.vue'),
             name: 'DeamonUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
+            hidden: true
+          },
+          {
+            path: 'createDeamon',
+            component: () => import('@/apps/container/views/components-demo/daemon/createDeamon.vue'),
+            name: 'CreateDeamon',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/daemons_set' },
             hidden: true
           }
         ]
@@ -193,6 +207,13 @@ export const containerAsyncRoutes = [
             name: 'StatefulSetUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
             hidden: true
+          },
+          {
+            path: 'createStatefulSet',
+            component: () => import('@/apps/container/views/components-demo/statefulSet/createStatefulSet.vue'),
+            name: 'CreateStatefulSet',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/stateful_set' },
+            hidden: true
           }
         ]
       },
@@ -229,6 +250,13 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/components-demo/timedTask/timedUpdate.vue'),
             name: 'TimedUpdate',
             meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            hidden: true
+          },
+          {
+            path: 'createTimedJob',
+            component: () => import('@/apps/container/views/components-demo/timedTask/createTimedJob.vue'),
+            name: 'CreateTimedJob',
+            meta: { title: '创建', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
             hidden: true
           }
         ]
@@ -611,12 +639,12 @@ export const containerAsyncRoutes = [
     ]
   },
   {
-    path: '/tab',
+    path: '/log',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/apps/container/views/tab/index'),
+        component: () => import('@/apps/container/views/log/index'),
         name: 'Tab',
         meta: { title: '日志', icon: 'tab' }
       }
@@ -653,7 +681,7 @@ export const containerAsyncRoutes = [
             path: 'create',
             component: () => import('@/apps/container/views/alarm/policy/create'),
             name: 'AlarmCreate',
-            meta: { title: '创建告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
+            meta: { title: '创建/更新告警策略', icon: 'icon', noCache: true, activeMenu: '/alarm/policy' },
             hidden: true
           },
           {
@@ -714,35 +742,26 @@ export const containerAsyncRoutes = [
   {
     path: '/zip',
     component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    name: 'Zip',
-    meta: { title: '备份恢复', icon: 'zip' },
     children: [
       {
         path: 'download',
         component: () => import('@/apps/container/views/zip/index'),
         name: 'ExportZip',
-        meta: { title: '备份' }
+        meta: { title: '备份恢复', icon: 'zip', affix: true }
       }
     ]
   },
-
-  // 测试--流程图
   {
-    path: '/test',
-    // name: "Test",
-    redirect: '/test/index',
+    path: '/yamlConversion',
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'TestIndex',
+        path: 'conversion',
         component: () => import('@/apps/container/views/test/index'),
-        meta: { title: '流程图', icon: 'tree', roles: ['admin'] }
+        name: 'ExportZip',
+        meta: { title: 'YAML转换', icon: 'zip', affix: true }
       }
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]

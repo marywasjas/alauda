@@ -19,21 +19,21 @@
       </div>
       <div class="card__content">
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
-          <el-table-column label="姓名">
+          <el-table-column label="名称">
             <template slot-scope="scope">
-              <a class="link_name" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
-              <div class="v_name">{{ scope.row.name.txt }}</div>
+              <a class="cursor-pointer" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
+              <!-- <div class="v_name">{{ scope.row.name.txt }}</div> -->
             </template>
           </el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">
-              <i :class="scope.row.status.done === '运行中' ? 'el-icon-success' : 'el-icon-warning'" />
+              <i :class="scope.row.status.done === '运行中' ? 'el-icon-success running' : 'el-icon-warning stop'" />
               <span class="v_txt">{{ scope.row.status.done }}{{ scope.row.status.desc }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="application" label="所属应用">
             <template slot-scope="scope">
-              <a class="link_name">{{ scope.row.application }}</a>
+              <a class="cursor-pointer" @click="handleApp(scope.row)">{{ scope.row.application }}</a>
             </template>
           </el-table-column>
           <el-table-column prop="create_time" label="创建时间" />
@@ -53,7 +53,7 @@
         </el-table>
       </div>
     </div>
-    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" />
+    <select-mirror :form-visible="formVisible" @closeFormDialog="closeFormDialog" @submitForm="submitForm" />
   </div>
 </template>
 
@@ -101,6 +101,15 @@ export default {
         }
       })
     },
+    handleApp(row) {
+      this.$router.push({
+        name: 'NativeDetail',
+        query: {
+          name: row.name.link_name,
+          desc: row.name.txt
+        }
+      })
+    },
     handleEdit(link_name) {
       this.$router.push({
         path: 'deploy/deployUpdate',
@@ -110,10 +119,9 @@ export default {
       })
     },
     handelDelete(row) {
-      const returnMsgList = [
-        `确定删除部署${row.name.link_name}吗？`
-      ]
-      const newData = []; const h = this.$createElement
+      const returnMsgList = [`确定删除部署${row.name.link_name}吗？`]
+      const newData = []
+      const h = this.$createElement
       for (const i in returnMsgList) {
         newData.push(h('p', null, returnMsgList[i]))
       }
@@ -121,23 +129,30 @@ export default {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '已删除'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '已删除'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     },
     openDialog() {
       this.formVisible = true
     },
     closeFormDialog() {
       this.formVisible = false
+    },
+    submitForm() {
+      this.$router.push({
+        name: 'CreateDeploy'
+      })
     }
   }
 }
@@ -159,15 +174,6 @@ export default {
   .oam-main {
     background: #fff;
     padding: 20px;
-  }
-  .link_name {
-    color: #1890ff;
-  }
-  .el-icon-success {
-    color: #1890ff;
-  }
-  .el-icon-more {
-    color: #1890ff;
   }
 }
 </style>

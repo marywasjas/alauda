@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
+      <template v-if="device !== 'mobile'">
         <notice />
         <help />
         <!-- <search id="header-search" class="right-menu-item" />
@@ -13,7 +13,6 @@
         <!-- <el-tooltip content="Global Size" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip> -->
-
       </template>
       <div class="page-header__separator" />
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -87,15 +86,12 @@ export default {
   },
   data() {
     return {
-      logoSrc
+      logoSrc,
+      visible: true
     }
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar',
-      'device'
-    ])
+    ...mapGetters(['sidebar', 'avatar', 'device'])
   },
   methods: {
     toggleSideBar() {
@@ -110,6 +106,42 @@ export default {
         name: 'PersonalInformation'
       })
     }
+
+    // changelau: () => {
+    //   let lang = i18n.locale
+    //   if (lang === 'cn') {
+    //     i18n.locale = 'en'
+    //     // 对应main.js配置文件中的localStorage的get方法
+    //     localStorage.setItem('lang', this.lang)
+    //     this.visible = !this.visible
+    //   } else {
+    //     i18n.locale = 'cn'
+    //     localStorage.setItem('lang', this.lang)
+    //     this.visible = !this.visible
+    //   }
+    // }
+
+    // changelau() {
+    //   console.log(i18n)
+    //   if (this.visible === true) {
+    //     i18n.locale = 'en'
+    //     console.log(i18n.locale)
+    //     window.sessionStorage.getItem('lang') || 'en'
+    //     this.visible = !this.visible
+    //   } else {
+    //     i18n.locale = 'cn'
+    //     console.log(i18n.locale)
+    //     window.sessionStorage.getItem('lang') || 'cn'
+    //     this.visible = !this.visible
+    //   }
+
+    // that = this
+    // console.log(val)
+    // console.log(this.$i18n)
+    // this.$i18n.locale = val //this.$i18n的local进行语言切换
+    // window.sessionStorage.getItem('lang') || 'en'
+    // //window.sessionStorage.setItem('lang', val)
+    // }
   }
 }
 </script>
@@ -127,11 +159,11 @@ export default {
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -149,7 +181,7 @@ export default {
     height: 100%;
     line-height: 50px;
     display: flex;
-    align-items:center;
+    align-items: center;
 
     &:focus {
       outline: none;
@@ -165,10 +197,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
@@ -177,9 +209,9 @@ export default {
       // margin-right: 30px;
 
       .avatar-wrapper {
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         .user-avatar {
           cursor: pointer;
           width: 30px;

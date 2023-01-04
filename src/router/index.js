@@ -64,6 +64,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/portal',
+    component: NoSliderLayout,
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/portal/index'),
+        name: 'Portal',
+        meta: { title: 'CPaaS' }
+      }
+    ]
+  },
+  {
     path: '/404',
     component: () => import('@/views/error-page/404'),
     hidden: true

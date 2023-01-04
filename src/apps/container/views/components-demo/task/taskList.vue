@@ -14,15 +14,23 @@
           <el-table-column v-for="col in tableColumnList" :key="col.id" :label="col.label" :width="col.width">
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="name-cell">
-                <div>
-                  <span style="color: #1890ff" class="cursor-pointer" @click="goDetails(scope.row.name)">{{
-                    scope.row.name
-                  }}</span>
-                </div>
+                <span class="cursor-pointer" @click="goDetails(scope.row.name)">{{
+                  scope.row.name
+                }}</span>
               </div>
               <div v-else-if="col.id === 'status'" class="status-cell">
-                <i v-if="scope.row.status === 'running'" class="el-icon-success running" />
-                <i v-else-if="scope.row.status === 'stop'" class="el-icon-warning stop" />
+                <i
+                  v-if="scope.row.status === 'running'"
+                  class="el-icon-video-play running"
+                />
+                <i
+                  v-else-if="scope.row.status === 'stop'"
+                  class="el-icon-video-pause stop"
+                />
+                <i
+                  v-else-if="scope.row.status === 'pending'"
+                  class="el-icon-loading pending"
+                />
                 <span>{{ scope.row.statusText }}</span>
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
@@ -30,7 +38,7 @@
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>查看日志</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item @click.native="handelDelete(scope.row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -69,6 +77,30 @@ export default {
           name: name // 传递的参数: 键值对
         }
       })
+    },
+    handelDelete(row) {
+      const returnMsgList = [
+        `确定删除任务${row.name}吗？`
+      ]
+      const newData = []; const h = this.$createElement
+      for (const i in returnMsgList) {
+        newData.push(h('p', null, returnMsgList[i]))
+      }
+      this.$confirm(h('div', null, newData), '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '已删除'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     }
   }
 }
@@ -90,46 +122,6 @@ export default {
   .task-main {
     background: #fff;
     padding: 20px;
-  }
-  .name-cell {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-
-    i {
-      margin-right: 10px;
-      font-size: $font-size-20;
-      padding: 1px;
-      border: 1px solid $border-color-one;
-      border-radius: $border-radius-l;
-      background: $color-primary-rgba1;
-      color: $color-primary;
-    }
-    span {
-      display: block;
-      margin: 0;
-      font-size: $font-size-18;
-    }
-    span:last-child {
-      color: $font-color-text;
-      font-size: $font-size-14;
-      margin-top: 6px;
-    }
-  }
-  .status-cell {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    i {
-      margin-right: 10px;
-      font-size: $font-size-20;
-    }
-    .running {
-      color: $button-color-success;
-    }
-    .stop {
-      color: $button-color-info;
-    }
   }
   .operation-cell {
     i {
