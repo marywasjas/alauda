@@ -73,7 +73,8 @@
         </el-table>
       </div>
     </div>
-  </div></template>
+  </div>
+</template>
 
 <script>
 import { list } from '@/api/network/service'

@@ -1,11 +1,18 @@
 <template>
   <div class="oam-container">
     <div class="oam-main">
+      <!-- 1 -->
       <div class="card__header">
         <el-button type="primary" @click="handleCreate">创建告警策略</el-button>
       </div>
+      <!-- 2 -->
       <div class="filter-content">
-        <el-form ref="ruleForm" :model="listQuery" label-position="right" label-width="90px">
+        <el-form
+          ref="ruleForm"
+          :model="listQuery"
+          label-position="right"
+          label-width="90px"
+        >
           <div class="filter-row">
             <el-form-item label="告警状态" class="filter-item">
               <el-select v-model="listQuery.alarmStatus" size="small">
@@ -30,23 +37,34 @@
               </el-select>
             </el-form-item>
             <el-form-item label="名称" class="filter-item">
-              <el-input v-model="listQuery.name" placeholder="按名称模糊搜索" size="small" />
+              <el-input
+                v-model="listQuery.name"
+                placeholder="按名称模糊搜索"
+                size="small"
+              />
             </el-form-item>
-            <el-form-item label="" class="filter-item" style="text-align:right;">
-              <el-button type="primary">搜索</el-button>
+            <el-form-item
+              label=""
+              class="filter-item"
+              style="text-align: right"
+            >
+              <!-- <el-button type="primary">搜索</el-button> -->
+              <el-button type="primary" @click="handleFilter">搜索</el-button>
               <el-button>重置</el-button>
             </el-form-item>
           </div>
         </el-form>
       </div>
+      <!-- 3 -->
       <div class="card__content">
         <el-table
           :data="alarmList.data"
-          style="width: 100%;"
+          style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
           empty-text="无告警策略"
         >
+          <!-- 3.1 -->
           <el-table-column
             v-for="col in alarmColumnList"
             :key="col.id"
@@ -61,14 +79,28 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-            <template slot-scope="{row}">
+          <!-- 3.2 -->
+          <el-table-column
+            label="操作"
+            align="center"
+            width="180"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="{ row }">
               <div class="operation-cell">
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <!-- <el-dropdown-item @click="handleEdit(row.id)">
+                      更新
+                    </el-dropdown-item> -->
+                    <el-dropdown-item @click.native="handleUpdate(row)">
+                      更新
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="handleDelete(row, row.id)"
+                    >删除
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -77,17 +109,19 @@
         </el-table>
       </div>
     </div>
-  </div></template>
+  </div>
+</template>
 
 <script>
 import { alarmColumnList, alarmList } from '../const'
+import axios from 'axios'
 
 export default {
   name: 'AlarmList',
   data() {
     return {
-      alarmColumnList,
-      alarmList,
+      alarmColumnList, // column
+      alarmList, // table.data
       list: null,
       total: 0,
       listQuery: {
@@ -103,11 +137,20 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {},
+    getList() {
+      // "/api/data"为mock/index.js设置的接口
+      axios.get('/api/alarmlist').then((res) => {
+        console.log(res.data)
+        this.alarmList.data = res.data.data
+      })
+    },
+    // 搜索
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+      console.log('@')
     },
+    // 更新
     handleUpdate(row) {
       this.$router.push({
         name: 'AlarmUpdate',
@@ -116,20 +159,55 @@ export default {
         }
       })
     },
-    handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
+    // 删除--index其实是row.id
+    // handleDelete(row, index) {
+    //   this.$notify({
+    //     title: "Success",
+    //     message: "Delete Successfully",
+    //     type: "success",
+    //     duration: 2000,
+    //   });
+    //   this.list.splice(index, 1);
+    // },
+    handleDelete(row) {
+      // this.$notify({
+      //   title: "Success",
+      //   message: "Delete Successfully",
+      //   type: "success",
+      //   duration: 2000,
+      // });
+      // this.list.splice(index, 1);
+      console.log('删除alarmList', row)
+      this.$confirm(`确认删除当前${row.name}?`)
+        .then(() => {
+          axios
+            .post('/api/deleteAlarmlist', row)
+            .then((res) => {
+              if (res.data.code === '0') {
+                this.$message.success('删除成功！')
+                this.alarmList.data.splice(+row.id, 1)
+                this.getList()
+              }
+              console.log(alarmList.data)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
+
     handleCreate() {
       this.$router.push({
         name: 'AlarmCreate'
       })
     },
+
     handleDetail(row) {
       this.$router.push({
         name: 'AlarmDetail',
@@ -151,15 +229,15 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
-  .filter-content{
+  .filter-content {
     margin: 15px 20px 0px 0px;
-    .filter-row{
+    .filter-row {
       display: flex;
       .filter-item {
         flex: 1;
         margin-bottom: 10px;
         .el-select {
-          width:100%
+          width: 100%;
         }
       }
     }
@@ -168,10 +246,10 @@ export default {
     background: #fff;
     padding: 20px;
   }
-  .operation-cell{
-    i{
+  .operation-cell {
+    i {
       font-size: $font-size-20;
-      color:$color-primary;
+      color: $color-primary;
       cursor: pointer;
     }
   }

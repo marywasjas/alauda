@@ -5,13 +5,13 @@
         <div slot="header" class="clearfix">
           <span v-if="!isEdit">创建入站规则</span>
           <span v-if="isEdit">更新{{ ruleForm.name }}</span>
-          <el-radio-group v-model="fillType" style="float: right;">
+          <el-radio-group v-model="fillType" style="float: right">
             <el-radio-button label="form">表单</el-radio-button>
             <el-radio-button label="ymal">YMAL</el-radio-button>
           </el-radio-group>
         </div>
 
-        <div v-if="fillType=='form'" class="text item">
+        <div v-if="fillType == 'form'" class="text item">
           <el-form
             ref="ruleForm"
             :model="ruleForm"
@@ -19,24 +19,34 @@
             label-width="120px"
             label-suffix=":"
           >
-            <el-row><el-col :span="12">
-              <el-form-item label="名称" prop="name">
-                <span v-if="isEdit">{{ ruleForm.name }}</span>
-                <el-input v-if="!isEdit" v-model="ruleForm.name" placeholder="以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-" />
-              </el-form-item>
-            </el-col></el-row>
-            <el-row><el-col :span="12">
-              <el-form-item label="显示名称" prop="showName">
-                <el-input v-model="ruleForm.showName" />
-              </el-form-item>
-            </el-col></el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="名称" prop="name">
+                  <span v-if="isEdit">{{ ruleForm.name }}</span>
+                  <el-input
+                    v-if="!isEdit"
+                    v-model="ruleForm.name"
+                    placeholder="以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="显示名称" prop="showName">
+                  <el-input v-model="ruleForm.showName" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
             <el-form-item label="规则" prop="rule">
               <div
                 v-for="(item1, index1) in ruleForm.rulesList"
                 :key="item1.id"
                 class="flex-center rules-div"
               >
-                <div style="margin-left: 50px; width: 92%;">
+                <div style="margin-left: 50px; width: 92%">
                   <el-form-item
                     label="域名"
                     :prop="'rulesList.' + index1 + '.domain'"
@@ -48,7 +58,7 @@
                     style="margin-bottom: 22px"
                     label-width="60px"
                   >
-                    <el-input v-model="item1.domain" style="width:50%" />
+                    <el-input v-model="item1.domain" style="width: 50%" />
                   </el-form-item>
                   <el-form-item
                     label="协议"
@@ -62,13 +72,13 @@
                     </el-radio-group>
                   </el-form-item>
                   <el-form-item
-                    v-if="item1.agreement=='HTTPS'"
+                    v-if="item1.agreement == 'HTTPS'"
                     label="证书"
                     :prop="'rulesList.' + index1 + '.certificate'"
                     style="margin-bottom: 22px"
                     label-width="60px"
                   >
-                    <el-select v-model="item1.certificate" style="width:50%">
+                    <el-select v-model="item1.certificate" style="width: 50%">
                       <option label="默认" value="默认" />
                     </el-select>
                   </el-form-item>
@@ -201,9 +211,15 @@
                           <td>
                             <el-button
                               icon="el-icon-remove-outline"
-                              class="cursor-pointer margin-left10 margin-right10"
+                              class="
+                                cursor-pointer
+                                margin-left10 margin-right10
+                              "
                               type="text"
-                              :disabled="ruleForm.rulesList[index1].subRuleList.length===1"
+                              :disabled="
+                                ruleForm.rulesList[index1].subRuleList
+                                  .length === 1
+                              "
                               @click="handleDelete(index1, index2)"
                             />
                           </td>
@@ -241,7 +257,8 @@
             </el-form-item>
           </el-form>
         </div>
-        <div v-if="fillType=='ymal'" class="yaml-div">
+
+        <div v-if="fillType == 'ymal'" class="yaml-div">
           <monaco-editor
             ref="monacoEditor"
             :code="currentCode"
@@ -282,7 +299,7 @@ export default {
   components: { MonacoEditor },
   data() {
     return {
-      isEdit: false,
+      isEdit: false, // 默认不显示
       fillType: 'form',
       matchList: ['前缀', '精准', '控制器决定'],
       ruleForm: {
@@ -309,7 +326,11 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
-          { pattern: /^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$/, message: '以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-', trigger: 'blur' }
+          {
+            pattern: /^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$/,
+            message: '以 a-z、0-9 开头结尾，支持使用 a-z、0-9、-',
+            trigger: 'blur'
+          }
         ]
       },
       currentCode: '',
@@ -431,8 +452,8 @@ export default {
   position: relative;
   .scroll-div {
     padding-bottom: 106px;
-    .hover-div:hover{
-      background:$color-primary-rgba1;
+    .hover-div:hover {
+      background: $color-primary-rgba1;
     }
     .rules-div {
       background: $background-color;
@@ -450,7 +471,7 @@ export default {
         width: 100%;
       }
     }
-    .rules-div:last-child{
+    .rules-div:last-child {
       margin-bottom: 0;
     }
   }
