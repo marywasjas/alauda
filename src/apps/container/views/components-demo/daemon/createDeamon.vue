@@ -23,13 +23,13 @@
               </el-form-item>
               <foldable-block btn-tex="更多">
                 <div class="flex-start">
-                  <el-form-item label="更新策略" style="margin-bottom: 0">
+                  <el-form-item label="更新策略">
                     <el-input v-model="infoRuleForm.disabledNUumber" placeholder="数字或者百分比">
                       <template slot="prepend">最多不可用数</template>
                     </el-input>
                   </el-form-item>
 
-                  <el-form-item label="" label-width="0" class="margin-left10" style="margin-bottom: 0">
+                  <el-form-item label="" label-width="0" class="margin-left10">
                     <el-tooltip class="item" effect="dark" placement="top">
                       <div slot="content">
                         最大可超出数：Pods 数量最大可以超出的值，支持输入实例数量或百分比；<br>最多不可用数：Pods
@@ -39,7 +39,7 @@
                     </el-tooltip>
                   </el-form-item>
                 </div>
-                <el-form-item label="标签" prop="port" style="margin-bottom: 0">
+                <el-form-item label="标签" prop="port">
                   <table border="0" style="width: 100%">
                     <thead>
                       <tr class="headerStyle">
@@ -55,6 +55,11 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <tr v-if="infoRuleForm.labels.length === 0">
+                        <td colspan="5">
+                          <div class="empty-div">无数据</div>
+                        </td>
+                      </tr>
                       <tr v-for="(domain, index) in infoRuleForm.labels" :key="domain.id">
                         <td>
                           <el-form-item label="" :prop="'labels.' + index + '.key'">
@@ -109,6 +114,11 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <tr v-if="infoRuleForm.storageVolumes.length === 0">
+                      <td colspan="5">
+                        <div class="empty-div">无存储卷</div>
+                      </td>
+                    </tr>
                     <tr v-for="(domain, index) in infoRuleForm.storageVolumes" :key="domain.id">
                       <td>
                         <el-form-item label="" :prop="'storageVolumes.' + index + '.name'">
@@ -181,6 +191,11 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <tr v-if="infoRuleForm.containerGroupLabels.length === 0">
+                        <td colspan="5">
+                          <div class="empty-div">无数据</div>
+                        </td>
+                      </tr>
                       <tr v-for="(domain, index) in infoRuleForm.containerGroupLabels" :key="domain.id">
                         <td>
                           <el-form-item label="" :prop="'containerGroupLabels.' + index + '.key'">
@@ -228,6 +243,11 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <tr v-if="infoRuleForm.containerGroupNotes.length === 0">
+                        <td colspan="5">
+                          <div class="empty-div">无数据</div>
+                        </td>
+                      </tr>
                       <tr v-for="(domain, index) in infoRuleForm.containerGroupNotes" :key="domain.id">
                         <td>
                           <el-form-item label="" :prop="'containerGroupNotes.' + index + '.key'">
@@ -295,6 +315,11 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <tr v-if="infoRuleForm.affinity.length === 0">
+                          <td colspan="5">
+                            <div class="empty-div">无Pod亲和</div>
+                          </td>
+                        </tr>
                         <tr v-for="(domain, index) in infoRuleForm.affinity" :key="domain.id">
                           <td>
                             <el-form-item label="" :prop="'affinity.' + index + '.type'">
@@ -520,6 +545,11 @@
                         </tr>
                       </thead>
                       <tbody>
+                        <tr v-if="infoRuleForm.containerPorts.length === 0">
+                          <td colspan="5">
+                            <div class="empty-div">无数据</div>
+                          </td>
+                        </tr>
                         <tr v-for="(domain, index) in infoRuleForm.containerPorts" :key="domain.id">
                           <td>
                             <el-form-item
@@ -605,6 +635,11 @@
                           </tr>
                         </thead>
                         <tbody>
+                          <tr v-if="infoRuleForm.environmentVariables.length === 0">
+                            <td colspan="5">
+                              <div class="empty-div">无数据</div>
+                            </td>
+                          </tr>
                           <tr v-for="(domain, index) in infoRuleForm.environmentVariables" :key="domain.id">
                             <td>
                               <el-form-item label="" :prop="'environmentVariables.' + index + '.key'">
@@ -882,6 +917,11 @@
                           </tr>
                         </thead>
                         <tbody>
+                          <tr v-if="infoRuleForm.storageVolumeMounts.length === 0">
+                            <td colspan="5">
+                              <div class="empty-div">无数据</div>
+                            </td>
+                          </tr>
                           <tr v-for="(domain, index) in infoRuleForm.storageVolumeMounts" :key="domain.id">
                             <td>
                               <el-form-item label="" :prop="'storageVolumeMounts.' + index + '.name'">

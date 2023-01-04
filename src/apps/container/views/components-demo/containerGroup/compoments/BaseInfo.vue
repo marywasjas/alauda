@@ -33,13 +33,13 @@
       </section>
       <header>
         <div class="card-title left-header" style="margin-bottom: 20px">
-          <span>容器组</span>
+          <span>容器组标签</span>
         </div>
       </header>
       <section>
-        <el-tag type="info" style="margin-right: 10px">app:chaosblade-box</el-tag>
-        <el-tag type="info" style="margin-right: 10px">name:chaosblade-box</el-tag>
-        <el-tag type="info" style="margin-right: 10px">pod:chaosblade-box</el-tag>
+        <el-tag v-for="tag in containerGroupLabels" :key="tag.name" type="info" style="margin-right: 10px">
+          {{ tag.name }}:{{ tag.value }}
+        </el-tag>
       </section>
       <header>
         <div class="card-title left-header" style="margin: 20px 0">
@@ -237,7 +237,14 @@ export default {
           value: ''
         }
       ],
-
+      // 容器组标签
+      containerGroupLabels: [
+        { name: 'app', value: 'chaosblade - box' },
+        { name: 'app', value: 'chaosblade - box' },
+        { name: 'app', value: 'chaosblade - box' },
+        { name: 'app', value: 'chaosblade - box' },
+        { name: 'app', value: 'chaosblade - box' }
+      ],
       deployInfoData: [
         {
           label: '镜像',
@@ -299,11 +306,13 @@ export default {
       ],
       tableColumnList1,
       tableData1,
+      // 容器组注解
       tableData: [
         { key: 'djdjdjddjskk', value: 'jdjjdjdjdj' },
         { key: 'djdjdjddjskk', value: 'jdjjdjdjdj' },
         { key: 'djdjdjddjskk', value: 'jdjjdjdjdj' }
       ],
+      // 存储卷
       storageVolumeInfoData: [
         {
           storageVolumeName: 'hosts',
