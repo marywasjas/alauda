@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="portal">
-          <div class="portal__item">
+          <div class="portal__item" @click="handleChange">
             <i class="el-icon-s-home" />
             <span>Portal</span>
           </div>
@@ -116,6 +116,11 @@ export default {
       this.$store.dispatch('permission/setRoutes', menu.slider)
       this.$router.push({
         path: menu.path
+      })
+    },
+    handleChange() {
+      this.$router.push({
+        name: 'Portal'
       })
     }
   }

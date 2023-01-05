@@ -12,7 +12,7 @@
       <div class="desc">已部署产品 & 集成产品</div>
     </div>
     <div class="card-list">
-      <el-card v-for="item in gridData" :key="item.label" class="box-card card-item" shadow="hover">
+      <el-card v-for="item in gridData" :key="item.label" class="box-card card-item" shadow="hover" @click.native="changeProduct(item)">
         <i :class="item.icon" />
         <div class="product_name">{{ item.label }}</div>
         <div class="product_version">{{ item.version }}</div>
@@ -57,7 +57,8 @@ export default {
         icon: 'el-icon-s-help',
         version: 'v3.8.0',
         desc: '@cword(10,30)',
-        type: '容器服务'
+        type: '容器服务',
+        path: '/dashboard'
       },
       {
         label: 'DevOps',
@@ -107,7 +108,11 @@ export default {
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    changeProduct(menu) {
+      window.open(`http://localhost:9527`, '_blank')
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -148,7 +153,6 @@ export default {
       right: 0;
       bottom: 0;
       z-index: 0;
-      opacity: 0.6;
     }
   }
   .context_header{
@@ -266,7 +270,6 @@ export default {
       right: 0;
       bottom: 0;
       z-index: 0;
-      opacity: 0.6;
     }
   }
 }

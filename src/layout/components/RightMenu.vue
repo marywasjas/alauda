@@ -4,6 +4,8 @@
       <template v-if="device !== 'mobile'">
         <notice />
         <help />
+        <i class="el-icon-s-promotion margin-left10" style="font-size:18px;cursor: pointer;" title="yaml仓库" />
+        <i class="el-icon-set-up margin-left10" style="font-size:18px;cursor: pointer;" title="链路系统" />
         <!-- <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
