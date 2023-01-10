@@ -1,17 +1,30 @@
 <template>
   <div class="nativeApp-container">
     <div class="nativeApp-main">
+      <!-- 1 -->
       <div class="card__header">
+        <!-- 1.1 -->
         <el-button type="primary" @click="openDialog">创建原生应用</el-button>
+        <!-- 1.2 -->
         <div class="flex-center">
-          <el-input v-model="formInline.name" placeholder="按名称搜索" class="margin-right10">
+          <el-input
+            v-model="formInline.name"
+            placeholder="按名称搜索"
+            class="margin-right10"
+          >
             <el-button slot="append" icon="el-icon-search" @click="onSearch" />
           </el-input>
           <el-button icon="el-icon-refresh-right" @click="onSearch" />
         </div>
       </div>
+      <!-- 2 -->
       <div class="card__content">
-        <el-table :data="tableData.data" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
+        <el-table
+          :data="tableData.data"
+          style="width: 100%"
+          header-row-class-name="headerStyle"
+          class="margin-top"
+        >
           <el-table-column
             v-for="col in tableColumnList"
             :key="col.id"
@@ -24,21 +37,35 @@
               <div v-if="col.id === 'name'" class="name-cell">
                 <i class="el-icon-menu" />
                 <div>
-                  <span class="cursor-pointer" @click="goDetails(scope.row)">{{ scope.row.name }}</span>
+                  <span class="cursor-pointer" @click="goDetails(scope.row)">
+                    {{ scope.row.name }}
+                  </span>
                   <span>{{ scope.row.desc }}</span>
                 </div>
               </div>
               <div v-else-if="col.id === 'status'" class="status-cell">
-                <i v-if="scope.row.status === 'running'" class="el-icon-video-play running" />
-                <i v-else-if="scope.row.status === 'stop'" class="el-icon-video-pause stop" />
+                <i
+                  v-if="scope.row.status === 'running'"
+                  class="el-icon-video-play running"
+                />
+                <i
+                  v-else-if="scope.row.status === 'stop'"
+                  class="el-icon-video-pause stop"
+                />
                 <span>{{ scope.row.statusText }}</span>
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="update" @click.native="handleUpdate(scope.row)">更新</el-dropdown-item>
-                    <el-dropdown-item command="delete" @click.native="handelDelete(scope.row)">删除</el-dropdown-item>
+                    <el-dropdown-item
+                      command="update"
+                      @click.native="handleUpdate(scope.row)"
+                    >更新</el-dropdown-item>
+                    <el-dropdown-item
+                      command="delete"
+                      @click.native="handelDelete(scope.row)"
+                    >删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -55,13 +82,16 @@
 </template>
 
 <script>
+// import { tableColumnList } from "./constant/index";
 import { tableData, tableColumnList } from './constant/index'
 import AddNativeDialog from './components/AddNativeDialog/index.vue'
+import { getNativeAppList } from '../../../../../../mock/alarm/axiosApi'
 export default {
   name: 'NativeAppList',
   components: { AddNativeDialog },
   data() {
     return {
+      // tableData: { data:[] },
       tableData,
       tableColumnList,
       formInline: {
@@ -70,7 +100,16 @@ export default {
       visible: false
     }
   },
+  created() {
+    this.getList()
+  },
   methods: {
+    getList() {
+      getNativeAppList().then((res) => {
+        console.log('#', res.data)
+        this.tableData.data = res.data.data
+      })
+    },
     // 搜索
     onSearch() {
       console.log(this.formInline)
@@ -83,6 +122,7 @@ export default {
     },
     // 详情
     goDetails(row) {
+      console.log(row)
       this.$router.push({
         name: 'NativeDetail',
         query: {
@@ -102,10 +142,9 @@ export default {
       })
     },
     handelDelete(row) {
-      const returnMsgList = [
-        `确定删除应用${row.name}吗？`
-      ]
-      const newData = []; const h = this.$createElement
+      const returnMsgList = [`确定删除应用${row.name}吗？`]
+      const newData = []
+      const h = this.$createElement
       for (const i in returnMsgList) {
         newData.push(h('p', null, returnMsgList[i]))
       }
@@ -113,17 +152,19 @@ export default {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '已删除'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '已删除'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   }
 }

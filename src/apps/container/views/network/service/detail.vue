@@ -3,7 +3,7 @@
     <div class="detail-header">
       <tab-header :name="name" :desc="desc" :tab-list="tabList" :active-name="activeName" @changeActive="changeActive">
         <template v-slot:headerRight>
-          <el-dropdown>
+          <el-dropdown trigger="click">
             <el-button
               type="primary"
               class="margin-left10"

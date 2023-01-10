@@ -1,5 +1,6 @@
 <template>
   <div class="create-container">
+    <!-- 1 -->
     <div class="scroll-div">
       <el-form
         ref="ruleForm"
@@ -7,52 +8,65 @@
         :rules="rules"
         label-width="120px"
       >
+        <!-- 1.1 -->
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>基本信息</span>
           </div>
           <div class="text item">
-            <el-row><el-col :span="12">
-              <el-form-item label="名称" prop="name">
-                <span v-if="isEdit">{{ ruleForm.name }}</span>
-                <el-input
-                  v-if="!isEdit"
-                  v-model="ruleForm.name"
-                  placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
-                />
-              </el-form-item>
-            </el-col></el-row>
-            <el-row><el-col :span="12">
-              <el-form-item label="显示名称" prop="showName">
-                <el-input v-model="ruleForm.showName" placeholder="最多64个字符" />
-              </el-form-item>
-            </el-col></el-row>
-            <el-row><el-col :span="12">
-              <el-form-item label="描述" prop="describe">
-                <el-input v-model="ruleForm.describe" placeholder="" />
-              </el-form-item>
-            </el-col></el-row>
-            <el-row><el-col :span="12">
-              <el-form-item label="资源对象" prop="resource">
-                <el-select v-model="ruleForm.resource" style="width: 100%">
-                  <el-option
-                    v-for="item in resourceOption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="名称" prop="name">
+                  <span v-if="isEdit">{{ ruleForm.name }}</span>
+                  <el-input
+                    v-if="!isEdit"
+                    v-model="ruleForm.name"
+                    placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
                   />
-                </el-select>
-              </el-form-item>
-            </el-col></el-row>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="显示名称" prop="showName">
+                  <el-input
+                    v-model="ruleForm.showName"
+                    placeholder="最多64个字符"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="描述" prop="describe">
+                  <el-input v-model="ruleForm.describe" placeholder="" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="资源对象" prop="resource">
+                  <el-select v-model="ruleForm.resource" style="width: 100%">
+                    <el-option
+                      v-for="item in resourceOption"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </el-card>
+        <!-- 1.2 -->
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>告警规则</span>
           </div>
           <div class="text item">
             <el-form-item label="" label-width="5px" prop="ruleList">
-              <table border="0" style="width:99%">
+              <table border="0" style="width: 99%">
                 <thead>
                   <tr class="headerStyle">
                     <th>
@@ -78,7 +92,10 @@
                   </tr>
                   <tr>
                     <td colspan="5">
-                      <div class="cursor-pointer text-center hover-div" @click="handleAdd">
+                      <div
+                        class="cursor-pointer text-center hover-div"
+                        @click="handleAdd"
+                      >
                         <i class="el-icon-circle-plus-outline" />
                         添加告警规则
                       </div>
@@ -86,30 +103,21 @@
                   </tr>
                 </tbody>
                 <tbody v-if="ruleForm.ruleList.length > 0">
-                  <tr
-                    v-for="(rule, index) in ruleForm.ruleList"
-                    :key="rule.id"
-                  >
+                  <tr v-for="(rule, index) in ruleForm.ruleList" :key="rule.id">
                     <td>{{ rule.ruleName }}</td>
                     <td>{{ rule.Type }}</td>
                     <td>{{ rule.alarmLevel }}</td>
                     <td>{{ rule.enable }}</td>
-                    <td style="text-align:center;">
+                    <td style="text-align: center">
                       <el-button
                         icon="el-icon-edit"
-                        class="
-                        cursor-pointer
-                        margin-left10 margin-right10
-                      "
+                        class="cursor-pointer margin-left10 margin-right10"
                         type="text"
                         @click="handleEdit(rule)"
                       />
                       <el-button
                         icon="el-icon-remove-outline"
-                        class="
-                        cursor-pointer
-                        margin-left10 margin-right10
-                      "
+                        class="cursor-pointer margin-left10 margin-right10"
                         type="text"
                         @click="handleDelete(index)"
                       />
@@ -117,7 +125,10 @@
                   </tr>
                   <tr>
                     <td colspan="5">
-                      <div class="cursor-pointer text-center hover-div" @click="handleAdd">
+                      <div
+                        class="cursor-pointer text-center hover-div"
+                        @click="handleAdd"
+                      >
                         <i class="el-icon-circle-plus-outline" />
                         添加告警规则
                       </div>
@@ -128,6 +139,7 @@
             </el-form-item>
           </div>
         </el-card>
+        <!-- 1.3 -->
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>策略配置</span>
@@ -136,7 +148,12 @@
           <div class="text item">
             <el-row><el-col :span="12">
               <el-form-item label="通知策略" prop="noticeMethod">
-                <el-select v-model="ruleForm.noticeMethod" multiple style="width: 100%" placeholder="支持选择多个">
+                <el-select
+                  v-model="ruleForm.noticeMethod"
+                  multiple
+                  style="width: 100%"
+                  placeholder="支持选择多个"
+                >
                   <el-option
                     v-for="item in resourceOption"
                     :key="item.value"
@@ -144,11 +161,16 @@
                     :value="item.value"
                   />
                 </el-select>
-              </el-form-item>
-            </el-col></el-row>
+              </el-form-item> </el-col></el-row>
             <el-form-item label="告警发送间隔" prop="sendInterval">
-              <el-radio v-model="ruleForm.sendInterval" label="全局">全局</el-radio>
-              <el-radio v-model="ruleForm.sendInterval" label="自定义">自定义</el-radio>
+              <el-radio
+                v-model="ruleForm.sendInterval"
+                label="全局"
+              >全局</el-radio>
+              <el-radio
+                v-model="ruleForm.sendInterval"
+                label="自定义"
+              >自定义</el-radio>
               <el-tooltip class="item" effect="dark" placement="top">
                 <div slot="content">
                   如告警发生后未恢复正常，可设置间隔多久发送一次告警消息；<br>
@@ -156,12 +178,22 @@
                 </div>
                 <i class="el-icon-question question-icon" />
               </el-tooltip>
-              <span v-if="ruleForm.sendInterval=='全局'" class="overall-info">灾难告警5分钟，严重告警15分钟，警告告警30分钟，提示告警1小时</span>
+              <span
+                v-if="ruleForm.sendInterval == '全局'"
+                class="overall-info"
+              >灾难告警5分钟，严重告警15分钟，警告告警30分钟，提示告警1小时</span>
             </el-form-item>
-            <el-form-item v-if="ruleForm.sendInterval==='自定义'" label="">
-              <div class="flex-start" style="margin-bottom:22px;">
-                <el-form-item label="灾难告警" prop="disasterWarning" label-width="80px">
-                  <el-select v-model="ruleForm.disasterWarning" placeholder="请选择">
+            <el-form-item v-if="ruleForm.sendInterval === '自定义'" label="">
+              <div class="flex-start" style="margin-bottom: 22px">
+                <el-form-item
+                  label="灾难告警"
+                  prop="disasterWarning"
+                  label-width="80px"
+                >
+                  <el-select
+                    v-model="ruleForm.disasterWarning"
+                    placeholder="请选择"
+                  >
                     <el-option
                       v-for="item in disasterWarningOptions"
                       :key="item.value"
@@ -170,8 +202,16 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="严重告警" prop="criticalAlarm" class="margin-left" label-width="100px">
-                  <el-select v-model="ruleForm.criticalAlarm" placeholder="请选择">
+                <el-form-item
+                  label="严重告警"
+                  prop="criticalAlarm"
+                  class="margin-left"
+                  label-width="100px"
+                >
+                  <el-select
+                    v-model="ruleForm.criticalAlarm"
+                    placeholder="请选择"
+                  >
                     <el-option
                       v-for="item in disasterWarningOptions"
                       :key="item.value"
@@ -182,8 +222,15 @@
                 </el-form-item>
               </div>
               <div class="flex-start">
-                <el-form-item label="警告告警" prop="alarmWarning" label-width="80px">
-                  <el-select v-model="ruleForm.alarmWarning" placeholder="请选择">
+                <el-form-item
+                  label="警告告警"
+                  prop="alarmWarning"
+                  label-width="80px"
+                >
+                  <el-select
+                    v-model="ruleForm.alarmWarning"
+                    placeholder="请选择"
+                  >
                     <el-option
                       v-for="item in disasterWarningOptions"
                       :key="item.value"
@@ -192,7 +239,12 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="提示告警" prop="tipsAlarm" class="margin-left" label-width="100px">
+                <el-form-item
+                  label="提示告警"
+                  prop="tipsAlarm"
+                  class="margin-left"
+                  label-width="100px"
+                >
                   <el-select v-model="ruleForm.tipsAlarm" placeholder="请选择">
                     <el-option
                       v-for="item in disasterWarningOptions"
@@ -208,6 +260,7 @@
         </el-card>
       </el-form>
     </div>
+    <!-- 2 -->
     <div class="fixed-div">
       <el-button type="primary" @click="submitCreate">
         <span v-if="!isEdit">创建</span>
@@ -215,7 +268,12 @@
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
-    <alarm-rules-dialog :tag-visible="tagVisible" @closeTagDialog="closeTagDialog" @submitTagDialog="submitTagDialog" />
+    <!-- 3 -->
+    <alarm-rules-dialog
+      :tag-visible="tagVisible"
+      @closeTagDialog="closeTagDialog"
+      @submitTagDialog="submitTagDialog"
+    />
   </div>
 </template>
 
@@ -259,17 +317,31 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
-          { pattern: /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]$/, message: '以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-', trigger: 'blur' }
+          {
+            pattern: /^[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9]$/,
+            message: '以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-',
+            trigger: 'blur'
+          }
         ],
         showName: [
           { required: true, message: '请输入显示名称', trigger: 'blur' },
           { max: 64, message: '最多64个字符', trigger: 'blur' }
         ],
-        resource: [{ required: true, message: '请选择资源对象', trigger: 'blur' }],
-        disasterWarning: [{ required: true, message: '请选择灾难告警', trigger: 'blur' }],
-        criticalAlarm: [{ required: true, message: '请选择严重告警', trigger: 'blur' }],
-        alarmWarning: [{ required: true, message: '请选择警告告警', trigger: 'blur' }],
-        tipsAlarm: [{ required: true, message: '请选择提示告警', trigger: 'blur' }]
+        resource: [
+          { required: true, message: '请选择资源对象', trigger: 'blur' }
+        ],
+        disasterWarning: [
+          { required: true, message: '请选择灾难告警', trigger: 'blur' }
+        ],
+        criticalAlarm: [
+          { required: true, message: '请选择严重告警', trigger: 'blur' }
+        ],
+        alarmWarning: [
+          { required: true, message: '请选择警告告警', trigger: 'blur' }
+        ],
+        tipsAlarm: [
+          { required: true, message: '请选择提示告警', trigger: 'blur' }
+        ]
       },
       tagVisible: false,
       resourceOption: [
@@ -339,16 +411,16 @@ export default {
     .el-card {
       margin-bottom: 10px;
     }
-    .hover-div:hover{
-      background:$color-primary-rgba1;
+    .hover-div:hover {
+      background: $color-primary-rgba1;
     }
     .overall-info {
       display: block;
-      font-size:12px;
-      color:darkgray;
+      font-size: 12px;
+      color: darkgray;
     }
   }
-.no-data {
+  .no-data {
     text-align: center;
     color: darkgray;
   }

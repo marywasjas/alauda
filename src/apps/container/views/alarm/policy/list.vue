@@ -2,9 +2,21 @@
   <div class="oam-container">
     <div class="oam-main">
       <!-- 1 -->
-      <div class="card__header">
+      <!-- <div class="card__header">
         <el-button type="primary" @click="handleCreate">创建告警策略</el-button>
-      </div>
+      </div> -->
+      <el-dropdown
+        split-button
+        type="primary"
+        trigger="click"
+        @click="handleCreate"
+      >
+        创建告警策略
+        <el-dropdown-menu slot="dropdown" @click.native="handleCreateDialog">
+          <el-dropdown-item>模板创建告警策略</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+
       <!-- 2 -->
       <div class="filter-content">
         <el-form
@@ -55,6 +67,7 @@
           </div>
         </el-form>
       </div>
+
       <!-- 3 -->
       <div class="card__content">
         <el-table
@@ -127,18 +140,38 @@
         </el-table>
       </div>
     </div>
+
     <set-silence-dialog
       :visible="visible"
       :current-obj="currentObj"
       @closeDialog="closeDialog"
       @submitForm="submitForm"
     />
+
+    <el-dialog title="模板创建告警策略" :visible.sync="dialogFormVisible">
+      <el-form ref="ruleForm" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="名称">
+          <el-input v-model="form.name" autocomplete="off" />
+        </el-form-item>
+
+        <el-form-item label="显示名称">
+          <el-input v-model="form.showName" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogFormVisible = false">
+          创建
+        </el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { alarmColumnList, alarmList } from '../const'
-import axios from 'axios'
+// import axios from "axios";
+import { getAlarmList } from '../../../../../../mock/alarm/axiosApi'
 import SetSilenceDialog from './components/SetSilenceDialog.vue'
 
 export default {
@@ -158,14 +191,24 @@ export default {
         resourceType: '全部'
       },
       visible: false,
-      currentObj: {}
+      currentObj: {},
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        showName: ''
+
+      }
     }
   },
   created() {},
   methods: {
     getList() {
       // "/api/data"为mock/index.js设置的接口
-      axios.get('/api/alarmlist').then((res) => {
+      // axios.get('/api/alarmlist').then((res) => {
+      //   console.log(res.data)
+      //   this.alarmList.data = res.data.data
+      // })
+      getAlarmList().then((res) => {
         console.log(res.data)
         this.alarmList.data = res.data.data
       })
@@ -174,7 +217,7 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-      console.log('@')
+      console.log('搜索')
     },
     // 更新
     handleUpdate(row) {
@@ -269,6 +312,7 @@ export default {
           })
         })
     },
+    // 创建告警策略--跳转路由
     handleCreate() {
       this.$router.push({
         name: 'AlarmCreate'
@@ -282,6 +326,10 @@ export default {
           name: row.name
         }
       })
+    },
+
+    handleCreateDialog() {
+      this.dialogFormVisible = true
     }
   }
 }

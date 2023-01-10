@@ -80,6 +80,25 @@ export const containerAsyncRoutes = [
           }
         ]
       }
+      // {
+      //   path: 'templateAppList',
+      //   component: () => import('@/apps/container/views/application/templateApp/index'),
+      //   redirect: '/application/templateAppList/list',
+      //   name: 'templateMain',
+      //   meta: {
+      //     title: '模板应用',
+      //     roles: ['admin'] // or you can only set roles in sub nav
+      //   },
+      //   children: [
+      //     {
+      //       path: 'list',
+      //       component: () => import('@/apps/container/views/application/templateApp/templateAppList'),
+      //       name: 'templateApp',
+      //       meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/application/templateAppList' },
+      //       hidden: true
+      //     }
+      //   ]
+      // }
     ]
   },
   {
@@ -522,7 +541,7 @@ export const containerAsyncRoutes = [
       //       hidden: true
       //     }
       //   ]
-      // },
+      // }
       // {
       //   path: 'load_balancer_list',
       //   component: () => import('@/apps/container/views/network/load-balancer/list'),
