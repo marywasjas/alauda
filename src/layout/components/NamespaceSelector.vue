@@ -91,7 +91,6 @@
           </div>
         </div>
       </el-popover>
-      <i class="el-icon-s-help cursor-pointer margin-left10" @click="handleChange" />
     </div>
   </div>
 </template>
@@ -201,11 +200,6 @@ export default {
         this.$store.dispatch('app/setCurrentProjectName', this.formInline.project)
         this.$refs['namespace-selector-popover'].doClose()
       }
-    },
-    handleChange() {
-      this.$router.push({
-        name: 'Portal'
-      })
     }
   }
 }

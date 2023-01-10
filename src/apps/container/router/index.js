@@ -776,7 +776,7 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'conversion',
-        component: () => import('@/apps/container/views/test/index'),
+        component: () => import('@/apps/container/views/yaml/index.vue'),
         name: 'ExportZip',
         meta: { title: 'YAML转换', icon: 'zip', affix: true }
       }
