@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <el-card style="width: 99%">
+  <div class="zipContainer">
+    <!-- 1 主体 -->
+    <div class="zipMain">
       <el-form ref="form" :model="form" label-width="100px" inline>
         <el-form-item label="备份文件夹：">
           <el-select v-model="form.data" style="width: 250px" placeholder="">
@@ -14,12 +15,9 @@
         </el-form-item>
 
         <el-form-item style="margin-left: 80px">
-          <el-button>搜索</el-button>
+          <el-button type="primary">搜索</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-
-    <el-card style="margin-top: 20px; width: 99%">
       <el-row type="flex" class="row-bg">
         <el-col :span="24" style="margin-left: 20px">
           <el-checkbox v-model="checked">全选</el-checkbox>
@@ -41,8 +39,9 @@
           </div>
         </el-col>
       </el-row>
-    </el-card>
+    </div>
 
+    <!-- 2 底部按钮 -->
     <div class="fixed-div">
       <el-row>
         <el-col :span="16">
@@ -59,6 +58,7 @@
       </el-row>
     </div>
 
+    <!-- 3 弹框 -->
     <el-dialog title="replace" :visible.sync="backupVisible">
       <template slot="title">
         <span>生成备份</span>
@@ -81,6 +81,7 @@
       </div>
     </el-dialog>
 
+    <!-- 4 弹框 -->
     <el-dialog title="replace" :visible.sync="configVisible">
       <template slot="title">
         <span>配置</span>
@@ -226,70 +227,52 @@ export default {
       this.configVisible = false
     }
   }
-
-  // data() {
-  //   return {
-  //     list: null,
-  //     listLoading: true,
-  //     downloadLoading: false,
-  //     filename: ''
-  //   }
-  // },
-  // created() {
-  //   this.fetchData()
-  // },
-  // methods: {
-  //   async fetchData() {
-  //     this.listLoading = true
-  //     const { data } = await fetchList()
-  //     this.list = data.items
-  //     this.listLoading = false
-  //   },
-  //   handleDownload() {
-  //     this.downloadLoading = true
-  //     import('@/vendor/Export2Zip').then(zip => {
-  //       const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
-  //       const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
-  //       const list = this.list
-  //       const data = this.formatJson(filterVal, list)
-  //       zip.export_txt_to_zip(tHeader, data, this.filename, this.filename)
-  //       this.downloadLoading = false
-  //     })
-  //   },
-  //   formatJson(filterVal, jsonData) {
-  //     return jsonData.map(v => filterVal.map(j => v[j]))
-  //   }
-  // }
 }
 </script>
 
 <style lang="scss" scoped>
-.row-bg {
-  padding: 10px 0;
-  background-color: #f5f6f9;
-}
-.grid-content {
-  // border-radius: 4px;
-  min-height: 36px;
-}
-.bg-color {
-  background: #fff;
-}
-.el-row {
-  height: 100%;
+.zipContainer {
+  padding: 0 20px;
+  background-color: $background-color;
+  min-height: 100%;
+  .card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f5f6f9;
+  }
+  .grid-content {
+    // border-radius: 4px;
+    min-height: 36px;
+  }
+  .bg-color {
+    background: #fff;
+  }
+  .el-row {
+    height: 100%;
+  }
+
+  .zipMain {
+    background: #fff;
+    padding: 20px;
+  }
 }
 .fixed-div {
   // width: calc(100% - 250px);
-  width: calc(100% - 220px);
+  width: 96.4%;
   padding: 20px;
   box-sizing: border-box;
-  position: fixed;
+  // position: fixed;
+  position: absolute;
   bottom: 0;
   // right: 20px;
   background: #fff;
   text-align: right;
-  border-radius: $border-radius-m;
-  box-shadow: 0 0 4px 0 $box-shadow;
+  // border-radius: $border-radius-m;
+  // box-shadow: 0 0 4px 0 $box-shadow;
 }
 </style>
 

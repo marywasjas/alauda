@@ -79,26 +79,26 @@ export const containerAsyncRoutes = [
             hidden: true
           }
         ]
-      },
-      {
-        path: 'templateAppList',
-        component: () => import('@/apps/container/views/application/templateApp/index'),
-        redirect: '/application/templateAppList/list',
-        name: 'templateMain',
-        meta: {
-          title: '模板应用',
-          roles: ['admin'] // or you can only set roles in sub nav
-        },
-        children: [
-          {
-            path: 'list',
-            component: () => import('@/apps/container/views/application/templateApp/templateAppList'),
-            name: 'templateApp',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/application/templateAppList' },
-            hidden: true
-          }
-        ]
       }
+      // {
+      //   path: 'templateAppList',
+      //   component: () => import('@/apps/container/views/application/templateApp/index'),
+      //   redirect: '/application/templateAppList/list',
+      //   name: 'templateMain',
+      //   meta: {
+      //     title: '模板应用',
+      //     roles: ['admin'] // or you can only set roles in sub nav
+      //   },
+      //   children: [
+      //     {
+      //       path: 'list',
+      //       component: () => import('@/apps/container/views/application/templateApp/templateAppList'),
+      //       name: 'templateApp',
+      //       meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/application/templateAppList' },
+      //       hidden: true
+      //     }
+      //   ]
+      // }
     ]
   },
   {
@@ -495,53 +495,53 @@ export const containerAsyncRoutes = [
             hidden: true
           }
         ]
-      },
-      {
-        path: 'load_balancer',
-        component: () => import('@/apps/container/views/network/load-balancer/index'),
-        name: 'LoadBalancer',
-        meta: { title: '负载均衡器' }
-      },
-      {
-        path: 'policy',
-        component: () => import('@/apps/container/views/network/policy/index'),
-        redirect: '/network/policy/list',
-        name: 'PolicyMain',
-        meta: {
-          title: '网络策略',
-          roles: ['admin'] // or you can only set roles in sub nav
-        },
-        children: [
-          {
-            path: 'list',
-            component: () => import('@/apps/container/views/network/policy/list'),
-            name: 'PolicyList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          },
-          {
-            path: 'create',
-            component: () => import('@/apps/container/views/network/policy/create'),
-            name: 'PolicyCreate',
-            meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          },
-          {
-            path: 'update',
-            component: () => import('@/apps/container/views/network/policy/create'),
-            name: 'PolicyUpdate',
-            meta: { title: '更新网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          },
-          {
-            path: 'detail',
-            component: () => import('@/apps/container/views/network/policy/detail'),
-            name: 'PolicyDetail',
-            meta: { title: '网络策略详情', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
-            hidden: true
-          }
-        ]
       }
+      // {
+      //   path: 'load_balancer',
+      //   component: () => import('@/apps/container/views/network/load-balancer/index'),
+      //   name: 'LoadBalancer',
+      //   meta: { title: '负载均衡器' }
+      // },
+      // {
+      //   path: 'policy',
+      //   component: () => import('@/apps/container/views/network/policy/index'),
+      //   redirect: '/network/policy/list',
+      //   name: 'PolicyMain',
+      //   meta: {
+      //     title: '网络策略',
+      //     roles: ['admin'] // or you can only set roles in sub nav
+      //   },
+      //   children: [
+      //     {
+      //       path: 'list',
+      //       component: () => import('@/apps/container/views/network/policy/list'),
+      //       name: 'PolicyList',
+      //       meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'create',
+      //       component: () => import('@/apps/container/views/network/policy/create'),
+      //       name: 'PolicyCreate',
+      //       meta: { title: '创建网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'update',
+      //       component: () => import('@/apps/container/views/network/policy/create'),
+      //       name: 'PolicyUpdate',
+      //       meta: { title: '更新网络策略', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'detail',
+      //       component: () => import('@/apps/container/views/network/policy/detail'),
+      //       name: 'PolicyDetail',
+      //       meta: { title: '网络策略详情', icon: 'icon', noCache: true, activeMenu: '/network/policy' },
+      //       hidden: true
+      //     }
+      //   ]
+      // }
       // {
       //   path: 'load_balancer_list',
       //   component: () => import('@/apps/container/views/network/load-balancer/list'),
@@ -718,13 +718,13 @@ export const containerAsyncRoutes = [
             hidden: true
           }
         ]
-      },
-      {
-        path: 'history',
-        component: () => import('@/apps/container/views/alarm/history/list'),
-        name: 'AlarmHistory',
-        meta: { title: '告警历史' }
       }
+      // {
+      //   path: 'history',
+      //   component: () => import('@/apps/container/views/alarm/history/list'),
+      //   name: 'AlarmHistory',
+      //   meta: { title: '告警历史' }
+      // }
     ]
   },
   {
