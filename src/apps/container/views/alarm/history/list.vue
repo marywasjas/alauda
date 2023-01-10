@@ -2,13 +2,23 @@
   <div class="oam-container">
     <div class="oam-main">
       <div class="filter-content">
-        <el-form ref="ruleForm" :model="listQuery" label-position="right" label-width="90px">
+        <el-form
+          ref="ruleForm"
+          :model="listQuery"
+          label-position="right"
+          label-width="90px"
+        >
           <el-row class="filter-row">
             <el-col :span="6">
               <el-form-item label="时间范围" class="filter-item">
                 <el-select v-model="listQuery.startEndTime" size="small">
+                  <el-option label="过去30分钟" value="过去30分钟" />
                   <el-option label="过去1小时" value="过去1小时" />
-                  <el-option label="过去12小时" value="过去12小时" />
+                  <el-option label="过去6小时" value="过去6小时" />
+                  <el-option label="过去1天" value="过去1天" />
+                  <el-option label="过去3天" value="过去3天" />
+                  <el-option label="过去7天" value="过去7天" />
+                  <el-option label="自定义时间" value="自定义时间" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -17,8 +27,9 @@
             <el-col :span="6">
               <el-form-item label="资源类型" class="filter-item" size="small">
                 <el-select v-model="listQuery.resourceType">
-                  <el-option label="全部" value="全部" />
                   <el-option label="部署" value="部署" />
+                  <el-option label="守护进程集" value="守护进程集" />
+                  <el-option label="有状态副本集" value="有状态副本集" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -30,11 +41,20 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <div class="filter-row" style="display: flex;">
-            <el-form-item label="关联资源" class="filter-item" style="flex:1;">
-              <el-input v-model="listQuery.resource" placeholder="请输入部署名称" size="small" />
+          <div class="filter-row" style="display: flex">
+            <el-form-item label="关联资源" class="filter-item" style="flex: 1">
+              <el-input
+                v-model="listQuery.resource"
+                placeholder="请输入部署名称"
+                size="small"
+              />
             </el-form-item>
-            <el-form-item label="" label-width="10px" class="filter-item" style="text-align:right;">
+            <el-form-item
+              label=""
+              label-width="10px"
+              class="filter-item"
+              style="text-align: right"
+            >
               <el-button type="primary">搜索</el-button>
               <el-button>重置</el-button>
             </el-form-item>
@@ -44,7 +64,7 @@
       <div class="card__content">
         <el-table
           :data="historyList.data"
-          style="width: 100%;"
+          style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
           empty-text="无告警历史"
@@ -64,13 +84,20 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
-            <template slot-scope="{row}">
+          <el-table-column
+            label="操作"
+            align="center"
+            width="180"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="{ row }">
               <div class="operation-cell">
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click="handleEdit(row.id)">更新</el-dropdown-item>
+                    <el-dropdown-item
+                      @click="handleEdit(row.id)"
+                    >更新</el-dropdown-item>
                     <el-dropdown-item>删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -80,7 +107,8 @@
         </el-table>
       </div>
     </div>
-  </div></template>
+  </div>
+</template>
 
 <script>
 import { historyColumnList, historyList } from '../const'
@@ -156,17 +184,17 @@ export default {
   .filter-item {
     margin-bottom: 10px;
     .el-select {
-      width:100%
+      width: 100%;
     }
   }
   .oam-main {
     background: #fff;
     padding: 20px;
   }
-  .operation-cell{
-    i{
+  .operation-cell {
+    i {
       font-size: $font-size-20;
-      color:$color-primary;
+      color: $color-primary;
       cursor: pointer;
     }
   }

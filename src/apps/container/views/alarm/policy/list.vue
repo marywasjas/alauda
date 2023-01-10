@@ -138,7 +138,8 @@
 
 <script>
 import { alarmColumnList, alarmList } from '../const'
-import axios from 'axios'
+// import axios from "axios";
+import { getAlarmList } from '../../../../../../mock/alarm/axiosApi'
 import SetSilenceDialog from './components/SetSilenceDialog.vue'
 
 export default {
@@ -165,7 +166,11 @@ export default {
   methods: {
     getList() {
       // "/api/data"为mock/index.js设置的接口
-      axios.get('/api/alarmlist').then((res) => {
+      // axios.get('/api/alarmlist').then((res) => {
+      //   console.log(res.data)
+      //   this.alarmList.data = res.data.data
+      // })
+      getAlarmList().then((res) => {
         console.log(res.data)
         this.alarmList.data = res.data.data
       })
@@ -174,7 +179,7 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
-      console.log('@')
+      console.log('搜索')
     },
     // 更新
     handleUpdate(row) {

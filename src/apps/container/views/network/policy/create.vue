@@ -229,6 +229,7 @@
       </el-card>
     </div>
     <div class="fixed-div">
+      <el-button type="primary" plain>预览</el-button>
       <el-button type="primary" @click="submitCreate">
         <span v-if="!isEdit">创建</span>
         <span v-if="isEdit">更新</span>

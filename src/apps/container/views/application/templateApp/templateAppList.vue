@@ -1,20 +1,18 @@
 <template>
   <div class="nativeApp-container">
+    <line-alert :content="content" />
     <div class="nativeApp-main">
       <!-- 1 -->
       <div class="card__header">
-        <!-- 1.1 -->
-        <el-button type="primary" @click="openDialog">创建原生应用</el-button>
-        <!-- 1.2 -->
         <div class="flex-center">
           <el-input
             v-model="formInline.name"
             placeholder="按名称搜索"
             class="margin-right10"
           >
-            <el-button slot="append" icon="el-icon-search" @click="onSearch" />
+            <el-button slot="append" icon="el-icon-search" />
           </el-input>
-          <el-button icon="el-icon-refresh-right" @click="onSearch" />
+          <el-button icon="el-icon-refresh-right" />
         </div>
       </div>
       <!-- 2 -->
@@ -29,10 +27,8 @@
             v-for="col in tableColumnList"
             :key="col.id"
             :label="col.label"
-            :sortable="col.sortable"
             :width="col.width"
           >
-            <!-- eslint-disable-next-line -->
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="name-cell">
                 <i class="el-icon-menu" />
@@ -77,94 +73,26 @@
         </el-table>
       </div>
     </div>
-    <add-native-dialog :visible="visible" @closeDialog="closeDialog" />
   </div>
 </template>
 
 <script>
-// import { tableColumnList } from "./constant/index";
 import { tableData, tableColumnList } from './constant/index'
-import AddNativeDialog from './components/AddNativeDialog/index.vue'
-import { getNativeAppList } from '../../../../../../mock/alarm/axiosApi'
+import LineAlert from '@/apps/container/views/components/LineAlert'
+
 export default {
-  name: 'NativeAppList',
-  components: { AddNativeDialog },
+  name: 'TemplateAppList',
+  components: { LineAlert },
   data() {
     return {
-      // tableData: { data:[] },
-      tableData,
+      tableData: { data: [] },
+      // tableData,
       tableColumnList,
       formInline: {
         name: ''
       },
+      content: '应用模板是通过 helm chart 资源快速部署的定制化应用实例。您可以查看模板应用的部署情况、将模板应用升级为原生应用或删除模板应用。如您对模板应用有更新需求，请尽快升级成原生应用进行更新操作。',
       visible: false
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    getList() {
-      getNativeAppList().then((res) => {
-        console.log('#', res.data)
-        this.tableData.data = res.data.data
-      })
-    },
-    // 搜索
-    onSearch() {
-      console.log(this.formInline)
-    },
-    openDialog() {
-      this.visible = true
-    },
-    closeDialog() {
-      this.visible = false
-    },
-    // 详情
-    goDetails(row) {
-      console.log(row)
-      this.$router.push({
-        name: 'NativeDetail',
-        query: {
-          name: row.name,
-          desc: row.desc
-        }
-      })
-    },
-    // 更新
-    handleUpdate(row) {
-      this.$router.push({
-        name: 'NativeUpdate',
-        query: {
-          name: row.name,
-          desc: row.desc
-        }
-      })
-    },
-    handelDelete(row) {
-      const returnMsgList = [`确定删除应用${row.name}吗？`]
-      const newData = []
-      const h = this.$createElement
-      for (const i in returnMsgList) {
-        newData.push(h('p', null, returnMsgList[i]))
-      }
-      this.$confirm(h('div', null, newData), '提示', {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '已删除'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })
-        })
     }
   }
 }

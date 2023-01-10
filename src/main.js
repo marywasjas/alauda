@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // main.js
-import './mock/index'
+import '../mock/alarm/index'
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
