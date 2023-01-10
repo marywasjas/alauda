@@ -1,28 +1,25 @@
 <template>
   <div class="header-help">
     <!-- <i class="el-icon-warning-outline icon" /> -->
-    <el-dropdown
-      class="avatar-container right-menu-item hover-effect"
-      trigger="click"
-    >
+    <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
       <i class="el-icon-warning-outline icon" />
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
           <div class="flex-start">
             <i class="el-icon-question" />
-            <span>帮助文档</span>
+            <span>{{ $t('language.help_doc') }}</span>
           </div>
         </el-dropdown-item>
         <el-dropdown-item @click.native="aboutPlatforms">
           <div class="flex-start">
             <i class="el-icon-info" />
-            <span>关于平台</span>
+            <span>{{ $t('language.about_platform') }}</span>
           </div>
         </el-dropdown-item>
         <el-dropdown-item @click.native="healthStatus">
           <div class="flex-start">
             <i class="el-icon-s-marketing" />
-            <span>平台健康状态</span>
+            <span>{{ $t('language.platform_health_check') }}</span>
           </div>
         </el-dropdown-item>
       </el-dropdown-menu>

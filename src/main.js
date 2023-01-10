@@ -13,7 +13,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-// import i18n from './language'
+import i18n from './language'
 
 import './icons' // icon
 import './permission' // permission control
@@ -56,7 +56,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  // i18n, //将i18n挂载到vue全局使用
+  i18n, // 将i18n挂载到vue全局使用
   store,
   render: h => h(App)
 })

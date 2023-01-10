@@ -37,25 +37,25 @@
           <el-dropdown-item @click.native="userInfo">
             <div class="flex-start">
               <i class="el-icon-user" />
-              <span>个人信息</span>
+              <span>{{ $t('language.my_profile') }}</span>
             </div>
           </el-dropdown-item>
           <el-dropdown-item>
             <div class="flex-start">
               <i class="el-icon-monitor" />
-              <span>外观</span>
+              <span>{{ $t('language.appearance') }}</span>
             </div>
           </el-dropdown-item>
           <el-dropdown-item>
-            <div class="flex-start">
+            <div class="flex-start" @click="changeLang">
               <i class="el-icon-refresh" />
-              <span>English</span>
+              <span>{{ $t('language.text') }}</span>
             </div>
           </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <div class="flex-start">
               <i class="el-icon-circle-close" />
-              <span>退出登录</span>
+              <span>{{ $t('language.logout') }}</span>
             </div>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -105,43 +105,19 @@ export default {
       this.$router.push({
         name: 'PersonalInformation'
       })
+    },
+    changeLang() {
+      const lang = this.$i18n.locale
+      console.log(lang)
+      if (lang === 'zh') {
+        this.$i18n.locale = 'en'
+        window.sessionStorage.setItem('lang', this.lang)
+        // localStorage.setItem('lang', this.lang)
+      } else {
+        this.$i18n.locale = 'zh'
+        window.sessionStorage.setItem('lang', this.lang)
+      }
     }
-
-    // changelau: () => {
-    //   let lang = i18n.locale
-    //   if (lang === 'cn') {
-    //     i18n.locale = 'en'
-    //     // 对应main.js配置文件中的localStorage的get方法
-    //     localStorage.setItem('lang', this.lang)
-    //     this.visible = !this.visible
-    //   } else {
-    //     i18n.locale = 'cn'
-    //     localStorage.setItem('lang', this.lang)
-    //     this.visible = !this.visible
-    //   }
-    // }
-
-    // changelau() {
-    //   console.log(i18n)
-    //   if (this.visible === true) {
-    //     i18n.locale = 'en'
-    //     console.log(i18n.locale)
-    //     window.sessionStorage.getItem('lang') || 'en'
-    //     this.visible = !this.visible
-    //   } else {
-    //     i18n.locale = 'cn'
-    //     console.log(i18n.locale)
-    //     window.sessionStorage.getItem('lang') || 'cn'
-    //     this.visible = !this.visible
-    //   }
-
-    // that = this
-    // console.log(val)
-    // console.log(this.$i18n)
-    // this.$i18n.locale = val //this.$i18n的local进行语言切换
-    // window.sessionStorage.getItem('lang') || 'en'
-    // //window.sessionStorage.setItem('lang', val)
-    // }
   }
 }
 </script>
