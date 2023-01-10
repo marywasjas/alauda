@@ -37,22 +37,24 @@
     </div>
     <div class="container-bottom margin-top flex-center">
       <div>
-        <el-button>批量转换</el-button>
+        <el-button @click="conversionDialog">批量转换</el-button>
         <el-button>转换</el-button>
-        <el-button>配置</el-button>
+        <el-button @click="openDialog">配置</el-button>
       </div>
       <el-button type="primary">保存</el-button>
     </div>
+    <ConfigurationDialog :dialog-visible.sync="dialogVisible" />
+    <BatchConversionDialog :conversion-dialog-visible.sync="conversionDialogVisible" />
   </div>
-  <!-- <ConfigurationDialog :dialogVisible="dialogVisible"></ConfigurationDialog> -->
 </template>
 
 <script>
 import MonacoEditor from '@/apps/container/views/components/MonacoEditor'
-// import ConfigurationDialog from './configurationDialog.vue'
+import ConfigurationDialog from './configurationDialog.vue'
+import BatchConversionDialog from './batchConversion.vue'
 export default {
   name: 'YamlList',
-  components: { MonacoEditor },
+  components: { MonacoEditor, ConfigurationDialog, BatchConversionDialog },
   data() {
     return {
       filterText: '',
@@ -158,7 +160,8 @@ export default {
         copy: true,
         full: true
       },
-      dialogVisible: false
+      dialogVisible: false,
+      conversionDialogVisible: false
     }
   },
   watch: {
@@ -180,10 +183,13 @@ export default {
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
+    },
+    openDialog() {
+      this.dialogVisible = true
+    },
+    conversionDialog() {
+      this.conversionDialogVisible = true
     }
-    // openDialog() {
-    //   this.dialogVisible = true
-    // }
   }
 }
 </script>

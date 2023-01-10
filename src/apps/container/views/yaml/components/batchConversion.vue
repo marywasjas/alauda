@@ -1,11 +1,11 @@
 <template>
-  <el-dialog title="配置" :visible="dialogVisible" width="40%" @close="closed">
+  <el-dialog title="批量转换" :visible="conversionDialogVisible" width="40%" @close="closed">
     <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px">
-      <el-form-item label="Git仓库路径:" prop="path">
-        <el-input v-model="ruleForm.path" placeholder="例如:cpaasAdmin/yamlConvtest" />
+      <el-form-item label="目标集群:" prop="cluster">
+        <el-input v-model="ruleForm.cluster" />
       </el-form-item>
-      <el-form-item label="Git-Token:" prop="token">
-        <el-input v-model="ruleForm.token" type="textarea" />
+      <el-form-item label="目标命名空间:" prop="namespace">
+        <el-input v-model="ruleForm.namespace" />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -17,9 +17,9 @@
 
 <script>
 export default {
-  name: 'ConfigurationDialog',
+  name: 'BatchConversionDialog',
   props: {
-    dialogVisible: {
+    conversionDialogVisible: {
       type: Boolean,
       default: () => {
         return false
@@ -29,24 +29,24 @@ export default {
   data() {
     return {
       ruleForm: {
-        path: '',
-        token: ''
+        cluster: '',
+        namespace: ''
       },
       rules: {
-        path: [{ required: true, message: '必填项', trigger: 'blur' }],
-        token: [{ required: true, message: '必填项', trigger: 'blur' }]
+        cluster: [{ required: true, message: '必填项', trigger: 'blur' }],
+        namespace: [{ required: true, message: '必填项', trigger: 'blur' }]
       }
     }
   },
   methods: {
     closed() {
-      this.$emit('update:dialogVisible', false)
+      this.$emit('update:conversionDialogVisible', false)
     },
     submitForm() {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           console.log(this.ruleForm)
-          this.$emit('update:dialogVisible', false)
+          this.$emit('update:conversionDialogVisible', false)
         } else {
           return false
         }

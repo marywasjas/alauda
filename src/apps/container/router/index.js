@@ -733,7 +733,7 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'log',
-        component: () => import('@/apps/container/views/error-log/index'),
+        //  component: () => import('@/apps/container/views/rights-management/index.vue'),
         name: 'ErrorLog',
         meta: { title: '提权管理', icon: 'bug' }
       }
