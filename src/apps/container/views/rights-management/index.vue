@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="main">
     <el-card style="padding: 0 100px">
       <el-row>
         <el-col :span="24">
@@ -40,7 +40,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-card>
+    <el-card class="margin-top10">
       <el-table
         :data="tableData.data"
         :header-cell-style="{ 'text-align': 'center' }"
@@ -64,9 +64,9 @@
       </el-table>
       <el-pagination
         class="margin-top"
-        :current-page="currentPage4"
+        :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="10"
+        :page-size="pageSize"
         layout="prev,total, sizes,  pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
@@ -116,10 +116,8 @@ export default {
       tableData,
       tableColumnList,
       total: 200,
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4,
+      pageSize: 10,
+      pageNum: 1,
       dialogVisible: false,
       approvalaDialogVisible: false
     }
@@ -127,9 +125,13 @@ export default {
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      console.log(this.pageSize)
     },
     handleCurrentChange(val) {
+      this.pageNum = val
       console.log(`当前页: ${val}`)
+      console.log(this.pageNum)
     },
     openDetail() {
       this.dialogVisible = true
@@ -147,4 +149,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.main {
+  background-color: $background-color;
+  padding: 0 20px;
+}
+</style>
