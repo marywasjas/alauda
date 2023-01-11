@@ -1,13 +1,11 @@
 <template>
-  <div class="oam-container">
-    <div class="oam-main">
+  <div class="deamon-container">
+    <div class="deamon-main">
       <div class="card__header">
         <el-dropdown split-button type="primary" trigger="click" @command="handleClick" @click="openDialog">
-          {{ drop.dropVal }}
+          创建部署
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="item in drop.dropList" :key="item.id" split-button :command="item.txt">{{
-              item.txt
-            }}</el-dropdown-item>
+            <el-dropdown-item split-button>YAML创建</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <div class="flex-center">
@@ -60,22 +58,28 @@
 <script>
 import SelectMirror from '@/apps/container/views/components/SelectMirror'
 export default {
-  name: 'DeployHeaderVue',
+  name: 'DeamonList',
   components: { SelectMirror },
-  props: {
-    drop: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
-    tableData: {
-      type: Array,
-      default: () => []
-    }
-  },
+  props: {},
   data() {
     return {
+      tableData: [
+        {
+          name: { txt: '测试', link_name: 'builder-python' },
+          create_time: '2016-05-03',
+          status: { done: '运行中', desc: '（1/1）' },
+          application: 'gzvhs-s1-km'
+        },
+        {
+          name: {
+            txt: '测试',
+            link_name: 'builder-python'
+          },
+          create_time: '2016-05-03',
+          status: { done: '运行中', desc: '（1/1）' },
+          application: 'gzvhs-s1-km'
+        }
+      ],
       formInline: {
         name: ''
       },
@@ -89,13 +93,13 @@ export default {
     },
     handleClick() {
       this.$router.push({
-        path: 'deploy/yamlCreat',
+        name: 'YamlCreat',
         query: {}
       })
     },
     detail(link_name) {
       this.$router.push({
-        path: 'deploy/detail',
+        name: 'DeployDetail',
         query: {
           link_name: link_name // 传递的参数: 键值对
         }
@@ -112,7 +116,7 @@ export default {
     },
     handleEdit(link_name) {
       this.$router.push({
-        path: 'deploy/deployUpdate',
+        name: 'DeployUpdate',
         query: {
           link_name: link_name // 传递的参数: 键值对
         }
@@ -159,7 +163,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.oam-container {
+.deamon-container {
   padding: 0 20px;
   background-color: $background-color;
   min-height: 100%;
@@ -171,7 +175,7 @@ export default {
       margin-bottom: 0;
     }
   }
-  .oam-main {
+  .deamon-main {
     background: #fff;
     padding: 20px;
   }

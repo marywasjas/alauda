@@ -115,9 +115,17 @@ export const containerAsyncRoutes = [
       {
         path: 'deploy',
         component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
-        name: 'Deploy',
+        name: 'DeployMain',
+        redirect: '/components/deploy/List',
         meta: { title: '部署' },
         children: [
+          {
+            path: 'List',
+            component: () => import('@/apps/container/views/components-demo/deploy/deployList.vue'),
+            name: 'DeployList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/deploy' },
+            hidden: true
+          },
           {
             path: 'detail',
             component: () => import('@/apps/container/views/components-demo/deploy/detail/index.vue'),
@@ -752,7 +760,7 @@ export const containerAsyncRoutes = [
     children: [
       {
         path: 'log',
-        //  component: () => import('@/apps/container/views/rights-management/index.vue'),
+        component: () => import('@/apps/container/views/rights-management/index.vue'),
         name: 'ErrorLog',
         meta: { title: '提权管理', icon: 'bug' }
       }

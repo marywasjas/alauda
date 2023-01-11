@@ -1,48 +1,31 @@
 <template>
-  <div class="deploy-container">
-    <router-view :key="key" />
-    <DeployHeader v-if="$route.path === '/components/deploy'" :drop="drop" :table-data="tableData" />
-  </div>
+  <section class="deploy-main">
+    <transition name="fade-transform" mode="out-in">
+      <keep-alive :include="cachedViews">
+        <router-view :key="key" />
+      </keep-alive>
+    </transition>
+  </section>
 </template>
 
 <script>
-import DeployHeader from './DeployHeader.vue'
-
 export default {
-  name: 'Deploy',
-  components: {
-    DeployHeader
-  },
-  data() {
-    return {
-      drop: {
-        dropVal: '创建部署',
-        dropList: [{ id: 0, txt: 'YAML创建' }]
-      },
-      tableData: [
-        {
-          name: { link_name: 'builder-python' },
-          create_time: '2016-05-03',
-          status: { done: '运行中', desc: '（1/1）' },
-          application: 'gzvhs-s1-km'
-        },
-        {
-          name: { link_name: 'builder-python' },
-          create_time: '2016-05-03',
-          status: { done: '已停止', desc: '（1/1）' },
-          application: 'gzvhs-s1-km'
-        }
-      ]
-    }
-  },
+  name: 'DeployMain',
+  components: {},
   computed: {
+    cachedViews() {
+      return this.$store.state.tagsView.cachedViews
+    },
     key() {
-      return this.$route.fullPath
+      return this.$route.path
     }
-  },
-
-  methods: {}
+  }
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped></style>
+<style lang="scss" scoped>
+.deploy-main {
+  width: 100%;
+  height: 100%;
+}
+</style>
