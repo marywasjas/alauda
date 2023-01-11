@@ -151,7 +151,10 @@
     <el-dialog title="模板创建告警策略" :visible.sync="dialogFormVisible">
       <el-form ref="ruleForm" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="名称">
-          <el-input v-model="form.name" autocomplete="off" />
+          <el-input
+            v-model="form.name"
+            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+          />
         </el-form-item>
 
         <el-form-item label="显示名称">
@@ -196,7 +199,6 @@ export default {
       form: {
         name: '',
         showName: ''
-
       }
     }
   },
