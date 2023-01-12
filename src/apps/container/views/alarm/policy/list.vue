@@ -26,39 +26,29 @@
             <template slot-scope="props">
               <el-row type="flex" class="row-bg">
                 <el-col :span="24" style="margin: 0 10px">
-                  <div
-                    v-for="col in props.row.item"
-                    :key="col.id"
-                    class="grid-content bg-color"
-                    style="
-                      height: 80px;
-                      border: 1px solid #ccc;
-                      line-height: 80px;
-                      margin-bottom: 10px;
-                    "
-                  >
-                  {{col.text}}
-                  </div>
-                  <!-- <el-table :data="props.row.item" :show-header="false">
+                  <el-table :data="props.row.item" :show-header="false">
                     <el-table-column type="expand">O(∩_∩)O</el-table-column>
                     <el-table-column
                       v-for="col in props.row.item"
                       :key="col.id"
                       :label="col.text"
+                      :prop="col.text"
                     >
-                      <template slot-scope="scope">
+                      <!-- <template slot-scope="scope"> -->
                         <span>
-                          {{ scope.row[col.id] }}
+                          {{ col.text }}
                         </span>
-                      </template>
+                      <!-- </template> -->
                     </el-table-column>
-                  </el-table> -->
+                  </el-table>
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
 
-          <!-- v-for="col in props.row.item" :key="col.id" -->
+          <!-- 
+            v-for="col in props.row.item" :key="col.id" 
+          -->
 
           <!-- 2.2 -->
           <el-table-column
