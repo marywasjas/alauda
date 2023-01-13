@@ -52,6 +52,32 @@ Mock.mock('/api/alarmlist', 'get', () => {
   }
 })
 
+const expandList = {
+  array: [
+    {
+      monitorItem: "upstream请求时间(毫秒)",
+      alarmPolicy: "nginx_upstream_req_ms>3000",
+      des: "upstream请求时间偏大,阈值3000",
+      level: 1
+    },
+    {
+      monitorItem: "upstream请求时间(毫秒)",
+      alarmPolicy: "nginx_upstream_req_ms>3000",
+      des: "upstream请求时间偏大,阈值3000",
+      level: 2
+    }
+  ]
+}
+
+Mock.mock('/api/expandlist', 'get', () => {
+  const { array } = expandList
+  return {
+    total: array.length,
+    code: 250,
+    data: array
+  }
+})
+
 const applicationlist = Mock.mock({
   // 'array|3': [{
   //   "data": "1997-03-08",
@@ -143,7 +169,6 @@ Mock.mock('/api/deleteAlarmlist', 'post', (params) => {
 })
 
 Mock.mock('/api/createAlarmlist', "post", (id) => {
-
 })
 
 Mock.mock(

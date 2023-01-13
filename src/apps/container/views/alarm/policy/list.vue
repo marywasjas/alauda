@@ -14,6 +14,7 @@
 
       <!-- 2 -->
       <div class="card__content">
+        <!-- 2.1 表格 -->
         <el-table
           :data="alarmList.data"
           style="width: 100%"
@@ -24,31 +25,39 @@
           <!-- 2.1 -->
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-row type="flex" class="row-bg">
+              <el-row
+                type="flex"
+                class="row-bg"
+                v-for="col in props.row.item"
+                :key="col.id"
+              >
                 <el-col :span="24" style="margin: 0 10px">
-                  <el-table :data="props.row.item" :show-header="false">
-                    <el-table-column type="expand">O(∩_∩)O</el-table-column>
-                    <el-table-column
-                      v-for="col in props.row.item"
-                      :key="col.id"
-                      :label="col.text"
-                      :prop="col.text"
-                    >
-                      <!-- <template slot-scope="scope"> -->
-                        <span>
-                          {{ col.text }}
-                        </span>
-                      <!-- </template> -->
+                  <!-- {{ col.text + "ww" }} -->
+                  <el-table
+                    :data="[props.row.item.col]"
+                    :show-header="false"
+                    border
+                  >
+                    <el-table-column type="expand">
+                      <el-table :data="expandList.data">
+                        <el-table-column prop="monitorItem" label="监控子项">
+                        </el-table-column>
+                        <el-table-column prop="alarmPolicy" label="告警策略">
+                        </el-table-column>
+                        <el-table-column prop="des" label="说明">
+                        </el-table-column>
+                        <el-table-column prop="level" label="等级">
+                        </el-table-column>
+                      </el-table>
+                    </el-table-column>
+                    <el-table-column :label="col.text">
+                      <span>{{ col.text }} </span>
                     </el-table-column>
                   </el-table>
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
-
-          <!-- 
-            v-for="col in props.row.item" :key="col.id" 
-          -->
 
           <!-- 2.2 -->
           <el-table-column
@@ -83,6 +92,19 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <!-- 2.2 分页器 -->
+        <el-pagination
+          style="margin-top: 10px;margin-left:600px"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage4"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="10"
+          layout="total, prev, pager, next, sizes, jumper"
+          :total="2"
+        >
+        </el-pagination>
       </div>
     </div>
 
@@ -98,7 +120,10 @@
 <script>
 // import { alarmColumnList, alarmList } from "../const";
 // import axios from "axios";
-import { getAlarmList } from "../../../../../../mock/alarm/axiosApi";
+import {
+  getAlarmList,
+  getExpandList,
+} from "../../../../../../mock/alarm/axiosApi";
 import SetSilenceDialog from "./components/SetSilenceDialog.vue";
 
 export default {
@@ -126,6 +151,9 @@ export default {
       // table.data
       alarmList: { data: [] },
 
+      // table.data的展开行
+      expandList: { data: [] },
+
       list: null,
 
       total: 0,
@@ -151,10 +179,18 @@ export default {
   },
 
   methods: {
+    //  handleRowClick(row, event, column) {
+    //    //enquiry为主表table的ref属性值
+    //   this.$refs.enquiry.toggleRowExpansion(row)
+    // },
+
     getList() {
       getAlarmList().then((res) => {
         console.log(res);
         this.alarmList.data = res.data.data;
+      });
+      getExpandList().then((res) => {
+        this.expandList.data = res.data.data;
       });
     },
 
