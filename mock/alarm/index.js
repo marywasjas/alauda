@@ -58,14 +58,44 @@ const expandList = {
       monitorItem: "upstream请求时间(毫秒)",
       alarmPolicy: "nginx_upstream_req_ms>3000",
       des: "upstream请求时间偏大,阈值3000",
-      level: 1
+      level: 3
     },
     {
       monitorItem: "upstream请求时间(毫秒)",
       alarmPolicy: "nginx_upstream_req_ms>3000",
       des: "upstream请求时间偏大,阈值3000",
+      level: 3
+    },
+    {
+      monitorItem: "链接丢弃数",
+      alarmPolicy: "nginx_conn_drop>0",
+      des: "链接丢弃数大于阈值0",
       level: 2
-    }
+    },
+    {
+      monitorItem: "缓存未命中",
+      alarmPolicy: "nginx_cache_miss>1000",
+      des: "缓存未命中数过大,阈值1000",
+      level: 3
+    },
+    {
+      monitorItem: "upstream请求4xx响应比率",
+      alarmPolicy: "nginx_upstream_request_4xx_rate>20",
+      des: "nginx upstream请求响应4xx比率大于20%",
+      level: 3
+    },
+    {
+      monitorItem: "upstream请求5xx响应数",
+      alarmPolicy: "nginx_upstream_request_5xx>20",
+      des: "upstream请求响应5xx数大于阈值20",
+      level: 3
+    },
+    {
+      monitorItem: "请求4xx响应比率",
+      alarmPolicy: "nginx_request_4xx_rate>30",
+      des: "nginx请求响应4xx比率大于30%",
+      level: 3
+    },
   ]
 }
 

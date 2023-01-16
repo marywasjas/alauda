@@ -95,7 +95,7 @@
 
         <!-- 2.2 分页器 -->
         <el-pagination
-          style="margin-top: 10px;margin-left:600px"
+          style="margin-top: 10px; margin-left: 600px"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage4"
@@ -107,13 +107,6 @@
         </el-pagination>
       </div>
     </div>
-
-    <set-silence-dialog
-      :visible="visible"
-      :current-obj="currentObj"
-      @closeDialog="closeDialog"
-      @submitForm="submitForm"
-    />
   </div>
 </template>
 
@@ -131,7 +124,7 @@ export default {
   components: { SetSilenceDialog },
   data() {
     return {
-      //  input搜索
+      //  input 的 v-model
       name: "",
       // column
       alarmColumnList: [
@@ -150,40 +143,17 @@ export default {
       ],
       // table.data
       alarmList: { data: [] },
-
       // table.data的展开行
       expandList: { data: [] },
-
-      list: null,
-
-      total: 0,
-
-      listQuery: {
-        name: "",
-        alarmStatus: "全部",
-        silenceStatus: "全部",
-        creater: "全部",
-        resourceType: "全部",
-      },
-
-      visible: false,
-
-      currentObj: {},
-
-      dialogFormVisible: false,
     };
   },
 
   created() {
+    // 获取列表数据
     this.getList();
   },
 
   methods: {
-    //  handleRowClick(row, event, column) {
-    //    //enquiry为主表table的ref属性值
-    //   this.$refs.enquiry.toggleRowExpansion(row)
-    // },
-
     getList() {
       getAlarmList().then((res) => {
         console.log(res);
@@ -312,10 +282,6 @@ export default {
           name: row.name,
         },
       });
-    },
-
-    handleCreateDialog() {
-      this.dialogFormVisible = true;
     },
 
     onSearch() {
