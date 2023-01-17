@@ -22,17 +22,18 @@
           class="margin-top"
           empty-text="无告警策略"
         >
-          <!-- 2.1 -->
+          <!-- 2.1.1 -->
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-row
                 type="flex"
-                class="row-bg"
                 v-for="col in props.row.item"
                 :key="col.id"
+                class="row-bg"
               >
+                <!-- <el-col :span="24" style="margin: 0 10px"> -->
                 <el-col :span="24" style="margin: 0 10px">
-                  <!-- {{ col.text + "ww" }} -->
+                  <!-- <el-col :span="24"> -->
                   <el-table
                     :data="[props.row.item.col]"
                     :show-header="false"
@@ -59,7 +60,7 @@
             </template>
           </el-table-column>
 
-          <!-- 2.2 -->
+          <!-- 2.1.2 -->
           <el-table-column
             v-for="col in alarmColumnList"
             :key="col.id"
@@ -98,7 +99,7 @@
           style="margin-top: 10px; margin-left: 600px"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
+          :current-page="currentPage"
           :page-sizes="[10, 20, 30, 40]"
           :page-size="10"
           layout="total, prev, pager, next, sizes, jumper"
@@ -154,6 +155,7 @@ export default {
   },
 
   methods: {
+    // 获取列表
     getList() {
       getAlarmList().then((res) => {
         console.log(res);
@@ -169,119 +171,6 @@ export default {
       this.listQuery.page = 1;
       this.getList();
       console.log("搜索");
-    },
-
-    // 更新
-    handleUpdate(row) {
-      this.$router.push({
-        name: "AlarmCreate",
-        query: {
-          name: row.name,
-        },
-      });
-    },
-
-    // 删除--index其实是row.id
-    // handleDelete(row, index) {
-    //   this.$notify({
-    //     title: "Success",
-    //     message: "Delete Successfully",
-    //     type: "success",
-    //     duration: 2000,
-    //   });
-    //   this.list.splice(index, 1);
-    // },
-    // handleDelete(row) {
-    //   // this.$notify({
-    //   //   title: "Success",
-    //   //   message: "Delete Successfully",
-    //   //   type: "success",
-    //   //   duration: 2000,
-    //   // });
-    //   // this.list.splice(index, 1);
-    //   console.log('删除alarmList', row)
-    //   this.$confirm(`确认删除当前${row.name}?`)
-    //     .then(() => {
-    //       axios
-    //         .post('/api/deleteAlarmlist', row)
-    //         .then((res) => {
-    //           if (res.data.code === '0') {
-    //             this.$message.success('删除成功！')
-    //             this.alarmList.data.splice(+row.id, 1)
-    //             this.getList()
-    //           }
-    //           console.log(alarmList.data)
-    //         })
-    //         .catch((err) => {
-    //           console.log(err)
-    //         })
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: 'info',
-    //         message: '已取消删除'
-    //       })
-    //     })
-
-    // },
-
-    // 设置静默
-    handlesSilence(row) {
-      this.currentObj = row;
-      this.visible = true;
-    },
-
-    submitForm(form) {
-      console.log(form);
-      this.visible = false;
-    },
-
-    closeDialog() {
-      this.visible = false;
-    },
-
-    handelDelete(row) {
-      const returnMsgList = [
-        `确定删除告警策略${row.name}吗？`,
-        `删除后不可恢复。`,
-      ];
-      const newData = [];
-      const h = this.$createElement;
-      for (const i in returnMsgList) {
-        newData.push(h("p", null, returnMsgList[i]));
-      }
-      this.$confirm(h("div", null, newData), "提示", {
-        confirmButtonText: "删除",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "已删除",
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消",
-          });
-        });
-    },
-    // 创建告警策略--跳转路由
-    handleCreate() {
-      this.$router.push({
-        name: "AlarmCreate",
-      });
-    },
-
-    handleDetail(row) {
-      this.$router.push({
-        name: "AlarmDetail",
-        query: {
-          name: row.name,
-        },
-      });
     },
 
     onSearch() {
@@ -328,9 +217,10 @@ export default {
     }
   }
   .row-bg {
-    padding: 20px 15px;
-    padding-bottom: 10px;
-    background-color: #f5f6f9;
+    // padding: 20px 15px;
+    // padding-bottom: 10px;
+    // background-color: #f5f6f9;
+    background-color: #e1ffff;
   }
   .grid-content {
     // border-radius: 4px;
@@ -339,5 +229,13 @@ export default {
   .bg-color {
     background: #fff;
   }
+}
+
+::v-deep .el-table td.el-table__cell {
+  border-bottom: 0px solid #dfe6ec;
+}
+
+::v-deep .el-table--border .el-table__cell {
+  border-right: 0px solid #dfe6ec;
 }
 </style>
