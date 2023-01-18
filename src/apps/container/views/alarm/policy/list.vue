@@ -216,12 +216,12 @@ export default {
       cursor: pointer;
     }
   }
-  .row-bg {
-    // padding: 20px 15px;
-    // padding-bottom: 10px;
-    // background-color: #f5f6f9;
-    background-color: #e1ffff;
-  }
+  // .row-bg {
+  //   padding: 20px 15px;
+  //   padding-bottom: 10px;
+  //   background-color: #f5f6f9;
+  //   background-color: #e1ffff;
+  // }
   .grid-content {
     // border-radius: 4px;
     min-height: 36px;
