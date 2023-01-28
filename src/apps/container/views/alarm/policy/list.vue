@@ -1,7 +1,7 @@
 <template>
   <div class="oam-container">
     <div class="oam-main">
-      <!-- 1 -->
+      <!-- 1 搜索框 和 按钮-->
       <div class="card__header" style="width: 250px">
         <el-input
           v-model="name"
@@ -12,7 +12,7 @@
         </el-input>
       </div>
 
-      <!-- 2 -->
+      <!-- 2 表格 和 分页器-->
       <div class="card__content">
         <!-- 2.1 表格 -->
         <el-table
@@ -25,32 +25,37 @@
           <!-- 2.1.1 -->
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-row
-                type="flex"
-                v-for="col in props.row.item"
-                :key="col.id"
-                class="row-bg"
-              >
-                <!-- <el-col :span="24" style="margin: 0 10px"> -->
-                <el-col :span="24" style="margin: 0 10px">
-                  <!-- <el-col :span="24"> -->
+              <el-row type="flex" v-for="col in props.row.item" :key="col.id">
+                <el-col :span="24">
                   <el-table
                     :data="[props.row.item.col]"
                     :show-header="false"
                     border
+                    style="margin-bottom: 10px"
                   >
-                    <el-table-column type="expand">
-                      <el-table :data="expandList.data">
-                        <el-table-column prop="monitorItem" label="监控子项">
-                        </el-table-column>
-                        <el-table-column prop="alarmPolicy" label="告警策略">
-                        </el-table-column>
-                        <el-table-column prop="des" label="说明">
-                        </el-table-column>
-                        <el-table-column prop="level" label="等级">
-                        </el-table-column>
-                      </el-table>
+                    <el-table-column type="expand" style="background: #f0f8ff">
+                      <el-row type="flex" style="background: #f0f8ff">
+                        <el-col :span="24" style="margin: 40px 50px">
+                          <el-table :data="expandList.data">
+                            <el-table-column
+                              prop="monitorItem"
+                              label="监控子项"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                              prop="alarmPolicy"
+                              label="告警策略"
+                            >
+                            </el-table-column>
+                            <el-table-column prop="des" label="说明">
+                            </el-table-column>
+                            <el-table-column prop="level" label="等级">
+                            </el-table-column>
+                          </el-table>
+                        </el-col>
+                      </el-row>
                     </el-table-column>
+
                     <el-table-column :label="col.text">
                       <span>{{ col.text }} </span>
                     </el-table-column>
@@ -216,12 +221,6 @@ export default {
       cursor: pointer;
     }
   }
-  // .row-bg {
-  //   padding: 20px 15px;
-  //   padding-bottom: 10px;
-  //   background-color: #f5f6f9;
-  //   background-color: #e1ffff;
-  // }
   .grid-content {
     // border-radius: 4px;
     min-height: 36px;
@@ -230,12 +229,16 @@ export default {
     background: #fff;
   }
 }
-
+// ::v-deep .el-table td.el-table__cell {
+//   border-bottom: 0px solid #dfe6ec;
+// }
+::v-deep .el-table--border .el-table__cell {
+  border-right: 0px solid #dfe6ec;
+}
 ::v-deep .el-table td.el-table__cell {
   border-bottom: 0px solid #dfe6ec;
 }
-
-::v-deep .el-table--border .el-table__cell {
-  border-right: 0px solid #dfe6ec;
+::v-deep .el-table tbody tr:hover>td { 
+    background-color:#fff!important
 }
 </style>
