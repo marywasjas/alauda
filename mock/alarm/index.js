@@ -2,46 +2,110 @@ import { tableData } from "../../src/apps/container/views/application/nativeApp/
 
 import Mock from 'mockjs'
 
-const alarmlist = Mock.mock({
-  'array|3': [
+// const alarmlist = Mock.mock({
+//   'array|3': [
+//     {
+//       component: '@word(3, 7)' + "-wap-web",
+//       appname: '@word(3, 7)',
+//       item: '@word(3, 7)',
+//     }
+//   ]
+// })
+
+const alarmlist = {
+  array: [
     {
-      'name|+1': [
-        'AMD',
-        'CMD',
-        'UMD'
+      component: 'awp-bes' + "-wap-web",
+      appname: 'awp-bes',
+      item: [
+        {
+          id: 1,
+          text: "默认监控项",
+        }
       ],
-      'resource|+1': [
-        'AMD2',
-        'CMD2',
-        'UMD2'
+      // hasChildren: true
+    },
+    {
+      component: 'awp-nginx' + "-wap-web",
+      appname: 'awp-nginx',
+      item: [
+        {
+          id: 1,
+          text: "默认监控项",
+        },
+        {
+          id: 2,
+          text: "nginx标准监控",
+        },
       ],
-      'policy|+1': [
-        'AMD4',
-        'CMD4',
-        'UMD4'
-      ],
-      'status|+1': [
-        'AMD5',
-        'CMD5',
-        'UMD5'
-      ],
-      'creater|+1': [
-        'AMD6',
-        'CMD6',
-        'UMD6'
-      ],
-      'createTime|+1': [
-        'AMD7',
-        'CMD7',
-        'UMD7'
-      ],
-      'id|+1': [
-        '1',
-        '2',
-        '3'
-      ]
+      // hasChildren: true
     }
   ]
+}
+
+Mock.mock('/api/alarmlist', 'get', () => {
+  const { array } = alarmlist
+  return {
+    total: array.length,
+    code: 250,
+    data: array
+  }
+})
+
+const expandList = {
+  array: [
+    {
+      monitorItem: "upstream请求时间(毫秒)",
+      alarmPolicy: "nginx_upstream_req_ms>3000",
+      des: "upstream请求时间偏大,阈值3000",
+      level: 3
+    },
+    {
+      monitorItem: "upstream请求时间(毫秒)",
+      alarmPolicy: "nginx_upstream_req_ms>3000",
+      des: "upstream请求时间偏大,阈值3000",
+      level: 3
+    },
+    {
+      monitorItem: "链接丢弃数",
+      alarmPolicy: "nginx_conn_drop>0",
+      des: "链接丢弃数大于阈值0",
+      level: 2
+    },
+    {
+      monitorItem: "缓存未命中",
+      alarmPolicy: "nginx_cache_miss>1000",
+      des: "缓存未命中数过大,阈值1000",
+      level: 3
+    },
+    {
+      monitorItem: "upstream请求4xx响应比率",
+      alarmPolicy: "nginx_upstream_request_4xx_rate>20",
+      des: "nginx upstream请求响应4xx比率大于20%",
+      level: 3
+    },
+    {
+      monitorItem: "upstream请求5xx响应数",
+      alarmPolicy: "nginx_upstream_request_5xx>20",
+      des: "upstream请求响应5xx数大于阈值20",
+      level: 3
+    },
+    {
+      monitorItem: "请求4xx响应比率",
+      alarmPolicy: "nginx_request_4xx_rate>30",
+      des: "nginx请求响应4xx比率大于30%",
+      level: 3
+    },
+  ]
+}
+
+Mock.mock('/api/expandlist', 'get', () => {
+  const { array } = expandList
+  return {
+    total: array.length,
+    code: 250,
+    data: array
+  }
 })
 
 const applicationlist = Mock.mock({
@@ -118,14 +182,6 @@ const list = Mock.mock({
   }]
 })
 
-Mock.mock('/api/alarmlist', 'get', () => {
-  const { array } = alarmlist
-  return {
-    total: array.length,
-    code: 250,
-    data: array
-  }
-})
 
 Mock.mock('/api/deleteAlarmlist', 'post', (params) => {
   let { array } = datas
@@ -143,7 +199,6 @@ Mock.mock('/api/deleteAlarmlist', 'post', (params) => {
 })
 
 Mock.mock('/api/createAlarmlist', "post", (id) => {
-
 })
 
 Mock.mock(

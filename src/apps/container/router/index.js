@@ -755,11 +755,11 @@ export const containerAsyncRoutes = [
     ]
   },
   {
-    path: '/error-log',
+    path: '/raising-rights',
     component: Layout,
     children: [
       {
-        path: 'log',
+        path: 'index',
         component: () => import('@/apps/container/views/rights-management/index.vue'),
         name: 'ErrorLog',
         meta: { title: 'right_management', icon: 'bug' }
