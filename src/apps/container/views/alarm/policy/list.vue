@@ -35,7 +35,10 @@
                   >
                     <el-table-column type="expand" style="background: #f0f8ff">
                       <el-row type="flex" style="background: #f0f8ff">
-                        <el-col :span="24" style="margin: 40px 50px">
+                        <el-col
+                          :span="24"
+                          style="margin: 40px 50px; margin-right: 55px"
+                        >
                           <el-table :data="expandList.data">
                             <el-table-column
                               prop="monitorItem"
@@ -238,7 +241,7 @@ export default {
 ::v-deep .el-table td.el-table__cell {
   border-bottom: 0px solid #dfe6ec;
 }
-::v-deep .el-table tbody tr:hover>td { 
-    background-color:#fff!important
+::v-deep .el-table tbody tr:hover > td {
+  background-color: #fff !important;
 }
 </style>
