@@ -21,7 +21,7 @@ export const containerAsyncRoutes = [
     alwaysShow: true, // will always show the root menu
     name: 'Application',
     meta: {
-      title: '应用管理',
+      title: 'nav_applications_manage',
       icon: 'lock',
       roles: ['admin', 'editor'] // you can set roles in root nav
     },
@@ -32,7 +32,7 @@ export const containerAsyncRoutes = [
         redirect: '/application/nativeAppList/list',
         name: 'ApplicationMain',
         meta: {
-          title: '原生应用',
+          title: 'native_app',
           roles: ['admin'] // or you can only set roles in sub nav
         },
         children: [
@@ -108,7 +108,7 @@ export const containerAsyncRoutes = [
     alwaysShow: true,
     name: 'Component',
     meta: {
-      title: '计算机组件',
+      title: 'workload',
       icon: 'component'
     },
     children: [
@@ -117,7 +117,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/components-demo/deploy/index.vue'),
         name: 'DeployMain',
         redirect: '/components/deploy/List',
-        meta: { title: '部署' },
+        meta: { title: 'deployment' },
         children: [
           {
             path: 'List',
@@ -161,7 +161,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/components-demo/daemon/index.vue'),
         name: 'DaemonMain',
         redirect: '/components/daemons_set/List',
-        meta: { title: '守护进程集' },
+        meta: { title: 'daemon_set' },
         children: [
           {
             path: 'List',
@@ -205,7 +205,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/components-demo/statefulSet/index.vue'),
         name: 'statefulSet',
         redirect: '/components/stateful_set/List',
-        meta: { title: '有状态副本集' },
+        meta: { title: 'stateful_set' },
         children: [
           {
             path: 'List',
@@ -249,7 +249,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/components-demo/timedTask/index.vue'),
         name: 'CronJob',
         redirect: '/components/cron_job/List',
-        meta: { title: '定时任务' },
+        meta: { title: 'cron_job' },
         children: [
           {
             path: 'List',
@@ -293,7 +293,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/components-demo/task/index.vue'),
         name: 'TaskMain',
         redirect: '/components/task/taskList',
-        meta: { title: '任务' },
+        meta: { title: 'job' },
         children: [
           {
             path: 'taskList',
@@ -316,7 +316,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/components-demo/containerGroup/index.vue'),
         name: 'Pod',
         redirect: '/components/pod/containerGroupList',
-        meta: { title: '容器组' },
+        meta: { title: 'pod' },
         children: [
           {
             path: 'containerGroupList',
@@ -342,7 +342,7 @@ export const containerAsyncRoutes = [
     redirect: 'noRedirect',
     name: 'Configure',
     meta: {
-      title: '配置',
+      title: 'config',
       icon: 'chart'
     },
     children: [
@@ -351,7 +351,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/configure/configureDictionary/index'),
         redirect: '/configure/configureDictionary/list',
         name: 'ConfigureDictionary',
-        meta: { title: '配置字典', noCache: true },
+        meta: { title: 'configmap', noCache: true },
         children: [
           {
             path: 'list',
@@ -381,7 +381,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/configure/confidentialDictionary/index'),
         redirect: '/configure/confidentialDictionary/list',
         name: 'ConfidentialDictionary',
-        meta: { title: '保密字典', noCache: true },
+        meta: { title: 'secret', noCache: true },
         children: [
           {
             path: 'list',
@@ -419,7 +419,7 @@ export const containerAsyncRoutes = [
     redirect: '/network/service',
     name: 'Network',
     meta: {
-      title: '网络',
+      title: 'network',
       icon: 'table'
     },
     alwaysShow: true, // will always show the root menu
@@ -430,7 +430,7 @@ export const containerAsyncRoutes = [
         redirect: '/network/service/list',
         name: 'ServiceMain',
         meta: {
-          title: '内部路由',
+          title: 'service',
           roles: ['admin'] // or you can only set roles in sub nav
         },
         children: [
@@ -470,7 +470,7 @@ export const containerAsyncRoutes = [
         redirect: '/network/ingress/list',
         name: 'IngressMain',
         meta: {
-          title: '入站规则',
+          title: 'ingress',
           roles: ['admin'] // or you can only set roles in sub nav
         },
         children: [
@@ -565,7 +565,7 @@ export const containerAsyncRoutes = [
     name: 'Storage',
     alwaysShow: true,
     meta: {
-      title: '存储',
+      title: 'nav_storage',
       icon: 'nested'
     },
     children: [
@@ -575,7 +575,7 @@ export const containerAsyncRoutes = [
         redirect: '/storage/persistentVolume/list',
         name: 'PersistentVolumeMain',
         meta: {
-          title: '持久卷声明（PVC）',
+          title: 'nav_pvc',
           roles: ['admin'] // or you can only set roles in sub nav
         },
         children: [
@@ -661,7 +661,7 @@ export const containerAsyncRoutes = [
         path: 'index',
         component: () => import('@/apps/container/views/icons/index'),
         name: 'Icons',
-        meta: { title: '监控面板', icon: 'icon', noCache: true }
+        meta: { title: 'dashboard', icon: 'icon', noCache: true }
       }
     ]
   },
@@ -673,7 +673,7 @@ export const containerAsyncRoutes = [
         path: 'index',
         component: () => import('@/apps/container/views/log/index'),
         name: 'Tab',
-        meta: { title: '日志', icon: 'tab' }
+        meta: { title: 'log', icon: 'tab' }
       }
     ]
   },
@@ -683,7 +683,7 @@ export const containerAsyncRoutes = [
     redirect: '/alarm/index',
     name: 'Alarm',
     meta: {
-      title: '告警',
+      title: 'warning',
       icon: 'el-icon-s-help'
     },
     children: [
@@ -693,7 +693,7 @@ export const containerAsyncRoutes = [
         redirect: '/alarm/policy/list',
         name: 'AlarmMain',
         meta: {
-          title: '告警策略',
+          title: 'alarm_strategy',
           roles: ['admin'] // or you can only set roles in sub nav
         },
         children: [
@@ -742,7 +742,7 @@ export const containerAsyncRoutes = [
     name: 'AuxiliaryFunctions',
     alwaysShow: true,
     meta: {
-      title: '辅助功能',
+      title: 'auxiliary_function',
       icon: '404'
     },
     children: [
@@ -750,7 +750,7 @@ export const containerAsyncRoutes = [
         path: 'resource-management',
         component: () => import('@/apps/container/views/auxiliaryFunctions/resource-manage'),
         name: 'ResourceManagement',
-        meta: { title: '资源管理' }
+        meta: { title: 'resource_management' }
       }
     ]
   },
@@ -762,7 +762,7 @@ export const containerAsyncRoutes = [
         path: 'index',
         component: () => import('@/apps/container/views/rights-management/index.vue'),
         name: 'ErrorLog',
-        meta: { title: '提权管理', icon: 'bug' }
+        meta: { title: 'right_management', icon: 'bug' }
       }
     ]
   },
@@ -774,7 +774,7 @@ export const containerAsyncRoutes = [
         path: 'download',
         component: () => import('@/apps/container/views/zip/index'),
         name: 'ExportZip',
-        meta: { title: '备份恢复', icon: 'zip', affix: true }
+        meta: { title: 'back_up', icon: 'zip', affix: true }
       }
     ]
   },
@@ -786,7 +786,7 @@ export const containerAsyncRoutes = [
         path: 'conversion',
         component: () => import('@/apps/container/views/yaml/index.vue'),
         name: 'ExportZip',
-        meta: { title: 'YAML转换', icon: 'zip', affix: true }
+        meta: { title: 'conversion_yaml', icon: 'zip', affix: true }
       }
     ]
   },

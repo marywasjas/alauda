@@ -95,7 +95,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/apps/container/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '概览', icon: 'dashboard', affix: true }
+        meta: { title: 'nav_dashboard', icon: 'dashboard', affix: true }
       }
     ]
   }
@@ -107,11 +107,12 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [...containerAsyncRoutes]
 console.log(devOpsAsyncRoutes)
-const createRouter = () => new Router({
-  mode: 'hash', // require service support  history hash
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    mode: 'hash', // require service support  history hash
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 

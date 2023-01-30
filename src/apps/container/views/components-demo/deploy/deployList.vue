@@ -3,13 +3,18 @@
     <div class="deamon-main">
       <div class="card__header">
         <el-dropdown split-button type="primary" trigger="click" @command="handleClick" @click="openDialog">
-          创建部署
+          {{ $t('create_deployment') }}
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item split-button>YAML创建</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <div class="flex-center">
-          <el-input v-model="formInline.name" placeholder="按名称搜索" size="small" class="margin-right10">
+          <el-input
+            v-model="formInline.name"
+            :placeholder="$t('language.search_by_name_placeholder')"
+            size="small"
+            class="margin-right10"
+          >
             <el-button slot="append" icon="el-icon-search" @click="onSearch" />
           </el-input>
           <el-button icon="el-icon-refresh-right" size="small" @click="onSearch" />
@@ -19,7 +24,9 @@
         <el-table :data="tableData" style="width: 100%" header-row-class-name="headerStyle" class="margin-top">
           <el-table-column label="名称">
             <template slot-scope="scope">
-              <a class="cursor-pointer" @click="detail(scope.row.name.link_name)">{{ scope.row.name.link_name }}</a>
+              <a class="cursor-pointer" @click="detail(scope.row.name.link_name)">{{
+                scope.row ? scope.row.name.link_name : '-'
+              }}</a>
               <!-- <div class="v_name">{{ scope.row.name.txt }}</div> -->
             </template>
           </el-table-column>
@@ -48,6 +55,7 @@
               </div>
             </template>
           </el-table-column>
+          <template slot="empty">无任务列表</template>
         </el-table>
       </div>
     </div>
@@ -65,16 +73,20 @@ export default {
     return {
       tableData: [
         {
-          name: { txt: '测试', link_name: 'builder-python' },
+          name: { link_name: '' },
           create_time: '2016-05-03',
           status: { done: '运行中', desc: '（1/1）' },
           application: 'gzvhs-s1-km'
         },
         {
           name: {
-            txt: '测试',
             link_name: 'builder-python'
           },
+          create_time: '2016-05-03',
+          status: { done: '运行中', desc: '（1/1）' },
+          application: 'gzvhs-s1-km'
+        },
+        {
           create_time: '2016-05-03',
           status: { done: '运行中', desc: '（1/1）' },
           application: 'gzvhs-s1-km'

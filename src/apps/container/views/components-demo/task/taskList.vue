@@ -14,23 +14,12 @@
           <el-table-column v-for="col in tableColumnList" :key="col.id" :label="col.label" :width="col.width">
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="name-cell">
-                <span class="cursor-pointer" @click="goDetails(scope.row.name)">{{
-                  scope.row.name
-                }}</span>
+                <span class="cursor-pointer" @click="goDetails(scope.row.name)">{{ scope.row.name }}</span>
               </div>
               <div v-else-if="col.id === 'status'" class="status-cell">
-                <i
-                  v-if="scope.row.status === 'running'"
-                  class="el-icon-video-play running"
-                />
-                <i
-                  v-else-if="scope.row.status === 'stop'"
-                  class="el-icon-video-pause stop"
-                />
-                <i
-                  v-else-if="scope.row.status === 'pending'"
-                  class="el-icon-loading pending"
-                />
+                <i v-if="scope.row.status === 'running'" class="el-icon-video-play running" />
+                <i v-else-if="scope.row.status === 'stop'" class="el-icon-video-pause stop" />
+                <i v-else-if="scope.row.status === 'pending'" class="el-icon-loading pending" />
                 <span>{{ scope.row.statusText }}</span>
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
@@ -47,6 +36,7 @@
               </div>
             </template>
           </el-table-column>
+          <template slot="empty">无任务列表</template>
         </el-table>
       </div>
     </div>
@@ -79,10 +69,9 @@ export default {
       })
     },
     handelDelete(row) {
-      const returnMsgList = [
-        `确定删除任务${row.name}吗？`
-      ]
-      const newData = []; const h = this.$createElement
+      const returnMsgList = [`确定删除任务${row.name}吗？`]
+      const newData = []
+      const h = this.$createElement
       for (const i in returnMsgList) {
         newData.push(h('p', null, returnMsgList[i]))
       }
@@ -90,17 +79,19 @@ export default {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '已删除'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '已删除'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   }
 }

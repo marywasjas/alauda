@@ -39,7 +39,8 @@ export const tableData = Mock.mock({
       time: 1,
       status: '已审批',
       effectStatus: '已失效',
-      submitTime: '@date'
+      submitTime: '@date',
+      isDisabled: false
     }
   ]
 })
