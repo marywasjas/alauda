@@ -53,13 +53,17 @@
         <el-table-column label="申请列表">
           <el-table-column v-for="col in tableColumnList" :key="col.id" :label="col.label" :prop="col.prop" />
           <el-table-column label="操作">
-            <template>
+            <template slot-scope="scope">
               <el-button size="mini" icon="el-icon-edit" @click="openDetail">详情</el-button>
-              <el-button size="mini" icon="el-icon-edit" @click="openApprovala">审批</el-button>
+              <el-button
+                size="mini"
+                icon="el-icon-edit"
+                :disabled="scope.row.isDisabled"
+                @click="openApprovala(scope)"
+              >审批</el-button>
             </template>
           </el-table-column>
         </el-table-column>
-
         <template slot="empty">无任务列表</template>
       </el-table>
       <el-pagination
@@ -124,23 +128,24 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      // console.log(`每页 ${val} 条`)
       this.pageSize = val
-      console.log(this.pageSize)
+      // console.log(this.pageSize)
     },
     handleCurrentChange(val) {
       this.pageNum = val
-      console.log(`当前页: ${val}`)
-      console.log(this.pageNum)
+      // console.log(`当前页: ${val}`)
+      // console.log(this.pageNum)
     },
     openDetail() {
       this.dialogVisible = true
     },
-    openApprovala() {
+    openApprovala(scope) {
       this.approvalaDialogVisible = true
+      console.log(scope)
     },
     submitForm() {
-      console.log(this.ruleForm)
+      // console.log(this.ruleForm)
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()

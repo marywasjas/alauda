@@ -40,6 +40,11 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <tr v-if="infoRuleForm.labels.length === 0">
+                      <td colspan="5">
+                        <div class="empty-div">无数据</div>
+                      </td>
+                    </tr>
                     <tr v-for="(domain, index) in infoRuleForm.labels" :key="domain.id">
                       <td>
                         <el-form-item label="" :prop="'labels.' + index + '.key'">
@@ -115,6 +120,11 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr v-if="infoRuleForm.storageVolumes.length === 0">
+                    <td colspan="5">
+                      <div class="empty-div">无数据</div>
+                    </td>
+                  </tr>
                   <tr v-for="(domain, index) in infoRuleForm.storageVolumes" :key="domain.id">
                     <td>
                       <el-form-item label="" :prop="'storageVolumes.' + index + '.name'">
@@ -187,6 +197,11 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <tr v-if="infoRuleForm.containerGroupLabels.length === 0">
+                      <td colspan="5">
+                        <div class="empty-div">无数据</div>
+                      </td>
+                    </tr>
                     <tr v-for="(domain, index) in infoRuleForm.containerGroupLabels" :key="domain.id">
                       <td>
                         <el-form-item label="" :prop="'containerGroupLabels.' + index + '.key'">
@@ -234,6 +249,11 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <tr v-if="infoRuleForm.containerGroupNotes.length === 0">
+                      <td colspan="5">
+                        <div class="empty-div">无数据</div>
+                      </td>
+                    </tr>
                     <tr v-for="(domain, index) in infoRuleForm.containerGroupNotes" :key="domain.id">
                       <td>
                         <el-form-item label="" :prop="'containerGroupNotes.' + index + '.key'">
@@ -301,6 +321,11 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <tr v-if="infoRuleForm.affinity.length === 0">
+                        <td colspan="5">
+                          <div class="empty-div">无亲和性</div>
+                        </td>
+                      </tr>
                       <tr v-for="(domain, index) in infoRuleForm.affinity" :key="domain.id">
                         <td>
                           <el-form-item label="" :prop="'affinity.' + index + '.type'">

@@ -200,7 +200,15 @@ export default {
         }
       ],
       // 下拉框数据
-      checkedCities: [],
+      checkedCities: [
+        // '项目名称（ProjectName）',
+        // '命名空间（KubernetesNamespace）',
+        // '应用名称（ApplicationName）',
+        // '节点（Node）',
+        // '容器组（PodName）',
+        // '容器（ContainerID）',
+        // '路径（Paths）'
+      ],
       checkboxList: [
         {
           prop: 'projectName',
@@ -294,7 +302,7 @@ export default {
           unChecked.push(this.checkboxList[i])
         }
       }
-      // console.log(unChecked)
+      console.log(unChecked)
       this.tableData = this.tableData.map(item => {
         for (let i = 0; i < e.length; i++) {
           item[e[i].prop].show = true

@@ -45,6 +45,7 @@
               </div>
             </template>
           </el-table-column>
+          <template slot="empty">无任务列表</template>
         </el-table>
       </div>
     </div>
