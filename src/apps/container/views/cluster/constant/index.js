@@ -53,7 +53,7 @@ export const tableColumnList = [
     id: 'operation',
     label: '',
     width: '60px',
-    fixed: "right"
+    fixed: 'right'
   }
 ]
 export const tableData = Mock.mock({

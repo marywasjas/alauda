@@ -845,7 +845,7 @@ export const containerAsyncRoutes = [
         name: 'ConfigureDictionaryDetail',
         meta: { title: '配置字典详情', icon: 'icon', noCache: true },
         hidden: true
-      },
+      }
     ]
   },
 

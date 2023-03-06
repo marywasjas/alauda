@@ -53,13 +53,11 @@
                     <el-dropdown-item
                       command="update"
                       @click.native="handleCapacityExpansion(scope.row)"
-                      >扩容</el-dropdown-item
-                    >
+                    >扩容</el-dropdown-item>
                     <el-dropdown-item
                       command="delete"
                       @click.native="handleUpdate(scope.row)"
-                      >更新</el-dropdown-item
-                    >
+                    >更新</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -79,36 +77,36 @@
 // import axios from "axios";
 import {
   getAlarmList,
-  getExpandList,
-} from "../../../../../../mock/alarm/axiosApi";
+  getExpandList
+} from '../../../../../../mock/alarm/axiosApi'
 // import SetSilenceDialog from './components/SetSilenceDialog.vue'
-import LineAlert from "@/apps/container/views/components/LineAlert";
-import { tableData, tableColumnList } from "../constant";
+import LineAlert from '@/apps/container/views/components/LineAlert'
+import { tableData, tableColumnList } from '../constant'
 
 export default {
-  name: "AlarmList",
+  name: 'AlarmList',
   // components: { SetSilenceDialog },
   data() {
     return {
       tableData,
       tableColumnList,
       formInline: {
-        tag: "",
-        name: "",
+        tag: '',
+        name: ''
       },
       tagOptions: [
         {
-          value: "标签1",
-          label: "标签1",
+          value: '标签1',
+          label: '标签1'
         },
         {
-          value: "标签2",
-          label: "标签2",
-        },
+          value: '标签2',
+          label: '标签2'
+        }
       ],
       content:
-        "持久卷声明（PVC） 是用户使用存储资源的声明。平台会根据声明中的大小和访问模式静态匹配或动态创建不同属性的持久卷（PV）。选择动态创建方式时，平台基于管理员提供的存储类（StorageClass）来按需创建持久卷。",
-    };
+        '持久卷声明（PVC） 是用户使用存储资源的声明。平台会根据声明中的大小和访问模式静态匹配或动态创建不同属性的持久卷（PV）。选择动态创建方式时，平台基于管理员提供的存储类（StorageClass）来按需创建持久卷。'
+    }
   },
 
   created() {
@@ -119,35 +117,35 @@ export default {
   methods: {
     // 搜索
     onSearch() {
-      console.log(this.formInline);
+      console.log(this.formInline)
     },
     handelCreate() {
       this.$router.push({
-        name: "PersistentVolumeCreateUpdate",
+        name: 'PersistentVolumeCreateUpdate',
         query: {
-          type: "add",
-        },
-      });
+          type: 'add'
+        }
+      })
     },
     handelDetails(row) {
       this.$router.push({
-        name: "PersistentVolumeDetail",
+        name: 'PersistentVolumeDetail',
         query: {
-          name: row.name,
-        },
-      });
+          name: row.name
+        }
+      })
     },
     handleCapacityExpansion() {},
     handleUpdate(row) {
       this.$router.push({
-        name: "PersistentVolumeCreateUpdate",
+        name: 'PersistentVolumeCreateUpdate',
         query: {
-          type: "edit",
-        },
-      });
-    },
-  },
-};
+          type: 'edit'
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
