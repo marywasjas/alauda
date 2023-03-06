@@ -790,5 +790,64 @@ export const containerAsyncRoutes = [
       }
     ]
   },
+
+  {
+    path: '/cluster',
+    component: Layout,
+    redirect: '/cluster/list',
+    name: 'Cluster',
+    meta: { title: '集群管理', icon: 'table' },
+    alwaysShow: true, // will always show the root menu
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/apps/container/views/cluster/cluster/list.vue'),
+        // redirect: '/cluster/list',
+        name: 'ClusterList',
+        meta: {
+          title: '集群',
+          roles: ['admin'] // or you can only set roles in sub nav
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network/service/list'),
+            name: 'ServiceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/network/service/detail'),
+            name: 'ServiceDetail',
+            meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/network/service/create'),
+            name: 'ServiceCreate',
+            meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/network/service/create'),
+            name: 'ServiceUpdate',
+            meta: { title: '更新内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            hidden: true
+          }
+        ]
+      },
+      {
+        path: 'detail',
+        component: () => import('@/apps/container/views/cluster/cluster/detail'),
+        name: 'ConfigureDictionaryDetail',
+        meta: { title: '配置字典详情', icon: 'icon', noCache: true },
+        hidden: true
+      },
+    ]
+  },
+
   { path: '*', redirect: '/404', hidden: true }
 ]
