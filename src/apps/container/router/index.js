@@ -792,60 +792,54 @@ export const containerAsyncRoutes = [
   },
 
   {
-    path: '/cluster',
+    path: '/cluster-management',
     component: Layout,
-    redirect: '/cluster/list',
+    redirect: '/cluster-management/index',
     name: 'Cluster',
     meta: { title: '集群管理', icon: 'table' },
     alwaysShow: true, // will always show the root menu
     children: [
       {
-        path: 'list',
-        component: () => import('@/apps/container/views/cluster/cluster/list.vue'),
-        // redirect: '/cluster/list',
-        name: 'ClusterList',
+        path: 'cluster',
+        component: () => import('@/apps/container/views/cluster/cluster/index'),
+        redirect: '/cluster-management/cluster/list',
+        name: 'ClusterMain',
         meta: {
           title: '集群',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['admin']
         },
         children: [
           {
             path: 'list',
-            component: () => import('@/apps/container/views/network/service/list'),
-            name: 'ServiceList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/network/service' },
-            hidden: true
-          },
-          {
-            path: 'detail',
-            component: () => import('@/apps/container/views/network/service/detail'),
-            name: 'ServiceDetail',
-            meta: { title: '内部路由详情', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            component: () => import('@/apps/container/views/cluster/cluster/list'),
+            name: 'ClusterList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
             hidden: true
           },
           {
             path: 'create',
-            component: () => import('@/apps/container/views/network/service/create'),
-            name: 'ServiceCreate',
-            meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+            component: () => import('@/apps/container/views/cluster/cluster/create'),
+            name: 'ClusterCreate',
+            meta: { title: '创建集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster'},
             hidden: true
           },
-          {
-            path: 'update',
-            component: () => import('@/apps/container/views/network/service/create'),
-            name: 'ServiceUpdate',
-            meta: { title: '更新内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
-            hidden: true
-          }
+
+          // {
+          //   path: 'create',
+          //   component: () => import('@/apps/container/views/network/service/create'),
+          //   name: 'ServiceCreate',
+          //   meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+          //   hidden: true
+          // },
+          // {
+          //   path: 'update',
+          //   component: () => import('@/apps/container/views/network/service/create'),
+          //   name: 'ServiceUpdate',
+          //   meta: { title: '更新内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
+          //   hidden: true
+          // }
         ]
       },
-      {
-        path: 'detail',
-        component: () => import('@/apps/container/views/cluster/cluster/detail'),
-        name: 'ConfigureDictionaryDetail',
-        meta: { title: '配置字典详情', icon: 'icon', noCache: true },
-        hidden: true
-      }
     ]
   },
 
