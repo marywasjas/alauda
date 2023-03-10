@@ -63,12 +63,12 @@
                     <el-dropdown-item
                       command="update"
                       @click.native="handleCapacityExpansion(scope.row)"
-                      >扩容</el-dropdown-item
+                      >Kubectl 工具</el-dropdown-item
                     >
                     <el-dropdown-item
                       command="delete"
-                      @click.native="handleUpdate(scope.row)"
-                      >更新</el-dropdown-item
+                      @click.native="handleDelete(scope.row)"
+                      >删除</el-dropdown-item
                     >
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -87,11 +87,10 @@
 <script>
 // import axios from "axios";
 import { getClusterList } from "@/../mock/cluster/axiosApi";
-import { tableData, tableColumnList } from "../constant";
+import { tableData, tableColumnList } from "./constant";
 
 export default {
   name: "ClusterList",
-  // components: { SetSilenceDialog },
   data() {
     return {
       tableData,
@@ -110,8 +109,6 @@ export default {
           label: "标签2",
         },
       ],
-      content:
-        "持久卷声明（PVC） 是用户使用存储资源的声明。平台会根据声明中的大小和访问模式静态匹配或动态创建不同属性的持久卷（PV）。选择动态创建方式时，平台基于管理员提供的存储类（StorageClass）来按需创建持久卷。",
     };
   },
 
@@ -125,27 +122,22 @@ export default {
     onSearch() {
       console.log(this.formInline);
     },
+
     handelCreate() {
       // this.$router.push({ name: "ClusterCreate" });
       this.$router.push({ path: "/cluster-management/cluster/create" });
     },
+
     handelDetails(row) {
       this.$router.push({
-        name: "PersistentVolumeDetail",
-        query: {
-          name: row.name,
-        },
+        name: "ClusterDetail",
+        query: { name: row.name },
       });
     },
+    
     handleCapacityExpansion() {},
-    handleUpdate(row) {
-      this.$router.push({
-        name: "PersistentVolumeCreateUpdate",
-        query: {
-          type: "edit",
-        },
-      });
-    },
+
+    handleDelete(row) {},
   },
 };
 </script>

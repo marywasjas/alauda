@@ -12,7 +12,7 @@
             ref="ruleForm"
             :model="ruleForm"
             :rules="rules"
-            label-width="120px"
+            label-width="125px"
           >
             <el-row>
               <el-col :span="12">
@@ -24,6 +24,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+
             <el-row>
               <el-col :span="12">
                 <el-form-item label="显示名称" prop="showName">
@@ -65,19 +66,26 @@
             </el-row>
 
             <el-form-item label="集群地址">
-              <el-input
-                placeholder="例如: 100.0.0.100 或 example.com"
-                v-model="ruleForm.ip"
-              >
-                <template slot="prepend">IP 地址/域名</template>
-              </el-input>
-              <el-input v-model="ruleForm.port">
-                <template slot="prepend">端口</template>
-              </el-input>
+              <el-row>
+                <el-col :span="16">
+                  <el-input
+                    placeholder="例如: 100.0.0.100 或 example.com"
+                    v-model="ruleForm.ip"
+                  >
+                    <template slot="prepend">IP 地址/域名</template>
+                  </el-input>
+                </el-col>
+
+                <el-col :span="8" style="padding-left: 30px">
+                  <el-input v-model="ruleForm.port">
+                    <template slot="prepend">端口</template>
+                  </el-input>
+                </el-col>
+              </el-row>
             </el-form-item>
 
-            <el-form-item label="虚拟IP" prop="virtualIP">
-              <el-switch v-model="ruleForm.virtualIP" />
+            <el-form-item label="自建 VIP">
+              <el-switch v-model="ruleForm.vip" />
               <el-tooltip
                 content="集群内部通过此 IP 来访问服务"
                 effect="dark"
@@ -87,288 +95,192 @@
                 <i class="el-icon-question margin-left10 question-icon" />
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="外网访问" prop="internetAccess">
-              <el-switch v-model="ruleForm.internetAccess" />
+
+            <el-form-item label="VRID" v-if="ruleForm.vip == true">
+              <el-input v-model="ruleForm.vrid" />
+            </el-form-item>
+
+            <el-form-item label="镜像仓库">
+              <el-radio-group v-model="ruleForm.store">
+                <el-radio-button label="平台默认"></el-radio-button>
+                <el-radio-button label="外部"></el-radio-button>
+              </el-radio-group>
               <el-tooltip
-                class="item"
+                content="集群内部通过此 IP 来访问服务"
                 effect="dark"
-                content="通过访问集群节点的对应端口来访问服务（NodePort）"
+                class="item"
                 placement="top"
               >
                 <i class="el-icon-question margin-left10 question-icon" />
               </el-tooltip>
             </el-form-item>
-            <el-form-item label="目标组件" prop="targetComponents">
-              <el-radio v-model="ruleForm.targetComponents" label="计算组件"
-                >计算组件</el-radio
-              >
-              <el-radio v-model="ruleForm.targetComponents" label="标签选择器"
-                >标签选择器</el-radio
-              >
-            </el-form-item>
+
             <el-form-item
-              v-if="ruleForm.targetComponents == '计算组件'"
-              label="计算组件类型"
-              prop="calculationType"
+              label="私有镜像仓库地址"
+              v-if="ruleForm.store == '外部'"
             >
-              <el-radio v-model="ruleForm.calculationType" label="部署"
-                >部署</el-radio
-              >
-              <el-radio v-model="ruleForm.calculationType" label="守护进程集"
-                >守护进程集</el-radio
-              >
-              <el-radio v-model="ruleForm.calculationType" label="有状态副本集"
-                >有状态副本集</el-radio
-              >
+              <el-row>
+                <el-col :span="16">
+                  <el-input
+                    placeholder="例如: 100.0.0.100 或 example.com"
+                    v-model="ruleForm.ip"
+                  >
+                    <template slot="prepend">IP 地址/域名</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="8" style="padding-left: 30px">
+                  <el-input v-model="ruleForm.port">
+                    <template slot="prepend">端口</template>
+                  </el-input>
+                </el-col>
+              </el-row>
+
+              <el-row style="padding-top: 5px">
+                <el-col :span="16">
+                  <el-input
+                    placeholder="例如: 100.0.0.100 或 example.com"
+                    v-model="ruleForm.username"
+                  >
+                    <template slot="prepend">用户名</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="8" style="padding-left: 30px">
+                  <el-input v-model="ruleForm.password">
+                    <template slot="prepend">密码</template>
+                  </el-input>
+                </el-col>
+              </el-row>
             </el-form-item>
-            <el-form-item
-              v-if="ruleForm.targetComponents == '计算组件'"
-              label="计算组件名称"
-              prop="calculationName"
-            >
-              <el-select
-                v-model="ruleForm.calculationName"
-                placeholder="请选择"
+
+            <el-form-item label="IPv4/IPv6 双栈">
+              <el-switch v-model="ruleForm.protocol" />
+            </el-form-item>
+
+            <el-form-item label="网络模式">
+              <el-radio-group v-model="ruleForm.netMode">
+                <el-radio-button label="Kube-OVN"></el-radio-button>
+                <el-radio-button label="Calico"></el-radio-button>
+                <el-radio-button label="Flannel"></el-radio-button>
+                <el-radio-button label="自定义"></el-radio-button>
+              </el-radio-group>
+              <el-tooltip
+                content="集群内部通过此 IP 来访问服务"
+                effect="dark"
+                class="item"
+                placement="top"
               >
-                <el-option
-                  v-for="item in calculationNameOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                <i class="el-icon-question margin-left10 question-icon" />
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item label="默认子网">
+              <el-row type="flex" class="row-bg">
+                <el-col :span="24">
+                  <div class="grid-content bg-purple">
+                    <el-form-item label="网段">
+                      <el-input
+                        placeholder="如: 10.3.0.0/16"
+                        v-model="ruleForm.netSegment"
+                      ></el-input>
+                    </el-form-item>
+                    <el-form-item label="传输方式">
+                      <el-radio-group v-model="ruleForm.transMethod">
+                        <el-radio label="overlay"></el-radio>
+                        <el-radio label="underlay"></el-radio>
+                      </el-radio-group>
+                      <el-tooltip
+                        content="集群内部通过此 IP 来访问服务"
+                        effect="dark"
+                        class="item"
+                        placement="top"
+                      >
+                        <i
+                          class="el-icon-question margin-left10 question-icon"
+                        />
+                      </el-tooltip>
+                    </el-form-item>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-form-item>
+
+            <el-form-item label="Service 网段">
+              <el-input
+                placeholder="如: 10.3.0.0/16"
+                v-model="ruleForm.serviceNetSegment"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="Join 网段">
+              <el-input
+                placeholder="如: 10.3.0.0/16"
+                v-model="ruleForm.joinNetSegment"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="节点名称设置">
+              <el-radio-group v-model="ruleForm.node">
+                <el-radio label="节点IP作为节点名称"></el-radio>
+                <el-radio label="主机名称作为节点名称"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="网卡">
+              <el-input
+                placeholder="如: 10.3.0.0/16"
+                v-model="ruleForm.joinNetSegment"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="节点信息">
+              <el-row type="flex" class="row-bg">
+                <el-col :span="24">
+                  <div class="grid-content bg-purple">
+                    <div class="flex-center">
+                      <div
+                        class="cursor-pointer text-center hover-div"
+                        style="flex: 1"
+                        @click="handleAdd('configurationItems')"
+                      >
+                        <i class="el-icon-circle-plus-outline" />
+                        添加节点
+                      </div>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </el-form-item>
+
+            <el-form-item label="如何选择监控组件">
+              <el-radio-group v-model="ruleForm.monitor">
+                <el-radio-button label="Prometheus (推荐)"></el-radio-button>
+                <el-radio-button label="VictoriaMetrics"></el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item
+              label="部署方法"
+              v-if="ruleForm.monitor == 'VictoriaMetrics'"
+            >
+              <el-radio-group v-model="ruleForm.depMethod">
+                <el-radio label="部署 VictoriaMetrics"></el-radio>
+                <el-radio label="部署 VictoriaMetrics 代理"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="监控组件部署节点">
+              <el-select v-model="ruleForm.gpuSelect">
+                <el-option label="vGPU" value="vGPU"></el-option>
+                <el-option label="pGPU" value="pGPU"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              v-if="ruleForm.targetComponents == '标签选择器'"
-              label="选择器"
-              prop="selector"
-            >
-              <table border="0" style="width: 95%">
-                <thead>
-                  <tr class="headerStyle">
-                    <th>
-                      <div class="cell">键</div>
-                    </th>
-                    <th>
-                      <div class="cell">值</div>
-                    </th>
-                    <th>
-                      <div class="cell">操作</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody v-if="ruleForm.tagSelector.length == 0">
-                  <tr>
-                    <td colspan="3" class="no-data">无数据</td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">
-                      <div
-                        class="cursor-pointer text-center hover-div"
-                        @click="handleTagAdd"
-                      >
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody v-if="ruleForm.tagSelector.length > 0">
-                  <tr
-                    v-for="(tag, index) in ruleForm.tagSelector"
-                    :key="tag.id"
-                  >
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'tagSelector.' + index + '.key'"
-                        :rules="{
-                          required: true,
-                          message: '键不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input v-model="tag.key" placeholder="键" />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'tagSelector.' + index + '.value'"
-                        :rules="{
-                          required: true,
-                          message: '值不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input v-model="tag.value" placeholder="值" />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-button
-                        icon="el-icon-remove-outline"
-                        class="cursor-pointer margin-left10 margin-right10"
-                        type="text"
-                        @click="handleTagDelete(tag, index)"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">
-                      <div
-                        class="cursor-pointer text-center hover-div"
-                        @click="handleTagAdd"
-                      >
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </el-form-item>
-            <el-form-item label="端口" prop="port">
-              <table border="0" style="width: 95%">
-                <thead>
-                  <tr class="headerStyle">
-                    <th>
-                      <div class="cell">协议</div>
-                    </th>
-                    <th>
-                      <div class="cell">
-                        <span class="requireFlag">*</span>
-                        服务端口
-                      </div>
-                    </th>
-                    <th>
-                      <div class="cell">
-                        <span class="requireFlag">*</span>
-                        容器端口
-                      </div>
-                    </th>
-                    <th>
-                      <div class="cell">
-                        服务端口名称
-                        <el-tooltip
-                          content="服务端口名称"
-                          effect="dark"
-                          class="item"
-                          placement="top"
-                        >
-                          <i
-                            class="el-icon-question margin-left10 question-icon"
-                          />
-                        </el-tooltip>
-                      </div>
-                    </th>
-                    <th>
-                      <div class="cell">操作</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(domain, index) in ruleForm.domains"
-                    :key="domain.id"
-                  >
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'domains.' + index + '.agreement'"
-                        :rules="{
-                          required: false,
-                          message: '协议不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-select
-                          v-model="domain.agreement"
-                          placeholder="请选择协议"
-                          style="width: 100%"
-                          @change="changeTableItem(domain, index)"
-                        >
-                          <el-option
-                            v-for="com in agreementList"
-                            :key="com"
-                            :label="com"
-                            :value="com"
-                          />
-                        </el-select>
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'domains.' + index + '.serverPort'"
-                        :rules="{
-                          required: true,
-                          message: '服务端口不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input
-                          v-model="domain.serverPort"
-                          placeholder="服务端口"
-                          @input="changeTableItem(domain, index)"
-                        />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'domains.' + index + '.containerPort'"
-                        :rules="{
-                          required: true,
-                          message: '容器端口不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input
-                          v-model="domain.containerPort"
-                          placeholder="容器端口号或端口名称"
-                          @input="changeTableItem(domain, index)"
-                        />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-form-item
-                        label=""
-                        :prop="'domains.' + index + '.servicePortName'"
-                        :rules="{
-                          required: false,
-                          message: '服务端口名称不能为空',
-                          trigger: 'blur',
-                        }"
-                      >
-                        <el-input v-model="domain.servicePortName" disabled />
-                      </el-form-item>
-                    </td>
-                    <td>
-                      <el-button
-                        icon="el-icon-remove-outline"
-                        :disabled="deleteFlag"
-                        class="cursor-pointer margin-left10 margin-right10"
-                        type="text"
-                        @click="handleDelete(domain, index)"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="5">
-                      <div
-                        class="cursor-pointer text-center hover-div"
-                        @click="handleAdd"
-                      >
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </el-form-item>
-            <el-form-item label="会话保持" prop="keepSession">
-              <el-switch v-model="ruleForm.keepSession" />
+
+            <el-form-item label="VictoriaMetrics 代理实例数">
+              <el-input-number
+                v-model="ruleForm.num"
+                :min="1"
+                :max="3"
+              ></el-input-number>
             </el-form-item>
           </el-form>
         </div>
@@ -390,7 +302,7 @@ import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
 import { nanoid } from "nanoid";
 
 export default {
-  name: "ServiceCreate",
+  name: "ClusterCreate",
   components: { LineAlert, MonacoEditor },
   data() {
     return {
@@ -404,23 +316,22 @@ export default {
         gpu: false,
         gpuSelect: "vGPU",
         kubernetes: "docker",
-        virtualIP: true,
-        internetAccess: false,
-        targetComponents: "计算组件",
-        calculationType: "部署",
-        keepSession: false,
-        domains: [
-          {
-            id: nanoid(),
-            agreement: "TCP",
-            serverPort: "",
-            containerPort: "",
-            servicePortName: "tcp",
-          },
-        ],
-        tagSelector: [],
+        ip: "",
+        port: "",
+        vip: false,
+        vrid: "137",
+        store: "平台默认",
+        username: "",
+        password: "",
+        protocol: false,
+        netMode: "Kube-OVN",
+        transMethod: "overlay",
+        node: "节点IP作为节点名称",
+        monitor: "Prometheus (推荐)",
+        depMethod: "部署 VictoriaMetrics",
+        num: 1,
       },
-      agreementList: ["TCP", "UDP", "HTTP", "HTTPS", "HTTP2", "gRPC"],
+
       rules: {
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -433,27 +344,9 @@ export default {
         showName: [{ required: true, message: "请输入名称", trigger: "blur" }],
         kubernates: [{ required: true, message: "请选择", trigger: "blur" }],
       },
-      calculationNameOption: [
-        {
-          label: "nginx-nginx",
-          value: "nginx-nginx",
-        },
-      ],
-      currentCode: "",
-      inputCode: {},
-      port: "",
-      selector: "",
     };
   },
-  computed: {
-    deleteFlag: function () {
-      if (this.ruleForm.domains.length === 1) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-  },
+
   created() {
     this.ruleForm.name = this.$route.query.name;
     if (this.ruleForm.name) {
@@ -461,6 +354,7 @@ export default {
       this.fetchData();
     }
   },
+
   methods: {
     fetchData() {
       this.ruleForm = {
@@ -618,6 +512,28 @@ export default {
     text-align: right;
     border-radius: $border-radius-m;
     box-shadow: 0 0 4px 0 $box-shadow;
+  }
+  // .el-row {
+  //   margin-bottom: 20px;
+  //   &:last-child {
+  //     margin-bottom: 0;
+  //   }
+  // }
+  .create-container .el-row[data-v-0337e0e9] {
+    margin-bottom: -20px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .bg-purple {
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
   }
 }
 </style>

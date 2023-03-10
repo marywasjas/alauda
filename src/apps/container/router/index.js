@@ -820,17 +820,19 @@ export const containerAsyncRoutes = [
             path: 'create',
             component: () => import('@/apps/container/views/cluster/cluster/create'),
             name: 'ClusterCreate',
-            meta: { title: '创建集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster'},
+            meta: { title: '创建集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
             hidden: true
           },
 
-          // {
-          //   path: 'create',
-          //   component: () => import('@/apps/container/views/network/service/create'),
-          //   name: 'ServiceCreate',
-          //   meta: { title: '创建内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
-          //   hidden: true
-          // },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/cluster/cluster/detail'),
+            name: 'ClusterDetail',
+            meta: { title: '详情', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true
+          },
+
+
           // {
           //   path: 'update',
           //   component: () => import('@/apps/container/views/network/service/create'),
@@ -840,6 +842,41 @@ export const containerAsyncRoutes = [
           // }
         ]
       },
+      {
+        path: 'crd',
+        component: () => import('@/apps/container/views/cluster/crd/index'),
+        redirect: '/cluster-management/crd/list',
+        name: 'ClusterCrd',
+        meta: {
+          title: '自定义资源定义',
+          roles: ['admin']
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/cluster/crd/list'),
+            name: 'ClusterCrdList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true
+          },
+
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/cluster/cluster/create'),
+            name: 'ClusterCreate',
+            meta: { title: '创建集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true
+          },
+
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/cluster/cluster/detail'),
+            name: 'ClusterDetail',
+            meta: { title: '详情', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true
+          },
+        ]
+      }
     ]
   },
 
