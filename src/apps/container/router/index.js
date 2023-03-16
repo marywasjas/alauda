@@ -828,18 +828,13 @@ export const containerAsyncRoutes = [
             path: 'detail',
             component: () => import('@/apps/container/views/cluster/cluster/detail'),
             name: 'ClusterDetail',
-            meta: { title: '详情', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
-            hidden: true
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
           },
-
-
-          // {
-          //   path: 'update',
-          //   component: () => import('@/apps/container/views/network/service/create'),
-          //   name: 'ServiceUpdate',
-          //   meta: { title: '更新内部路由', icon: 'icon', noCache: true, activeMenu: '/network/service' },
-          //   hidden: true
-          // }
         ]
       },
       {
@@ -856,27 +851,84 @@ export const containerAsyncRoutes = [
             path: 'list',
             component: () => import('@/apps/container/views/cluster/crd/list'),
             name: 'ClusterCrdList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
             hidden: true
           },
-
-          {
-            path: 'create',
-            component: () => import('@/apps/container/views/cluster/cluster/create'),
-            name: 'ClusterCreate',
-            meta: { title: '创建集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
-            hidden: true
-          },
-
           {
             path: 'detail',
-            component: () => import('@/apps/container/views/cluster/cluster/detail'),
-            name: 'ClusterDetail',
-            meta: { title: '详情', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            component: () => import('@/apps/container/views/cluster/crd/detail'),
+            name: 'ClusterCrdDetail',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
+            hidden: true,
+
+            children: [
+              {
+                path: 'create',
+                component: () => import('@/apps/container/views/cluster/crd/create/createCrd.vue'),
+                name: 'CrdCreate',
+                meta: { title: '创建实例', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
+                hidden: true
+              },
+            ],
+
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+        ]
+      },
+      {
+        path: 'resource',
+        component: () => import('@/apps/container/views/cluster/resource/index'),
+        redirect: '/cluster-management/resource/list',
+        name: 'ResourceMain',
+        meta: {
+          title: '资源管理',
+          roles: ['admin']
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/cluster/resource/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/resource' },
             hidden: true
           },
         ]
-      }
+      },
+      {
+        path: 'backup-manage',
+        component: () => import('@/apps/container/views/cluster/backup/index'),
+        redirect: '/cluster-management/backup-manage/list',
+        name: 'BackupMain',
+        meta: {
+          title: '备份恢复',
+          roles: ['admin']
+        },
+        alwaysShow: true, // will always show the root menu
+
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/cluster/backup/list'),
+            name: 'Backup-manageList',
+            // redirect: '/cluster-management/backup-manage/backup/list',
+            meta: { title: '备份管理', icon: 'icon', noCache: true, activeMenu: '/cluster/backup-manage',  roles: ['admin'] },
+            hidden: true,
+            // children: [
+            //   {
+            //     path: 'list',
+            //     component: () => import('@/apps/container/views/cluster/backup-manage/list'),
+            //     name: 'Backup-manageList',
+            //     meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/backup-manage' },
+            //     hidden: true
+            //   },
+            // ]
+          },
+        ]
+      },
+
     ]
   },
 
