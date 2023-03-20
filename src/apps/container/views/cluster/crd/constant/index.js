@@ -6,7 +6,7 @@ export const tableColumnList = [
     sortable: true
   },
   {
-    id: 'status',
+    id: 'group',
     label: '组',
     sortable: true
   },
@@ -21,17 +21,14 @@ export const tableColumnList = [
   {
     id: 'date',
     label: '创建时间'
-  }, {
-    id: 'operation',
-    label: '',
-    width: '60px'
-  }]
+  }
+]
 export const tableData = Mock.mock({
-  'data|10': [{
+  'data|30': [{
     name: '@word(3, 7)',
-    status: 'CrashLoopBackOff(0/1)',
-    tag: '@cword(3, 7)',
+    group: '@word(3, 7)',
     date: '@date',
-    number: '@integer(0 ,100)'
+    number: 'v1',
+    scope: '命名空间 | 集群'
   }]
 })

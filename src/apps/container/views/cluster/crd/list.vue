@@ -2,20 +2,33 @@
   <div class="oam-container">
     <line-alert :content="content" />
     <div class="oam-main">
+      <!-- 1 -->
       <div class="card__header">
-        <!-- <el-button type="primary" @click="handelCreate">创建持久卷声明</el-button> -->
         <div class="flex-center">
-          <el-input
+          <el-select
             v-model="formInline.name"
-            placeholder="按名称搜索"
+            placeholder="组：全部"
+            @change="handleGroupChange"
             class="margin-right10"
+            style="width: 80%"
           >
-            <el-button slot="append" icon="el-icon-search" @click="onSearch" />
+            <el-option
+              v-for="item in groupOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-input
+            placeholder="按类型过滤"
+            v-model="formInline.searchType"
+            @keyup.enter.native="queryList"
+          >
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
-          <!-- <el-button icon="el-icon-refresh-right" @click="onSearch" /> -->
-          <el-input placeholder="按类型过滤"></el-input>
         </div>
       </div>
+      <!-- 2 -->
       <div class="card__content">
         <el-table
           :data="tableData.data"
@@ -33,26 +46,9 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="cursor-pointer">
-                <span @click="handelDetails(scope.row)">{{
-                  scope.row[col.id]
-                }}</span>
-              </div>
-              <div v-else-if="col.id === 'operation'" class="operation-cell">
-                <el-dropdown>
-                  <i class="el-icon-more" />
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                      command="update"
-                      @click.native="handleCapacityExpansion(scope.row)"
-                      >扩容</el-dropdown-item
-                    >
-                    <el-dropdown-item
-                      command="delete"
-                      @click.native="handleUpdate(scope.row)"
-                      >更新</el-dropdown-item
-                    >
-                  </el-dropdown-menu>
-                </el-dropdown>
+                <span @click="handleDetail(scope.row)">
+                  {{ scope.row[col.id] }}
+                </span>
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
@@ -69,16 +65,17 @@
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import { tableData, tableColumnList } from "./constant/index";
 export default {
-  name: "PersistentVolumeList",
+  name: "ClusterCrdList",
   components: { LineAlert },
   data() {
     return {
       tableData,
       tableColumnList,
       formInline: {
-        tag: "",
         name: "",
+        searchType: "",
       },
+
       tagOptions: [
         {
           value: "标签1",
@@ -90,31 +87,28 @@ export default {
         },
       ],
       content:
-        "持久卷声明（PVC） 是用户使用存储资源的声明。平台会根据声明中的大小和访问模式静态匹配或动态创建不同属性的持久卷（PV）。选择动态创建方式时，平台基于管理员提供的存储类（StorageClass）来按需创建持久卷。",
+        "自定义资源(CustomResourceDefinition)是 Kubernetes 提供的一种资源类型，通过声明 CRD 可以向 K8s 中增加新资源类型来创建自定义的API,提供更多扩展能力支持",
     };
   },
   methods: {
-    // 搜索
-    onSearch() {
-      console.log(this.formInline);
+    handleGroupChange() {
+      console.log(this.formInline.name);
     },
-    handelCreate() {
+
+    queryList() {
+      console.log(this.formInline.searchType);
+    },
+
+    handleDetail(row) {
       this.$router.push({
-        name: "PersistentVolumeCreateUpdate",
-        query: {
-          type: "add",
-        },
+        name: "ClusterCrdDetail",
+        query: { name: row.name },
       });
     },
-    handelDetails(row) {
-      this.$router.push({
-        name: "PersistentVolumeDetail",
-        query: {
-          name: row.name,
-        },
-      });
-    },
+
+
     handleCapacityExpansion() {},
+
     handleUpdate(row) {
       this.$router.push({
         name: "PersistentVolumeCreateUpdate",
@@ -124,6 +118,18 @@ export default {
       });
     },
   },
+
+  computed: {
+    groupOptions() {
+      return this.tableData.data.map((item) => {
+        return { value: item.name, label: item.name };
+      });
+    },
+  },
+
+  // watch:{
+
+  // }
 };
 </script>
 
