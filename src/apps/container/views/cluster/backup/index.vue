@@ -11,7 +11,7 @@
 <script>
 
 export default {
-  name: 'BackupMain',
+  name: 'BackupManage',
   components: { },
   computed: {
     cachedViews() {

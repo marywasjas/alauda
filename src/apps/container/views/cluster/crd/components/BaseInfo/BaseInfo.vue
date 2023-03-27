@@ -64,7 +64,14 @@
             :label="col.label"
           >
             <template slot-scope="scope">
-              {{ scope.row[col.id] }}
+              <div v-if="col.id === 'name'" class="cursor-pointer">
+                <span @click="handleDetail(scope.row)">
+                  {{ scope.row[col.id] }}
+                </span>
+              </div>
+              <div v-else>
+                {{ scope.row[col.id] }}
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -116,6 +123,12 @@ export default {
     handleCreate() {
       this.$router.push({
         name: "CrdCreate",
+      });
+    },
+    handleDetail(row) {
+      this.$router.push({
+        name: "CrdUpdate",
+        query: { name: row.name },
       });
     },
   },
