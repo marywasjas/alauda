@@ -5,7 +5,7 @@
       <div class="card__header">
         <span>
           <el-button type="primary" @click="handelCreate">创建集群</el-button>
-          <el-button>接入集群</el-button>
+          <el-button @click="handleAccessCluster">接入集群</el-button>
         </span>
 
         <div class="flex-center">
@@ -128,13 +128,18 @@ export default {
       this.$router.push({ path: "/cluster-management/cluster/create" });
     },
 
+    handleAccessCluster() {
+      this.$router.push({ path: "/cluster-management/cluster/accessCluster" });
+
+    },
+
     handelDetails(row) {
       this.$router.push({
         name: "ClusterDetail",
         query: { name: row.name },
       });
     },
-    
+
     handleCapacityExpansion() {},
 
     handleDelete(row) {},

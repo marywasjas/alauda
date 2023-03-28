@@ -4,6 +4,149 @@
       <header>
         <div class="card-title left-header">
           <span>基本信息</span>
+          <div style="float: right">
+            <el-button @click="updateRatio">更新超售比</el-button>
+            <el-button @click="setRegion">设置地域</el-button>
+          </div>
+        </div>
+      </header>
+      <el-divider></el-divider>
+      <section class="component-div">
+        <el-row :gutter="24">
+          <el-col
+            v-for="item in baseInfoData"
+            :key="item.label"
+            :span="12"
+            class="label-value"
+          >
+            <span>{{ item.label }}</span
+            >: &nbsp;&nbsp;
+            <span>
+              <!-- <i :class="item.beforeIcon" @click="handelLabels(item.label)" /> -->
+              {{ item.value }}
+            </span>
+          </el-col>
+        </el-row>
+      </section>
+    </BaseCard>
+
+    <div style="display: flex">
+      <BaseCard style="width: 33%; height: 33%; margin-right: 35px">
+        <header>
+          <div class="card-title left-header">
+            <span>节点</span>
+          </div>
+        </header>
+        <section class="component-div">
+          <div>
+            <span> 总数{{ 12 }} </span>
+            <i class="dotClass" style="background-color: springgreen"></i>
+            <span> 正常{{ 10 }} </span>
+            <span> 异常{{ 0 }} </span>
+          </div>
+          <progress-card :chartData="progressData" />
+        </section>
+      </BaseCard>
+
+      <BaseCard style="width: 33%; height: 33%; margin-right: 35px">
+        <header>
+          <div class="card-title left-header">
+            <span>容器组</span>
+          </div>
+        </header>
+        <section class="component-div">
+          <div>
+            <span> 总数{{ 12 }} </span>
+            <i class="dotClass" style="background-color: springgreen"></i>
+            <span> 正常{{ 10 }} </span>
+            <span> 异常{{ 0 }} </span>
+          </div>
+          <progress-card :chartData="progressData" />
+        </section>
+      </BaseCard>
+
+      <BaseCard style="width: 33%; height: 33%">
+        <header>
+          <!-- <div class="card-title left-header">
+            <span> 告警数量</span>
+          </div>
+        </header>
+        <el-divider direction="vertical"></el-divider>
+        <header>
+          <div class="card-title left-header">
+            <span> 命名空间数</span>
+          </div> -->
+        </header>
+        <section style="display: flex">
+          <div class="card-title left-header" >
+            <span> 告警数量</span>
+          </div>
+        <el-divider direction="vertical"></el-divider>
+
+          <div class="card-title left-header">
+            <span> 命名空间数</span>
+          </div>
+        </section>
+      </BaseCard>
+    </div>
+
+    <div style="display: flex">
+      <BaseCard style="width: 67.5%; margin-right: 35px">
+        <header>
+          <div class="card-title left-header">
+            <span>计算组件</span>
+          </div>
+        </header>
+        <section class="component-div">
+          <el-row :gutter="12">
+            <el-col
+              v-for="item in configInfoData"
+              :key="item.label"
+              :span="12"
+              class="label-value"
+            >
+            </el-col>
+          </el-row>
+        </section>
+      </BaseCard>
+
+      <BaseCard style="width: 31.5%">
+        <header>
+          <div class="card-title left-header">
+            <span>应用</span>
+          </div>
+        </header>
+        <section class="component-div">
+          <el-table
+            :data="tableData.data"
+            style="width: 100%"
+            header-row-class-name="headerStyle"
+            class="margin-top"
+          >
+            <el-table-column
+              v-for="col in tableColumnList"
+              :key="col.id"
+              :label="col.label"
+              :show-overflow-tooltip="col['show-overflow-tooltip']"
+            >
+              <template slot-scope="scope">
+                <div v-if="col.id === 'name'" class="cursor-pointer">
+                  {{ scope.row[col.id] }}
+                </div>
+                <div v-else>
+                  {{ scope.row[col.id] }}
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </section>
+      </BaseCard>
+    </div>
+
+    <BaseCard>
+      <header>
+        <div class="card-title left-header">
+          <span>资源统计</span>
         </div>
       </header>
       <section class="component-div">
@@ -28,13 +171,13 @@
     <BaseCard>
       <header>
         <div class="card-title left-header">
-          <span>节点</span>
+          <span>网络负载 Top 5</span>
         </div>
       </header>
       <section class="component-div">
         <el-row :gutter="24">
           <el-col
-            v-for="item in configInfoData"
+            v-for="item in baseInfoData"
             :key="item.label"
             :span="12"
             class="label-value"
@@ -42,78 +185,11 @@
             <span>{{ item.label }}</span
             >: &nbsp;&nbsp;
             <span>
-              {{ item.value ? item.value : "-" }}
-              <i :class="item.afterIcon" @click="handelLabels" />
+              <!-- <i :class="item.beforeIcon" @click="handelLabels(item.label)" /> -->
+              {{ item.value }}
             </span>
           </el-col>
         </el-row>
-      </section>
-    </BaseCard>
-
-    <BaseCard>
-      <header>
-        <div class="card-title left-header">
-          <span>存储用量</span>
-        </div>
-      </header>
-      <section class="component-div">
-        <line-alert :content="content" />
-        <div class="container-top flexbox">
-          <div class="container-top-left">
-            <radius-pie-chart :chart-data="containerData" title="使用率" />
-          </div>
-          <div class="container-top-right">
-            <div class="text-right">
-              <el-select
-                v-model="containerTime"
-                filterable
-                placeholder="请选择"
-                size="mini"
-              >
-                <i slot="prefix" class="el-input__icon el-icon-search" />
-                <el-option
-                  v-for="item in timeOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </div>
-            <line-chart :chart-data="containerLineData" :show-total="false" />
-          </div>
-        </div>
-      </section>
-    </BaseCard>
-
-    <BaseCard>
-      <header>
-        <div class="card-title left-header">
-          <span>关联资源</span>
-        </div>
-      </header>
-      <section class="component-div">
-        <el-table
-          :data="tableData.data"
-          style="width: 100%"
-          header-row-class-name="headerStyle"
-          class="margin-top"
-        >
-          <el-table-column
-            v-for="col in tableColumnList"
-            :key="col.id"
-            :label="col.label"
-            :show-overflow-tooltip="col['show-overflow-tooltip']"
-          >
-            <template slot-scope="scope">
-              <div v-if="col.id === 'name'" class="cursor-pointer">
-                {{ scope.row[col.id] }}
-              </div>
-              <div v-else>
-                {{ scope.row[col.id] }}
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
       </section>
     </BaseCard>
     <!-- 更新标签 -->
@@ -121,12 +197,79 @@
       :update-labels-visible.sync="updateLabelsVisible"
       :title="dialogTitle"
     />
+
+    <el-dialog
+      title="更新超售比"
+      @close="cancelUpdateDialog"
+      :visible.sync="updateRatioDialog"
+      width="60%"
+    >
+      <el-form
+        ref="updateRatioForm"
+        :model="updateRatioForm"
+        :rules="updateRatioRules"
+        label-width="135px"
+        :inline="true"
+      >
+        <el-form-item label="CPU 超售比">
+          <el-switch v-model="updateRatioForm.cpu" />
+        </el-form-item>
+        <el-form-item v-if="updateRatioForm.cpu == true">
+          <el-input v-model="updateRatioForm.updateCpuNum" style="100%" />
+        </el-form-item>
+        <el-from-item v-else> 无超售比 </el-from-item>
+        <br />
+        <el-form-item label="内存超售比">
+          <el-switch v-model="updateRatioForm.memory" />
+        </el-form-item>
+        <el-form-item v-if="updateRatioForm.memory == true">
+          <el-input v-model="updateRatioForm.updateMemoryNum" />
+        </el-form-item>
+        <el-from-item v-else> 无超售比 </el-from-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleUpdateRatio"> 更新 </el-button>
+        <el-button @click="updateRatioDialog = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="设置地域"
+      @close="cancelSetDialog"
+      :visible.sync="setRegionDialog"
+      width="60%"
+    >
+      <el-form
+        ref="setRegionForm"
+        :model="setRegionForm"
+        :rules="setRegionRules"
+        label-width="135px"
+      >
+        <el-form-item label="集群"> region </el-form-item>
+        <el-form-item label="所属地域" prop="selected">
+          <el-select v-model="setRegionForm.selected">
+            <el-option
+              v-for="item in setRegionOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleSetRegion"> 设置 </el-button>
+        <el-button @click="setRegionDialog = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import UpdateLabelsDialog from "@/apps/container/views/components/UpdateLabelsDialog";
 import LineAlert from "@/apps/container/views/components/LineAlert";
+import ProgressCard from "./ProgressCard.vue";
+
 import {
   tableData,
   tableColumnList,
@@ -138,10 +281,46 @@ import RadiusPieChart from "@/apps/container/views/components/RadiusPieChart";
 
 export default {
   name: "BaseInfo",
-  components: { UpdateLabelsDialog, LineAlert, LineChart, RadiusPieChart },
+  components: {
+    UpdateLabelsDialog,
+    LineAlert,
+    LineChart,
+    RadiusPieChart,
+    ProgressCard,
+  },
   props: {},
   data() {
     return {
+      progressData: [
+        {
+          normal: 12,
+          abnormal: 0,
+          total: 12,
+        },
+      ],
+
+      updateRatioDialog: false,
+      setRegionDialog: false,
+
+      updateRatioForm: {
+        cpu: true,
+        memory: true,
+        updateCpuNum: "1",
+        updateMemoryNum: "1",
+      },
+      updateRatioRules: {},
+
+      setRegionForm: {
+        selected: "",
+      },
+
+      setRegionRules: {
+        selected: [
+          { required: true, message: "所属地域是必填项", trigger: "change" },
+        ],
+      },
+      setRegionOptions: [],
+
       baseInfoData: [
         {
           label: "状态",
@@ -220,6 +399,24 @@ export default {
       this.updateLabelsVisible = true;
       this.dialogTitle = `更新${title}`;
     },
+
+    updateRatio() {
+      this.updateRatioDialog = true;
+    },
+    cancelUpdateDialog() {
+      this.updateRatioDialog = false;
+    },
+
+    setRegion() {
+      this.setRegionDialog = true;
+    },
+    cancelSetDialog() {
+      this.setRegionDialog = false;
+    },
+    handleUpdateRatio() {},
+    handleSetRegion() {},
+    // cpuChange() {},
+    // memoryChange() {},
   },
 };
 </script>
@@ -265,6 +462,14 @@ export default {
   }
   .chart {
     height: 200px !important;
+  }
+
+  .dotClass {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: block;
+    margin-left: 10px; //这个用于圆点居中
   }
 }
 </style>

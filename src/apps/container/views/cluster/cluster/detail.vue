@@ -30,7 +30,6 @@
 
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
-
 import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
 import Yaml from "./components/Yaml.vue";
 import Event from "./components/Event/Event.vue";

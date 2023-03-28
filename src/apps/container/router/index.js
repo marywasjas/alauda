@@ -822,6 +822,13 @@ export const containerAsyncRoutes = [
             meta: { title: '创建集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
             hidden: true
           },
+          {
+            path: 'accessCluster',
+            component: () => import('@/apps/container/views/cluster/cluster/accessCluster'),
+            name: 'accessCluster',
+            meta: { title: '接入集群', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true
+          },
 
           {
             path: 'detail',
