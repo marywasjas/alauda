@@ -31,16 +31,18 @@
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
 import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
-import Yaml from "./components/Yaml.vue";
+import Node from "./components/Node/Node.vue";
 import Event from "./components/Event/Event.vue";
+import Func from "./components/Func/Func.vue";
 
 export default {
   name: "ClusterDetail",
   components: {
     TabHeader,
     BaseInfo,
-    Yaml,
+    Node,
     Event,
+    Func
   },
   data() {
     return {
@@ -54,8 +56,8 @@ export default {
         },
         {
           label: "节点",
-          name: "yaml",
-          com: "Yaml",
+          name: "node",
+          com: "Node",
         },
         {
           label: "关联项目",
@@ -64,8 +66,8 @@ export default {
         },
         {
           label: "功能组件",
-          name: "event1",
-          com: "Event",
+          name: "func",
+          com: "Func",
         },
         {
           label: "监控",

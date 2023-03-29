@@ -5,14 +5,8 @@
         <div class="card-title left-header" />
       </header>
       <section>
-        <div class="flex-center" style="float: right; margin-bottom: 15px">
-          <el-input
-            placeholder="按名称过滤"
-            size="small"
-            class="margin-right10"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="onSearch"/>
-          </el-input>
+        <div class="flex-center" style="float: left; margin-bottom: 13px">
+          <el-button @click="onSearch" type="primary" disabled>升级</el-button>
         </div>
         <el-table
           class="margin-top"
@@ -29,18 +23,20 @@
             :show-overflow-tooltip="col['show-overflow-tooltip']"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'">
-                {{ scope.row[col.id] }}
-              </div>
-              <div v-else-if="col.id === 'quota'">
-                <p class="margin10">
-                  <i class="el-icon-cpu primary2-text" />
-                  {{ scope.row.cpu }}
-                  <i class="el-icon-bank-card primary-text" />
-                  {{ scope.row.memory }}
-                  <i class="el-icon-coin primary-text" />
-                  {{ scope.row.storage }}
-                </p>
+               <div v-if="col.id === 'status'" class="status-cell">
+                <i
+                  v-if="scope.row.status === 'running'"
+                  class="el-icon-video-play running"
+                />
+                <i
+                  v-else-if="scope.row.status === 'stop'"
+                  class="el-icon-video-pause stop"
+                />
+                <i
+                  v-else-if="scope.row.status === 'pending'"
+                  class="el-icon-loading pending"
+                />
+                <span>{{ scope.row.statusText }}</span>
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
