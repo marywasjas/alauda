@@ -873,7 +873,6 @@
               </el-descriptions-item>
             </el-descriptions>
 
-
             <foldable-block btn-tex="扩展参数">
               <line-alert :content="contentParmas" />
 
@@ -1143,7 +1142,11 @@
                           class="cursor-pointer margin-left10 margin-right10"
                           type="text"
                           @click="
-                            handleDeleteParams('APIServerParamsItems', domain, index)
+                            handleDeleteParams(
+                              'APIServerParamsItems',
+                              domain,
+                              index
+                            )
                           "
                         />
                       </td>
@@ -1200,7 +1203,11 @@
                           class="cursor-pointer margin-left10 margin-right10"
                           type="text"
                           @click="
-                            handleDeleteParams('APIServerAddressItems', domain, index)
+                            handleDeleteParams(
+                              'APIServerAddressItems',
+                              domain,
+                              index
+                            )
                           "
                         />
                       </td>
@@ -1230,6 +1237,7 @@
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
+
     <el-dialog
       title="添加节点"
       @close="cancelDialog"
@@ -1299,6 +1307,29 @@
                             />
                           </el-form-item>
                         </el-col>
+                        <el-col :span="1">
+                          <el-tooltip
+                            effect="dark"
+                            class="item"
+                            placement="top"
+                          >
+                            <template slot="content">
+                              <div style="max-width: 450px">
+                                SSH 连接时使用的 IP，平台默认使用 IPv4 地址 SSH
+                                连接部署，当无法通过 IPv4
+                                地址直连时，需要填写能直连的 IPv4
+                                对应的外网地址或者 NAT 地址
+                              </div>
+                            </template>
+                            <i
+                              class="
+                                el-icon-question
+                                margin-left10
+                                question-icon
+                              "
+                            />
+                          </el-tooltip>
+                        </el-col>
                         <el-col :span="11">
                           <el-form-item label="网卡名称" label-width="100px">
                             <el-input
@@ -1307,7 +1338,28 @@
                             />
                           </el-form-item>
                         </el-col>
-                        <el-col :span="11" style="padding-left: 10px">
+                        <el-col :span="1">
+                          <el-tooltip
+                            effect="dark"
+                            class="item"
+                            placement="top"
+                          >
+                            <template slot="content">
+                              <div style="max-width: 450px">
+                                Overlay
+                                传输方式时所使用的主机网卡，填写后平台对于该节点将优先使用此配置项，若不填写系统将按如下顺序自动配置：集群配置的网卡名称、节点默认路由所对应的网卡
+                              </div>
+                            </template>
+                            <i
+                              class="
+                                el-icon-question
+                                margin-left10
+                                question-icon
+                              "
+                            />
+                          </el-tooltip>
+                        </el-col>
+                        <el-col :span="11" style="margin-left: -20px">
                           <el-form-item label="设置" label-width="100px">
                             <el-checkbox-group v-model="domain.type">
                               <el-checkbox label="可部署应用" name="type" />
@@ -1334,7 +1386,7 @@
                   <div class="flex-center">
                     <div
                       class="cursor-pointer text-center hover-div"
-                      style="flex: 1"
+                      style="flex: 1; margin-top: -10px"
                       @click="handleAddNode('nodeItems')"
                     >
                       <i class="el-icon-circle-plus-outline" />
@@ -1348,9 +1400,18 @@
 
           <el-form-item label="可用性检查配置">
             <el-checkbox v-model="nodeForm.config"
-              >跳过"警告"检查项</el-checkbox
+              >跳过 "警告" 检查项</el-checkbox
             >
           </el-form-item>
+          <el-descriptions
+            size="small"
+            :colon="false"
+            :contentStyle="rowCenter"
+          >
+            <el-descriptions-item>
+              可用性检查详情介绍请参考
+            </el-descriptions-item>
+          </el-descriptions>
 
           <el-form-item label="SSH 端口" prop="sshPort" style="width: 70%">
             <el-input v-model="nodeForm.sshPort" />

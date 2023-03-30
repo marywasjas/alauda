@@ -8,46 +8,39 @@ export const tableColumnList = [
     width: '150px'
   },
   {
-    id: 'status',
-    label: '状态',
-    width: '120px'
-
+    id: 'nodeType',
+    label: '节点类型',
+    sortable: true,
+    width: '150px'
   },
   {
-    id: 'type',
-    label: '集群类型',
-    width: '120px'
-
+    id: 'cpu',
+    label: 'CPU利用率',
+    sortable: true,
+    width: '150px'
   },
   {
-    id: 'node',
-    label: '节点数',
-    width: '120px'
-
+    id: 'storage',
+    label: '存储空间使用率',
+    sortable: true,
+    width: '150px'
   },
   {
-    id: 'total',
-    label: '资源总量',
-    width: '120px',
-    // cpu: "192.00核"
+    id: 'memory',
+    label: '内存利用率',
+    sortable: true,
+    width: '150px',
   },
   {
-    id: 'arch',
-    label: '硬件架构',
-    width: '120px'
-
-  },
-  {
-    id: 'kubernete',
-    label: 'Kubernete...',
-    width: '120px'
-  },
-  {
-    id: 'time',
-    label: '创建时间',
+    id: 'container ',
+    label: '容器组数',
     sortable: true,
     width: '120px'
-
+  },
+  {
+    id: 'systemload',
+    label: '系统负载',
+    width: '120px'
   },
   {
     id: 'operation',
@@ -57,18 +50,13 @@ export const tableColumnList = [
   }
 ]
 export const tableData = Mock.mock({
-  'data|2': [{
+  'data|10': [{
     name: '@word(3, 7)',
-    status: '正常',
-    type: '@cword(3, 7)',
-    node: '@cword(3, 7)',
-    arch: '@cword(3, 7)',
-    total: '@cword(3, 7)',
-    kubernete: '@cword(3, 7)',
+    nodeType: '@cword(3, 7)',
+    cpu: '@cword(3, 7)',
+    memeory: '@cword(3, 7)',
+    storage: '@cword(3, 7)',
+    "container|+1": 1,
     time: '@date',
-    cpu: 1,
-    cpuCompony: '核',
-    memory: '512',
-    memoryCompony: 'Gi',
   }]
 })
