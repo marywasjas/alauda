@@ -34,6 +34,7 @@ import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
 import Node from "./components/Node/Node.vue";
 import Event from "./components/Event/Event.vue";
 import Func from "./components/Func/Func.vue";
+import Plugins from "./components/Plugins/Plugins.vue";
 
 export default {
   name: "ClusterDetail",
@@ -42,7 +43,8 @@ export default {
     BaseInfo,
     Node,
     Event,
-    Func
+    Func,
+    Plugins
   },
   data() {
     return {
@@ -76,8 +78,8 @@ export default {
         },
         {
           label: "插件",
-          name: "even3t",
-          com: "Event",
+          name: "plugins",
+          com: "Plugins",
         },
       ],
       activeName: "",

@@ -47,14 +47,14 @@
                 </span>
               </div>
               <div v-else-if="col.id === 'total'">
-                <p class="margin0">
+                <!-- <p class="margin0"> -->
                   <i class="el-icon-cpu primary2-text" />
                   {{ scope.row.cpu }}{{ scope.row.cpuCompony }}
-                </p>
-                <p class="margin0">
+                <!-- </p>
+                <p class="margin0"> -->
                   <i class="el-icon-bank-card primary-text" />
                   {{ scope.row.memory }}{{ scope.row.memoryCompony }}
-                </p>
+                <!-- </p> -->
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
                 <el-dropdown>
@@ -142,7 +142,9 @@ export default {
 
     handleCapacityExpansion() {},
 
-    handleDelete(row) {},
+    handleDelete(row) {
+
+    },
   },
 };
 </script>

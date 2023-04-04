@@ -23,7 +23,7 @@
 
         <div class="flex-center" style="float: right">
           <el-input
-            placeholder="按名称/节点 IP /节点标签过滤"
+            placeholder="按名称/节点IP /节点标签过滤"
             size="small"
             class="margin-right10"
           >
@@ -57,6 +57,24 @@
                   <span @click="handelDetails(scope.row)">
                     {{ scope.row[col.id] }}
                   </span>
+                </div>
+                <div v-if="col.id === 'cpu'" class="cursor-pointer">
+                  <!-- <span @click="handelDetails(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </span> -->
+                  <progress-card :chartData="progressData" />
+                </div>
+                <div v-if="col.id === 'memory'" class="cursor-pointer">
+                  <!-- <span @click="handelDetails(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </span> -->
+                  <progress-card :chartData="progressData" />
+                </div>
+                <div v-if="col.id === 'storage'" class="cursor-pointer">
+                  <!-- <span @click="handelDetails(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </span> -->
+                  <progress-card :chartData="progressData" />
                 </div>
                 <div v-else-if="col.id === 'total'">
                   <p class="margin0">
@@ -573,15 +591,24 @@
 <script>
 import { tableColumnList, tableData } from "./constant/index";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
+import ProgressCard from "./ProgressCard.vue";
+
 import { nanoid } from "nanoid";
 
 export default {
   name: "Node",
-  components: { FoldableBlock },
+  components: { FoldableBlock, ProgressCard },
 
   props: {},
   data() {
     return {
+      progressData: [
+        {
+          normal: 12,
+          abnormal: 0,
+          total: 12,
+        },
+      ],
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",

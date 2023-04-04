@@ -8,6 +8,12 @@ export const tableColumnList = [
     width: '150px'
   },
   {
+    id: 'nodeStatus',
+    label: '节点状态',
+    sortable: true,
+    width: '150px'
+  },
+  {
     id: 'nodeType',
     label: '节点类型',
     sortable: true,
@@ -32,7 +38,7 @@ export const tableColumnList = [
     width: '150px',
   },
   {
-    id: 'container ',
+    id: 'container',
     label: '容器组数',
     sortable: true,
     width: '120px'
@@ -52,11 +58,12 @@ export const tableColumnList = [
 export const tableData = Mock.mock({
   'data|10': [{
     name: '@word(3, 7)',
-    nodeType: '@cword(3, 7)',
-    cpu: '@cword(3, 7)',
-    memeory: '@cword(3, 7)',
-    storage: '@cword(3, 7)',
-    "container|+1": 1,
-    time: '@date',
+    nodeStatus: '正常',
+    nodeType: '控制节点',
+    // cpu: '@cword(3, 7)',
+    // memory: '@cword(3, 7)',
+    // storage: '@cword(3, 7)',
+    container: 16,
+    systemload: 0.98
   }]
 })

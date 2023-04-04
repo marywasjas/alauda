@@ -28,7 +28,7 @@ export const tableColumnList = [
   {
     id: 'total',
     label: '资源总量',
-    width: '120px',
+    width: '180px',
     // cpu: "192.00核"
   },
   {
@@ -60,13 +60,13 @@ export const tableData = Mock.mock({
   'data|2': [{
     name: '@word(3, 7)',
     status: '正常',
-    type: '@cword(3, 7)',
-    node: '@cword(3, 7)',
-    arch: '@cword(3, 7)',
+    type: '自建',
+    node: '12',
+    arch: 'x86',
     total: '@cword(3, 7)',
-    kubernete: '@cword(3, 7)',
+    kubernete: '1.21.10',
     time: '@date',
-    cpu: 1,
+    cpu: 192.00,
     cpuCompony: '核',
     memory: '512',
     memoryCompony: 'Gi',

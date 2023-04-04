@@ -135,7 +135,7 @@
     </BaseCard>
 
     <div style="display: flex">
-      <BaseCard style="width: 33%; height: 125px; margin-right: 35px">
+      <BaseCard style="width: 33%; height: 130px; margin-right: 35px">
         <header>
           <div class="card-title left-header">
             <span style="color: #409eff">节点</span>
@@ -152,7 +152,7 @@
         </section>
       </BaseCard>
 
-      <BaseCard style="width: 33%; height: 125px; margin-right: 35px">
+      <BaseCard style="width: 33%; height: 130px; margin-right: 35px">
         <header>
           <div class="card-title left-header">
             <span>容器组</span>
@@ -191,8 +191,9 @@
           <div class="card-title left-header">
             <i style="font-style: normal; color: #409eff">N</i>
             <span> 命名空间数</span>
-            <!-- <br /> -->
-            <span style="font-size: 40px; margin-left: 10px">33</span>
+            <span style="font-size: 40px; margin-left: 10px; margin-top: 90px"
+              >33</span
+            >
           </div>
 
           <!-- <div
@@ -223,16 +224,9 @@
             <span>计算组件</span>
           </div>
         </header>
-        <section class="component-div">
-          <el-row :gutter="12">
-            <el-col
-              v-for="item in configInfoData"
-              :key="item.label"
-              :span="12"
-              class="label-value"
-            >
-            </el-col>
-          </el-row>
+
+        <section class="component-div-computed">
+          <transverse-bar :chart-data="computeData" />
         </section>
       </BaseCard>
 
@@ -242,29 +236,8 @@
             <span>应用</span>
           </div>
         </header>
-        <section class="component-div">
-          <el-table
-            :data="tableData.data"
-            style="width: 100%"
-            header-row-class-name="headerStyle"
-            class="margin-top"
-          >
-            <el-table-column
-              v-for="col in tableColumnList"
-              :key="col.id"
-              :label="col.label"
-              :show-overflow-tooltip="col['show-overflow-tooltip']"
-            >
-              <template slot-scope="scope">
-                <div v-if="col.id === 'name'" class="cursor-pointer">
-                  {{ scope.row[col.id] }}
-                </div>
-                <div v-else>
-                  {{ scope.row[col.id] }}
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
+        <section class="component-div-computed">
+          <radius-pie-chart :chart-data="applicationData" />
         </section>
       </BaseCard>
     </div>
@@ -273,22 +246,107 @@
       <header>
         <div class="card-title left-header">
           <span>资源统计</span>
+          <el-select
+            v-model="resourceTime"
+            filterable
+            placeholder="请选择"
+            size="small"
+            style="margin-left: 800px"
+          >
+            <i slot="prefix" class="el-input__icon el-icon-search" />
+            <el-option
+              v-for="item in timeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </div>
       </header>
       <section class="component-div">
-        <el-row :gutter="24">
-          <el-col
-            v-for="item in baseInfoData"
-            :key="item.label"
-            :span="12"
-            class="label-value"
-          >
-            <span>{{ item.label }}</span
-            >: &nbsp;&nbsp;
-            <span>
-              <!-- <i :class="item.beforeIcon" @click="handelLabels(item.label)" /> -->
-              {{ item.value }}
-            </span>
+        <span>CPU 总量: 192.00 核</span>
+        <hr />
+        <el-row>
+          <el-col :span="12">
+            <el-row style="backgroundcolor: #f9fafc">
+              <el-col :span="4">
+                <i
+                  class="el-icon-cpu primary2-text"
+                  style="margin-top: 45px"
+                />使用率
+              </el-col>
+              <el-col :span="16">
+                <radius-pie-chart :chart-data="containerData" />
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f9fafc">
+              <el-col :span="4">
+                <i
+                  class="el-icon-cpu primary2-text"
+                  style="margin-top: 45px"
+                />请求率
+              </el-col>
+              <el-col :span="16">
+                <radius-pie-chart :chart-data="containerData" />
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f9fafc">
+              <el-col :span="4">
+                <i
+                  class="el-icon-cpu primary2-text"
+                  style="margin-top: 45px"
+                />限制率
+              </el-col>
+              <el-col :span="16">
+                <radius-pie-chart :chart-data="containerData" />
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="12" class="component-div-computed2">
+            <line-chart :chart-data="containerLineData" :show-total="true" />
+          </el-col>
+        </el-row>
+
+        <span>内存总量: 371.01 Gi</span>
+        <hr />
+        <el-row>
+          <el-col :span="12">
+            <el-row style="backgroundcolor: #f9fafc">
+              <el-col :span="4">
+                <i
+                  class="el-icon-cpu primary2-text"
+                  style="margin-top: 45px"
+                />使用率
+              </el-col>
+              <el-col :span="16">
+                <radius-pie-chart :chart-data="containerData" />
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f9fafc">
+              <el-col :span="4">
+                <i
+                  class="el-icon-cpu primary2-text"
+                  style="margin-top: 45px"
+                />请求率
+              </el-col>
+              <el-col :span="16">
+                <radius-pie-chart :chart-data="containerData" />
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f9fafc">
+              <el-col :span="4">
+                <i
+                  class="el-icon-cpu primary2-text"
+                  style="margin-top: 45px"
+                />限制率
+              </el-col>
+              <el-col :span="16">
+                <radius-pie-chart :chart-data="containerData" />
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="12" class="component-div-computed2">
+            <line-chart :chart-data="containerLineData" :show-total="true" />
           </el-col>
         </el-row>
       </section>
@@ -297,23 +355,72 @@
     <BaseCard>
       <header>
         <div class="card-title left-header">
-          <span>网络负载 Top 5</span>
+          <span>存储空间使用率 (%)</span>
+          <span style="margin-left: 700px">
+            <el-button size="mini" type="primary" round
+              >磁盘空间使用率</el-button
+            >
+            <el-button size="mini" type="primary" round>inode 使用率</el-button>
+          </span>
+        </div>
+      </header>
+      <section >
+        <el-row>
+          <el-col :span="16" class="component-div-computed2">
+            <line-chart :chart-data="containerLineData" :show-total="true" />
+          </el-col>
+        </el-row>
+      </section>
+    </BaseCard>
+    <BaseCard>
+      <header>
+        <div class="card-title left-header">
+          <span>系统负载</span>
+          <span style="margin-left: 700px">
+            <el-button size="mini" type="primary" round>1 分钟平均值</el-button>
+            <el-button size="mini" type="primary" round>5 分钟平均值</el-button>
+            <el-button size="mini" type="primary" round
+              >15 分钟平均值</el-button
+            >
+          </span>
         </div>
       </header>
       <section class="component-div">
-        <el-row :gutter="24">
-          <el-col
-            v-for="item in baseInfoData"
-            :key="item.label"
-            :span="12"
-            class="label-value"
-          >
-            <span>{{ item.label }}</span
-            >: &nbsp;&nbsp;
-            <span>
-              <!-- <i :class="item.beforeIcon" @click="handelLabels(item.label)" /> -->
-              {{ item.value }}
-            </span>
+        <el-row>
+          <el-col :span="16" class="component-div-computed2">
+            <line-chart :chart-data="containerLineData" :show-total="true" />
+          </el-col>
+        </el-row>
+      </section>
+    </BaseCard>
+    <BaseCard>
+      <header>
+        <div class="card-title left-header">
+          <span>网络负载 Top 5</span>
+          <span style="margin-left: 600px">
+            <el-button size="mini" type="primary" round>流入流量</el-button>
+            <el-button size="mini" type="primary" round>流出流量</el-button>
+            <el-button size="mini" type="primary" round>发送报文量</el-button>
+            <el-button size="mini" type="primary" round>接收报文量</el-button>
+          </span>
+        </div>
+      </header>
+      <section class="component-div">
+        <el-row>
+          <el-col :span="11">
+            节点
+            <progress-card :chartData="progressData" />
+            <progress-card :chartData="progressData" />
+            <progress-card :chartData="progressData" />
+            <progress-card :chartData="progressData" />
+          </el-col>
+
+          <el-col :span="11" style="margin-left: 50px">
+            容器组
+            <progress-card :chartData="progressData" />
+            <progress-card :chartData="progressData" />
+            <progress-card :chartData="progressData" />
+            <progress-card :chartData="progressData" />
           </el-col>
         </el-row>
       </section>
@@ -466,17 +573,20 @@
 <script>
 import UpdateLabelsDialog from "@/apps/container/views/components/UpdateLabelsDialog";
 import LineAlert from "@/apps/container/views/components/LineAlert";
-import ProgressCard from "./ProgressCard.vue";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
+import TransverseBar from "./TransverseBar";
+import ProgressCard from "./ProgressCard.vue";
+import LineChart from "./LineChart";
+import RadiusPieChart from "./RadiusPieChart";
 
 import {
   tableData,
   tableColumnList,
   containerLineData,
   containerData,
+  computeData,
+  applicationData,
 } from "./constant/index";
-import LineChart from "@/apps/container/views/components/LineChart";
-import RadiusPieChart from "@/apps/container/views/components/RadiusPieChart";
 
 export default {
   name: "BaseInfo",
@@ -487,10 +597,38 @@ export default {
     RadiusPieChart,
     ProgressCard,
     FoldableBlock,
+    TransverseBar,
   },
   props: {},
   data() {
     return {
+      resourceTime: "近 1 小时",
+      timeOptions: [
+        {
+          value: "近 1 小时",
+          label: "近 1 小时",
+        },
+        {
+          value: "近 3 小时",
+          label: "近 3 小时",
+        },
+        {
+          value: "近 12 小时",
+          label: "近 12 小时",
+        },
+        {
+          value: "近 1 天",
+          label: "近 1 天",
+        },
+        {
+          value: "近 3 天",
+          label: "近 3 天",
+        },
+        {
+          value: "近 7 天",
+          label: "近 7 天",
+        },
+      ],
       detailName: "",
       detailData: [
         {
@@ -622,11 +760,12 @@ export default {
           value: "",
         },
       ],
-
+      computeData,
       tableData,
       tableColumnList,
       containerLineData,
       containerData,
+      applicationData,
       updateLabelsVisible: false,
       dialogTitle: "显示更新名称",
       containerTime: "近 1 小时",
@@ -764,6 +903,32 @@ export default {
     margin: 0 8px;
     vertical-align: middle;
     position: relative;
+  }
+}
+.card-title[data-v-8638ebe6] {
+  font-size: 18px;
+  line-height: 40px;
+  font-weight: bold;
+}
+.component-div-computed {
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  > div {
+    flex: 1;
+    height: 100%;
+  }
+}
+.component-div-computed2 {
+  height: 200px;
+  margin-top: 50px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  > div {
+    flex: 1;
+    height: 100%;
   }
 }
 </style>
