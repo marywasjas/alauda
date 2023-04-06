@@ -841,6 +841,18 @@ export const containerAsyncRoutes = [
               next();
             },
           },
+
+          {
+            path: 'nodeDetail',
+            component: () => import('@/apps/container/views/cluster/cluster/components/NodeDetail/nodeDetail'),
+            name: 'ClusterNodeDetail',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/cluster' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          }
         ]
       },
       {

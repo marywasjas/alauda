@@ -143,9 +143,10 @@
         </header>
         <section class="component-div">
           <div>
-            <span> 总数{{ 12 }} </span>
-            <i class="dotClass" style="background-color: springgreen"></i>
-            <span> 正常{{ 10 }} </span>
+            <span> 总数{{ 12 }} </span>&nbsp;&nbsp;
+            <i class="status-point" style="background-color: green"></i>
+            <span> 正常{{ 12 }} </span>
+            <i class="status-point" style="background-color: red"></i>
             <span> 异常{{ 0 }} </span>
           </div>
           <progress-card :chartData="progressData" />
@@ -160,10 +161,11 @@
         </header>
         <section class="component-div">
           <div>
-            <span> 总数{{ 12 }} </span>
-            <i class="dotClass" style="background-color: springgreen"></i>
-            <span> 正常{{ 10 }} </span>
-            <span> 异常{{ 0 }} </span>
+            <span> 总数{{ 261 }} </span> &nbsp;&nbsp;
+            <i class="status-point" style="background-color: green"></i>
+            <span> 运行中{{ 261 }} </span>
+            <i class="status-point" style="background-color: grey"></i>
+            <span> 其他{{ 0 }} </span>
           </div>
           <progress-card :chartData="progressData" />
         </section>
@@ -195,24 +197,6 @@
               >33</span
             >
           </div>
-
-          <!-- <div
-          style="display:'flex',alignItems:'center',justifyContent: 'space-around'"
-        >
-          <div
-            style="display:'flex',alignItems:'center',flexDirection:'column'"
-          >
-            <div className="tit">总人数</div>
-            <div className="num">10</div>
-          </div>
-
-          <div
-            style="display:'flex',alignItems:'center',flexDirection:'column'"
-          >
-            <div className="tit">总营业额</div>
-            <div className="num">¥ 0.01</div>
-          </div>
-        </div> -->
         </section>
       </BaseCard>
     </div>
@@ -364,10 +348,23 @@
           </span>
         </div>
       </header>
-      <section >
+      <section>
         <el-row>
           <el-col :span="16" class="component-div-computed2">
             <line-chart :chart-data="containerLineData" :show-total="true" />
+          </el-col>
+          <el-col :span="8">
+            <ul style="height: 260px; overflow-y: scroll">
+              <li
+                v-for="(item, index) in resourceList"
+                :key="index"
+                class="li-link"
+                :class="{ isActive: compare(item.id) }"
+              >
+                <!-- @click="handleResourceChange(item.id)" -->
+                <span style="color: #778899">{{ item.name }}</span>
+              </li>
+            </ul>
           </el-col>
         </el-row>
       </section>
@@ -390,6 +387,19 @@
           <el-col :span="16" class="component-div-computed2">
             <line-chart :chart-data="containerLineData" :show-total="true" />
           </el-col>
+          <el-col :span="8">
+            <ul style="height: 260px; overflow-y: scroll">
+              <li
+                v-for="(item, index) in resourceList"
+                :key="index"
+                class="li-link"
+                :class="{ isActive: compare(item.id) }"
+              >
+                <!-- @click="handleResourceChange(item.id)" -->
+                <span style="color: #778899">{{ item.name }}</span>
+              </li>
+            </ul>
+          </el-col>
         </el-row>
       </section>
     </BaseCard>
@@ -408,19 +418,148 @@
       <section class="component-div">
         <el-row>
           <el-col :span="11">
-            节点
-            <progress-card :chartData="progressData" />
-            <progress-card :chartData="progressData" />
-            <progress-card :chartData="progressData" />
-            <progress-card :chartData="progressData" />
+            <span style="font-size: 20px"> 节点 </span>
+            <el-row style="backgroundcolor: #f8f8ff; margin-top: 30px">
+              <el-col :span="18">
+                <!-- <span> kube-apiserver-25.2.20.182 </span><br /> -->
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span style="color: #00bfff">25.2.20.182</span>
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 0px; font-size: 20px">
+                <span>8.38</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
           </el-col>
 
           <el-col :span="11" style="margin-left: 50px">
-            容器组
-            <progress-card :chartData="progressData" />
-            <progress-card :chartData="progressData" />
-            <progress-card :chartData="progressData" />
-            <progress-card :chartData="progressData" />
+            <span style="font-size: 20px"> 容器组 </span>
+
+            <el-row style="backgroundcolor: #f8f8ff; margin-top: 30px">
+              <el-col :span="18">
+                <span> kube-apiserver-25.2.20.182 </span><br />
+                <span style="color: #778899; font-size: 12px"
+                  >节点：25.2.20.182</span
+                >
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 30px; font-size: 20px">
+                <span>12.52</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span> kube-apiserver-25.2.20.182 </span><br />
+                <span style="color: #778899; font-size: 12px"
+                  >节点：25.2.20.182</span
+                >
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 30px; font-size: 20px">
+                <span>12.52</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span> kube-apiserver-25.2.20.182 </span><br />
+                <span style="color: #778899; font-size: 12px"
+                  >节点：25.2.20.182</span
+                >
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 30px; font-size: 20px">
+                <span>12.52</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span> kube-apiserver-25.2.20.182 </span><br />
+                <span style="color: #778899; font-size: 12px"
+                  >节点：25.2.20.182</span
+                >
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 30px; font-size: 20px">
+                <span>12.52</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span> kube-apiserver-25.2.20.182 </span><br />
+                <span style="color: #778899; font-size: 12px"
+                  >节点：25.2.20.182</span
+                >
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 30px; font-size: 20px">
+                <span>12.52</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
+            <el-row style="backgroundcolor: #f8f8ff">
+              <el-col :span="18">
+                <span> kube-apiserver-25.2.20.182 </span><br />
+                <span style="color: #778899; font-size: 12px"
+                  >节点：25.2.20.182</span
+                >
+                <progress-card :chartData="progressData" />
+              </el-col>
+              <el-col :span="6" style="margin-top: 30px; font-size: 20px">
+                <span>12.52</span><span style="color: #778899"> Mbps</span>
+              </el-col>
+            </el-row>
           </el-col>
         </el-row>
       </section>
@@ -602,6 +741,31 @@ export default {
   props: {},
   data() {
     return {
+      version: "",
+
+      resource: {
+        id: "",
+        name: "",
+        version: [],
+      },
+      resourceList: [
+        { id: 1, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 2, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 3, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 4, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 5, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 6, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 7, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 8, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 9, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 10, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 11, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 12, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 13, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 14, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 15, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+        { id: 16, name: "25.2.20.189:/dev/mapper/vg_os-lv_root" },
+      ],
       resourceTime: "近 1 小时",
       timeOptions: [
         {
@@ -804,9 +968,25 @@ export default {
     this.detailData.filter((item) => {
       return item.label == "显示名称";
     })[0].value = this.$route.query.name;
+
+    this.resource = this.resourceList[0];
+    this.version = this.resource.version[0];
   },
   mounted() {},
   methods: {
+    // handleResourceChange(currentId) {
+    //   this.resource = this.resourceList.find((item) => {
+    //     return item.id === currentId;
+    //   });
+    //   this.version = this.resource.version[0];
+    // },
+    compare(currentId) {
+      if (this.resource.id === currentId) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     // handelLabels(title) {
     //   this.updateLabelsVisible = true;
     //   this.dialogTitle = `更新${title}`;
@@ -930,5 +1110,44 @@ export default {
     flex: 1;
     height: 100%;
   }
+}
+
+.status-point {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.li-version {
+  font-size: 14px;
+  color: rgb(100, 102, 105);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+.li-link {
+  widows: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  overflow: hidden;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  font-size: 16px;
+  color: rgb(50, 52, 55);
+}
+.li-link:hover,
+.isActive {
+  color: $color-primary;
+  background-color: $background-color;
+}
+.li-version {
+  font-size: 14px;
+  color: rgb(100, 102, 105);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
 }
 </style>

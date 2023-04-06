@@ -5,7 +5,14 @@
         <div class="card-title left-header" />
       </header>
       <section>
-        <div class="flex-center" style="float: right; margin-bottom: 15px">
+        <div
+          class="flex-center"
+          style="float: left; margin-bottom: 13px; font-size: 22px"
+        >
+          容器组
+        </div>
+
+        <div class="flex-center" style="float: right">
           <el-input
             placeholder="按名称/节点IP /节点标签过滤"
             size="small"
@@ -13,6 +20,8 @@
           >
             <el-button slot="append" icon="el-icon-search" />
           </el-input>
+          <el-button icon="el-icon-refresh-right" size="small" />
+          <el-button icon="el-icon-s-tools" size="small" />
         </div>
 
         <!-- 2 表格 和 分页器-->
@@ -36,11 +45,28 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'name'" class="cursor-pointer">
-                  <span @click="handelDetails(scope.row)">
+                  <span @click="openDetails(scope.row)">
                     {{ scope.row[col.id] }}
                   </span>
                 </div>
-
+                <div v-else-if="col.id === 'cpu'" class="cursor-pointer">
+                  <!-- <span @click="handelDetails(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </span> -->
+                  <progress-card :chartData="progressData" />
+                </div>
+                <div v-else-if="col.id === 'memory'" class="cursor-pointer">
+                  <!-- <span @click="handelDetails(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </span> -->
+                  <progress-card :chartData="progressData" />
+                </div>
+                <div v-else-if="col.id === 'storage'" class="cursor-pointer">
+                  <!-- <span @click="handelDetails(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </span> -->
+                  <progress-card :chartData="progressData" />
+                </div>
                 <div v-else-if="col.id === 'total'">
                   <p class="margin0">
                     <i class="el-icon-cpu primary2-text" />
@@ -52,21 +78,22 @@
                   </p>
                 </div>
                 <div v-else-if="col.id === 'operation'" class="operation-cell">
-                  <el-dropdown>
+                  <el-dropdown trigger="click">
                     <i class="el-icon-more" />
                     <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item
-                        command="update"
-                        @click.native="handleUpdateLabel(scope.row)"
-                      >
-                        更新配置参数
+                      <el-dropdown-item command="update">
+                        EXEC
+                      </el-dropdown-item>
+
+                      <el-dropdown-item command="update">
+                        查看详情
                       </el-dropdown-item>
 
                       <el-dropdown-item
                         command="update"
-                        @click.native="handleSetSpot(scope.row)"
+                        @click.native="handleDeleteContainer(scope.row)"
                       >
-                        卸载
+                        删除
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -285,255 +312,32 @@
       </div>
     </el-dialog>
 
-    <!-- 更新节点标签 -->
+    <monaco-editor-dialog
+      v-if="detailVisible"
+      id="eventMonacoEditorDialog"
+      title="详情"
+      :visible="detailVisible"
+      :code="code"
+      :read-only="readOnly"
+      :btn-visible="btnVisible"
+      :language="language"
+      :submit-txt="submitTxt"
+      @closeDetailsDialog="closeDetailsDialog"
+    />
+
     <el-dialog
-      title="更新节点标签"
-      @close="cancelNodeUpdate"
-      :visible.sync="updateNodeVisible"
-      width="70%"
-    >
-      <div class="el-dialog-div">
-        <el-form
-          ref="nodeUpdateForm"
-          :model="nodeUpdateForm"
-          :rules="nodeUpdateRules"
-          label-width="125px"
-        >
-          <el-row type="flex" class="row-bg">
-            <el-col :span="24">
-              <!-- 1 -->
-              <div style="padding-top: 15px">
-                <span style="margin-left: 20px">键</span>
-                <span style="margin-left: 250px">值</span>
-              </div>
-              <!-- 2 -->
-              <div class="grid-content bg-purple">
-                <div v-if="nodeUpdateForm.nodeUpdateItems.length > 0">
-                  <div
-                    v-for="(domain, index) in nodeUpdateForm.nodeUpdateItems"
-                    :key="domain.id"
-                    class="margin-bottom10 item-div"
-                  >
-                    <el-row>
-                      <el-col :span="10" style="margin-left: -120px">
-                        <el-form-item>
-                          <el-input
-                            v-model="domain.key"
-                            @focus="setMinWidthEmpty"
-                            style="width: 100%"
-                          >
-                          </el-input>
-                        </el-form-item>
-                      </el-col>
-
-                      <el-col :span="12" style="margin-left: -80px">
-                        <el-form-item>
-                          <el-input
-                            v-model="domain.value"
-                            style="width: 100%"
-                          />
-                        </el-form-item>
-                      </el-col>
-
-                      <el-col
-                        :span="1"
-                        style="padding-left: 10px; padding-top: 10px"
-                      >
-                        <div>
-                          <i
-                            class="el-icon-remove-outline cursor-pointer"
-                            @click="
-                              handleDeleteLabel(
-                                'nodeUpdateItems',
-                                domain,
-                                index
-                              )
-                            "
-                          />
-                        </div>
-                      </el-col>
-                    </el-row>
-                  </div>
-                </div>
-
-                <div class="flex-center">
-                  <div
-                    class="cursor-pointer text-center hover-div"
-                    style="flex: 1; padding: 10px 0"
-                    @click="handleAddLabel('nodeUpdateItems')"
-                  >
-                    <i class="el-icon-circle-plus-outline" />
-                    添加
-                  </div>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleUpdate"> 确定 </el-button>
-        <el-button @click="updateNodeVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 设置污点 -->
-    <el-dialog
-      title="设置污点"
-      @close="cancelSetSpot"
-      :visible.sync="setSpotVisible"
-      width="70%"
-    >
-      <div class="el-dialog-div">
-        <el-form
-          ref="setSpotForm"
-          :model="setSpotForm"
-          :rules="setSpotRules"
-          label-width="125px"
-        >
-          <el-row type="flex" class="row-bg">
-            <el-col :span="24">
-              <!-- 1 -->
-              <div style="padding-top: 15px">
-                <span style="margin-left: 25px">键</span>
-                <span style="margin-left: 245px">值</span>
-                <span style="margin-left: 255px">类型</span>
-              </div>
-              <!-- 2 -->
-              <div class="grid-content bg-purple">
-                <div v-if="setSpotForm.setSpotItems.length > 0">
-                  <div
-                    v-for="(domain, index) in setSpotForm.setSpotItems"
-                    :key="domain.id"
-                    class="margin-bottom10 item-div"
-                  >
-                    <el-row style="display: flex">
-                      <el-col style="margin-left: -120px">
-                        <el-form-item>
-                          <el-input
-                            v-model="domain.key"
-                            @focus="setMinWidthEmpty"
-                            style="width: 100%"
-                          >
-                          </el-input>
-                        </el-form-item>
-                      </el-col>
-
-                      <el-col style="margin-left: -110px">
-                        <el-form-item>
-                          <el-input
-                            v-model="domain.value"
-                            style="width: 100%"
-                          />
-                        </el-form-item>
-                      </el-col>
-
-                      <el-col style="margin-left: -110px">
-                        <el-form-item>
-                          <el-select
-                            v-model="setSpotForm.type"
-                            @focus="setMinWidthEmpty"
-                            style="width: 95%"
-                          >
-                            <el-option
-                              v-for="item in typeOptions"
-                              :key="item.value"
-                              :value="item.value"
-                              :label="item.value"
-                            >
-                            </el-option>
-                          </el-select>
-                        </el-form-item>
-                      </el-col>
-
-                      <el-col
-                        :span="1"
-                        style="padding-left: 10px; padding-top: 10px"
-                      >
-                        <div>
-                          <i
-                            class="el-icon-remove-outline cursor-pointer"
-                            @click="
-                              handleDeleteSetSpot('setSpotItems', domain, index)
-                            "
-                          />
-                        </div>
-                      </el-col>
-                    </el-row>
-                  </div>
-                </div>
-
-                <div class="flex-center">
-                  <div
-                    class="cursor-pointer text-center hover-div"
-                    style="flex: 1; padding: 10px 0"
-                    @click="handleAddSetSpot('setSpotItems')"
-                  >
-                    <i class="el-icon-circle-plus-outline" />
-                    添加
-                  </div>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleSet"> 确定 </el-button>
-        <el-button @click="setSpotVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 停止调度 -->
-    <el-dialog
-      title="停止调度"
-      @close="cancelStop"
-      :visible.sync="stopDispatchVisible"
+      title="删除容器组"
+      :visible.sync="handleDeleteVisible"
       width="30%"
     >
       <div class="el-dialog-div">
-        <span style="margin-left: 50px">确定将此节点设定为不可调度状态</span>
+        <span style="margin-left: 50px">
+          {{ "确定删除容器组 " + this.deleteName + " 吗？" }}
+        </span>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleStop"> 确定 </el-button>
-        <el-button @click="stopDispatchVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 删除节点 -->
-    <el-dialog
-      title="删除节点"
-      @close="canceldelete"
-      :visible.sync="deleteVisible"
-      width="70%"
-    >
-      <div class="el-dialog-div">
-        <el-table
-          :data="tableData.data"
-          style="width: 100%"
-          header-row-class-name="headerStyle"
-          class="margin-top"
-        >
-          <el-table-column
-            v-for="col in tableColumnList"
-            :key="col.id"
-            :label="col.label"
-            :show-overflow-tooltip="col['show-overflow-tooltip']"
-            :sortable="col.sortable"
-            :width="col.width"
-            :fixed="col.fixed"
-          >
-            <template slot-scope="scope">
-              <div>
-                {{ scope.row[col.id] }}
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handle_delete"> 确定 </el-button>
-        <el-button @click="deleteVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleSure"> 确定 </el-button>
+        <el-button @click="handleDeleteVisible = false">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -542,17 +346,76 @@
 <script>
 import { tableColumnList, tableData } from "./constant/index";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
-// import ProgressCard from "./ProgressCard.vue";
+import ProgressCard from "./ProgressCard.vue";
+import MonacoEditorDialog from "@/apps/container/views/components/MonacoEditorDialog";
 
 import { nanoid } from "nanoid";
 
 export default {
   name: "Node",
-  components: { FoldableBlock },
+  components: { FoldableBlock, ProgressCard, MonacoEditorDialog },
 
   props: {},
   data() {
     return {
+      // 事件详情数据
+      detailVisible: false,
+      readOnly: true,
+      code: "",
+      language: "json",
+      submitTxt: null,
+      btnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        reset: false,
+        find: true,
+        copy: true,
+      },
+      spec: {
+        detail: {
+          cluster_name: "global",
+          event: {
+            count: 6713,
+            eventTime: null,
+            firstTimestamp: "2022-10-14T05:33:11Z",
+            involvedObject: {
+              apiVersion: "v1",
+              fieldPath: "spec.containers{ubuntu}",
+              kind: "Pod",
+              name: "ubuntu-bq84l",
+              namespace: "toda-elasticsearch-system",
+              resourceVersion: "519516627",
+              uid: "441f41bd-77d5-4f1d-90c4-2b0aee37e7e0",
+            },
+            lastTimestamp: "2022-11-07T01:33:22Z",
+            message:
+              'Container image "index.docker.io/library/ubuntu:latest" already present on machine',
+            metadata: {
+              creationTimestamp: "2022-11-07T01:18:15Z",
+              name: "ubuntu-bq84l.171dd899b971f3ab",
+              namespace: "toda-elasticsearch-system",
+              resourceVersion: "603142979",
+              uid: "c61582db-0ce2-469d-8606-9854962ffc82",
+            },
+            reason: "Pulled",
+            reportingComponent: "",
+            reportingInstance: "",
+            source: {
+              component: "kubelet",
+              host: "172.16.129.51",
+            },
+            type: "Normal",
+          },
+          operation: "Pulled",
+          operator: "kubelet@172.16.129.51",
+          source: "kubernetes",
+        },
+        log_level: 0,
+        resource_id: "441f41bd-77d5-4f1d-90c4-2b0aee37e7e0",
+        resource_type: "Pod",
+        time: "1667783895000000",
+      },
       progressData: [
         {
           normal: 12,
@@ -591,6 +454,7 @@ export default {
       ],
       tableColumnList,
       tableData,
+      deleteName: "",
       nodeForm: {
         nodeItems: [
           {
@@ -649,13 +513,23 @@ export default {
         current: 1,
         pageSize: 10,
       },
+
+      handleDeleteVisible: false,
     };
   },
   computed: {},
   watch: {},
-  created() {},
+  created() {
+    this.deleteName = this.$route.query.name;
+  },
   mounted() {},
   methods: {
+    openDetails(row) {
+      this.detailVisible = true;
+      this.readOnly = true;
+      this.submitTxt = null;
+      this.code = JSON.stringify(this.spec, null, 2);
+    },
     setMinWidthEmpty(val) {
       // 无数据的情况下，给请选择提示设置最小宽度
       let domEmpty = document.getElementsByClassName(
@@ -679,7 +553,12 @@ export default {
       this.nodeDialogVisible = false;
     },
 
+    closeDetailsDialog() {
+      this.detailVisible = false;
+    },
+
     handleCreate() {},
+    handleSure(){},
 
     handleAddNode(filed) {
       const obj = {
@@ -759,7 +638,14 @@ export default {
     canceldelete() {
       this.deleteVisible = false;
     },
-    handle_delete() {},
+    // ====================================================================
+
+    handle_delete() {
+      this.deleteVisible = true;
+    },
+    handleDeleteContainer() {
+      this.handleDeleteVisible = true;
+    },
   },
 };
 </script>

@@ -12,15 +12,21 @@ export const tableColumnList = [
     id: 'status',
     label: '部署状态',
     sortable: true,
-    width: "180px"
+    // width: "180px"
   },
 
   {
     id: 'time',
     label: '部署时间',
-    sortable: true,
-    width: "180px"
+    // sortable: true,
+    // width: "180px"
   },
+  {
+    id: 'operation',
+    label: '',
+    width: '60px',
+    fixed: 'right'
+  }
 
 ]
 export const tableData = Mock.mock({

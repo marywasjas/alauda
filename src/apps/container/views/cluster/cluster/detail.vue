@@ -33,6 +33,7 @@ import TabHeader from "@/apps/container/views/components/TabHeader";
 import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
 import Node from "./components/Node/Node.vue";
 import Event from "./components/Event/Event.vue";
+import Monitor from "./components/Monitor/Monitor.vue";
 import Func from "./components/Func/Func.vue";
 import Plugins from "./components/Plugins/Plugins.vue";
 
@@ -44,7 +45,8 @@ export default {
     Node,
     Event,
     Func,
-    Plugins
+    Plugins,
+    Monitor
   },
   data() {
     return {
@@ -73,8 +75,8 @@ export default {
         },
         {
           label: "监控",
-          name: "event2",
-          com: "Event",
+          name: "monitor",
+          com: "Monitor",
         },
         {
           label: "插件",
@@ -104,7 +106,8 @@ export default {
 
     handelDelete() {
       const returnMsgList = [
-        `确定删除${this.name}持久卷声明吗？删除后持久卷中的数据将被清除。`,
+        `确定删除集群"${this.name}"吗？该集群被以下 10个 项目使用。删除之后，仍会保留 Kubernetes 集群及项目下资源。如需要清理 Kubernetes 集群及项目下资源，请复制以下资源清理命令，并在该集群下进行清理。`,
+        
         `请输入${this.name}确定删除`,
       ];
       const newData = [];
@@ -112,7 +115,7 @@ export default {
       for (const i in returnMsgList) {
         newData.push(h("p", null, returnMsgList[i]));
       }
-      this.$prompt(h("div", null, newData), "删除持久卷声明", {
+      this.$prompt(h("div", null, newData), "删除集群", {
         confirmButtonText: "删除",
         cancelButtonText: "取消",
         type: "error",

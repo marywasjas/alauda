@@ -1,289 +1,42 @@
 <template>
-  <div class="calculation-container-group">
-    <BaseCard>
-      <header>
-        <div class="card-title left-header" />
-      </header>
-      <section>
-        <div class="flex-center" style="float: right; margin-bottom: 15px">
-          <el-input
-            placeholder="按名称/节点IP /节点标签过滤"
-            size="small"
-            class="margin-right10"
-          >
-            <el-button slot="append" icon="el-icon-search" />
-          </el-input>
-        </div>
+  <div class="detail-container">
+    <div class="detail-header">
+      <tab-header
+        :name="name"
+        :desc="desc"
+        :tab-list="tabList"
+        :active-name="activeName"
+        @changeActive="changeActive"
+      >
+        <template v-slot:headerRight>
+          <el-dropdown trigger="click">
+            <el-button type="primary" class="margin-left10">
+              操作
+              <i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="handleUpdateLabel"
+                >更新节点标签</el-dropdown-item
+              >
 
-        <!-- 2 表格 和 分页器-->
-        <div class="card__content">
-          <el-table
-            :data="tableData.data"
-            style="width: 100%"
-            header-row-class-name="headerStyle"
-            class="margin-top"
-          >
-            <!-- <el-table-column fixed prop="date" label="名称" >
-          </el-table-column> -->
-            <el-table-column
-              v-for="col in tableColumnList"
-              :key="col.id"
-              :label="col.label"
-              :show-overflow-tooltip="col['show-overflow-tooltip']"
-              :sortable="col.sortable"
-              :width="col.width"
-              :fixed="col.fixed"
-            >
-              <template slot-scope="scope">
-                <div v-if="col.id === 'name'" class="cursor-pointer">
-                  <span @click="handelDetails(scope.row)">
-                    {{ scope.row[col.id] }}
-                  </span>
-                </div>
-
-                <div v-else-if="col.id === 'total'">
-                  <p class="margin0">
-                    <i class="el-icon-cpu primary2-text" />
-                    {{ scope.row.cpu }}{{ scope.row.cpuCompony }}
-                  </p>
-                  <p class="margin0">
-                    <i class="el-icon-bank-card primary-text" />
-                    {{ scope.row.memory }}{{ scope.row.memoryCompony }}
-                  </p>
-                </div>
-                <div v-else-if="col.id === 'operation'" class="operation-cell">
-                  <el-dropdown>
-                    <i class="el-icon-more" />
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item
-                        command="update"
-                        @click.native="handleUpdateLabel(scope.row)"
-                      >
-                        更新配置参数
-                      </el-dropdown-item>
-
-                      <el-dropdown-item
-                        command="update"
-                        @click.native="handleSetSpot(scope.row)"
-                      >
-                        卸载
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </div>
-                <div v-else>
-                  {{ scope.row[col.id] }}
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </section>
-    </BaseCard>
-
-    <!-- 添加节点 -->
-    <el-dialog
-      title="添加节点"
-      @close="cancelDialog"
-      :visible.sync="nodeDialogVisible"
-      width="70%"
-    >
-      <div class="el-dialog-div">
-        <el-form
-          ref="nodeForm"
-          :model="nodeForm"
-          :rules="nodeRules"
-          label-width="125px"
-        >
-          <el-form-item label="节点">
-            <el-row type="flex" class="row-bg">
-              <el-col :span="24">
-                <div class="grid-content bg-purple">
-                  <div v-if="nodeForm.nodeItems.length > 0">
-                    <div
-                      v-for="(domain, index) in nodeForm.nodeItems"
-                      :key="domain.id"
-                      class="margin-bottom10 item-div"
-                    >
-                      <el-row>
-                        <el-col :span="11">
-                          <el-form-item
-                            label="类型"
-                            label-width="100px"
-                            prop="seleted"
-                          >
-                            <el-select
-                              v-model="domain.selected"
-                              @focus="setMinWidthEmpty"
-                              style="width: 100%"
-                            >
-                              <el-option label="控制节点" value="控制节点" />
-                              <el-option label="计算节点" value="计算节点" />
-                            </el-select>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="11" style="padding-left: 10px">
-                          <el-form-item label="显示名称" label-width="100px">
-                            <el-input
-                              v-model="domain.showName"
-                              placeholder="显示名称"
-                            />
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="11">
-                          <el-form-item
-                            label="IPv4 地址"
-                            label-width="100px"
-                            prop="ipv4"
-                          >
-                            <el-input
-                              v-model="domain.ipv4"
-                              placeholder="请输入IPv4 地址"
-                            />
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="11" style="padding-left: 10px">
-                          <el-form-item label="SSH 连接 IP" label-width="100px">
-                            <el-input
-                              v-model="domain.sship"
-                              placeholder="默认与IPv4 地址相同"
-                            />
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="1">
-                          <el-tooltip
-                            effect="dark"
-                            class="item"
-                            placement="top"
-                          >
-                            <template slot="content">
-                              <div style="max-width: 450px">
-                                SSH 连接时使用的 IP，平台默认使用 IPv4 地址 SSH
-                                连接部署，当无法通过 IPv4
-                                地址直连时，需要填写能直连的 IPv4
-                                对应的外网地址或者 NAT 地址
-                              </div>
-                            </template>
-                            <i
-                              class="
-                                el-icon-question
-                                margin-left10
-                                question-icon
-                              "
-                            />
-                          </el-tooltip>
-
-                          <!-- <el-form-item label="网卡名称" label-width="100px">
-                            <el-input
-                              v-model="domain.netCard"
-                              placeholder="请输入需要使用的网卡"
-                            />
-                          </el-form-item> -->
-                        </el-col>
-                        <el-col :span="11" style="padding-left: 10px">
-                          <el-form-item label="设置" label-width="100px">
-                            <el-checkbox-group v-model="domain.type">
-                              <el-checkbox label="可部署应用" name="type" />
-                              <el-checkbox label="GPU" name="type" />
-                            </el-checkbox-group>
-                          </el-form-item>
-                        </el-col>
-                        <el-col :span="1" style="padding-left: 10px">
-                          <div>
-                            <i
-                              class="el-icon-remove-outline cursor-pointer"
-                              @click="
-                                handleDeleteNode('nodeItems', domain, index)
-                              "
-                            />
-                          </div>
-                        </el-col>
-                      </el-row>
-                    </div>
-                  </div>
-                  <div v-else>
-                    <p style="margin-left: 100px"></p>
-                  </div>
-                  <div class="flex-center">
-                    <div
-                      class="cursor-pointer text-center hover-div"
-                      style="flex: 1; margin-top: -10px"
-                      @click="handleAddNode('nodeItems')"
-                    >
-                      <i class="el-icon-circle-plus-outline" />
-                      添加
-                    </div>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-          </el-form-item>
-
-          <el-form-item label="可用性检查配置">
-            <el-checkbox v-model="nodeForm.config">
-              跳过 "警告" 检查项
-            </el-checkbox>
-            <el-descriptions
-              size="small"
-              :colon="false"
-              :contentStyle="rowCenter"
-            >
-              <el-descriptions-item>
-                可用性检查详情介绍请参考
-              </el-descriptions-item>
-            </el-descriptions>
-          </el-form-item>
-
-          <el-form-item label="SSH 端口" prop="sshPort" style="width: 70%">
-            <el-input v-model="nodeForm.sshPort" />
-          </el-form-item>
-
-          <el-form-item label="节点认证" style="width: 70%">
-            <el-radio-group v-model="nodeForm.node">
-              <el-radio-button label="密码"></el-radio-button>
-              <el-radio-button label="秘钥"></el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item label="用户名" prop="nodeName" style="width: 70%">
-            <el-input v-model="nodeForm.nodeName" placeholder="节点用户名" />
-          </el-form-item>
-
-          <el-form-item
-            label="密码"
-            v-if="nodeForm.node == '密码'"
-            style="width: 70%"
-          >
-            <el-input
-              v-model="nodeForm.password"
-              placeholder="节点密码"
-              show-password
-            />
-          </el-form-item>
-
-          <el-form-item
-            label="私钥"
-            prop="key"
-            v-if="nodeForm.node == '秘钥'"
-            style="width: 70%"
-          >
-            <el-input type="textarea" v-model="nodeForm.key" />
-          </el-form-item>
-
-          <el-form-item
-            label="私钥密码"
-            v-if="nodeForm.node == '秘钥'"
-            style="width: 70%"
-          >
-            <el-input v-model="nodeForm.keyPassword" show-password />
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleCreate"> 添加 </el-button>
-        <el-button @click="nodeDialogVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+              <el-dropdown-item @click.native="handleSetSpot">
+                设置污点
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="handleStopDispatch"
+                >停止调度</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="handleContainer"
+                >驱逐容器组</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="handleDelete"
+                >删除节点</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </tab-header>
+    </div>
+    <component :is="comName" />
 
     <!-- 更新节点标签 -->
     <el-dialog
@@ -507,15 +260,23 @@
       :visible.sync="deleteVisible"
       width="70%"
     >
+      <span>{{
+        "确定删除节点 " +
+        this.deleteName +
+        " (IP: " +
+        this.deleteName +
+        ") 吗? 该节点包含 19个 容器组。如需清理节点下的资源，请先下载清理脚本，节点删除成功后，需要登录到节点手动进行清理操作。"
+      }}</span>
+
       <div class="el-dialog-div">
         <el-table
-          :data="tableData.data"
+          :data="tableDelete.deleteData"
           style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
         >
           <el-table-column
-            v-for="col in tableColumnList"
+            v-for="col in tableDeleteCol"
             :key="col.id"
             :label="col.label"
             :show-overflow-tooltip="col['show-overflow-tooltip']"
@@ -536,30 +297,128 @@
         <el-button @click="deleteVisible = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 驱逐容器组 -->
+    <el-dialog
+      title="驱逐容器组"
+      @close="cancelContainer"
+      :visible.sync="containerVisible"
+      width="70%"
+    >
+      <span>{{
+        "确定驱逐节点 " +
+        this.deleteName +
+        " 上的所有容器组吗? 驱逐后，会把节点内的所有容器组 (不包含 DaemonSet 管理的容器组) 驱逐到集群内其他节点上，并设置该节点为不可调度状态。注意： 本地存储的容器组被驱逐后数据将丢失，请谨慎操作。该节点包含 14个容器组"
+      }}</span>
+
+      <div class="el-dialog-div">
+        <el-table
+          :data="tableDelete.deleteData"
+          style="width: 100%"
+          header-row-class-name="headerStyle"
+          class="margin-top"
+        >
+          <el-table-column
+            v-for="col in tableDeleteCol"
+            :key="col.id"
+            :label="col.label"
+            :show-overflow-tooltip="col['show-overflow-tooltip']"
+            :sortable="col.sortable"
+            :width="col.width"
+            :fixed="col.fixed"
+          >
+            <template slot-scope="scope">
+              <div>
+                {{ scope.row[col.id] }}
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handle_container"> 确定 </el-button>
+        <el-button @click="containerVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { tableColumnList, tableData } from "./constant/index";
+import TabHeader from "@/apps/container/views/components/TabHeader";
+import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
+import Node from "./components/Node/Node.vue";
+import Event from "./components/Event/Event.vue";
+import Yaml from "@/apps/container/views/components/Details/Yaml";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
-// import ProgressCard from "./ProgressCard.vue";
-
 import { nanoid } from "nanoid";
 
-export default {
-  name: "Node",
-  components: { FoldableBlock },
+// import { tableColumnList, tableData } from "./constant/index";
 
-  props: {},
+export default {
+  name: "ClusterDetail",
+  components: {
+    TabHeader,
+    BaseInfo,
+    Node,
+    Event,
+    Yaml,
+    FoldableBlock,
+   
+  },
   data() {
     return {
-      progressData: [
+     
+      name: "",
+      desc: "",
+      tabList: [
         {
-          normal: 12,
-          abnormal: 0,
-          total: 12,
+          label: "节点详情",
+          name: "baseInfo",
+          com: "BaseInfo",
+        },
+        {
+          label: "监控",
+          name: "event",
+          com: "Event",
+        },
+        {
+          label: "容器组",
+          name: "node",
+          com: "Node",
+        },
+        {
+          label: "YAML",
+          name: "yaml",
+          com: "Yaml",
         },
       ],
+      activeName: "",
+      tableDeleteCol: [
+        {
+          id: "name",
+          label: "容器组名称",
+          sortable: true,
+          fixed: true,
+        },
+        {
+          id: "space",
+          label: "所属命名空间",
+          sortable: true,
+        },
+      ],
+
+      tableDelete: {
+        deleteData: [
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+        ],
+      },
+      deleteName: "",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -574,6 +433,7 @@ export default {
       setSpotVisible: false,
       stopDispatchVisible: false,
       deleteVisible: false,
+      containerVisible: false,
       typeOptions: [
         {
           key: "NoSchedule",
@@ -589,8 +449,8 @@ export default {
           value: "NoExcute",
         },
       ],
-      tableColumnList,
-      tableData,
+      // tableColumnList,
+      // tableData,
       nodeForm: {
         nodeItems: [
           {
@@ -651,11 +511,20 @@ export default {
       },
     };
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
+  computed: {
+    comName: function () {
+      if (!this.activeName) return "";
+      const item = this.tabList.filter((el) => el.name === this.activeName);
+      return item[0].com;
+    },
+  },
+  created() {
+    this.name = this.$route.query.name;
+    this.desc = this.$route.query.desc;
+    this.activeName = this.tabList[0].name;
+  },
   methods: {
+
     setMinWidthEmpty(val) {
       // 无数据的情况下，给请选择提示设置最小宽度
       let domEmpty = document.getElementsByClassName(
@@ -664,6 +533,13 @@ export default {
       if (domEmpty.length > 0) {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
+    },
+
+    handelDetails(obj) {
+      this.$router.push({
+        name: "ClusterNodeDetail",
+        query: { name: obj.name },
+      });
     },
     // 搜索
     onSearch() {
@@ -721,6 +597,16 @@ export default {
     },
 
     // ====================================================================
+    handleContainer() {
+      this.containerVisible = true;
+    },
+
+    cancelContainer() {
+      this.containerVisible = false;
+    },
+    handle_container() {},
+    // ====================================================================
+
     handleSetSpot() {
       this.setSpotVisible = true;
     },
@@ -755,17 +641,61 @@ export default {
 
     handleDelete() {
       this.deleteVisible = true;
+      this.deleteName = this.$route.query.name;
     },
     canceldelete() {
       this.deleteVisible = false;
     },
     handle_delete() {},
+
+    changeActive(value) {
+      this.activeName = value;
+    },
+
+    handelDelete() {
+      const returnMsgList = [
+        `确定删除${this.name}持久卷声明吗？删除后持久卷中的数据将被清除。`,
+        `请输入${this.name}确定删除`,
+      ];
+      const newData = [];
+      const h = this.$createElement;
+      for (const i in returnMsgList) {
+        newData.push(h("p", null, returnMsgList[i]));
+      }
+      this.$prompt(h("div", null, newData), "删除持久卷声明", {
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        type: "error",
+        inputValidator: (val) => {
+          if (val === this.name) {
+            return true;
+          }
+          return false;
+        },
+        inputErrorMessage: "输入不正确",
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "已删除",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消",
+          });
+        });
+    },
   },
 };
 </script>
-<style lang="scss" scoped>
-.calculation-container-group {
-  margin-top: 20px;
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.detail-container {
+  min-height: 100%;
+  padding: 20px;
+  background-color: $background-color;
 }
 .row-bg {
   padding: 0;

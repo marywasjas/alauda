@@ -17,11 +17,7 @@ export const containerLineData = Mock.mock({
     {
       name: '已用容量',
       flied: 'yxz'
-    },
-    {
-      name: '已用容量',
-      flied: 'yxz'
-    },
+    }
   ],
   // 'data|10': [
   //   {
@@ -49,6 +45,36 @@ export const containerLineData = Mock.mock({
   ]
 })
 
+// const alarmlist = {
+//   array: [
+//     {
+//       component: 'awp-bes' + "-wap-web",
+//       appname: 'awp-bes',
+//       item: [
+//         {
+//           id: 1,
+//           text: "默认监控项",
+//         }
+//       ],
+//       // hasChildren: true
+//     },
+//     {
+//       component: 'awp-nginx' + "-wap-web",
+//       appname: 'awp-nginx',
+//       item: [
+//         {
+//           id: 1,
+//           text: "默认监控项",
+//         },
+//         {
+//           id: 2,
+//           text: "nginx标准监控",
+//         },
+//       ],
+//       // hasChildren: true
+//     }
+//   ]
+// }
 export const containerData = Mock.mock([
   // {
   //   label: '可用容量',

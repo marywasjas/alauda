@@ -53,27 +53,21 @@
               :fixed="col.fixed"
             >
               <template slot-scope="scope">
-                <div v-if="col.id === 'name'" class="cursor-pointer">
-                  <span @click="handelDetails(scope.row)">
+                <div v-if="col.id == 'name'">
+                  <span
+                    @click="handelDetails(scope.row)"
+                    class="cursor-pointer"
+                  >
                     {{ scope.row[col.id] }}
                   </span>
                 </div>
-                <div v-if="col.id === 'cpu'" class="cursor-pointer">
-                  <!-- <span @click="handelDetails(scope.row)">
-                    {{ scope.row[col.id] }}
-                  </span> -->
+                <div v-else-if="col.id === 'cpu'" class="cursor-pointer">
                   <progress-card :chartData="progressData" />
                 </div>
-                <div v-if="col.id === 'memory'" class="cursor-pointer">
-                  <!-- <span @click="handelDetails(scope.row)">
-                    {{ scope.row[col.id] }}
-                  </span> -->
+                <div v-else-if="col.id === 'memory'" class="cursor-pointer">
                   <progress-card :chartData="progressData" />
                 </div>
-                <div v-if="col.id === 'storage'" class="cursor-pointer">
-                  <!-- <span @click="handelDetails(scope.row)">
-                    {{ scope.row[col.id] }}
-                  </span> -->
+                <div v-else-if="col.id === 'storage'" class="cursor-pointer">
                   <progress-card :chartData="progressData" />
                 </div>
                 <div v-else-if="col.id === 'total'">
@@ -87,7 +81,7 @@
                   </p>
                 </div>
                 <div v-else-if="col.id === 'operation'" class="operation-cell">
-                  <el-dropdown>
+                  <el-dropdown trigger="click">
                     <i class="el-icon-more" />
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
@@ -556,15 +550,23 @@
       :visible.sync="deleteVisible"
       width="70%"
     >
+      <span>{{
+        "确定删除节点 " +
+        this.deleteName +
+        " (IP: " +
+        this.deleteName +
+        ") 吗? 该节点包含 19个 容器组。如需清理节点下的资源，请先下载清理脚本，节点删除成功后，需要登录到节点手动进行清理操作。"
+      }}</span>
+
       <div class="el-dialog-div">
         <el-table
-          :data="tableData.data"
+          :data="tableDelete.deleteData"
           style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
         >
           <el-table-column
-            v-for="col in tableColumnList"
+            v-for="col in tableDeleteCol"
             :key="col.id"
             :label="col.label"
             :show-overflow-tooltip="col['show-overflow-tooltip']"
@@ -609,6 +611,32 @@ export default {
           total: 12,
         },
       ],
+      tableDeleteCol: [
+        {
+          id: "name",
+          label: "容器组名称",
+          sortable: true,
+          fixed: true,
+        },
+        {
+          id: "space",
+          label: "所属命名空间",
+          sortable: true,
+        },
+      ],
+
+      tableDelete: {
+        deleteData: [
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+          { name: "chaosblade-box", space: "chaos-dev" },
+        ],
+      },
+      deleteName: "",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -714,6 +742,13 @@ export default {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
     },
+
+    handelDetails(obj) {
+      this.$router.push({
+        name: "ClusterNodeDetail",
+        query: { name: obj.name },
+      });
+    },
     // 搜索
     onSearch() {
       console.log("搜索");
@@ -802,8 +837,9 @@ export default {
 
     // ====================================================================
 
-    handleDelete() {
+    handleDelete(obj) {
       this.deleteVisible = true;
+      this.deleteName = obj.name;
     },
     canceldelete() {
       this.deleteVisible = false;
