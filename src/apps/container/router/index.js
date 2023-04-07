@@ -799,8 +799,8 @@ export const containerAsyncRoutes = [
     redirect: '/cluster-management/backup-manage/backuplist',
     name: 'Cluster',
     meta: { title: '集群管理', icon: 'table' },
-    // alwaysShow: true, // will always show the root menu
     children: [
+      // 集群
       {
         path: 'cluster',
         component: () => import('@/apps/container/views/cluster/cluster/index'),
@@ -855,6 +855,7 @@ export const containerAsyncRoutes = [
           }
         ]
       },
+      // 自定义资源
       {
         path: 'crd',
         component: () => import('@/apps/container/views/cluster/crd/index'),
@@ -907,6 +908,7 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      // 资源管理
       {
         path: 'resource',
         component: () => import('@/apps/container/views/cluster/resource/index'),
@@ -926,6 +928,7 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      // 备份恢复
       {
         path: 'backup-manage',
         component: () => import('@/apps/container/views/cluster/backup/index'),
@@ -952,6 +955,165 @@ export const containerAsyncRoutes = [
       },
     ]
   },
+
+  // 平台管理--平台证书管理
+  {
+    path: '/platformCert-management',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/apps/container/views/platformCert/index'),
+        name: 'PlatformCert',
+        meta: { title: '平台证书管理', icon: 'tab' }
+      }
+    ],
+  },
+
+  // 平台管理--用户角色管理
+  {
+    path: '/user-role-management',
+    component: Layout,
+    redirect: '/user-role-management/user',
+    name: 'User-Role',
+    meta: { title: '用户角色管理', icon: 'peoples' },
+    children: [
+      // 用户管理
+      {
+        path: 'user',
+        component: () => import('@/apps/container/views/user-role/user/index'),
+        redirect: '/user-role-management/user/list',
+        name: 'UserMain',
+        meta: { title: '用户管理', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/user/list.vue'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/user' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/user-role/user/create.vue'),
+            name: 'UserCreate',
+            meta: { title: '创建用户', icon: 'icon', noCache: true, activeMenu: '/user-role/user' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/user-role/user/detail.vue'),
+            name: 'UserDetail',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/user' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+        ]
+      },
+      // 角色管理
+      {
+        path: 'crd',
+        component: () => import('@/apps/container/views/cluster/crd/index'),
+        redirect: '/cluster-management/crd/list',
+        name: 'ClusterCrd',
+        meta: {
+          title: '角色管理',
+          roles: ['admin']
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/cluster/crd/list'),
+            name: 'ClusterCrdList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
+            hidden: true
+          },
+          {
+            path: 'detailCrd',
+            component: () => import('@/apps/container/views/cluster/crd/detail'),
+            name: 'ClusterCrdDetail',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+            children: [
+              {
+                path: 'create',
+                component: () => import('@/apps/container/views/cluster/crd/create/createCrd.vue'),
+                name: 'CrdCreate',
+                meta: { title: '创建实例' },
+                hidden: true
+              },
+              {
+                path: 'update',
+                component: () => import('@/apps/container/views/cluster/crd/update/updateCrd.vue'),
+                name: 'CrdUpdate',
+                meta: { title: '' },
+                hidden: true,
+                beforeEnter: (to, from, next) => {
+                  if (to.query.name) to.meta.title = to.query.name;
+                  next();
+                },
+              },
+            ],
+
+
+          },
+        ]
+      },
+      // IDP 配置
+      {
+        path: 'resource',
+        component: () => import('@/apps/container/views/cluster/resource/index'),
+        redirect: '/cluster-management/resource/list',
+        name: 'ResourceMain',
+        meta: {
+          title: '资源管理',
+          roles: ['admin']
+        },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/cluster/resource/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/resource' },
+            hidden: true
+          },
+        ]
+      },
+      // 用户安全策略
+      {
+        path: 'backup-manage',
+        component: () => import('@/apps/container/views/cluster/backup/index'),
+        redirect: '/cluster-management/backup-manage/backuplist',
+        name: 'BackupManage',
+        meta: { title: '备份恢复' },
+        alwaysShow: true, // will always show the root menu
+        children: [
+          {
+            path: 'backuplist',
+            component: () => import('@/apps/container/views/cluster/backup/backupList/backupList.vue'),
+            name: 'Backup-manageList',
+            meta: { title: '备份管理' },
+            // hidden: true,
+          },
+          {
+            path: 'resourcelist',
+            component: () => import('@/apps/container/views/cluster/backup/resourceList/resourceList.vue'),
+            name: 'Resource-manageList',
+            meta: { title: '资源管理', },
+            // hidden: true,
+          },
+        ]
+      },
+    ]
+  },
+
 
   { path: '*', redirect: '/404', hidden: true }
 ]
