@@ -56,18 +56,7 @@
             class="label-value"
           >
             <span>{{ item.label }} </span>: &nbsp;&nbsp;
-            <span v-if="item.id === 'status'">
-              <i
-                :class="
-                  item.label === '正常'
-                    ? 'el-icon-success running'
-                    : 'el-icon-warning stop'
-                "
-              />
-              <span> {{ item.value }} </span>
-            </span>
-
-            <span v-else>
+            <span>
               {{ item.value }}
               <i :class="item.afterIcon" @click="update(item)" />
             </span>
@@ -769,7 +758,7 @@ export default {
         this.projectDisable = false;
         if (this.optionData.com2[val][0]) {
           //根据第一个控件所选项确定第二个控件下拉内容的对象数组，并使默认为第一个数组项
-          this.selectData.project = this.optionData.com2[val][0].value;
+          // this.selectData.project = this.optionData.com2[val][0].value;
           this.handleProjectChange();
         }
       } else {
@@ -783,7 +772,7 @@ export default {
       if (val) {
         this.spaceDisable = false;
         if (this.optionData.com3[val][0]) {
-          this.selectData.space = this.optionData.com3[val][0].value;
+          // this.selectData.space = this.optionData.com3[val][0].value;
         }
       } else {
         this.selectData.space = "";

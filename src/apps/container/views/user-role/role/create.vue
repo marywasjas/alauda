@@ -3,9 +3,13 @@
     <div class="scroll-div">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span style="font-size: 18px; line-height: 24px; font-weight: bold">
+          <!-- <span style="font-size: 18px; line-height: 24px; font-weight: bold">
             创建用户
-          </span>
+          </span> -->
+          <el-steps :active="active">
+            <el-step title="基本信息"></el-step>
+            <el-step title="权限配置"></el-step>
+          </el-steps>
         </div>
         <div class="text item">
           <el-form
@@ -224,6 +228,8 @@ export default {
   components: { LineAlert, MonacoEditor },
   data() {
     return {
+      active: 0,
+
       ruleForm: {
         userName: "",
         showName: "",
@@ -397,7 +403,7 @@ export default {
       // }
       if (val) {
         this.projectDisable = false;
-        console.log(this.optionData.com2[val])
+        console.log(this.optionData.com2[val]);
         this.selectData.project = this.optionData.com2[val][0].value; //根据第一个控件所选项确定第二个控件下拉内容的对象数组，并使默认为第一个数组项
         this.handleProjectChange();
       } else {

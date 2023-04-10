@@ -255,7 +255,7 @@ export const containerAsyncRoutes = [
             path: 'List',
             component: () => import('@/apps/container/views/components-demo/timedTask/timedTaskList.vue'),
             name: 'TimedTaskList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/cron_job' },
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/components/' },
             hidden: true
           },
           {
@@ -1015,54 +1015,36 @@ export const containerAsyncRoutes = [
       },
       // 角色管理
       {
-        path: 'crd',
-        component: () => import('@/apps/container/views/cluster/crd/index'),
-        redirect: '/cluster-management/crd/list',
-        name: 'ClusterCrd',
-        meta: {
-          title: '角色管理',
-          roles: ['admin']
-        },
+        path: 'role',
+        component: () => import('@/apps/container/views/user-role/role/index'),
+        redirect: '/user-role-management/role/list',
+        name: 'RoleMain',
+        meta: { title: '角色管理', roles: ['admin'] },
         children: [
           {
             path: 'list',
-            component: () => import('@/apps/container/views/cluster/crd/list'),
-            name: 'ClusterCrdList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
+            component: () => import('@/apps/container/views/user-role/role/list.vue'),
+            name: 'RoleList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
             hidden: true
           },
           {
-            path: 'detailCrd',
-            component: () => import('@/apps/container/views/cluster/crd/detail'),
-            name: 'ClusterCrdDetail',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/crd' },
+            path: 'create',
+            component: () => import('@/apps/container/views/user-role/role/create.vue'),
+            name: 'RoleCreate',
+            meta: { title: '创建角色', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/user-role/role/detail.vue'),
+            name: 'RoleDetail',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
             hidden: true,
             beforeEnter: (to, from, next) => {
               if (to.query.name) to.meta.title = to.query.name;
               next();
             },
-            children: [
-              {
-                path: 'create',
-                component: () => import('@/apps/container/views/cluster/crd/create/createCrd.vue'),
-                name: 'CrdCreate',
-                meta: { title: '创建实例' },
-                hidden: true
-              },
-              {
-                path: 'update',
-                component: () => import('@/apps/container/views/cluster/crd/update/updateCrd.vue'),
-                name: 'CrdUpdate',
-                meta: { title: '' },
-                hidden: true,
-                beforeEnter: (to, from, next) => {
-                  if (to.query.name) to.meta.title = to.query.name;
-                  next();
-                },
-              },
-            ],
-
-
           },
         ]
       },

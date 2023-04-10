@@ -7,6 +7,38 @@
           <el-button type="primary" @click="handleCreateUser">
             创建用户
           </el-button>
+
+          <el-dropdown trigger="click" v-if="batchVisible">
+            <el-button>
+              批量操作<i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                command="delete"
+                @click.native="handleBatchPeriod"
+              >
+                更新有效期
+              </el-dropdown-item>
+              <el-dropdown-item
+                command="delete"
+                @click.native="handleBatchActive"
+              >
+                激活
+              </el-dropdown-item>
+              <el-dropdown-item
+                command="delete"
+                @click.native="handleBatchDisable"
+              >
+                禁用
+              </el-dropdown-item>
+              <el-dropdown-item
+                command="delete"
+                @click.native="handleBatchDelete"
+              >
+                删除
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </span>
 
         <div class="flex-center">
@@ -89,7 +121,7 @@
                 <span> {{ scope.row[col.id] }} </span>
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
-                <el-dropdown>
+                <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
@@ -134,7 +166,7 @@
           </el-table-column>
         </el-table>
 
-        <div style="margin-top: 15px; margin-left: 700px">
+        <div style="margin-top: 15px; margin-left: 55%">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -243,12 +275,13 @@
       <el-dialog
         @close="dialogDisableVisible = false"
         :visible.sync="dialogDisableVisible"
-        width="40%"
+        width="45%"
       >
         <div class="el-dialog-div">
           <span
             style="
-              margin-left: 50px;
+              text-align: center;
+              display: block;
               font-size: 22px;
               line-height: 24px;
               font-weight: bold;
@@ -269,12 +302,13 @@
       <el-dialog
         @close="dialogDeleteVisible = false"
         :visible.sync="dialogDeleteVisible"
-        width="40%"
+        width="45%"
       >
         <div class="el-dialog-div">
           <span
             style="
-              margin-left: 50px;
+              text-align: center;
+              display: block;
               font-size: 22px;
               line-height: 24px;
               font-weight: bold;
@@ -286,7 +320,7 @@
             }}
           </span>
           <br />
-          <span style="margin-left: 75px; margin-top: 100px">
+          <span style="text-align: center; display: block">
             删除后，将无法创建相同用户名的用户
           </span>
         </div>
@@ -295,15 +329,246 @@
           <el-button @click="dialogDeleteVisible = false">取消</el-button>
         </div>
       </el-dialog>
+
+      <!-- 批量操作 -->
+      <el-dialog
+        @close="batchPeriodVisible = false"
+        :visible.sync="batchPeriodVisible"
+        width="60%"
+      >
+        <div slot="title" class="header-title">
+          <span style="font-size: 22px; line-height: 24px; font-weight: bold">
+            更新有效期
+          </span>
+        </div>
+
+        <div class="el-dialog-div">
+          <line-alert
+            :content="`您已经选择了${selectedDevice.length}个用户，本次更新将同步应用于全部所选用户。`"
+          />
+          <foldable-block btn-tex="查看所有用户">
+            <BaseCard>
+              <section class="component-div">
+                <el-row :gutter="24">
+                  <el-col
+                    v-for="item in selectedDevice"
+                    :key="item.time"
+                    :span="12"
+                    class="label-value"
+                  >
+                    <span>
+                      {{ item.userName + "(" + item.desc + ")" }}
+                    </span>
+                    <span> </span>
+                  </el-col>
+                </el-row>
+              </section>
+            </BaseCard>
+          </foldable-block>
+
+          <el-form
+            ref="periodBatchForm"
+            :model="periodBatchForm"
+            :rules="periodBatchRules"
+            label-width="135px"
+          >
+            <el-form-item label="有效期">
+              <el-radio-group v-model="periodBatchForm.radio">
+                <el-radio-button label="永久"></el-radio-button>
+                <el-radio-button label="自定义"></el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item
+              label="时间范围"
+              v-if="periodBatchForm.radio == '自定义'"
+              prop="date"
+            >
+              <el-date-picker
+                v-model="periodBatchForm.date"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="handle_batchPeriod">
+            更新
+          </el-button>
+          <el-button @click="batchPeriodVisible = false">取消</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog
+        @close="batchActiveVisible = false"
+        :visible.sync="batchActiveVisible"
+        width="60%"
+      >
+        <div slot="title" class="header-title">
+          <span style="font-size: 22px; line-height: 24px; font-weight: bold">
+            <i class="el-icon-warning" style="color: orange" />
+            确定激活所选用户吗？
+          </span>
+        </div>
+
+        <div class="el-dialog-div">
+          <div style="margin-bottom20">
+            {{
+              `您已选择了${selectedDevice.length}个用户，其中有 n 个为 "无效/正常" 用户不支持激活设置，系统将默认跳过不做处理。本次激活设置将同步应用于全部所选非无效 / 正常用户。`
+            }}
+          </div>
+          <div style="margin-bottom20">
+            <foldable-block btn-tex="查看所有用户">
+              <BaseCard>
+                <section class="component-div">
+                  <el-row :gutter="24">
+                    <el-col
+                      v-for="item in selectedDevice"
+                      :key="item.time"
+                      :span="12"
+                      class="label-value"
+                    >
+                      <span>
+                        {{ item.userName + "(" + item.desc + ")" }}
+                      </span>
+                      <span> </span>
+                    </el-col>
+                  </el-row>
+                </section>
+              </BaseCard>
+            </foldable-block>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="handle_batchActive">
+            激活
+          </el-button>
+          <el-button @click="batchActiveVisible = false">取消</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog
+        @close="batchDisableVisible = false"
+        :visible.sync="batchDisableVisible"
+        width="60%"
+      >
+        <div slot="title" class="header-title">
+          <span style="font-size: 22px; line-height: 24px; font-weight: bold">
+            <i class="el-icon-warning" style="color: orange" />
+            确定禁用所选用户吗？
+          </span>
+        </div>
+
+        <div class="el-dialog-div">
+          <div style="margin-bottom20">
+            {{
+              `您已选择了${selectedDevice.length}个用户，本次禁用设置将同步应用于全部所选用户。`
+            }}
+          </div>
+          <div style="margin-bottom20">
+            <foldable-block btn-tex="查看所有用户">
+              <BaseCard>
+                <section class="component-div">
+                  <el-row :gutter="24">
+                    <el-col
+                      v-for="item in selectedDevice"
+                      :key="item.time"
+                      :span="12"
+                      class="label-value"
+                    >
+                      <span>
+                        {{ item.userName + "(" + item.desc + ")" }}
+                      </span>
+                      <span> </span>
+                    </el-col>
+                  </el-row>
+                </section>
+              </BaseCard>
+            </foldable-block>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="handle_batchDisable">
+            禁用
+          </el-button>
+          <el-button @click="batchDisableVisible = false">取消</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog
+        @close="batchDeleteVisible = false"
+        :visible.sync="batchDeleteVisible"
+        width="60%"
+      >
+        <div slot="title" class="header-title">
+          <span style="font-size: 22px; line-height: 24px; font-weight: bold">
+            <i class="el-icon-warning" style="color: red" />
+            删除用户
+          </span>
+        </div>
+        <div class="el-dialog-div">
+          <div style="margin-bottom20">
+            {{
+              `您已选择了${selectedDevice.length}个用户，本次删除设置将同步应用于全部所选用户。删除后，将无法创建相同用户名的用户。`
+            }}
+          </div>
+          <div style="margin-bottom20">
+            <foldable-block btn-tex="查看所有用户">
+              <BaseCard>
+                <section class="component-div">
+                  <el-row :gutter="24">
+                    <el-col
+                      v-for="item in selectedDevice"
+                      :key="item.time"
+                      :span="12"
+                      class="label-value"
+                    >
+                      <span>
+                        {{ item.userName + "(" + item.desc + ")" }}
+                      </span>
+                      <span> </span>
+                    </el-col>
+                  </el-row>
+                </section>
+              </BaseCard>
+            </foldable-block>
+          </div>
+
+          <span style="margin-bottom20">
+            {{ `请输入当前帐号（showName）密码确认删除` }}
+          </span>
+          <el-input
+            v-model="password"
+            show-password
+            style="width: 70%"
+          ></el-input>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="danger" @click="handle_batchDelete">
+            删除
+          </el-button>
+          <el-button @click="batchDeleteVisible = false">取消</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
 import { tableData, tableColumnList } from "./constant";
+import LineAlert from "@/apps/container/views/components/LineAlert";
+import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 
 export default {
   name: "UserList",
+  components: {
+    LineAlert,
+    FoldableBlock,
+  },
   data() {
     return {
       page: {
@@ -311,6 +576,8 @@ export default {
         current: 1,
         size: 20,
       },
+      batchVisible: false,
+      selectedDevice: [],
       tableData,
       tableColumnList,
       statusOptions: [
@@ -342,7 +609,7 @@ export default {
       dialogPeriodVisible: false,
       periodForm: {
         radio: "永久",
-        date: "password",
+        date: "",
       },
       periodRules: {
         date: [
@@ -352,6 +619,17 @@ export default {
 
       dialogDisableVisible: false,
       dialogDeleteVisible: false,
+
+      batchDeleteVisible: false,
+      batchActiveVisible: false,
+      batchDisableVisible: false,
+      batchPeriodVisible: false,
+      periodBatchForm: {
+        radio: "永久",
+        date: "",
+      },
+      periodBatchRules: {},
+      password:""
     };
   },
 
@@ -366,7 +644,11 @@ export default {
       this.$router.push({ path: "/user-role-management/user/create" });
     },
     handleUserDetail(obj) {
-      this.$router.push({ path: "/user-role-management/user/detail" });
+      console.log(obj.userName);
+      this.$router.push({
+        path: "/user-role-management/user/detail",
+        query: { name: obj.userName },
+      });
     },
 
     handleSearchChange(e) {},
@@ -420,6 +702,32 @@ export default {
     },
 
     handle_delete() {},
+
+    cacheSelected(selected) {
+      console.log("多选框被选中对象组成的数组", selected);
+      this.selectedDevice = selected;
+      this.batchVisible = false;
+      if (this.selectedDevice.length > 0) this.batchVisible = true;
+    },
+    handleBatchPeriod() {
+      this.batchPeriodVisible = true;
+    },
+    handle_batchPeriod() {},
+
+    handleBatchActive() {
+      this.batchActiveVisible = true;
+    },
+    handle_batchActive() {},
+
+    handleBatchDisable() {
+      this.batchDisableVisible = true;
+    },
+    handle_batchDisable() {},
+
+    handleBatchDelete() {
+      this.batchDeleteVisible = true;
+    },
+    handle_batchDelete() {},
   },
 };
 </script>

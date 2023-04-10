@@ -119,7 +119,7 @@
       </el-table>
     </div>
 
-    <div style="margin-top: 15px; margin-left: 700px">
+    <div style="margin-top: 15px; margin-left: 55%">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
