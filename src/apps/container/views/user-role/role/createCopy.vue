@@ -117,13 +117,13 @@
 
     <div class="fixed-div" v-else>
       <el-button @click="permission">添加自定义权限</el-button>
+
       <el-button @click="prevSubmit">上一步</el-button>
       <el-button type="primary" @click="submitCreate">
         <span>创建</span>
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
-
     <el-dialog
       title="添加自定义权限"
       @close="permVisible = false"
@@ -192,7 +192,7 @@ export default {
   components: { LineAlert, MonacoEditor, FoldableBlock },
   data() {
     return {
-      rowCenter: {
+       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
         display: "table-cell",
@@ -201,7 +201,6 @@ export default {
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
-
       active: 0,
 
       checked: false,
@@ -304,9 +303,9 @@ export default {
       ],
 
       ruleForm: {
-        name: "",
-        showName: "",
-        desc: "",
+        name: "platform-admin-system",
+        showName: "平台管理员副本",
+        desc: "具备平台所有业务及资源的全部权限",
         roleType: "平台角色",
       },
 
@@ -519,6 +518,130 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.create-container {
+  padding: 0 20px;
+  background-color: $background-color;
+  min-height: 100%;
+  position: relative;
+  .scroll-div {
+    padding-bottom: 106px;
+    .el-tooltip {
+      margin-left: 5px;
+    }
+    .hover-div:hover {
+      background: $color-primary-rgba1;
+    }
+    .no-data {
+      text-align: center;
+      color: darkgray;
+    }
+  }
+  .yaml-div {
+    margin: 20px 0 20px 0;
+    padding: 20px;
+    background: #fff;
+    border-radius: $border-radius-m;
+    box-shadow: 0 0 4px 0 $box-shadow;
+    .tips-div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 20px;
+      font-size: $font-size-14;
+      p {
+        color: $color-primary;
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+        i {
+          font-size: $font-size-20;
+          color: $color-primary;
+          margin-right: 2px;
+        }
+      }
+      p:first-child {
+        margin-left: 10px;
+      }
+      span:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  .fixed-div {
+    width: calc(100% - 250px);
+    // width: calc(100% - 250px);
+    padding: 20px;
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    background: #fff;
+    text-align: right;
+    border-radius: $border-radius-m;
+    box-shadow: 0 0 4px 0 $box-shadow;
+  }
+  // .el-row {
+  //   margin-bottom: 20px;
+  //   &:last-child {
+  //     margin-bottom: 0;
+  //   }
+  // }
+  .create-container .el-row[data-v-0337e0e9] {
+    margin-bottom: -20px;
+  }
+  .row-bg {
+    padding: 0;
+    background-color: #f9fafc;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 50px;
+  }
+  .bg-purple {
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
+  }
+  .el-dialog-div {
+    height: 65vh;
+    overflow: auto;
+  }
+}
+.event-container {
+  .event-list-wrapper {
+    margin-top: 10px;
+    .event-card {
+      border-radius: 2px;
+      margin-bottom: 8px;
+      padding: 20px;
+      border: 1px solid $border-color-one;
+      .card-header {
+        box-sizing: border-box;
+      }
+      .text {
+        color: $font-color-title;
+        font-weight: bold;
+      }
+      .number,
+      .time {
+        color: $font-color-text;
+        font-size: $font-size-14;
+      }
+      .circle {
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: $color-primary;
+        margin-right: 8px;
+      }
+    }
+  }
+  .el-pagination {
+    text-align: right;
+  }
+}
+</style>
 .create-container {
   padding: 0 20px;
   background-color: $background-color;

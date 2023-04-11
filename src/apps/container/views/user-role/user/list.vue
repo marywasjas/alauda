@@ -629,7 +629,7 @@ export default {
         date: "",
       },
       periodBatchRules: {},
-      password:""
+      password: "",
     };
   },
 
@@ -637,7 +637,6 @@ export default {
   methods: {
     getList() {},
     handleStatusChange() {},
-    cacheSelected() {},
     // 创建用户
     handleCreateUser() {
       // this.$router.push({ name: "UserCreate" });

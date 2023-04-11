@@ -22,7 +22,7 @@
             v-for="col in tableColumnList"
             :key="col.id"
             :label="col.label"
-            :show-overflow-tooltip="col['show-overflow-tooltip']"
+            :show-overflow-tooltip="true"
             :sortable="col.sortable"
             :width="col.width"
             :fixed="col.fixed"
@@ -39,7 +39,7 @@
                   </span>
                   <span>{{ scope.row.detail }}</span>
                 </div>
-              </div>       
+              </div>
               <div v-else>
                 {{ scope.row[col.id] }}
               </div>
@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import { tableData, tableColumnList } from "./constant";
+// import { tableData, tableColumnList } from "./constant";
+import { tableColumnList } from "./constant";
 
 export default {
   name: "RoleList",
@@ -76,20 +77,56 @@ export default {
         current: 1,
         size: 20,
       },
-      tableData,
+      tableData: {
+        data: [
+          {
+            name: "platform-admin-system",
+            detail: "平台管理员",
+            type: "平台角色",
+            prop: "属性",
+            desc: "xxxxxxxxxx",
+            creator: "system",
+            createTime: "2022-10-24",
+          },
+          {
+            name: "platform-auditor-system",
+            detail: "平台审计人员",
+            type: "平台角色",
+            prop: "属性",
+            desc: "xxxxxxxxxx",
+            creator: "system",
+            createTime: "2022-10-24",
+          },
+          {
+            name: "project-admin-system",
+            detail: "项目管理员",
+            type: "项目角色",
+            prop: "属性",
+            desc: "xxxxxxxxxx",
+            creator: "system",
+            createTime: "2022-10-24",
+          },
+          {
+            name: "namespace-admin-system",
+            detail: "命名空间管理员",
+            type: "命名空间角色",
+            prop: "属性",
+            desc: "xxxxxxxxxx",
+            creator: "system",
+            createTime: "2022-10-24",
+          },
+          {
+            name: "platform-developer-system",
+            detail: "开发人员",
+            type: "命名空间角色",
+            prop: "属性",
+            desc: "xxxxxxxxxx",
+            creator: "system",
+            createTime: "2022-10-24",
+          },
+        ],
+      },
       tableColumnList,
-      statusOptions: [
-        { value: "all", label: "全部" },
-        { value: "normal", label: "正常" },
-        { value: "lock", label: "锁定" },
-        { value: "void", label: "无效" },
-        { value: "disable", label: "禁用" },
-      ],
-      searchOptions: [
-        { label: "显示名称", value: "showName" },
-        { label: "用户名", value: "userName" },
-        { label: "用户组", value: "userGroup" },
-      ],
     };
   },
 

@@ -1046,6 +1046,14 @@ export const containerAsyncRoutes = [
               next();
             },
           },
+          {
+            path: "createCopy",
+            component: () => import('@/apps/container/views/user-role/role/createCopy.vue'),
+            name: 'RoleCreateCopy',
+            meta: { title: '复制为新角色', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
+            hidden: true
+          }
+
         ]
       },
       // IDP 配置
