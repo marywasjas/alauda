@@ -1,6 +1,10 @@
 /* Layout */
 import Layout from '@/layout'
 
+// 没有侧边栏
+import NoSliderLayout from '@/layout/noSlider/index'
+
+
 export const containerAsyncRoutes = [
   // {
   //   path: '/oam',
@@ -1058,20 +1062,24 @@ export const containerAsyncRoutes = [
       },
       // IDP 配置
       {
-        path: 'resource',
-        component: () => import('@/apps/container/views/cluster/resource/index'),
-        redirect: '/cluster-management/resource/list',
-        name: 'ResourceMain',
-        meta: {
-          title: '资源管理',
-          roles: ['admin']
-        },
+        path: 'idp',
+        component: () => import('@/apps/container/views/user-role/idp/index'),
+        redirect: '/user-role-management/idp/list',
+        name: 'IDPMain',
+        meta: { title: 'IDP 配置', roles: ['admin'] },
         children: [
           {
             path: 'list',
-            component: () => import('@/apps/container/views/cluster/resource/list'),
+            component: () => import('@/apps/container/views/user-role/idp/list'),
             name: 'ResourceList',
-            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/cluster/resource' },
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
+            hidden: true
+          },
+          {
+            path: 'ldap',
+            component: () => import('@/apps/container/views/user-role/idp/ldap'),
+            name: 'createLDAP',
+            meta: { title: '添加 LDAP', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
             hidden: true
           },
         ]
@@ -1098,6 +1106,80 @@ export const containerAsyncRoutes = [
             name: 'Resource-manageList',
             meta: { title: '资源管理', },
             // hidden: true,
+          },
+        ]
+      },
+    ]
+  },
+
+  // 项目管理
+  {
+    path: '/project-management',
+    component: NoSliderLayout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/apps/container/views/project-management/project/index'),
+        name: 'ProjectMain',
+        meta: { title: '项目管理', icon: "tab" },
+      },
+      {
+        path: 'create',
+        component: () => import('@/apps/container/views//project-management/project/create.vue'),
+        name: 'ProjectCreate',
+        meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/project/project' },
+        hidden: true
+      },
+    ]
+  },
+
+  // 项目列表
+  {
+    path: '/project-list',
+    component: Layout,
+    redirect: '/project-list/overview',
+    name: 'User-Role',
+    meta: { title: '项目列表', icon: 'list' },
+    children: [
+      // 项目概览
+      {
+        path: 'overview',
+        component: () => import('@/apps/container/views/project-list/overview/index'),
+        redirect: "/project-list/overview/index",
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/apps/container/views/project-list/overview/index'),
+            name: 'UserList',
+            meta: { title: '项目概览', },
+          },
+        ],
+      },
+      // 项目详情
+      {
+        path: 'detail',
+        component: () => import('@/apps/container/views/project-list/overview/detail'),
+        redirect: "/project-list/overview/detail/index",
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/apps/container/views/project-list/overview/detail'),
+            name: 'RoleList',
+            meta: { title: '项目详情' },
+          },
+        ]
+      },
+      // 项目成员
+      {
+        path: 'member',
+        component: () => import('@/apps/container/views/project-list/overview/member'),
+        redirect: "/project-list/overview/member/index",
+        children: [
+          {
+            path: 'index',
+            component: () => import('@/apps/container/views/project-list/overview/member'),
+            name: 'RoleList',
+            meta: { title: '项目成员' },
           },
         ]
       },
