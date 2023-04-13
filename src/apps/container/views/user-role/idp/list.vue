@@ -67,6 +67,46 @@
         </div>
       </div>
     </div>
+
+    <el-dialog
+      @close="synPolicyVisible = false"
+      :visible.sync="synPolicyVisible"
+      width="40%"
+    >
+      <el-form
+        ref="updateLogForm"
+        :model="updateLogForm"
+        :rules="updateLogRules"
+      >
+        <el-form-item label="自动同步用户">
+          <el-switch v-model="updateLogForm.logPolicy"></el-switch>
+        </el-form-item>
+
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item>
+            开启后，将自动同步所有 LDAP 用户到平台
+          </el-descriptions-item>
+        </el-descriptions>
+        <el-form-item
+          label="同步时间间隔"
+          prop="logRemain"
+          v-if="updateLogForm.logPolicy == true"
+        >
+          <el-select v-model="updateLogForm.logRemain">
+            <el-option
+              v-for="item in timeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleupdateLog">确定</el-button>
+        <el-button @click="synPolicyVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -78,6 +118,15 @@ export default {
   name: "RoleList",
   data() {
     return {
+      rowCenter: {
+        "max-width": "520px",
+        "word-break": "break-all",
+        display: "table-cell",
+        "vertical-align": "middle",
+        "margin-left": "85px",
+        "margin-top": "-20px",
+        color: "#A9A9A9",
+      },
       page: {
         count: 1,
         current: 1,
@@ -87,6 +136,25 @@ export default {
         data: [],
       },
       tableColumnList,
+
+      synPolicyVisible: false,
+      updateLogForm: {
+        logPolicy: false,
+        logRemain: "1小时",
+      },
+      updateLogRules: {},
+      timeOptions: [
+        { label: "15分钟", value: "15分钟" },
+        { label: "30分钟", value: "30分钟" },
+        { label: "1小时", value: "1小时" },
+        { label: "2小时", value: "2小时" },
+        { label: "6小时", value: "6小时" },
+        { label: "12小时", value: "12小时" },
+        { label: "1天", value: "1天" },
+        { label: "2天", value: "2天" },
+        { label: "3天", value: "3天" },
+        { label: "7天", value: "7天" },
+      ],
     };
   },
 
@@ -106,11 +174,21 @@ export default {
       this.getList();
     },
 
-    handleLDAP(){
+    handleLDAP() {
       this.$router.push({
-        name:"createLDAP"
-      })
-    }
+        name: "createLDAP",
+      });
+    },
+
+    handleOIDC() {
+      this.$router.push({
+        name: "createOIDC",
+      });
+    },
+
+    handleStrategy() {
+      this.synPolicyVisible = true;
+    },
   },
 };
 </script>

@@ -44,7 +44,7 @@
 
       <el-card class="box-card" style="margin-top: 20px">
         <div slot="header" class="clearfix">
-          <span style="font-size: 20px">LDAP 服务器设置</span>
+          <span style="font-size: 20px">OIDC 服务配置</span>
         </div>
         <div class="text item event-container">
           <el-form
@@ -55,45 +55,32 @@
           >
             <el-row>
               <el-col :span="22">
-                <el-form-item label="服务器地址" prop="address">
-                  <el-input
-                    v-model="serverForm.address"
-                    placeholder="LDAP 主机名或 <IP 地址: 端口号>"
-                  />
+                <el-form-item label="服务提供方 URL" prop="address">
+                  <el-input v-model="serverForm.address" />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="22">
-                <el-form-item label="显示名称" prop="userName">
-                  <el-input
-                    v-model="serverForm.userName"
-                    placeholder="LDAP 服务器用户名"
-                  />
+                <el-form-item label="客户端 ID" prop="userName">
+                  <el-input v-model="serverForm.userName" />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="16">
-                <el-form-item label="密码" prop="password">
-                  <el-input
-                    show-password
-                    v-model="serverForm.password"
-                    placeholder="LDAP 服务器密码"
-                  />
+                <el-form-item label="客户端秘钥" prop="password">
+                  <el-input show-password v-model="serverForm.password" />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="22">
-                <el-form-item label="登录框用户名提示" prop="nameTips">
-                  <el-input
-                    v-model="serverForm.nameTips"
-                    placeholder='LDAP 服务器的登录框中" 用户名 "字段的输入提示信息'
-                  />
+                <el-form-item label="重定向 URI" prop="nameTips">
+                  <el-input v-model="serverForm.nameTips" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -101,135 +88,6 @@
         </div>
       </el-card>
 
-      <el-card class="box-card" style="margin-top: 20px">
-        <div slot="header" class="clearfix">
-          <div style="font-size: 20px">搜索设置</div>
-          <div style="float: right; margin-top: -15px">
-            <el-checkbox label="组搜索设置" v-model="quotaForm.method" />
-          </div>
-        </div>
-
-        <div class="text item event-container" style="margin-top: 10px">
-          <el-form
-            ref="userForm"
-            :model="userForm"
-            :rules="userRules"
-            label-width="135px"
-          >
-            <div class="recomend-list">
-              <h2>{{ "用户" }}</h2>
-            </div>
-
-            <el-form-item label="对象类型" prop="objType">
-              <el-col :span="14">
-                <el-input v-model="userForm.objType" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="登录字段" prop="loginField">
-              <el-col :span="14">
-                <el-input v-model="userForm.loginField" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="过滤条件">
-              <el-col :span="14">
-                <el-input v-model="userForm.filterCondition" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="搜索起点" prop="searchStart">
-              <el-col :span="14">
-                <el-input v-model="userForm.searchStart" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="搜索范围">
-              <el-col :span="14">
-                <el-input v-model="userForm.searchScope" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="登录属性" prop="loginAttr">
-              <el-col :span="14">
-                <el-input v-model="userForm.loginAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="名称属性" prop="nameAttr">
-              <el-col :span="14">
-                <el-input v-model="userForm.nameAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="邮箱属性" prop="emailAttr">
-              <el-col :span="14">
-                <el-input v-model="userForm.emailAttr" />
-              </el-col>
-            </el-form-item>
-          </el-form>
-
-          <el-form
-            v-if="quotaForm.method == true"
-            ref="groupForm"
-            :model="groupForm"
-            :rules="groupRules"
-            label-width="135px"
-          >
-            <div class="recomend-list">
-              <h2>{{ "组" }}</h2>
-            </div>
-
-            <el-form-item label="对象类型" prop="objType">
-              <el-col :span="14">
-                <el-input v-model="groupForm.objType" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="登录字段" prop="loginField">
-              <el-col :span="14">
-                <el-input v-model="groupForm.loginField" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="过滤条件">
-              <el-col :span="14">
-                <el-input v-model="groupForm.filterCondition" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="搜索起点" prop="searchStart">
-              <el-col :span="14">
-                <el-input v-model="groupForm.searchStart" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="搜索范围">
-              <el-col :span="14">
-                <el-input v-model="groupForm.searchScope" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="登录属性" prop="loginAttr">
-              <el-col :span="14">
-                <el-input v-model="groupForm.loginAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="名称属性" prop="nameAttr">
-              <el-col :span="14">
-                <el-input v-model="groupForm.nameAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="邮箱属性" prop="emailAttr">
-              <el-col :span="14">
-                <el-input v-model="groupForm.emailAttr" />
-              </el-col>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-card>
 
       <el-card class="box-card" style="margin-top: 20px">
         <div slot="header" class="clearfix">
@@ -318,13 +176,20 @@ export default {
       },
       serverRules: {
         address: [
-          { required: true, message: "服务器地址是必填项", trigger: "blur" },
+          {
+            required: true,
+            message: "服务提供方 URL是必填项",
+            trigger: "blur",
+          },
         ],
         userName: [
-          { required: true, message: "用户名是必填项", trigger: "blur" },
+          { required: true, message: "客户端 ID是必填项", trigger: "blur" },
         ],
         password: [
-          { required: true, message: "密码是必填项", trigger: "blur" },
+          { required: true, message: "客户端秘钥是必填项", trigger: "blur" },
+        ],
+        nameTips: [
+          { required: true, message: "重定向 URI是必填项", trigger: "blur" },
         ],
       },
 
@@ -332,69 +197,6 @@ export default {
         method: false,
       },
 
-      userForm: {
-        objType: "inetOrgPerson",
-        loginField: "mail",
-        filterCondition: "",
-        searchStart: "dc=example,dc=org",
-        searchScope: "",
-        loginAttr: "uid",
-        nameAttr: "cn",
-        emailAttr: "mail",
-      },
-
-      userRules: {
-        objType: [
-          { required: true, message: "对象类型是必填项", trigger: "blur" },
-        ],
-        loginField: [
-          { required: true, message: "登陆字段是必填项", trigger: "blur" },
-        ],
-        searchStart: [
-          { required: true, message: "搜索起点是必填项", trigger: "blur" },
-        ],
-        loginAttr: [
-          { required: true, message: "登录属性是必填项", trigger: "blur" },
-        ],
-        nameAttr: [
-          { required: true, message: "名称属性是必填项", trigger: "blur" },
-        ],
-        emailAttr: [
-          { required: true, message: "邮箱属性是必填项", trigger: "blur" },
-        ],
-      },
-
-      groupForm: {
-        objType: "inetOrgPerson",
-        loginField: "mail",
-        filterCondition: "",
-        searchStart: "dc=example,dc=org",
-        searchScope: "",
-        loginAttr: "uid",
-        nameAttr: "cn",
-        emailAttr: "mail",
-      },
-
-      groupRules: {
-        objType: [
-          { required: true, message: "对象类型是必填项", trigger: "blur" },
-        ],
-        loginField: [
-          { required: true, message: "登陆字段是必填项", trigger: "blur" },
-        ],
-        searchStart: [
-          { required: true, message: "搜索起点是必填项", trigger: "blur" },
-        ],
-        loginAttr: [
-          { required: true, message: "登录属性是必填项", trigger: "blur" },
-        ],
-        nameAttr: [
-          { required: true, message: "名称属性是必填项", trigger: "blur" },
-        ],
-        emailAttr: [
-          { required: true, message: "邮箱属性是必填项", trigger: "blur" },
-        ],
-      },
 
       idpForm: {
         userName: "",

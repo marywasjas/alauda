@@ -143,18 +143,23 @@
     </el-row>
 
     <BaseCard>
-      <header>
+      <header style="display: flex">
         <div class="card-title right-header">
           <span>资源总量统计</span>
         </div>
-        <!-- <el-tooltip
-          class="item"
-          effect="dark"
-          content="“不限制”指未设置命名空间的配额，此时上限默认取此项目在集群"
-          placement="top"
-        >
-          <i class="el-icon-question" />
-        </el-tooltip> -->
+        <div style="margin-top: 3px">
+          <el-tooltip effect="dark" class="item" placement="top">
+            <template slot="content">
+              <div style="max-width: 450px">
+                • 使用率 = 已使用资源 / 项目配额; <br />
+                • 分配率 = 命名空间已分配资源 / 项目配额; <br />
+                • 当项目资源在其中一个集群的配额为不限制时，使用率、分配率显示为
+                "不限制"; 项目配额、命名空间已分配总和显示为 "不限制"<br />
+              </div>
+            </template>
+            <i class="el-icon-question margin-left10 question-icon" />
+          </el-tooltip>
+        </div>
       </header>
 
       <section>
@@ -185,149 +190,152 @@
       </section>
     </BaseCard>
 
-    <BaseCard>
-      <header>
-        <div class="card-title right-header">
-          <span>集群资源 Top 5</span>
-        </div>
-        <!-- <el-tooltip
-          class="item"
-          effect="dark"
-          content="“不限制”指未设置命名空间的配额，此时上限默认取此项目在集群"
-          placement="top"
-        >
-          <i class="el-icon-question" />
-        </el-tooltip> -->
-      </header>
-
-      <section>
-        <el-row style="margin-top: 20px">
-          <el-col
-            :span="11"
-            style="background-color: #f8f8ff; margin-left: 30px"
-          >
-            <div style="font-size: 20px; margin-left: 20px; margin-top: 20px">
-              CPU
+    <el-row :gutter="24">
+      <el-col :xs="24" :sm="24" :lg="24">
+        <BaseCard>
+          <header>
+            <div class="card-title right-header">
+              <span>集群资源 Top 5</span>
             </div>
-            <el-row
-              style="
-                background-color: #f8f8ff;
-                margin-top: 30px;
-                margin-left: 20px;
-              "
-            >
-              <el-col :span="2" style="margin-top: 18px; font-size: 10px">
-                <div>region</div>
+          </header>
+
+          <section>
+            <el-row style="margin-top: 20px">
+              <el-col
+                :span="11"
+                style="background-color: #f8f8ff; margin-left: 30px"
+              >
+                <div
+                  style="font-size: 20px; margin-left: 20px; margin-top: 20px"
+                >
+                  CPU
+                </div>
+                <el-row
+                  style="
+                    background-color: #f8f8ff;
+                    margin-top: 30px;
+                    margin-left: 20px;
+                  "
+                >
+                  <el-col :span="2" style="margin-top: 18px; font-size: 10px">
+                    <div>region</div>
+                  </el-col>
+
+                  <el-col :span="18">
+                    <progress-card :chartData="progressData" />
+                  </el-col>
+
+                  <el-col :span="3" style="margin-top: 18px; font-size: 10px">
+                    <span>不限制</span>
+                  </el-col>
+                </el-row>
               </el-col>
 
-              <el-col :span="18">
-                <progress-card :chartData="progressData" />
-              </el-col>
+              <el-col
+                :span="11"
+                style="background-color: #f8f8ff; margin-left: 30px"
+              >
+                <div
+                  style="font-size: 20px; margin-left: 20px; margin-top: 20px"
+                >
+                  内存
+                </div>
 
-              <el-col :span="3" style="margin-top: 18px; font-size: 10px">
-                <span>不限制</span>
+                <el-row
+                  style="
+                    background-color: #f8f8ff;
+                    margin-top: 30px;
+                    margin-left: 20px;
+                  "
+                >
+                  <el-col :span="2" style="margin-top: 18px; font-size: 10px">
+                    <div>region</div>
+                  </el-col>
+
+                  <el-col :span="18">
+                    <progress-card :chartData="progressData" />
+                  </el-col>
+
+                  <el-col :span="3" style="margin-top: 18px; font-size: 10px">
+                    <span>不限制</span>
+                  </el-col>
+                </el-row>
               </el-col>
             </el-row>
-          </el-col>
 
-          <el-col
-            :span="11"
-            style="background-color: #f8f8ff; margin-left: 30px"
-          >
-            <div style="font-size: 20px; margin-left: 20px; margin-top: 20px">
-              内存
-            </div>
+            <el-row style="margin-top: 20px">
+              <el-col
+                :span="11"
+                style="background-color: #f8f8ff; margin-left: 30px"
+              >
+                <div
+                  style="font-size: 20px; margin-left: 20px; margin-top: 20px"
+                >
+                  容器组
+                </div>
 
-            <el-row
-              style="
-                background-color: #f8f8ff;
-                margin-top: 30px;
-                margin-left: 20px;
-              "
-            >
-              <el-col :span="2" style="margin-top: 18px; font-size: 10px">
-                <div>region</div>
+                <el-row
+                  style="
+                    background-color: #f8f8ff;
+                    margin-top: 30px;
+                    margin-left: 20px;
+                  "
+                >
+                  <el-col :span="2" style="margin-top: 18px; font-size: 10px">
+                    <div>region</div>
+                  </el-col>
+
+                  <el-col :span="18">
+                    <progress-card :chartData="progressData" />
+                  </el-col>
+
+                  <el-col :span="3" style="margin-top: 18px; font-size: 10px">
+                    <span>不限制</span>
+                  </el-col>
+                </el-row>
               </el-col>
 
-              <el-col :span="18">
-                <progress-card :chartData="progressData" />
-              </el-col>
+              <el-col
+                :span="11"
+                style="background-color: #f8f8ff; margin-left: 30px"
+              >
+                <div
+                  style="font-size: 20px; margin-left: 20px; margin-top: 20px"
+                >
+                  持久卷声明
+                </div>
 
-              <el-col :span="3" style="margin-top: 18px; font-size: 10px">
-                <span>不限制</span>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+                <el-row
+                  style="
+                    background-color: #f8f8ff;
+                    margin-top: 30px;
+                    margin-left: 20px;
+                  "
+                >
+                  <el-col :span="2" style="margin-top: 18px; font-size: 10px">
+                    <div>region</div>
+                  </el-col>
 
-        <el-row style="margin-top: 20px">
-          <el-col
-            :span="11"
-            style="background-color: #f8f8ff; margin-left: 30px"
-          >
-            <div style="font-size: 20px; margin-left: 20px; margin-top: 20px">
-              容器组
-            </div>
+                  <el-col :span="18">
+                    <progress-card :chartData="progressData" />
+                  </el-col>
 
-            <el-row
-              style="
-                background-color: #f8f8ff;
-                margin-top: 30px;
-                margin-left: 20px;
-              "
-            >
-              <el-col :span="2" style="margin-top: 18px; font-size: 10px">
-                <div>region</div>
-              </el-col>
-
-              <el-col :span="18">
-                <progress-card :chartData="progressData" />
-              </el-col>
-
-              <el-col :span="3" style="margin-top: 18px; font-size: 10px">
-                <span>不限制</span>
-              </el-col>
-            </el-row>
-          </el-col>
-
-          <el-col
-            :span="11"
-            style="background-color: #f8f8ff; margin-left: 30px"
-          >
-            <div style="font-size: 20px; margin-left: 20px; margin-top: 20px">
-              持久卷声明
-            </div>
-
-            <el-row
-              style="
-                background-color: #f8f8ff;
-                margin-top: 30px;
-                margin-left: 20px;
-              "
-            >
-              <el-col :span="2" style="margin-top: 18px; font-size: 10px">
-                <div>region</div>
-              </el-col>
-
-              <el-col :span="18">
-                <progress-card :chartData="progressData" />
-              </el-col>
-
-              <el-col :span="3" style="margin-top: 18px; font-size: 10px">
-                <span>不限制</span>
+                  <el-col :span="3" style="margin-top: 18px; font-size: 10px">
+                    <span>不限制</span>
+                  </el-col>
+                </el-row>
               </el-col>
             </el-row>
-          </el-col>
-        </el-row>
-      </section>
-    </BaseCard>
-
+          </section>
+        </BaseCard>
+      </el-col>
+    </el-row>
     <!-- 事件弹窗 -->
-    <event-dialog
+    <!-- <event-dialog
       :visible="eventDialogVisible"
       @closeDialog="closeDialog"
       @openDialog="openDialog"
-    />
+    /> -->
   </div>
 </template>
 

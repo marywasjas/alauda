@@ -36,14 +36,13 @@
       <!-- 2 表格 和 分页器-->
       <div class="card__content">
         <el-table
-          :data="tableData.data"
-          @selection-change="cacheSelected"
+          :data="tableData3.data"
           style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
         >
           <el-table-column
-            v-for="col in tableColumnList"
+            v-for="col in tableColumnList3"
             :key="col.id"
             :label="col.label"
             :show-overflow-tooltip="col['show-overflow-tooltip']"
@@ -52,27 +51,19 @@
             :fixed="col.fixed"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'userName'" class="name-cell">
-                <i class="el-icon-menu" />
-                <div>
-                  <span
-                    @click="handleUserDetail(scope.row)"
-                    class="cursor-pointer"
-                  >
-                    {{ scope.row[col.id] }}
-                  </span>
-                  <span>{{ scope.row.desc }}</span>
+              <div v-if="col.id === 'name'">
+                <div style="font-size: 16px; font-weight: bold">
+                  {{ scope.row[col.id] }}
+                </div>
+
+                <div style="font-size: 12px; color: gray">
+                  {{ scope.row.desc }}
                 </div>
               </div>
-              <div v-else-if="col.id === 'status'">
-                <i
-                  :class="
-                    scope.row.status === '正常'
-                      ? 'el-icon-success running'
-                      : 'el-icon-warning stop'
-                  "
-                />
-                <span> {{ scope.row[col.id] }} </span>
+              <div v-else-if="col.id === 'remove'">
+                <el-button type="text" @click="handleRemove(scope.row)">
+                  移除
+                </el-button>
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
@@ -101,7 +92,7 @@
         width="60%"
       >
         <div slot="title" class="header-title">
-          <span style="font-size: 20px; line-height: 24px">
+          <span style="font-size: 20px; line-height: 20px">
             导入成员
             <el-tooltip effect="dark" class="item" placement="top">
               <template slot="content">
@@ -112,34 +103,34 @@
               <i class="el-icon-question margin-left10 question-icon" />
             </el-tooltip>
           </span>
-        </div>
 
-        <div style="display: flex">
-          <el-select
-            v-model="statusValue"
-            @change="handleStatusChange"
-            size="small"
-            style="width: 200px; margin-left: 40%"
-          >
-            <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+          <div style="display: flex">
+            <el-select
+              v-model="statusValue"
+              @change="handleStatusChange"
+              size="small"
+              style="width: 200px; margin-left: 40%"
             >
-            </el-option>
-          </el-select>
+              <el-option
+                v-for="item in statusOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
 
-          <el-input
-            style="width: 200px; margin-left: 20px"
-            suffix-icon="el-icon-search"
-            clearable
-            placeholder="按用户名搜索"
-            v-model="typeValue"
-            @keyup.enter.native="getList"
-            size="small"
-          >
-          </el-input>
+            <el-input
+              style="width: 200px; margin-left: 20px"
+              suffix-icon="el-icon-search"
+              clearable
+              placeholder="按用户名搜索"
+              v-model="typeValue"
+              @keyup.enter.native="getList"
+              size="small"
+            >
+            </el-input>
+          </div>
         </div>
 
         <el-table
@@ -180,36 +171,47 @@
         </el-table>
 
         <div style="display: flex; margin-top: 30px">
-          设置角色
-          <el-select
-            v-model="statusValue"
-            @change="handleStatusChange"
-            size="small"
-            style="width: 35%; margin-right: 20px"
+          <el-form
+            ref="ruleForm"
+            :model="ruleForm"
+            :rules="rules"
+            label-position="left"
+            inline
           >
-            <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-          命名空间
-          <el-select
-            v-model="statusValue"
-            @change="handleStatusChange"
-            size="small"
-            style="width: 35%; margin-right: 20px"
-          >
-            <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+            <el-form-item label="设置角色">
+              <el-select
+                v-model="ruleForm.setRole"
+                @change="handleStatusChange"
+                size="small"
+                style="width: 100%; margin-right: 20px"
+              >
+                <el-option
+                  v-for="item in statusOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="命名空间">
+              <el-select
+                v-model="ruleForm.space"
+                @change="handleStatusChange"
+                size="small"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in statusOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
         </div>
 
         <div slot="footer" class="dialog-footer">
@@ -226,6 +228,35 @@
           <el-button @click="importMemVisible = false">取消</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog
+        @close="removeDisable = false"
+        :visible.sync="removeDisable"
+        width="40%"
+      >
+        <div class="el-dialog-div">
+          <span
+            style="
+              text-align: center;
+              display: block;
+              font-size: 22px;
+              line-height: 24px;
+              font-weight: bold;
+            "
+          >
+            <i class="el-icon-warning" style="color: orange" />
+            {{ `确定移除 项目 成员"${removeRoleName}"吗？` }}
+          </span>
+          <br />
+          <span style="text-align: center; display: block">
+            移除后，将失去该 项目 对应的权限。
+          </span>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="handle_remove">移除</el-button>
+          <el-button @click="removeDisable = false">取消</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -234,8 +265,10 @@
 import {
   tableData,
   tableColumnList,
-  tableColumnList2,
   tableData2,
+  tableColumnList2,
+  tableData3,
+  tableColumnList3,
 } from "./constant";
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
@@ -257,8 +290,10 @@ export default {
       selectedDevice: [],
       tableData,
       tableColumnList,
-      tableColumnList2,
       tableData2,
+      tableColumnList2,
+      tableData3,
+      tableColumnList3,
       statusOptions: [
         { value: "all", label: "全部" },
         { value: "normal", label: "未分组" },
@@ -269,12 +304,21 @@ export default {
         { label: "用户名", value: "userName" },
         { label: "用户组", value: "userGroup" },
       ],
-      searchValue: "showName",
+      searchValue: "userName",
       typeValue: "",
 
       importMemVisible: false,
       removeDisable: false,
       allMemberVisible: false,
+
+      removeVisible: false,
+      removeRoleName: "",
+
+      ruleForm: {
+        setRole: "",
+        space: "",
+      },
+      rules: {},
     };
   },
 
@@ -312,7 +356,7 @@ export default {
 
     handleRemove(obj) {
       this.removeDisable = true;
-      this.roleName = obj.name;
+      this.removeRoleName = obj.name;
     },
 
     handle_remove() {},

@@ -4,6 +4,8 @@ import Layout from '@/layout'
 // 没有侧边栏
 import NoSliderLayout from '@/layout/noSlider/index'
 
+import { AppMain } from '@/layout/components';
+
 
 export const containerAsyncRoutes = [
   // {
@@ -1082,30 +1084,36 @@ export const containerAsyncRoutes = [
             meta: { title: '添加 LDAP', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
             hidden: true
           },
+          {
+            path: 'oidc',
+            component: () => import('@/apps/container/views/user-role/idp/oidc'),
+            name: 'createOIDC',
+            meta: { title: '添加 OIDC', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
+            hidden: true
+          },
         ]
       },
       // 用户安全策略
       {
-        path: 'backup-manage',
-        component: () => import('@/apps/container/views/cluster/backup/index'),
-        redirect: '/cluster-management/backup-manage/backuplist',
-        name: 'BackupManage',
-        meta: { title: '备份恢复' },
-        alwaysShow: true, // will always show the root menu
+        path: 'security-policy',
+        component: () => import('@/apps/container/views/user-role/security-policy/index'),
+        redirect: '/user-role-management/security-policy/list',
+        name: 'SecurityPolicyMain',
+        meta: { title: '用户安全策略', roles: ['admin'] },
         children: [
           {
-            path: 'backuplist',
-            component: () => import('@/apps/container/views/cluster/backup/backupList/backupList.vue'),
-            name: 'Backup-manageList',
-            meta: { title: '备份管理' },
-            // hidden: true,
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/security-policy/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
           },
           {
-            path: 'resourcelist',
-            component: () => import('@/apps/container/views/cluster/backup/resourceList/resourceList.vue'),
-            name: 'Resource-manageList',
-            meta: { title: '资源管理', },
-            // hidden: true,
+            path: 'update',
+            component: () => import('@/apps/container/views/user-role/security-policy/update'),
+            name: 'createLDAP',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
           },
         ]
       },
@@ -1145,6 +1153,7 @@ export const containerAsyncRoutes = [
       {
         path: 'overview',
         component: () => import('@/apps/container/views/project-list/overview/index'),
+        // meta: { title: '项目概览', },
         redirect: "/project-list/overview/index",
         children: [
           {
@@ -1158,28 +1167,55 @@ export const containerAsyncRoutes = [
       // 项目详情
       {
         path: 'detail',
-        component: () => import('@/apps/container/views/project-list/overview/detail'),
-        redirect: "/project-list/overview/detail/index",
+        component: () => import('@/apps/container/views/project-list/detail/index'),
+        redirect: "/project-list/detail/projectDetail",
+        name: "ProjectDetail",
         children: [
           {
-            path: 'index',
-            component: () => import('@/apps/container/views/project-list/overview/detail'),
+            path: '/project-list/detail/projectDetail',
+            component: () => import('@/apps/container/views/project-list/detail/detail'),
             name: 'RoleList',
             meta: { title: '项目详情' },
           },
-        ]
+          {
+            path: "/project-list/detail/updateQuota",
+            component: () => import('@/apps/container/views/project-list/detail/updateQuota'),
+            name: 'UpdateQuota',
+            meta: { title: '更新配额' },
+            hidden: true
+          },
+        ],
+
+
       },
       // 项目成员
       {
         path: 'member',
-        component: () => import('@/apps/container/views/project-list/overview/member'),
+        component: () => import('@/apps/container/views/project-list/member/member'),
         redirect: "/project-list/overview/member/index",
         children: [
           {
             path: 'index',
-            component: () => import('@/apps/container/views/project-list/overview/member'),
+            component: () => import('@/apps/container/views/project-list/member/member'),
             name: 'RoleList',
             meta: { title: '项目成员' },
+          },
+        ]
+      },
+      // 命名空间
+      {
+        path: 'namespace',
+        component: () => import('@/apps/container/views/project-list/namespace/index'),
+        redirect: "/project-list//namespace/list",
+        name: 'Namespace',
+        meta: { title: '命名空间', },
+        alwaysShow: true, // will always show the root menu
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/project-list/namespace/list'),
+            name: 'NamespaceList',
+            meta: { title: '命名空间' },
           },
         ]
       },

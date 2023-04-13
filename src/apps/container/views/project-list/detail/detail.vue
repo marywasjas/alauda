@@ -59,49 +59,56 @@
       </section>
     </BaseCard>
 
-    <BaseCard>
-      <header style="display: flex">
-        <div class="card-title left-header">
-          <span>配额</span>
-        </div>
-        <div style="margin-left: 79%">
-          <el-button @click="handleUpdateQuota">更新配额</el-button>
-        </div>
-      </header>
-      <section class="component-div">
-        <el-table
-          :data="table.tableData"
-          style="width: 100%"
-          header-row-class-name="headerStyle"
-          class="margin-top"
-        >
-          <el-table-column
-            v-for="col in table.cols"
-            :key="col.id"
-            :label="col.label"
-            :show-overflow-tooltip="col['show-overflow-tooltip']"
-            :sortable="col.sortable"
-            :width="col.width"
-            :fixed="col.fixed"
-          >
-            <template slot-scope="scope">
-              <div v-if="col.id === 'project'">
-                <div style="font-size: 12px; color: gray">项目</div>
-                {{ scope.row[col.id] }}
+    <el-row :gutter="24">
+      <el-col :xs="24" :sm="24" :lg="24">
+        <BaseCard>
+          <header>
+            <div class="card-title left-header">
+              <span>配额</span>
+              <div style="float: right">
+                <el-button @click="handleUpdateQuota">更新配额</el-button>
               </div>
-              <div v-else-if="col.id === 'remove'">
-                <el-button type="text" @click="handleRemove(scope.row)"
-                  >移除</el-button
-                >
-              </div>
-              <div v-else>
-                {{ scope.row[col.id] }}
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </section>
-    </BaseCard>
+            </div>
+          </header>
+          <el-divider></el-divider>
+          <span class="card-title left-header" style="font-size: 18px">
+            region
+          </span>
+          <section class="component-div">
+            <el-table
+              :data="table.tableData"
+              style="width: 100%"
+              header-row-class-name="headerStyle"
+              class="margin-top"
+            >
+              <el-table-column
+                v-for="col in table.cols"
+                :key="col.id"
+                :label="col.label"
+                :show-overflow-tooltip="true"
+                :sortable="col.sortable"
+                :width="col.width"
+                :fixed="col.fixed"
+              >
+                <template slot-scope="scope">
+                  <div v-if="col.id === 'usage'" style="display: inline">
+                    <progress-card :chartData="progressData" />
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div v-else-if="col.id === 'disrate'">
+                    <progress-card :chartData="progressData" />
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div v-else>
+                    {{ scope.row[col.id] }}
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </section>
+        </BaseCard>
+      </el-col>
+    </el-row>
 
     <!-- 日志策略 -->
     <el-dialog
@@ -122,11 +129,28 @@
           <el-switch v-model="updateLogForm.logPolicy"></el-switch>
         </el-form-item>
 
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+        <el-descriptions
+          size="small"
+          :colon="false"
+          :contentStyle="rowCenter"
+          v-if="updateLogForm.logPolicy == false"
+        >
+          <el-descriptions-item>
+            开未启日志策略时，为全局策略
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <el-descriptions
+          size="small"
+          :colon="false"
+          :contentStyle="rowCenter"
+          v-if="updateLogForm.logPolicy == true"
+        >
           <el-descriptions-item>
             开启日志策略后，按照项目策略执行
           </el-descriptions-item>
         </el-descriptions>
+
         <el-form-item
           label="日志保留时间"
           prop="logRemain"
@@ -282,18 +306,28 @@
       </div>
 
       <div style="margin-bottom: 10px">
-        确定移除项目"chaos"下的集群吗？移除后，仍会保留集群在该项目下的资源。如需清理，请复制以下资源清理命令，并在被移除集群下进行手动清理
+        确定移除项目"chaos"下的集群吗？移除后，仍会保留集群在该项目下的资源。如需清理，请复制以下资源清理命令，并在被移除集群下进行手动清理。
       </div>
+      <div class="inputInfo copy_icon">
+        <el-input v-model="command" style="width: 95%"> </el-input>
+        <i
+          style="margin-left: 10px; cursor: pointer"
+          class="el-icon-document-copy"
+        ></i>
+      </div>
+
+      <div style="margin-top: 10px">
+        请输入 <span style="color: red">1</span> 个集群名称确定移除
+      </div>
+
       <el-input v-model="command"> </el-input>
 
-      <div style="margin-top: 10px">请输入1个集群名称确定移除</div>
-
-      <el-input v-model="command"> </el-input>
-
-      <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
-        <el-descriptions-item>
-          该项目下的集群有："region"
-        </el-descriptions-item>
+      <el-descriptions
+        size="small"
+        :colon="false"
+        :contentStyle="rowCenter_project"
+      >
+        <el-descriptions-item> 该项目下的集群有：region </el-descriptions-item>
       </el-descriptions>
 
       <div slot="footer" class="dialog-footer">
@@ -320,9 +354,17 @@
         吗？删除后，仍会保留项目下资源。如需清理项目下资源，请复制以下资源清理命令，并在集群
         region 下进行手动清理。
       </div>
-      <el-input v-model="command"> </el-input>
+      <div class="inputInfo copy_icon">
+        <el-input v-model="command" style="width: 95%"> </el-input>
+        <i
+          style="margin-left: 10px; cursor: pointer"
+          class="el-icon-document-copy"
+        ></i>
+      </div>
 
-      <div style="margin-top: 10px">请输入 chaos 确定删除</div>
+      <div style="margin-top: 10px">
+        请输入 <span style="color: red">chaos</span> 确定删除
+      </div>
 
       <el-input v-model="command"> </el-input>
 
@@ -337,10 +379,11 @@
 <script>
 import { nanoid } from "nanoid";
 import LineAlert from "@/apps/container/views/components/LineAlert";
+import ProgressCard from "./components/ProgressCard.vue";
 
 export default {
   name: "BaseInfo",
-  components: { LineAlert },
+  components: { LineAlert, ProgressCard },
   props: {},
   data() {
     return {
@@ -348,6 +391,15 @@ export default {
         "默认项目日志策略按照全局策略执行，项目下设置或开启日志策略后，将按照项目日志策略执行，原有日志将无法查询。",
       content_addCluster:
         "支持添加独立集群或联邦集群，不支持已加入到该项目下的集群成员对应的联邦集群，多选集群时默认设置同样配额。",
+      rowCenter_project: {
+        "max-width": "520px",
+        "word-break": "break-all",
+        display: "table-cell",
+        "vertical-align": "middle",
+        "margin-left": "-10px",
+        "margin-top": "2px",
+        color: "#A9A9A9",
+      },
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -406,20 +458,51 @@ export default {
           value: "",
         },
       ],
-
+      progressData: [
+        {
+          normal: 12,
+          abnormal: 0,
+          total: 12,
+        },
+      ],
       table: {
         tableData: [
           {
-            roleName: "project-admin-system",
-            roleType: "项目",
-            project: "baas",
+            roleName: "CPU",
+            quota: "不限制",
+            usage: "- (0.32 核 / 不限制)",
+            disrate: "- (- / 不限制)",
+          },
+          {
+            roleName: "内存",
+            quota: "不限制",
+            usage: "- (6.46 Gi / 不限制)",
+            disrate: "- (- / 不限制)",
+          },
+          {
+            roleName: "存储",
+            quota: "不限制",
+            usage: "- (47.00 / 不限制)",
+            disrate: "- (- / 不限制)",
+          },
+          {
+            roleName: "Pods 数",
+            quota: "不限制",
+            usage: "-",
+            disrate: "- (1000.00 / 不限制)",
+          },
+          {
+            roleName: "PVC 数",
+            quota: "不限制",
+            usage: "- (17.00 / 不限制)",
+            disrate: "- (- / 不限制)",
           },
         ],
         cols: [
-          { label: "角色名称", id: "roleName" },
-          { label: "角色类型", id: "roleType" },
-          { label: "项目/命名空间", id: "project" },
-          { label: "", id: "remove", width: "60px" },
+          { label: "资源类型", id: "roleName" },
+          { label: "配额", id: "quota" },
+          { label: "使用率", id: "usage" },
+          { label: "分配率", id: "disrate" },
         ],
       },
 
@@ -449,6 +532,7 @@ export default {
 
       removeClusterVisible: false,
       command: "",
+      copyText: "",
 
       deleteProjectVisible: false,
     };
@@ -500,7 +584,12 @@ export default {
     },
     handle_deleteProject() {},
 
-    handleUpdateQuota() {},
+    handleUpdateQuota() {
+      this.$router.push({
+        // path: "/project-list/detail/updateQuota",
+        name: "UpdateQuota",
+      });
+    },
   },
 };
 </script>
@@ -653,5 +742,12 @@ export default {
 .create-container .el-dialog-div {
   height: 15vh;
   overflow: auto;
+}
+.ellipsis {
+  max-width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 </style>
