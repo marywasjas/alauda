@@ -33,9 +33,16 @@
       </div>
 
       <!-- 2 表格 和 分页器-->
-      <div style="margin-top: 15px">
-        集群:
-        <el-tag>region(region)</el-tag>
+      <div style="margin-top: 25px">
+        <span style="margin-right: 15px">集群:</span>
+
+        <el-tag
+          effect="plain"
+          color="	#F0F8FF"
+          size="small"
+          style="cursor: pointer; border-radius: 10px; border: transparent"
+          >region (region)</el-tag
+        >
       </div>
 
       <div class="card__content">
@@ -60,6 +67,7 @@
                   <span
                     @click="handleUserDetail(scope.row)"
                     class="cursor-pointer"
+                    style="font-size: 14px"
                   >
                     {{ scope.row[col.id] }}
                   </span>
@@ -204,40 +212,80 @@
         width="60%"
       >
         <el-form
-          ref="resourceForm"
-          :model="resourceForm"
-          :rules="resourceRules"
+          ref="limitForm"
+          :model="limitForm"
+          :rules="limitRules"
           label-width="135px"
         >
-          <el-form-item label="CPU">
+          <!-- <el-form-item label="CPU" prop="cpu">
             <el-col :span="10">
-              <el-input v-model="resourceForm.cpu">
-                <template slot="append">最大值</template>
-                <template slot="prepend">m</template>
+              <el-input v-model="limitForm.cpu">
+                <template slot="append">m</template>
+                <template slot="prepend">最大值</template>
               </el-input>
             </el-col>
             <el-col :span="10" style="margin-left: 10px">
-              <el-input v-model="resourceForm.cpu">
-                <template slot="append">默认值</template>
-                <template slot="prepend">m</template>
+              <el-input v-model="limitForm.cpu">
+                <template slot="append">m</template>
+                <template slot="prepend">默认值</template>
               </el-input>
             </el-col>
-          </el-form-item>
+          </el-form-item> -->
 
-          <el-form-item label="内存">
+          <!-- <el-form-item label="内存" prop="memory">
             <el-col :span="10">
-              <el-input v-model="resourceForm.cpu">
-                <template slot="append">最大值</template>
-                <template slot="prepend">Mi</template>
+              <el-input v-model="limitForm.memory">
+                <template slot="append">Mi</template>
+                <template slot="prepend">最大值</template>
               </el-input>
             </el-col>
             <el-col :span="10" style="margin-left: 10px">
-              <el-input v-model="resourceForm.cpu">
-                <template slot="append">默认值</template>
-                <template slot="prepend">Mi</template>
+              <el-input v-model="limitForm.memory">
+                <template slot="append">Mi</template>
+                <template slot="prepend">默认值</template>
               </el-input>
             </el-col>
-          </el-form-item>
+          </el-form-item> -->
+
+          <el-row :gutter="20">
+            <el-col :span="13">
+              <el-form-item label="CPU" prop="cpu">
+                <el-input v-model="limitForm.cpuMax">
+                  <template slot="append">m</template>
+                  <template slot="prepend">最大值</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="13" style="margin-left: -145px">
+              <el-form-item prop="clusterPort">
+                <el-input v-model="limitForm.cpuDefault">
+                  <template slot="append">m</template>
+                  <template slot="prepend">默认值</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="13">
+              <el-form-item label="内存" prop="memory">
+                <el-input v-model="limitForm.memoryMax">
+                  <template slot="append">m</template>
+                  <template slot="prepend">最大值</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="13" style="margin-left: -145px">
+              <el-form-item prop="clusterPort">
+                <el-input v-model="limitForm.memoryDefault">
+                  <template slot="append">m</template>
+                  <template slot="prepend">默认值</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
@@ -293,25 +341,43 @@ export default {
       },
       resourceRules: {},
 
+      limitForm: {
+        cpuMax: "",
+        memoryMax: "",
+        cpuDefault: "",
+        memoryDefault: "",
+      },
+      limitRules: {
+        cpu: [{ required: true, message: "cpu is required", trigger: "blur" }],
+        memory: [
+          { required: true, message: "memory is required", trigger: "blur" },
+        ],
+      },
+
       limitVisible: false,
     };
   },
 
   created() {},
   methods: {
-    handleClick() {},
-    openDialog() {},
+    handleClick() {
+      this.$router.push({
+        path: "/project-list/namespace/import",
+      });
+    },
+    openDialog() {
+      this.$router.push({
+        path: "/project-list/namespace/create",
+      });
+    },
     getList() {},
     handleStatusChange() {},
-    // 创建用户
-    handleCreateUser() {
-      this.$router.push({ path: "/user-role-management/user/create" });
-    },
+ 
     handleUserDetail(obj) {
-      console.log(obj.userName);
+      console.log(obj.name);
       this.$router.push({
-        path: "/user-role-management/user/detail",
-        query: { name: obj.userName },
+        path: "/project-list/namespace/detail",
+        query: { name: obj.name },
       });
     },
     handleSizeChange(val) {

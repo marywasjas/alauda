@@ -4,9 +4,6 @@ import Layout from '@/layout'
 // 没有侧边栏
 import NoSliderLayout from '@/layout/noSlider/index'
 
-import { AppMain } from '@/layout/components';
-
-
 export const containerAsyncRoutes = [
   // {
   //   path: '/oam',
@@ -1216,6 +1213,60 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/project-list/namespace/list'),
             name: 'NamespaceList',
             meta: { title: '命名空间' },
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/project-list/namespace/create'),
+            name: 'NamespaceList',
+            meta: { title: '创建' },
+            hidden: true
+          },
+          {
+            path: 'import',
+            component: () => import('@/apps/container/views/project-list/namespace/import'),
+            name: 'NamespaceList',
+            meta: { title: '导入' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/project-list/namespace/detail'),
+            name: 'NamespaceList',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+        ]
+      },
+      // 工具链管理
+      {
+        path: 'toolchain',
+        component: () => import('@/apps/container/views/project-list/toolchain/index'),
+        redirect: "/project-list//toolchain/integrationList",
+        name: 'ToolChain',
+        meta: { title: '工具链管理' },
+        alwaysShow: true, // will always show the root menu
+        children: [
+          {
+            path: 'integrationList',
+            component: () => import('@/apps/container/views/project-list/toolchain/IntegrationList'),
+            name: 'IntegrationList',
+            meta: { title: '工具链集成' },
+          },
+          {
+            path: 'integrate',
+            component: () => import('@/apps/container/views/project-list/toolchain/integrate'),
+            meta: { title: '集成工具选择' },
+            hidden: true
+          },
+          {
+            path: 'secretList',
+            component: () => import('@/apps/container/views/project-list/toolchain/secretList'),
+            name: 'SecretList',
+            meta: { title: '凭据' },
           },
         ]
       },
