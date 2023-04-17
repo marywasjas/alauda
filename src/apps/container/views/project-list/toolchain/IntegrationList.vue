@@ -27,7 +27,18 @@
             <el-row style="height: 400px" class="row-bg">
               <el-col :span="6" style="margin-left: 20px">
                 <!-- <div class="grid-content bg-purple">bass-etrust</div> -->
-                <el-button class="buttonClass">bass-etrust</el-button>
+                <el-button
+                  class="buttonClass"
+                  @click="
+                    () => {
+                      this.$router.push({
+                        path: '/project-list/toolchain/integrationDetail',
+                        query: { name: 'baas-etrust' },
+                      });
+                    }
+                  "
+                  >bass-etrust</el-button
+                >
               </el-col>
               <el-col :span="6" style="margin-left: 20px">
                 <!-- <div class="grid-content bg-purple">gitlab</div> -->
@@ -345,11 +356,11 @@ export default {
     handleImport() {},
     handleSelectedMember() {},
 
-    integration(){
+    integration() {
       this.$router.push({
-        path:"/project-list/toolchain/integrate"
-      })
-    }
+        path: "/project-list/toolchain/integrate",
+      });
+    },
   },
 };
 </script>

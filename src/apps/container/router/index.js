@@ -1263,6 +1263,26 @@ export const containerAsyncRoutes = [
             hidden: true
           },
           {
+            path: 'integrateDetail',
+            component: () => import('@/apps/container/views/project-list/toolchain/integrateDetail'),
+            meta: { title: '集成' },
+            // beforeEnter: (to, from, next) => {
+            //   if (to.query.name) to.meta.title = to.query.name;
+            //   next();
+            // },
+            hidden: true
+          },
+          {
+            path: 'integrationDetail',
+            component: () => import('@/apps/container/views/project-list/toolchain/integrationDetail'),
+            meta: { title: '' },
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+            hidden: true
+          },
+          {
             path: 'secretList',
             component: () => import('@/apps/container/views/project-list/toolchain/secretList'),
             name: 'SecretList',
