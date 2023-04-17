@@ -163,12 +163,35 @@
           <el-input v-model="updateInfoForm.address" />
         </el-form-item>
 
-        <el-form-item label="API 地址" prop="desc">
-          <el-input
-            v-model="updateInfoForm.apiAddress"
-            type="textarea"
-            rows="4"
-          />
+        <el-form-item label="API 地址" prop="apiAddress">
+          <el-input v-model="updateInfoForm.apiAddress" />
+        </el-form-item>
+
+        <el-form-item label="凭据" prop="secret" style="width: 50%">
+          <!-- <el-input v-model="inteForm.secret" /> -->
+          <el-select
+            v-model="updateInfoForm.secret"
+            @change="handleSecretChange"
+            style="width: 75%"
+            size="small"
+            placeholder="请选择凭证"
+          >
+            <!-- 其他工具类型凭据 -->
+            <el-option
+              v-for="item in secretOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-button
+            size="small"
+            style="margin-left: 15px"
+            @click="handleAddSecret"
+          >
+            添加凭证
+          </el-button>
         </el-form-item>
       </el-form>
 
@@ -190,6 +213,10 @@ export default {
     return {
       command: "",
       searchName: "",
+      secretOptions: [
+        { value: "18000664", label: "18000664" },
+        { value: "baas-harbor", label: "baas-harbor" },
+      ],
       rowCenter_project: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -213,6 +240,7 @@ export default {
       updateInfoForm: {
         address: "http://regdev.ebchina.com/",
         APIaddress: "http://regdev.ebchina.com/",
+        secret: "baas-harbor",
       },
       updateInfoRules: {},
       deleteProjectVisible: false,
@@ -256,6 +284,8 @@ export default {
           },
         ],
       },
+
+      addSecretVisible: false,
     };
   },
   computed: {},
@@ -283,6 +313,10 @@ export default {
       this.updateInfoVisible = true;
     },
     handle_updateInfo() {},
+
+    handleAddSecret() {
+      this.addSecretVisible = true;
+    },
   },
 };
 </script>
