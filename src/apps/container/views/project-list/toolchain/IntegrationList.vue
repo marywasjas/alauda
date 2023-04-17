@@ -249,8 +249,6 @@ import {
   tableColumnList,
   tableData2,
   tableColumnList2,
-  tableData3,
-  tableColumnList3,
 } from "./constant";
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
@@ -270,8 +268,6 @@ export default {
       tableColumnList,
       tableData2,
       tableColumnList2,
-      tableData3,
-      tableColumnList3,
       statusOptions: [
         { value: "all", label: "全部" },
         { value: "normal", label: "未分组" },

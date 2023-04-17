@@ -959,6 +959,235 @@ export const containerAsyncRoutes = [
     ]
   },
 
+  // 平台管理-- 网络管理
+  {
+    path: '/network-management',
+    component: Layout,
+    redirect: '/network-management/domain/list',
+    name: 'Network-Management',
+    meta: { title: '网络管理', icon: 'international' },
+    children: [
+      // 域名
+      {
+        path: 'domain',
+        component: () => import('@/apps/container/views/network-management/domain/index'),
+        redirect: '/network-management/domain/list',
+        name: 'DomainMain',
+        meta: { title: '域名', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network-management/domain/list.vue'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/user-role/user/create.vue'),
+            name: 'UserCreate',
+            meta: { title: '创建用户', icon: 'icon', noCache: true, activeMenu: '/user-role/user' },
+            hidden: true
+          },
+        ]
+      },
+      // 证书
+      {
+        path: 'role',
+        component: () => import('@/apps/container/views/user-role/role/index'),
+        redirect: '/network-management/role/list',
+        name: 'RoleMain',
+        meta: { title: '证书', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/role/list.vue'),
+            name: 'RoleList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/user-role/role/create.vue'),
+            name: 'RoleCreate',
+            meta: { title: '创建角色', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/user-role/role/detail.vue'),
+            name: 'RoleDetail',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
+            path: "createCopy",
+            component: () => import('@/apps/container/views/user-role/role/createCopy.vue'),
+            name: 'RoleCreateCopy',
+            meta: { title: '复制为新角色', icon: 'icon', noCache: true, activeMenu: '/user-role/role' },
+            hidden: true
+          }
+
+        ]
+      },
+      // 子网
+      {
+        path: 'idp',
+        component: () => import('@/apps/container/views/user-role/idp/index'),
+        redirect: '/user-role-management/idp/list',
+        name: 'IDPMain',
+        meta: { title: '子网', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/idp/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
+            hidden: true
+          },
+          {
+            path: 'ldap',
+            component: () => import('@/apps/container/views/user-role/idp/ldap'),
+            name: 'createLDAP',
+            meta: { title: '添加 LDAP', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
+            hidden: true
+          },
+          {
+            path: 'oidc',
+            component: () => import('@/apps/container/views/user-role/idp/oidc'),
+            name: 'createOIDC',
+            meta: { title: '添加 OIDC', icon: 'icon', noCache: true, activeMenu: '/user-role/idp' },
+            hidden: true
+          },
+        ]
+      },
+      // 桥接网络
+      {
+        path: 'security-policy',
+        component: () => import('@/apps/container/views/user-role/security-policy/index'),
+        redirect: '/user-role-management/security-policy/list',
+        name: 'SecurityPolicyMain',
+        meta: { title: '桥接网络', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/security-policy/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/user-role/security-policy/update'),
+            name: 'createLDAP',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+        ]
+      },
+      // VLAN
+      {
+        path: 'security-policy',
+        component: () => import('@/apps/container/views/user-role/security-policy/index'),
+        redirect: '/user-role-management/security-policy/list',
+        name: 'SecurityPolicyMain',
+        meta: { title: 'VLAN', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/security-policy/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/user-role/security-policy/update'),
+            name: 'createLDAP',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+        ]
+      },
+      // 负载均衡器
+      {
+        path: 'security-policy',
+        component: () => import('@/apps/container/views/user-role/security-policy/index'),
+        redirect: '/user-role-management/security-policy/list',
+        name: 'SecurityPolicyMain',
+        meta: { title: '负载均衡器', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/security-policy/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/user-role/security-policy/update'),
+            name: 'createLDAP',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+        ]
+      },
+      // 集群网络策略
+      {
+        path: 'security-policy',
+        component: () => import('@/apps/container/views/user-role/security-policy/index'),
+        redirect: '/user-role-management/security-policy/list',
+        name: 'SecurityPolicyMain',
+        meta: { title: '集群网络策略', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/security-policy/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/user-role/security-policy/update'),
+            name: 'createLDAP',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+        ]
+      },
+      // 网络监测
+      {
+        path: 'security-policy',
+        component: () => import('@/apps/container/views/user-role/security-policy/index'),
+        redirect: '/user-role-management/security-policy/list',
+        name: 'SecurityPolicyMain',
+        meta: { title: '网络监测', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/user-role/security-policy/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/user-role/security-policy/update'),
+            name: 'createLDAP',
+            meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
+            hidden: true
+          },
+        ]
+      },
+    ]
+  },
+
   // 平台管理--平台证书管理
   {
     path: '/platformCert-management',
@@ -1245,7 +1474,7 @@ export const containerAsyncRoutes = [
       {
         path: 'toolchain',
         component: () => import('@/apps/container/views/project-list/toolchain/index'),
-        redirect: "/project-list//toolchain/integrationList",
+        redirect: "/project-list/toolchain/integrationList",
         name: 'ToolChain',
         meta: { title: '工具链管理' },
         alwaysShow: true, // will always show the root menu
@@ -1287,6 +1516,30 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/project-list/toolchain/secretList'),
             name: 'SecretList',
             meta: { title: '凭据' },
+          },
+          {
+            path: 'createSecret',
+            component: () => import('@/apps/container/views/project-list/toolchain/secretCreate'),
+            name: 'SecretList',
+            meta: { title: '创建' },
+            hidden: true
+          },
+        ]
+      },
+      // 流水线管理
+      {
+        path: 'pipeline',
+        component: () => import('@/apps/container/views/project-list/pipeline/index'),
+        redirect: "/project-list/pipeline/custom",
+        name: 'PipeLine',
+        meta: { title: '流水线管理' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'custom',
+            component: () => import('@/apps/container/views/project-list/pipeline/custom'),
+            name: 'IntegrationList',
+            meta: { title: '项目自定义模板' },
           },
         ]
       },

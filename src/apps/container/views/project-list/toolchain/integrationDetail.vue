@@ -149,6 +149,10 @@
       :visible.sync="updateInfoVisible"
       width="60%"
     >
+      <line-alert
+        content="请谨慎更新凭据！更新凭据可能会影响工具的访问权限及已分配平台项目的使用"
+      />
+
       <el-form
         ref="updateInfoForm"
         :model="updateInfoForm"
@@ -159,20 +163,21 @@
           {{ name }}
         </el-form-item>
 
-        <el-form-item label="访问地址">
+        <el-form-item label="访问地址" style="width: 80%">
           <el-input v-model="updateInfoForm.address" />
         </el-form-item>
 
-        <el-form-item label="API 地址" prop="apiAddress">
-          <el-input v-model="updateInfoForm.apiAddress" />
+        <el-form-item label="API 地址" prop="APIaddress" style="width: 80%">
+          <el-input v-model="updateInfoForm.APIaddress" />
         </el-form-item>
 
-        <el-form-item label="凭据" prop="secret" style="width: 50%">
+        <el-form-item label="凭据" prop="secret" style="width: 80%">
           <!-- <el-input v-model="inteForm.secret" /> -->
           <el-select
             v-model="updateInfoForm.secret"
             @change="handleSecretChange"
             style="width: 75%"
+            @focus="setMinWidthEmpty"
             size="small"
             placeholder="请选择凭证"
           >
@@ -200,17 +205,104 @@
         <el-button @click="updateInfoVisible = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      title="创建凭证"
+      @close="addSecretVisible = false"
+      :visible.sync="addSecretVisible"
+      width="60%"
+    >
+      <div class="recomend-list">
+        <h2>{{ "基本信息" }}</h2>
+      </div>
+      <el-form
+        ref="infoForm"
+        :model="infoForm"
+        :rules="infoRules"
+        label-width="135px"
+      >
+        <el-form-item label="凭据名称" style="width: 80%" prop="secretName">
+          <el-input
+            v-model="infoForm.secretName"
+            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+          >
+          </el-input>
+        </el-form-item>
+
+        <el-form-item label="显示名称" style="width: 80%">
+          <el-input v-model="infoForm.showName"> </el-input>
+        </el-form-item>
+      </el-form>
+
+      <div class="recomend-list">
+        <h2>{{ "数据" }}</h2>
+      </div>
+      <el-form
+        ref="dataForm"
+        :model="dataForm"
+        :rules="dataRules"
+        label-width="135px"
+      >
+        <el-form-item label="类型">
+          <el-radio-group v-model="dataForm.type">
+            <el-radio-button label="用户名/密码"></el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="用户名" style="width: 80%" prop="name">
+          <el-input
+            v-model="dataForm.name"
+            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+          >
+          </el-input>
+        </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item
+            >请输入登录 {{ name }} 时使用的用户名</el-descriptions-item
+          >
+        </el-descriptions>
+
+        <el-form-item label="密码" style="width: 80%" prop="password">
+          <el-input v-model="dataForm.password" show-password> </el-input>
+        </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item
+            >请输入登录 {{ name }} 时使用的密码</el-descriptions-item
+          >
+        </el-descriptions>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleCreate">创建</el-button>
+        <el-button @click="addSecretVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
+import LineAlert from "@/apps/container/views/components/LineAlert";
 
 export default {
   name: "BaseInfo",
+  components: { LineAlert },
+
   props: {},
   data() {
     return {
+      // inteForm: {
+      //   name: "docker-registry",
+      //   address: "",
+      //   apiAddress: "",
+      //   secret: "",
+      // },
+      // inteRules: {
+      //   name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+      //   apiAddress: [
+      //     { required: true, message: "必填项不能为空", trigger: "blur" },
+      //   ],
+      // },
       command: "",
       searchName: "",
       secretOptions: [
@@ -286,6 +378,31 @@ export default {
       },
 
       addSecretVisible: false,
+
+      dataForm: {
+        type: "用户名/密码",
+        name: "",
+        password: "",
+      },
+      dataRules: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        password: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+      },
+      infoForm: {
+        secretName: "",
+        showName: "",
+      },
+      infoRules: {
+        secretName: [
+          {
+            required: true,
+            message: "必填项不能为空",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   computed: {},
@@ -476,5 +593,26 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   display: inline-block;
+}
+.recomend-list h2 {
+  position: relative;
+  font-size: 18px;
+  text-align: left;
+  padding-left: 9px;
+  height: 40px;
+  line-height: 40px;
+}
+.recomend-list h2:before {
+  position: absolute;
+  content: "";
+  background-color: #409eff;
+  width: 4px;
+  height: 18px;
+  left: -5px;
+  top: 48%;
+  margin-top: -8px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 </style>
