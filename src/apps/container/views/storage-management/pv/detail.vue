@@ -9,16 +9,24 @@
         @changeActive="changeActive"
       >
         <template v-slot:headerRight>
-          <el-dropdown trigger="click">
-            <el-button type="primary" class="margin-left10">
-              操作
-              <i class="el-icon-arrow-down el-icon--right" />
+          <el-dropdown>
+            <el-button type="primary" class="margin-left10"
+              >操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>Kubectl 工具</el-dropdown-item>
-              <el-dropdown-item @click.native="handelDelete">
-                删除集群
-              </el-dropdown-item>
+              <el-dropdown-item @click.native="handleUpdate(scope.row)"
+                >更新</el-dropdown-item
+              >
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="不可删除已绑定的持久卷"
+                placement="left-start"
+              >
+                <div>
+                  <el-dropdown-item :disabled="true"> 删除 </el-dropdown-item>
+                </div>
+              </el-tooltip>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -30,60 +38,39 @@
 
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
+
 import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
-import Node from "./components/Node/Node.vue";
-import Event from "./components/Event/Event.vue";
-import Monitor from "./components/Monitor/Monitor.vue";
-import Func from "./components/Func/Func.vue";
-import Plugins from "./components/Plugins/Plugins.vue";
+import Yaml from "./components/Yaml.vue";
+// import Event from "./components/Event/Event.vue";
 
 export default {
-  name: "ClusterDetail",
+  name: "PersistentVolumeDetail",
   components: {
     TabHeader,
     BaseInfo,
-    Node,
-    Event,
-    Func,
-    Plugins,
-    Monitor,
+    Yaml,
+    // Event,
   },
   data() {
     return {
-      plugins:"",
       name: "",
       desc: "",
       tabList: [
         {
-          label: "概览",
+          label: "详细信息",
           name: "baseInfo",
           com: "BaseInfo",
         },
         {
-          label: "节点",
-          name: "node",
-          com: "Node",
+          label: "YAML",
+          name: "yaml",
+          com: "Yaml",
         },
-        {
-          label: "关联项目",
-          name: "event",
-          com: "Event",
-        },
-        {
-          label: "功能组件",
-          name: "func",
-          com: "Func",
-        },
-        {
-          label: "监控",
-          name: "monitor",
-          com: "Monitor",
-        },
-        {
-          label: "插件",
-          name: "plugins",
-          com: "Plugins",
-        },
+        // {
+        //   label: "事件",
+        //   name: "event",
+        //   com: "Event",
+        // },
       ],
       activeName: "",
     };
@@ -104,11 +91,17 @@ export default {
     changeActive(value) {
       this.activeName = value;
     },
-
+    handleUpdate(row) {
+      this.$router.push({
+        name: "PersistentVolumeCreateUpdate",
+        query: {
+          type: "edit",
+        },
+      });
+    },
     handelDelete() {
       const returnMsgList = [
-        `确定删除集群"${this.name}"吗？该集群被以下 10个 项目使用。删除之后，仍会保留 Kubernetes 集群及项目下资源。如需要清理 Kubernetes 集群及项目下资源，请复制以下资源清理命令，并在该集群下进行清理。`,
-
+        `确定删除${this.name}持久卷声明吗？删除后持久卷中的数据将被清除。`,
         `请输入${this.name}确定删除`,
       ];
       const newData = [];
@@ -116,7 +109,7 @@ export default {
       for (const i in returnMsgList) {
         newData.push(h("p", null, returnMsgList[i]));
       }
-      this.$prompt(h("div", null, newData), "删除集群", {
+      this.$prompt(h("div", null, newData), "删除持久卷声明", {
         confirmButtonText: "删除",
         cancelButtonText: "取消",
         type: "error",
@@ -141,11 +134,6 @@ export default {
           });
         });
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    // console.log(to, from);
-    this.plugins = from.fullPath;
-    next();
   },
 };
 </script>

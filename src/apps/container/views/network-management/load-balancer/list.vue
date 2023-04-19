@@ -8,7 +8,9 @@
       <!-- 1 搜索框 和 按钮-->
       <div class="card__header">
         <span>
-          <el-button type="primary" @click="handelCreate">创建子网</el-button>
+          <el-button type="primary" @click="handelCreate"
+            >创建负载均衡器</el-button
+          >
         </span>
 
         <div class="flex-center">
@@ -408,7 +410,10 @@ export default {
     },
 
     handelCreate() {
-      this.createVisible = true;
+      // this.createVisible = true;
+      this.$router.push({
+        path: "/network-management/load-balancer/create",
+      });
     },
     handle_create() {},
 
@@ -430,7 +435,7 @@ export default {
 
     handleDetail(row) {
       this.$router.push({
-        path: "/network-management/subnet/detail",
+        path: "/network-management/load-balancer/detail",
         query: { name: row.name },
       });
     },

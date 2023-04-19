@@ -959,7 +959,7 @@ export const containerAsyncRoutes = [
     ]
   },
 
-  // 平台管理-- 网络管理
+  // 平台管理--网络管理
   {
     path: '/network-management',
     component: Layout,
@@ -1088,58 +1088,149 @@ export const containerAsyncRoutes = [
             meta: { title: '', icon: 'icon', noCache: true, },
             hidden: true
           },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/network-management/load-balancer/create'),
+            name: 'ResourceList',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true,
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/network-management/load-balancer/detail'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
         ]
       },
-      // // 集群网络策略
-      // {
-      //   path: 'security-policy',
-      //   component: () => import('@/apps/container/views/user-role/security-policy/index'),
-      //   redirect: '/user-role-management/security-policy/list',
-      //   name: 'SecurityPolicyMain',
-      //   meta: { title: '集群网络策略', roles: ['admin'] },
-      //   children: [
-      //     {
-      //       path: 'list',
-      //       component: () => import('@/apps/container/views/user-role/security-policy/list'),
-      //       name: 'ResourceList',
-      //       meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
-      //       hidden: true
-      //     },
-      //     {
-      //       path: 'update',
-      //       component: () => import('@/apps/container/views/user-role/security-policy/update'),
-      //       name: 'createLDAP',
-      //       meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
-      //       hidden: true
-      //     },
-      //   ]
-      // },
-      // // 网络监测
-      // {
-      //   path: 'security-policy',
-      //   component: () => import('@/apps/container/views/user-role/security-policy/index'),
-      //   redirect: '/user-role-management/security-policy/list',
-      //   name: 'SecurityPolicyMain',
-      //   meta: { title: '网络监测', roles: ['admin'] },
-      //   children: [
-      //     {
-      //       path: 'list',
-      //       component: () => import('@/apps/container/views/user-role/security-policy/list'),
-      //       name: 'ResourceList',
-      //       meta: { title: '', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
-      //       hidden: true
-      //     },
-      //     {
-      //       path: 'update',
-      //       component: () => import('@/apps/container/views/user-role/security-policy/update'),
-      //       name: 'createLDAP',
-      //       meta: { title: '更新', icon: 'icon', noCache: true, activeMenu: '/user-role/security-policy' },
-      //       hidden: true
-      //     },
-      //   ]
-      // },
+      // 集群网络策略
+      {
+        path: 'cnp',
+        component: () => import('@/apps/container/views/network-management/cnp/index'),
+        redirect: '/network-management/cnp/list',
+        name: 'CNPMain',
+        meta: { title: '集群网络策略', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network-management/cnp/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/network-management/cnp/create'),
+            name: 'ResourceList',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+      // 网络监测
+      {
+        path: 'trace',
+        component: () => import('@/apps/container/views/network-management/trace/index'),
+        redirect: '/network-management/trace/list',
+        name: 'TraceMain',
+        meta: { title: '网络检测', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/network-management/trace/list'),
+            name: 'ResourceList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
     ]
   },
+
+  // 平台管理--存储管理
+  {
+    path: '/storage-management',
+    component: Layout,
+    redirect: '/storage-management/storageclass/list',
+    name: 'Storage-Management',
+    meta: { title: '存储管理', icon: 'list' },
+    children: [
+      // 存储类
+      {
+        path: 'storageclass',
+        component: () => import('@/apps/container/views/storage-management/storageclass/index'),
+        redirect: '/storage-management/storageclass/list',
+        name: 'StorageclassMain',
+        meta: { title: '存储类', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage-management/storageclass/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'createYaml',
+            component: () => import('@/apps/container/views/storage-management/storageclass/createYaml.vue'),
+            name: 'UserCreate',
+            meta: { title: 'YAML 创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'createStorageClass',
+            component: () => import('@/apps/container/views/storage-management/storageclass/createStorageClass.vue'),
+            name: 'UserCreate',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+      // 持久卷
+      {
+        path: 'pv',
+        component: () => import('@/apps/container/views/storage-management/pv/index'),
+        redirect: '/storage-management/pv/list',
+        name: 'PVMain',
+        meta: { title: '持久卷(PV)', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage-management/pv/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/storage-management/pv/detail'),
+            name: 'UserCreate',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/storage-management/pv/create'),
+            name: 'UserCreate',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+
+    ]
+  },
+
+
 
   // 平台管理--平台证书管理
   {
