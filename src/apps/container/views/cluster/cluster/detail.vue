@@ -50,7 +50,8 @@ export default {
   },
   data() {
     return {
-      plugins:"",
+      fromPath: "",
+      plugins: "",
       name: "",
       desc: "",
       tabList: [
@@ -98,7 +99,12 @@ export default {
   created() {
     this.name = this.$route.query.name;
     this.desc = this.$route.query.desc;
-    this.activeName = this.tabList[0].name;
+    if (this.fromPath.name == "VolumeSnapshotList") {
+      this.activeName = this.tabList[5].name;
+      console.log(this.activeName )
+    } else {
+      this.activeName = this.tabList[0].name;
+    }
   },
   methods: {
     changeActive(value) {
@@ -143,9 +149,12 @@ export default {
     },
   },
   beforeRouteEnter(to, from, next) {
-    // console.log(to, from);
-    this.plugins = from.fullPath;
-    next();
+    console.log(to, from);
+    // next();
+    next((vm) => {
+      vm.fromPath = from;
+      console.log(vm.fromPath)
+    });
   },
 };
 </script>

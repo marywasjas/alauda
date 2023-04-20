@@ -2,13 +2,15 @@
   <div class="oam-container">
     <div class="oam-main" style="height: calc(100vh - 124px)">
       <div style="display: flex; flex-direction: column; align-items: center">
+        <!-- <div style="height: 200px; width: 200px"> -->
         <img
           :src="errGif"
           width="200"
           height="200"
           alt="Girl has dropped her ice cream."
         />
-        <h3>未配置集群网络策略</h3>
+        <!-- </div> -->
+        <h3>未部署卷快照组件</h3>
 
         <p
           style="
@@ -18,13 +20,13 @@
             height: 60px;
           "
         >
-          网络策略 (Network Policy) 是关于如何允许 Pod
-          组间、及与其他网络端点间，进行网络通信的规范。可对当前集群进行网络策略配置。若需启用请点击下方按钮
+          卷快照是持久卷的时间点副本，作为数据备份恢复的一种方式，可以将卷快照作为数据来源来创建新的持久卷声明
+          (PVC)。若需使用卷快照功能，请点击下方按钮
         </p>
 
-        <el-button type="primary" style="margin-top: 12px" @click="config"
-          >立即配置</el-button
-        >
+        <el-button type="primary" style="margin-top: 12px" @click="deploy">
+          立即部署
+        </el-button>
       </div>
       <!-- <div class="card__header">
         <span>
@@ -131,9 +133,8 @@ import { tableData, tableColumnList } from "./constant";
 import { nanoid } from "nanoid";
 import errGif from "@/assets/401_images/401.gif";
 
-
 export default {
-  name: "ClusterList",
+  name: "VolumeSnapshotList",
   components: { LineAlert },
   data() {
     return {
@@ -192,9 +193,10 @@ export default {
     },
     handle_create() {},
 
-    config() {
+    deploy() {
+      console.log(this.$router);
       this.$router.push({
-        path: "/network-management/cnp/create",
+        path: "/cluster-management/cluster/detail",
       });
     },
   },

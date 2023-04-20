@@ -224,13 +224,89 @@
               @focus="setMinWidthEmpty"
               style="width: 55%"
             ></el-input>
-            <el-button style="margin-left: 30px">添加凭据</el-button>
+            <el-button
+              style="margin-left: 30px"
+              @click="addSecretVisible =true"
+              >添加凭据</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleConfig">确定</el-button>
         <el-button @click="configStoreVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="创建凭证"
+      @close="addSecretVisible = false"
+      :visible.sync="addSecretVisible"
+      width="60%"
+    >
+      <div class="recomend-list">
+        <h2>{{ "基本信息" }}</h2>
+      </div>
+      <el-form
+        ref="infoForm"
+        :model="infoForm"
+        :rules="infoRules"
+        label-width="135px"
+      >
+        <el-form-item label="凭据名称" style="width: 80%" prop="secretName">
+          <el-input
+            v-model="infoForm.secretName"
+            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+          >
+          </el-input>
+        </el-form-item>
+
+        <el-form-item label="显示名称" style="width: 80%">
+          <el-input v-model="infoForm.showName"> </el-input>
+        </el-form-item>
+      </el-form>
+
+      <div class="recomend-list">
+        <h2>{{ "数据" }}</h2>
+      </div>
+      <el-form
+        ref="dataForm"
+        :model="dataForm"
+        :rules="dataRules"
+        label-width="135px"
+      >
+        <el-form-item label="类型">
+          <el-radio-group v-model="dataForm.type">
+            <el-radio-button label="用户名/密码"></el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="用户名" style="width: 80%" prop="name">
+          <el-input
+            v-model="dataForm.name"
+            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+          >
+          </el-input>
+        </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item
+            >请输入登录 {{ name }} 时使用的用户名</el-descriptions-item
+          >
+        </el-descriptions>
+
+        <el-form-item label="密码" style="width: 80%" prop="password">
+          <el-input v-model="dataForm.password" show-password> </el-input>
+        </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item
+            >请输入登录 {{ name }} 时使用的密码</el-descriptions-item
+          >
+        </el-descriptions>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleCreate">创建</el-button>
+        <el-button @click="addSecretVisible = false">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -337,6 +413,34 @@ export default {
           },
         ],
       },
+
+      addSecretVisible: false,
+
+      dataForm: {
+        type: "用户名/密码",
+        name: "",
+        password: "",
+      },
+      dataRules: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        password: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+      },
+
+      infoForm: {
+        secretName: "",
+        showName: "",
+      },
+      infoRules: {
+        secretName: [
+          {
+            required: true,
+            message: "必填项不能为空",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   computed: {},
@@ -360,6 +464,12 @@ export default {
       this.configStoreVisible = true;
     },
     handleConfig() {},
+
+    handleAddSecret() {
+      this.addSecretVisible = true;
+    },
+
+    handleCreate(){}
   },
 };
 </script>

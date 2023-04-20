@@ -5,7 +5,7 @@
         <header>
           <div class="card-title right-header">
             <span style="font-size: 18px; line-height: 24px; font-weight: bold">
-              创建持久卷
+              {{ `更新 ${ruleForm.name}` }}
             </span>
             <el-radio-group v-model="activeTab">
               <el-radio-button label="form">表单</el-radio-button>
@@ -21,11 +21,8 @@
             label-width="120px"
             class="margin-top"
           >
-            <el-form-item label="名称" prop="name" style="width: 60%">
-              <el-input
-                v-model="ruleForm.name"
-                placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
-              ></el-input>
+            <el-form-item label="名称" prop="name">
+              <span>{{ ruleForm.name }}</span>
             </el-form-item>
 
             <el-form-item label="大小" prop="container" style="width: 60%">
@@ -44,11 +41,7 @@
             </el-descriptions>
 
             <el-form-item label="类型" prop="type">
-              <el-radio-group v-model="ruleForm.type">
-                <el-radio-button label="hostPath">hostPath</el-radio-button>
-                <el-radio-button label="cephfs">cephfs</el-radio-button>
-                <el-radio-button label="nfs">nfs</el-radio-button>
-              </el-radio-group>
+              <span>{{ "-" }}</span>
             </el-form-item>
 
             <el-form-item label="访问模式" prop="accessMode">
@@ -67,6 +60,7 @@
               </el-tooltip> -->
             </el-form-item>
 
+    
             <el-form-item label="回收策略" prop="recycPolicy">
               <el-radio-group v-model="ruleForm.recycPolicy">
                 <el-radio-button label="remain">保留</el-radio-button>
@@ -80,6 +74,7 @@
                 <i class="el-icon-question question-icon margin-left10" />
               </el-tooltip> -->
             </el-form-item>
+
 
             <foldable-block btn-tex="高级">
               <el-form-item label="标签" prop="labels" style="margin-bottom: 0">
@@ -286,7 +281,7 @@
     </div>
     <div class="fixed-div">
       <el-button type="primary" class="margin-left10" @click="submitCreate"
-        >创建</el-button
+        >更新</el-button
       >
       <el-button @click="cancelCreate">取消</el-button>
     </div>
@@ -318,10 +313,10 @@ export default {
       type: "",
       ruleForm: {
         name: "",
-        type: "hostPath",
+        type: "",
         container: "",
         accessMode: "rox",
-        recycPolicy: "delete",
+        recycPolicy: "remain",
         labels: [
           {
             id: nanoid(),

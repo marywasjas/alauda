@@ -2,6 +2,12 @@
   <div class="oam-container">
     <div class="oam-main" style="height: calc(100vh - 124px)">
       <div style="display: flex; flex-direction: column; align-items: center">
+        <img
+          :src="errGif"
+          width="200"
+          height="200"
+          alt="Girl has dropped her ice cream."
+        />
         <h3>未部署网络监测组件</h3>
 
         <p
@@ -124,12 +130,18 @@
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import { tableData, tableColumnList } from "./constant";
 import { nanoid } from "nanoid";
+import errGif from "@/assets/401_images/401.gif";
 
 export default {
   name: "ClusterList",
   components: { LineAlert },
   data() {
     return {
+      errGif: errGif + "?" + +new Date(),
+      ewizardClap:
+        "https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646",
+      dialogVisible: false,
+      
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",

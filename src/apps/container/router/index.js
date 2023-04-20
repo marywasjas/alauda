@@ -1218,6 +1218,17 @@ export const containerAsyncRoutes = [
             },
           },
           {
+            path: 'update',
+            component: () => import('@/apps/container/views/storage-management/pv/update'),
+            name: 'UserCreate',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
             path: 'create',
             component: () => import('@/apps/container/views/storage-management/pv/create'),
             name: 'UserCreate',
@@ -1226,11 +1237,56 @@ export const containerAsyncRoutes = [
           },
         ]
       },
-
+      // 卷快照
+      {
+        path: 'volume-snapshot',
+        component: () => import('@/apps/container/views/storage-management/volume-snapshot/index'),
+        redirect: '/storage-management/volume-snapshot/list',
+        name: 'VolumeSnapshotMain',
+        meta: { title: '卷快照', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage-management/volume-snapshot/list'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+      // 分布式存储
+      {
+        path: 'distributed-storage',
+        component: () => import('@/apps/container/views/storage-management/distributed-storage/index'),
+        redirect: '/storage-management/distributed-storage/list',
+        name: 'DistributedStorageMain',
+        meta: { title: '分布式存储', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage-management/distributed-storage/list'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'storageCluster',
+            component: () => import('@/apps/container/views/storage-management/distributed-storage/storageCluster'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '创建存储集群', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'storageServer',
+            component: () => import('@/apps/container/views/storage-management/distributed-storage/storageServer'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '接入存储服务', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
     ]
   },
-
-
 
   // 平台管理--平台证书管理
   {

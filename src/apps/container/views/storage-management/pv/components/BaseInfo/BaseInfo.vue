@@ -16,29 +16,116 @@
           >
             <span>{{ item.label }}</span>
             : &nbsp;&nbsp;
-            <span v-if="item.label == '资源限额'">
-              <i class="el-icon-cpu primary2-text" />
-              {{ item.value.cpu }}
-              <i class="el-icon-bank-card primary-text" />
-              {{ item.value.memory }}
+            <span v-if="item.label == '状态'">
+              <i
+                :class="
+                  item.value === '已绑定' ? 'el-icon-lock' : 'el-icon-unlock'
+                "
+                style="color: #67c23a"
+              />
+              {{ item.value }}
             </span>
-            <span v-else-if="item.label == '显示名称'">
-              {{ item.value ? item.value : "-" }}
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="系统资源，不允许编辑"
-                placement="top-start"
-              >
-                <i
-                  :class="item.afterIcon"
-                  @click="update(item)"
-                  style="cursor: not-allowed"
-                />
+
+            <span v-else-if="item.label == '标签'">
+              <el-tooltip placement="top" effect="dark">
+                <div slot="content">{{ item.value }}</div>
+                <el-tag size="mini">
+                  {{
+                    item.value.length > 15
+                      ? item.value.substring(0, 30) + "..."
+                      : item.value
+                  }}
+                </el-tag>
               </el-tooltip>
+
+              <el-tooltip placement="bottom" effect="light">
+                <div slot="content">
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                </div>
+                <el-tag size="mini" style="cursor: pointer">
+                  {{ "..." }}
+                </el-tag>
+              </el-tooltip>
+
+              <i
+                :class="item.afterIcon"
+                @click="handleUpdate('更新标签', 'labelItems')"
+              />
+            </span>
+
+            <span v-else-if="item.label == '注解'">
+              <el-tooltip placement="top" effect="dark">
+                <div slot="content">{{ item.value }}</div>
+                <el-tag size="mini">
+                  {{
+                    item.value.length > 15
+                      ? item.value.substring(0, 30) + "..."
+                      : item.value
+                  }}
+                </el-tag>
+              </el-tooltip>
+
+              <el-tooltip placement="bottom" effect="light">
+                <div slot="content">
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                  <el-tag size="mini" style="margin-bottom: 10px">
+                    {{ item.value }}
+                  </el-tag>
+                  <br />
+                </div>
+                <el-tag size="mini" style="cursor: pointer">
+                  {{ "..." }}
+                </el-tag>
+              </el-tooltip>
+              <i
+                :class="item.afterIcon"
+                @click="handleUpdate('更新注解', 'nodeItems')"
+              />
             </span>
             <span v-else>
-              {{ item.value }}
+              {{ item.value ? item.value : "-" }}
             </span>
           </el-col>
         </el-row>
@@ -46,86 +133,134 @@
 
       <header>
         <div class="card-title left-header">
-          <span>项目</span>
+          <span>配置信息</span>
         </div>
       </header>
       <section class="component-div">
         <el-row :gutter="24">
           <el-col
-            v-for="item in [{ label: '项目', value: 'cpaas-system' }]"
+            v-for="item in baseInfoData2"
             :key="item.label"
             :span="12"
             class="label-value"
           >
             <span>{{ item.label }}</span>
             : &nbsp;&nbsp;
-            <span>
-              {{ item.value }}
+            <span v-if="item.label == '关联持久卷声明'">
+              <el-tooltip placement="top" effect="dark">
+                <template slot="content">{{ item.value }}</template>
+                <span>
+                  {{
+                    item.value.length > 15
+                      ? item.value.substring(0, 30) + "..."
+                      : item.value
+                  }}
+                </span>
+              </el-tooltip>
+            </span>
+
+            <span v-else>
+              {{ item.value ? item.value : "-" }}
             </span>
           </el-col>
         </el-row>
       </section>
     </BaseCard>
-    <BaseCard>
-      <header>
-        <div class="card-title right-header">
-          <span>端口管理</span>
-          <el-input
-            v-model="portValue"
-            placeholder="按端口搜索"
-            prefix-icon="el-icon-search"
-            style="width: 30%"
-          ></el-input>
-        </div>
-      </header>
-      <section>
-        <div class="card__content">
-          <el-table
-            :data="tableData.data"
-            style="width: 100%"
-            header-row-class-name="headerStyle"
-            class="margin-top"
-          >
-            <el-table-column
-              v-for="col in tableColumnList"
-              :key="col.id"
-              :label="col.label"
-              :show-overflow-tooltip="col['show-overflow-tooltip']"
-              :sortable="col.sortable"
-              :width="col.width"
-              :fixed="col.fixed"
-            >
-              <template slot-scope="scope">
-                <div v-if="col.id === 'protocol'">
-                  <div>
-                    {{ scope.row[col.id] }}
-                  </div>
 
-                  <div style="font-size: 12px; color: gray">
-                    {{ scope.row.cerf }}
-                  </div>
-                </div>
+    <el-dialog
+      @close="labelVisible = false"
+      :visible.sync="labelVisible"
+      :title="title"
+      width="60%"
+    >
+      <table border="0" style="width: 100%">
+        <thead>
+          <tr class="headerStyle">
+            <th>
+              <div class="cell">键</div>
+            </th>
+            <th>
+              <div class="cell">值</div>
+            </th>
+            <th>
+              <div class="cell">操作</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(domain, index) in obj[arrName]" :key="domain.id">
+            <td>
+              <el-input v-model="domain.key"></el-input>
+            </td>
+            <td>
+              <el-input v-model="domain.value"></el-input>
+            </td>
+            <td class="text-center">
+              <el-button
+                icon="el-icon-remove-outline"
+                class="
+                  cursor-pointer
+                  margin-left10 margin-right10
+                  margin-top:-10px
+                "
+                type="text"
+                @click="handleDeleteParams(arrName, domain, index)"
+              />
+            </td>
+          </tr>
 
-                <div v-else>
-                  {{ scope.row[col.id] }}
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </section>
-    </BaseCard>
+          <tr v-if="obj[arrName]==0">
+            <td colspan="5">
+              <div style="height: 35px; line-height: 35px; text-align: center">
+                无数据
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="5">
+              <div
+                class="cursor-pointer text-center hover-div"
+                @click="handleAddParams(arrName)"
+                style="height: 35px; line-height: 35px"
+              >
+                <i class="el-icon-circle-plus-outline" />
+                添加
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          type="primary"
+          @click="handleUpdateLabel"
+          v-if="title == '更新标签'"
+          >更新</el-button
+        >
+        <el-button
+          type="primary"
+          @click="handleUpdateNote"
+          v-if="title == '更新注解'"
+          >更新</el-button
+        >
+        <el-button @click="labelVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { nanoid } from "nanoid";
+
 export default {
   name: "BaseInfo",
   components: {},
   props: {},
   data() {
     return {
-      portValue: "",
+      title: "",
       baseInfoData: [
         {
           label: "状态",
@@ -133,58 +268,64 @@ export default {
         },
         {
           label: "创建人",
-          value: "-",
-        },
-        {
-          label: "标签",
           value: "",
         },
         {
+          label: "标签",
+          value: "bate.kubernetes.io/arch:amd64xxxyyyyysdgsdgasdads",
+          afterIcon: "el-icon-edit",
+        },
+        {
+          label: "注解",
+          value: "bate.kubernetes.io/arch:amd64xxxyyyyysdgsdgasdads",
+          afterIcon: "el-icon-edit",
+        },
+        {
           label: "创建时间",
-          value: "2022-10-24 18：45：36",
+          value: "2022-10-24 18:45:36",
         },
 
         {
-          label: "资源限额",
-          value: {
-            cpu: "不限制",
-            memory: "不限制",
-          },
-        },
-        {
-          label: "创建时间",
-          value: "2022-10-24 18:18:12",
-        },
-        {
-          label: "IP 地址",
-          value: "127.0.0.1",
-        },
-        {
-          label: "资源分配方式",
-          value: "实例",
+          label: "更新时间",
+          value: "",
         },
       ],
 
-      tableData: {
-        data: [
-          {
-            port: 443,
-            protocol: "HTTPS",
-            cerf: "证书: cpaas-system/dex.tls",
-          },
-        ],
+      baseInfoData2: [
+        {
+          label: "大小",
+          value: "5Gi",
+        },
+        {
+          label: "类型",
+          value: "",
+        },
+        {
+          label: "访问模式",
+          value: "单节点读写(RWO)",
+        },
+        {
+          label: "回收策略",
+          value: "Retain",
+        },
+
+        {
+          label: "关联持久卷声明",
+          value: "xxxxxxxxxxxxxyyyyyyyyyyy",
+        },
+        {
+          label: "存储类",
+          value: "",
+        },
+      ],
+
+      labelVisible: false,
+
+      obj: {
+        labelItems: [],
+        nodeItems: [],
       },
-      tableColumnList: [
-        {
-          id: "port",
-          label: "端口",
-          width: "120px",
-        },
-        {
-          id: "protocol",
-          label: "协议",
-        },
-      ],
+      arrName: "",
     };
   },
   computed: {},
@@ -202,6 +343,28 @@ export default {
       if (domEmpty.length > 0) {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
+    },
+
+    handleUpdate(title, arr) {
+      this.title = title;
+      this.arrName = arr;
+      this.labelVisible = true;
+    },
+
+    handleUpdateLabel() {},
+    handleUpdateNote() {},
+
+    handleAddParams(filed) {
+      const itemObj = {
+        id: nanoid(),
+        key: "",
+        value: "",
+      };
+      this.obj[filed].push(itemObj);
+    },
+
+    handleDeleteParams(filed, item, index) {
+      this.obj[filed].splice(index, 1);
     },
   },
 };
@@ -323,4 +486,19 @@ export default {
   display: flex;
   align-items: center;
 }
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+// .el-tag {
+//   .el-tag--mini {
+//     .el-tag--light {
+//       white-space: nowrap; /*强制单行显示*/
+//       text-overflow: ellipsis; /*超出部分省略号表示*/
+//       overflow: hidden; /*超出部分隐藏*/
+//       width: 260px; /*设置显示的最大宽度*/
+//       display: inline-flex;
+//       cursor:pointer
+//     }
+//   }
+// }
 </style>

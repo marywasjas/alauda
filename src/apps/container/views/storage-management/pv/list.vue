@@ -114,10 +114,7 @@ export default {
     },
     handelCreate() {
       this.$router.push({
-        name: "PersistentVolumeCreateUpdate",
-        query: {
-          type: "add",
-        },
+        path: "/storage-management/pv/create",
       });
     },
     handelDetails(row) {
@@ -126,6 +123,12 @@ export default {
         query: {
           name: row.name,
         },
+      });
+    },
+    handleUpdate(obj) {
+      this.$router.push({
+        path: "/storage-management/pv/update",
+        query: { name: obj.name },
       });
     },
   },

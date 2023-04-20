@@ -9,12 +9,12 @@
         @changeActive="changeActive"
       >
         <template v-slot:headerRight>
-          <el-dropdown>
+          <el-dropdown trigger="click">
             <el-button type="primary" class="margin-left10"
               >操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleUpdate(scope.row)"
+              <el-dropdown-item @click.native="handleUpdate"
                 >更新</el-dropdown-item
               >
               <el-tooltip
@@ -93,10 +93,8 @@ export default {
     },
     handleUpdate(row) {
       this.$router.push({
-        name: "PersistentVolumeCreateUpdate",
-        query: {
-          type: "edit",
-        },
+        path: "/storage-management/pv/update",
+        query: { name :this.name},
       });
     },
     handelDelete() {
