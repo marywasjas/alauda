@@ -886,28 +886,24 @@ export const containerAsyncRoutes = [
               if (to.query.name) to.meta.title = to.query.name;
               next();
             },
-            children: [
-              {
-                path: 'create',
-                component: () => import('@/apps/container/views/cluster/crd/create/createCrd.vue'),
-                name: 'CrdCreate',
-                meta: { title: '创建实例' },
-                hidden: true
-              },
-              {
-                path: 'update',
-                component: () => import('@/apps/container/views/cluster/crd/update/updateCrd.vue'),
-                name: 'CrdUpdate',
-                meta: { title: '' },
-                hidden: true,
-                beforeEnter: (to, from, next) => {
-                  if (to.query.name) to.meta.title = to.query.name;
-                  next();
-                },
-              },
-            ],
-
-
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/cluster/crd/create'),
+            name: 'CrdCreate',
+            meta: { title: '创建实例 / 更新实例' },
+            hidden: true
+          },
+          {
+            path: 'detailInstance',
+            component: () => import('@/apps/container/views/cluster/crd/detailInstance'),
+            name: 'CrdUpdate',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
           },
         ]
       },
@@ -948,10 +944,10 @@ export const containerAsyncRoutes = [
             // hidden: true,
           },
           {
-            path: 'resourcelist',
-            component: () => import('@/apps/container/views/cluster/backup/resourceList/resourceList.vue'),
-            name: 'Resource-manageList',
-            meta: { title: '资源管理', },
+            path: 'restorelist',
+            component: () => import('@/apps/container/views/cluster/backup/restoreList/restoreList.vue'),
+            name: 'Restore-manageList',
+            meta: { title: '恢复管理', },
             // hidden: true,
           },
         ]
@@ -1281,6 +1277,30 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/storage-management/distributed-storage/storageServer'),
             name: 'VolumeSnapshotList',
             meta: { title: '接入存储服务', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+      // 本地存储
+      {
+        path: 'local-storage',
+        component: () => import('@/apps/container/views/storage-management/local-storage/index'),
+        redirect: '/storage-management/local-storage/list',
+        name: 'LocalStorageMain',
+        meta: { title: '本地存储', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage-management/local-storage/list'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'config',
+            component: () => import('@/apps/container/views/storage-management/local-storage/config'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '配置本地存储', icon: 'icon', noCache: true, },
             hidden: true
           },
         ]

@@ -67,41 +67,240 @@
               <!-- <el-button icon="el-icon-refresh-right" /> -->
             </el-form-item>
           </el-form>
-          <div style="background-color: rgba(247, 249, 252); padding: 20px">
+          <!-- <div style="background-color: rgba(247, 249, 252); padding: 20px">
             <div
               style="
                 display: flex;
                 flex-direction: column;
                 background-color: rgba(237, 239, 242);
               "
-            >
-              <el-radio-group v-model="storageClass" class="specsRadio">
-                <el-radio-button label="小型" >
-                  <div>小型</div>
-                  <div style="margin-top: 5px; font-size: 10px">
-                    集群小于 5 节点
-                  </div>
-                </el-radio-button>
-                <el-radio-button label="中型">
-                  <div>中型</div>
-                  <div style="margin-top: 5px; font-size: 10px">
-                    集群小于 30 节点
-                  </div>
-                </el-radio-button>
-                <el-radio-button label="大型">
-                  <div>大型</div>
-                  <div style="margin-top: 5px; font-size: 10px">
-                    集群大于 5 节点
-                  </div>
-                </el-radio-button>
-                <el-radio-button label="自定义">
-                  <div>自定义</div>
-                  <div style="margin-top: 5px; font-size: 10px">
-                    适合专业用户配置
-                  </div>
-                </el-radio-button>
-              </el-radio-group>
-              <!-- <div style="padding: 16px 24px">文件存储</div> -->
+            ></div>
+          </div> -->
+
+          <div class="text item event-container">
+            <div style="padding: 12px; background-color: rgba(247, 249, 252)">
+              <div style="font-size: 10px; margin: 20px 0 -20px 20px">
+                <el-row style="height: 200px">
+                  <el-col :span="24">
+                    <el-button
+                      class="buttonClass"
+                      @click="handleDetail('DcokerRegistry')"
+                      :disabled="true"
+                    >
+                      <div
+                        style="position: relative; padding: 32px; display: flex"
+                      >
+                        <div
+                          style="
+                            width: 60px;
+                            height: 100px;
+                            margin-right: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                          "
+                        >
+                          <el-checkbox
+                            v-model="checked01"
+                            :disabled="true"
+                          ></el-checkbox>
+                        </div>
+
+                        <div
+                          style="
+                            width: 15px;
+                            height: 110px;
+                            border-left: solid #c0c4cc 1px;
+                            margin-left: -15px;
+                            padding-right: 30px;
+                          "
+                        ></div>
+
+                        <div
+                          style="
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                          "
+                        >
+                          <div
+                            style="
+                              font-size: 18px;
+                              color: rgba(50, 52, 55);
+                              margin-bottom: 10px;
+                            "
+                          >
+                            CephRBD 块存储
+                            <el-tag size="mini" effect="plain">快照</el-tag>
+                            <el-tag size="mini" effect="plain">扩容</el-tag>
+                          </div>
+
+                          <div
+                            style="
+                              display: flex;
+                              justify-content: space-between;
+                              margin-bottom: 5px;
+                            "
+                          >
+                            <div>
+                              <span style="color: black"> 提供方：</span>
+                              <span style="color: rgba(150, 152, 155)"
+                                >平台</span
+                              >
+                            </div>
+                            <div>
+                              <span style="color: black"> 卷插件：</span>
+                              <span style="color: rgba(150, 152, 155)"
+                                >rook-ceph.rbd.csi.ceph.com</span
+                              >
+                            </div>
+                            <div>
+                              <span style="color: black"> 状态：</span>
+                              <span style="color: rgba(150, 152, 155)">
+                                <i class="el-icon-remove" />
+                                未部署
+                                <el-link
+                                  style="margin-left: 5px"
+                                  href="/#/storage-management/distributed-storage/list"
+                                  target="_blank"
+                                >
+                                  <i
+                                    class="
+                                      el-icon-link el-icon-left
+                                      question-icon
+                                    "
+                                    style="color:#409EFF; margin-left10; margin-top:-10px"
+                                  >
+                                  </i>
+                                  部署
+                                </el-link>
+                              </span>
+                            </div>
+                          </div>
+
+                          <div
+                            style="
+                              margin: 10px 0 12px;
+                              color: rgba(150, 152, 155);
+                            "
+                          >
+                            基于平台内置的 Ceph 分布式存储，提供高
+                            IOPS，低延迟的存储服务，适用于数据库、虚拟化等场景
+                          </div>
+                        </div>
+                      </div>
+                    </el-button>
+                  </el-col>
+                </el-row>
+
+                <el-row style="height: 200px">
+                  <el-col :span="24">
+                    <el-button
+                      class="buttonClass"
+                      @click="handleDetail('DcokerRegistry')"
+                    >
+                      <div
+                        style="position: relative; padding: 32px; display: flex"
+                      >
+                        <div
+                          style="
+                            width: 60px;
+                            height: 100px;
+                            margin-right: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                          "
+                        >
+                          <el-checkbox v-model="checked02"></el-checkbox>
+                        </div>
+
+                        <div
+                          style="
+                            width: 15px;
+                            height: 110px;
+                            border-left: solid #c0c4cc 1px;
+                            margin-left: -15px;
+                            padding-right: 30px;
+                          "
+                        ></div>
+
+                        <div
+                          style="
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                          "
+                        >
+                          <div
+                            style="
+                              font-size: 18px;
+                              color: rgba(50, 52, 55);
+                              margin-bottom: 10px;
+                            "
+                          >
+                            TopoLVM
+                            <el-tag size="mini" effect="plain">扩容</el-tag>
+                          </div>
+
+                          <div
+                            style="
+                              display: flex;
+                              justify-content: space-between;
+                              margin-bottom: 5px;
+                            "
+                          >
+                            <div>
+                              <span style="color: black"> 提供方：</span>
+                              <span style="color: rgba(150, 152, 155)"
+                                >平台</span
+                              >
+                            </div>
+                            <div>
+                              <span style="color: black"> 卷插件：</span>
+                              <span style="color: rgba(150, 152, 155)"
+                                >topolvm.cybozu.com</span
+                              >
+                            </div>
+                            <div>
+                              <span style="color: black"> 状态：</span>
+                              <span style="color: rgba(150, 152, 155)">
+                                <i class="el-icon-remove" />
+                                未部署
+                                <el-link
+                                  style="margin-left: 5px"
+                                  href="/#/storage-management/local-storage/list"
+                                  target="_blank"
+                                >
+                                  <i
+                                    class="
+                                      el-icon-link el-icon-left
+                                      question-icon
+                                    "
+                                    style="color:#409EFF; margin-left10; margin-top:-10px"
+                                  >
+                                  </i>
+                                  部署
+                                </el-link>
+                              </span>
+                            </div>
+                          </div>
+
+                          <div
+                            style="
+                              margin: 10px 0 12px;
+                              color: rgba(150, 152, 155);
+                            "
+                          >
+                            基于 LVM
+                            的本地存储方案，提供简单、易维护和高性能的本地存储服务，适用于数据库、中间件等场景
+                          </div>
+                        </div>
+                      </div>
+                    </el-button>
+                  </el-col>
+                </el-row>
+              </div>
             </div>
           </div>
         </div>
@@ -116,7 +315,7 @@
     </div>
 
     <div class="fixed-div" v-else>
-      <el-button @click="permission">添加自定义权限</el-button>
+      <!-- <el-button @click="permission">添加自定义权限</el-button> -->
       <el-button @click="prevSubmit">上一步</el-button>
       <el-button type="primary" @click="submitCreate">
         <span>创建</span>
@@ -137,7 +336,11 @@ export default {
   components: { LineAlert, MonacoEditor, FoldableBlock },
   data() {
     return {
+      checked01: false,
+      checked02: false,
+
       storageClass: "",
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -354,6 +557,8 @@ export default {
   created() {},
 
   methods: {
+    deploy() {},
+
     permission() {
       this.permVisible = true;
     },
@@ -601,29 +806,36 @@ export default {
 ::v-deep .el-input--prefix .el-input__inner {
   padding-left: 55px;
 }
-::v-deep.specsRadio {
-  .el-radio-button {
-    // margin-right: 15px;
-    // border-radius: 4px;
-    .el-radio-button__inner {
-      //修改按钮样式
-      width: 150px;
-      height: 80px;
-      line-height: 2;
-      // &:hover {
-      //   background-color: #28d4c1;
-      // }
-      // background: #2794f8;
-      // color: #333;
-      // border: 0 !important;
-    }
-    // .el-radio-button__orig-radio:checked + .el-radio-button__inner {
-    //   // 修改按钮激活样式
-    //   color: #fff;
-    // background-color: #f63;
-    //   border-color: #f63;
-    //   box-shadow: -1px 0 0 0 #f63;
-    // }
-  }
+.buttonClass {
+  width: 900px;
+  height: 160px;
+  padding: 0;
+  white-space: inherit;
+  text-align: left;
+}
+/*鼠标点击后移开，恢复本身样式*/
+.buttonClass,
+.buttonClass:focus:not(.buttonClass:hover) {
+  margin-right: 12px;
+  border: 1px solid #2794f8;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 #f4f4f4;
+  color: #2794f8;
+  background: white;
+}
+/*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
+.buttonClass:focus,
+.buttonClass:hover {
+  background: #eaf5ff;
+  border: 1px solid #2794f8 !important;
+  color: #2794f8;
+}
+/*鼠标按下，没有抬起*/
+.buttonClass:active {
+  // background: #2794f8;
+  color: white;
+}
+.el-tag + .el-tag {
+  margin-left: 5px;
 }
 </style>

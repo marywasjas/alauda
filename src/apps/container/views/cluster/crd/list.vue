@@ -7,11 +7,16 @@
         <div class="flex-center">
           <el-select
             v-model="formInline.name"
-            placeholder="组：全部"
+            placeholder=""
             @change="handleGroupChange"
             class="margin-right10"
             style="width: 80%"
           >
+            <span
+              slot="prefix"
+              style="position: absolute; height: 100%; left: 5px; top: 10px"
+              >组：</span
+            >
             <el-option
               v-for="item in groupOptions"
               :key="item.value"
@@ -106,7 +111,6 @@ export default {
       });
     },
 
-
     handleCapacityExpansion() {},
 
     handleUpdate(row) {
@@ -149,8 +153,5 @@ export default {
     background: #fff;
     padding: 20px;
   }
-  // .flex-center {
-  //   float: right;
-  // }
 }
 </style>

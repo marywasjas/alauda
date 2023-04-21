@@ -1,16 +1,26 @@
 <template>
-  <div class="detail-container">
-    <div class="detail-header">
+  <div class="Yaml-container">
+    <!-- <div class="detail-header">
       <tab-header
-        :name="name"
         :desc="desc"
         :tab-list="tabList"
         :active-name="activeName"
         @changeActive="changeActive"
       >
       </tab-header>
+    </div> -->
+
+    <div class="Yaml-header tab-header__header-wrapper">
+      <el-tabs v-model="activeName" @tab-click="changeActive">
+        <el-tab-pane
+          v-for="tab in tabList"
+          :key="tab.name"
+          :label="tab.label"
+          :name="tab.name"
+        />
+      </el-tabs>
     </div>
-    <component :is="comName" :name="name"/>
+    <component :is="comName" :name="name" />
   </div>
 </template>
 
@@ -54,7 +64,7 @@ export default {
   },
   methods: {
     changeActive(value) {
-      this.activeName = value;
+      // this.activeName = value;
     },
   },
 };
@@ -65,5 +75,14 @@ export default {
   min-height: 100%;
   padding: 20px;
   background-color: $background-color;
+}
+.Yaml-container {
+  min-height: 100%;
+  padding: 20px;
+  background-color: $background-color;
+  .Yaml-header {
+    background-color: #fff;
+    padding: 10px 0 0 10px;
+  }
 }
 </style>

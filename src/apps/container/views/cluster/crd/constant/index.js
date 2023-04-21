@@ -28,7 +28,7 @@ export const tableData = Mock.mock({
     name: '@word(3, 7)',
     group: '@word(3, 7)',
     date: '@date',
-    number: 'v1',
-    scope: '命名空间 | 集群'
+    "number|1": ['v1', "v1beta1"],
+    "scope|1": ['命名空间', "集群"]
   }]
 })

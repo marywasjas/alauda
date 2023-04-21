@@ -12,6 +12,7 @@
         />
       </el-tabs>
     </div>
+    
     <component :is="comName" />
   </div>
 </template>

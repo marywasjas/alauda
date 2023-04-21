@@ -11,12 +11,18 @@ export const portColumnList = [
   {
     id: 'time',
     label: '创建时间'
+  },
+  {
+    id: 'operation',
+    label: '',
+    // fixed: 'right'
+    width: '60px'
   }
 ]
 
 export const portData = Mock.mock({
-  'data|3': [{
-    name: '@ip',
+  'data|2': [{
+    name: 'container-platform',
     space: "@pick(['TCP', 'UDP'])",
     time: '@date'
   }]

@@ -1,7 +1,7 @@
 <template>
   <div class="resource-management-container">
     <el-row>
-      <el-col :span="5">
+      <el-col :span="7">
         <div class="group-pannel">
           <el-form>
             <!-- 1 -->
@@ -17,7 +17,9 @@
                 style="width: 100%"
                 size="small"
                 @change="handleGroupChange"
+                class="resourceGroup"
               >
+                <span slot="prefix"> 资源组： </span>
                 <el-option label="全部" value="all" />
               </el-select>
             </el-form-item>
@@ -55,7 +57,7 @@
               :title="'命名空间相关' + ' (' + resourceList.length + ')'"
               name="1"
             >
-              <ul style="height: 420px; overflow-y: scroll">
+              <ul class="scrollUL" style="">
                 <li
                   v-for="(item, index) in resourceList"
                   :key="index"
@@ -75,7 +77,7 @@
               :title="'集群相关' + ' (' + resourceList.length + ')'"
               name="2"
             >
-              <ul style="height: 420px; overflow-y: scroll">
+              <ul class="scrollUL">
                 <li
                   v-for="(item, index) in resourceList"
                   :key="index"
@@ -94,7 +96,8 @@
           </el-collapse>
         </div>
       </el-col>
-      <el-col :span="19">
+
+      <el-col :span="17">
         <div class="filter-container">
           <el-button
             icon="el-icon-refresh-right"
@@ -129,16 +132,9 @@
                 :value="v"
               />
             </el-select>
-            <el-select placeholder="命名空间：" style="margin-left: 10px">
-              <el-options
-                v-for="item in groupOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
           </div>
         </div>
+
         <el-table
           :data="list.data"
           style="width: 100%"
@@ -165,26 +161,24 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="命名空间">
-            <template slot-scope="scope">
-              <span>{{ scope.row.namespace }}</span>
-            </template>
-          </el-table-column>
           <el-table-column label="创建时间">
             <template slot-scope="scope">
               <span>{{ scope.row.createtime }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="" width="60">
+          <el-table-column width="60px">
             <template slot-scope="scope">
               <div class="operation-cell">
-                <el-dropdown>
+                <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native="handleEdit(scope.row)"
                       >更新</el-dropdown-item
                     >
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item
+                      @click.native="handleDeleteResource(scope.row)"
+                      >删除</el-dropdown-item
+                    >
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -193,6 +187,7 @@
         </el-table>
       </el-col>
     </el-row>
+
     <monaco-editor-dialog
       v-if="detailVisible"
       id="eventMonacoEditorDialog"
@@ -205,6 +200,31 @@
       :submit-txt="submitTxt"
       @closeDetailsDialog="closeDetailsDialog"
     />
+
+    <el-dialog
+      @close="dialogDeleteVisible = false"
+      :visible.sync="dialogDeleteVisible"
+      width="45%"
+    >
+      <div class="el-dialog-div">
+        <span
+          style="
+            text-align: center;
+            display: block;
+            font-size: 22px;
+            line-height: 24px;
+            font-weight: bold;
+          "
+        >
+          <i class="el-icon-warning" style="color: orange" />
+          {{ `确定删除资源 "${instanceName}" 吗？` }}
+        </span>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handle_delete"> 删除 </el-button>
+        <el-button @click="dialogDeleteVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -220,12 +240,12 @@ export default {
       "data|10": [
         {
           "id|+1": 1,
-          name: "@word(10,30)",
+          name: "@word(10,20)",
           tag: [
             "app.kubernetes.io/instance: test",
             "app.kubernetes.io/managed-by: Helm",
           ],
-          namespace: "toda-elasticsearch-system",
+          // namespace: "toda-elasticsearch-system",
           createtime: "2022-04-25 16:52:56",
           spec: {
             detail: {
@@ -275,6 +295,7 @@ export default {
       ],
     });
     return {
+      activeNames: "",
       selectedGroup: "all",
       version: "",
       inputResource: "",
@@ -424,6 +445,9 @@ export default {
         find: true,
         copy: true,
       },
+
+      dialogDeleteVisible: false,
+      instanceName: "",
     };
   },
   created() {
@@ -506,6 +530,15 @@ export default {
         return false;
       }
     },
+
+    handleDeleteResource(obj) {
+      this.dialogDeleteVisible = true;
+      this.instanceName = obj.name;
+    },
+
+    handle_delete() {},
+
+    handleChange() {},
   },
 };
 </script>
@@ -585,5 +618,15 @@ li {
     color: $color-primary;
     cursor: pointer;
   }
+}
+::v-deep .resourceGroup {
+  .el-input--prefix .el-input__inner {
+    padding-left: 50px;
+  }
+}
+.scrollUL {
+  height: 420px;
+  overflow-y: scroll;
+  width: 100%;
 }
 </style>

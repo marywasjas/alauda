@@ -36,7 +36,10 @@
                           创建存储集群
                         </div>
                         <div
-                          style="margin: 10px 0 12px; color: rgba(150, 152, 155)"
+                          style="
+                            margin: 10px 0 12px;
+                            color: rgba(150, 152, 155);
+                          "
                         >
                           提供快速创建和部署 Ceph
                           分布式存储集群的能力，支持可用户生产的块存储、共享文件存储和对象存储能力。若您需要在当前集群部署
@@ -56,7 +59,7 @@
                 <el-col :span="24">
                   <el-button
                     class="buttonClass"
-                    @click="handleDetail('DcokerRegistry')"
+                    @click="handleDetail2('DcokerRegistry')"
                   >
                     <div
                       style="position: relative; padding: 32px; display: flex"
@@ -83,9 +86,14 @@
                           接入存储服务
                         </div>
                         <div
-                          style="margin: 10px 0 12px; color: rgba(150, 152, 155)"
+                          style="
+                            margin: 10px 0 12px;
+                            color: rgba(150, 152, 155);
+                          "
                         >
-                         提供便捷接入外部 Ceph 分布式存储集群的能力，支持块存储、共享文件存储类型的对接。若您需要为当前集群接入外部 Ceph 存储服务，请点击下方按钮。
+                          提供便捷接入外部 Ceph
+                          分布式存储集群的能力，支持块存储、共享文件存储类型的对接。若您需要为当前集群接入外部
+                          Ceph 存储服务，请点击下方按钮。
                         </div>
 
                         <div>
@@ -223,6 +231,12 @@ export default {
     handleDetail(name) {
       this.$router.push({
         path: "/storage-management/distributed-storage/storageCluster",
+      });
+    },
+
+    handleDetail2(name) {
+      this.$router.push({
+        path: "/storage-management/distributed-storage/storageServer",
       });
     },
   },
