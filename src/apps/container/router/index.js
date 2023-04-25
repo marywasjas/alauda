@@ -1331,6 +1331,84 @@ export const containerAsyncRoutes = [
     ]
   },
 
+  // 平台管理--运维中心
+  {
+    path: '/maintenance-center',
+    component: Layout,
+    redirect: '/maintenanceCenter/monitor-platfrom/blackbox-monitoring',
+    name: 'MaintenanceCenter',
+    meta: { title: '运维中心', icon: 'example' },
+    children: [
+      {
+        path: 'monitor-platfrom',
+        component: () => import('@/apps/container/views/maintenance-center/monitor/index'),
+        redirect: '/maintenanceCenter/monitor-platfrom/blackbox-monitoring',
+        name: 'MonitorMain',
+        meta: { title: '监控' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'blackbox-monitoring',
+            component: () => import('@/apps/container/views/maintenance-center/monitor/blackbox/list'),
+            name: 'BlackBox',
+            meta: { title: '黑盒监控' },
+          },
+          {
+            path: 'dashboard',
+            component: () => import('@/apps/container/views/maintenance-center/monitor/dashboard/list'),
+            name: 'BlackBox',
+            meta: { title: '控制面板' },
+          },
+        ]
+      },
+      {
+        path: 'log',
+        component: () => import('@/apps/container/views/maintenance-center/log/index'),
+        redirect: '/maintenanceCenter/monitor-platfrom/blackbox-monitoring',
+        name: 'LogMain',
+        meta: { title: '日志' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'log-query',
+            component: () => import('@/apps/container/views/maintenance-center/log/logquery'),
+            name: 'BlackBox',
+            meta: { title: '日志查询分析' },
+          },
+          {
+            path: 'log-strategy',
+            component: () => import('@/apps/container/views/maintenance-center/log/logstrategy'),
+            name: 'BlackBox',
+            meta: { title: '策略管理' },
+          },
+          {
+            path: 'log-export',
+            component: () => import('@/apps/container/views/maintenance-center/log/logexport'),
+            name: 'BlackBox',
+            meta: { title: '导出记录' },
+          },
+        ]
+      },
+      {
+        path: 'event',
+        component: () => import('@/apps/container/views/maintenance-center/event/index'),
+        redirect: '/maintenance-center/event/list',
+        name: 'EventMain',
+        meta: { title: '事件' },
+        // alwaysShow: true,
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/maintenance-center/event/list'),
+            name: 'BlackBox',
+            meta: { title: '' },
+            hidden: true
+          },
+        ]
+      },
+    ]
+  },
+
   // 平台管理--平台证书管理
   {
     path: '/platformCert-management',

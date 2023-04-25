@@ -5,10 +5,21 @@
       :width="width"
       :before-close="closeFormDialog"
     >
-      <span class="titleStyle">
-        <i class="el-icon-warning" style="color: orange" />
-        {{ titleContext }}
-      </span>
+      <div
+        style="
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <span class="titleStyle">
+          <i class="el-icon-warning" style="color: orange" />
+          {{ titleContext }}
+        </span>
+        <!-- <span style="margin-top:20px">删除后将无法恢复，且导致相关联的告警策略无法监控数据。</span> -->
+        <span style="margin-top: 20px">{{ nodeText }}</span>
+      </div>
 
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">
@@ -46,6 +57,10 @@ export default {
     width: {
       type: String,
       default: "40%",
+    },
+    nodeText: {
+      type: String,
+      default: "",
     },
   },
   data() {
