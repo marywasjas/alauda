@@ -3,7 +3,7 @@
     <BaseCard>
       <header>
         <div class="card-title left-header">
-          <span style="font-size: 25px; line-height: 45px; font-weight: bold">
+          <span style="font-size: 20px; line-height: 28px; font-weight: 500">
             {{ name }}
           </span>
         </div>
@@ -26,51 +26,44 @@
         </el-row>
       </section>
     </BaseCard>
-    <BaseCard>
-      <header
-        style="
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-        "
-      >
-        <div class="card-title right-header">
-          <span style="font-size: 25px; line-height: 45px; font-weight: bold">
-            实例
-          </span>
-        </div>
 
-        <div class="search">
+    <BaseCard>
+      <header class="tableStyle">
+        <span style="font-size: 20px; line-height: 28px; font-weight: 500">
+          实例
+        </span>
+
+        <div class="flex-center">
           <el-button
             type="primary"
+            class="margin-right10"
             @click="handleCreate"
-            style="margin-right: 10px"
-            >创建实例
+          >
+            创建实例
           </el-button>
-          <div class="flex-center">
-            <el-input
-              v-model="search"
-              placeholder="按名称搜索"
-              class="margin-right10"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            </el-input>
-            <el-button icon="el-icon-refresh-right" @click="onSearch" />
-          </div>
+          <el-input
+            v-model="searchName"
+            placeholder="按名称搜索"
+            class="margin-right10"
+            @keyup.enter.native="handleSearch"
+          >
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
+          <el-button icon="el-icon-refresh-right" @click="handleRefresh" />
         </div>
       </header>
 
       <section>
         <el-table
           class="margin-top"
-          :data="portData.data"
+          :data="tableData.data"
           style="width: 100%"
           height="100%"
           header-row-class-name="headerStyle"
           empty-text="无实例"
         >
           <el-table-column
-            v-for="col in portColumnList"
+            v-for="col in tableColumnList"
             :key="col.id"
             :label="col.label"
             :show-overflow-tooltip="col['show-overflow-tooltip']"
@@ -106,9 +99,17 @@
       </section>
     </BaseCard>
 
-    <el-dialog
-      @close="dialogDeleteVisible = false"
-      :visible.sync="dialogDeleteVisible"
+    <delete-remove-dialog
+      :formVisible="formVisible"
+      deleteOrRemove="删除"
+      width="45%"
+      :titleContext="`确定删除实例 &quot;${instanceName}&quot; 吗？`"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
+    <!-- <el-dialog
+      @close="formVisible = false"
+      :visible.sync="formVisible"
       width="45%"
     >
       <div class="el-dialog-div">
@@ -127,18 +128,22 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handle_delete"> 删除 </el-button>
-        <el-button @click="dialogDeleteVisible = false">取消</el-button>
+        <el-button @click="formVisible = false">取消</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { portColumnList, portData } from "./constant/index";
+import { tableColumnList, tableData } from "./constant/index";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "BaseInfo",
+  components: { DeleteRemoveDialog },
+
   props: ["name"],
+
   data() {
     return {
       baseInfoData: [
@@ -163,15 +168,18 @@ export default {
           value: "v1 (储存版本)",
         },
       ],
-      portColumnList,
-      portData,
-      search: "",
-      dialogDeleteVisible: false,
+      tableColumnList,
+      tableData,
+      searchName: "",
+      formVisible: false,
       instanceName: "",
     };
   },
   methods: {
-    onSearch() {},
+    handleRefresh() {},
+
+    handleSearch() {},
+
     handleDetail(row) {
       this.$router.push({
         path: "/cluster-management/crd/detailInstance",
@@ -194,11 +202,15 @@ export default {
     },
 
     handleDelete(obj) {
-      this.dialogDeleteVisible = true;
+      this.formVisible = true;
       this.instanceName = obj.name;
     },
 
-    handle_delete() {},
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
   },
 };
 </script>
@@ -234,9 +246,14 @@ export default {
 .hover-div:hover {
   background: $color-primary-rgba1;
 }
-.search {
+// .search {
+//   display: flex;
+//   justify-content: right;
+//   align-items: center;
+// }
+.tableStyle {
   display: flex;
-  justify-content: right;
-  align-items: center;
+  align-items: baseline;
+  justify-content: space-between;
 }
 </style>

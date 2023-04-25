@@ -4,7 +4,7 @@
       <!-- 1 搜索框 和 按钮-->
       <div class="card__header">
         <span>
-          <el-button type="primary" @click="handleBackupPolicy">
+          <el-button type="primary" @click="handleCreate">
             创建备份策略
           </el-button>
         </span>
@@ -15,8 +15,8 @@
             prefix-icon="el-icon-search"
             clearable
             placeholder="按名称或简介过滤"
-            v-model="typeValue"
-            @keyup.enter.native="getList"
+            v-model="searchValue"
+            @keyup.enter.native="handleSearch"
           >
           </el-input>
         </div>
@@ -26,7 +26,6 @@
       <div class="card__content">
         <el-table
           :data="tableData.data"
-          @selection-change="cacheSelected"
           style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
@@ -41,18 +40,12 @@
             :fixed="col.fixed"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'userName'" class="name-cell">
-                <i class="el-icon-menu" />
-                <div>
-                  <span
-                    @click="handleUserDetail(scope.row)"
-                    class="cursor-pointer"
-                  >
-                    {{ scope.row[col.id] }}
-                  </span>
-                  <span>{{ scope.row.desc }}</span>
-                </div>
+              <div v-if="col.id === 'name'" class="cursor-pointer">
+                <span @click="handleDetail(scope.row)">
+                  {{ scope.row[col.id] }}
+                </span>
               </div>
+
               <div v-else-if="col.id === 'status'">
                 <i
                   :class="
@@ -63,81 +56,51 @@
                 />
                 <span> {{ scope.row[col.id] }} </span>
               </div>
+
               <div v-else-if="col.id === 'operation'" class="operation-cell">
                 <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      command="update"
-                      @click.native="handlePassword(scope.row, '重置密码')"
+                      @click.native="handleAction(scope.row, '立即执行')"
                     >
-                      重置密码
+                      执行备份
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native="handleUpdate(scope.row)">
+                      更新
                     </el-dropdown-item>
                     <el-dropdown-item
-                      command="delete"
-                      @click.native="
-                        handleUpdatePeriod(scope.row, '更新有效期')
-                      "
-                    >
-                      更新有效期
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      command="delete"
-                      @click.native="handleActive(scope.row)"
-                    >
-                      激活
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      command="delete"
-                      @click.native="handleDisable(scope.row)"
-                    >
-                      禁用
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      command="delete"
-                      @click.native="handleDelete(scope.row)"
+                      @click.native="handleDelete(scope.row, '删除')"
                     >
                       删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
+
+              <div v-else-if="col.id === 'time'">
+                {{ `${scope.row[col.id]} (UTC)` }}
+              </div>
+
               <div v-else>
                 {{ scope.row[col.id] }}
               </div>
             </template>
           </el-table-column>
         </el-table>
-
-        <div style="margin-top: 15px; margin-left: 55%">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :total="page.count"
-            :current-page="page.current"
-            :page-size="page.size"
-            :page-sizes="[10, 20, 30, 40]"
-            layout="total, sizes, prev, pager, next, jumper"
-          >
-          </el-pagination>
-        </div>
       </div>
 
       <el-dialog
         title="创建备份策略"
-        @close="dialogPasswordVisible = false"
-        :visible.sync="dialogPasswordVisible"
+        @close="dialogCreateVisible = false"
+        :visible.sync="dialogCreateVisible"
         width="60%"
       >
-        <!-- <div class="text item event-container"> -->
         <div style="padding: 12px; background-color: rgba(247, 249, 252)">
           <div style="font-size: 10px; display: flex; flex-direction: column">
             <el-row style="height: 135px">
               <el-col :span="12">
-                <el-button
-                  class="buttonClass"
-                  @click="handleDetail('DcokerRegistry')"
-                >
+                <el-button class="buttonClass" @click="handleETCD">
                   <div style="position: relative; padding: 32px; display: flex">
                     <div style="width: 72px; height: 72px; margin-right: 40px">
                       <img
@@ -172,11 +135,7 @@
 
             <el-row style="height: 135px">
               <el-col :span="24">
-                <el-button
-                  class="buttonClass"
-                  @click="handleDetail2('DcokerRegistry')"
-                  :disabled="true"
-                >
+                <el-button class="buttonClass" :disabled="true">
                   <div style="position: relative; padding: 32px; display: flex">
                     <div style="width: 72px; height: 72px; margin-right: 40px">
                       <img
@@ -204,7 +163,11 @@
                       </div>
                       <div style="color: rgba(150, 152, 155)">
                         当前集群未部署备份恢复组件，无法创建应用备份策略，
-                        <el-link type="primary" href="/#/cluster-management/cluster/detail">去部署</el-link>
+                        <el-link
+                          type="primary"
+                          href="/#/cluster-management/cluster/detail"
+                          >去部署</el-link
+                        >
                       </div>
                     </div>
                   </div>
@@ -213,251 +176,90 @@
             </el-row>
           </div>
         </div>
-        <!-- </div> -->
       </el-dialog>
 
-      <el-dialog
-        :title="title"
-        @close="cancelPeriodDialog"
-        :visible.sync="dialogPeriodVisible"
-        width="60%"
-      >
-        <el-form
-          ref="periodForm"
-          :model="periodForm"
-          :rules="periodRules"
-          label-width="135px"
-        >
-          <el-form-item label="用户名">
-            {{ passwordUser }}
-          </el-form-item>
-
-          <el-form-item label="有效期">
-            <el-radio-group v-model="periodForm.radio">
-              <el-radio-button label="永久"></el-radio-button>
-              <el-radio-button label="自定义"></el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item
-            label="时间范围"
-            v-if="periodForm.radio == '自定义'"
-            prop="date"
-          >
-            <el-date-picker
-              v-model="periodForm.date"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-        </el-form>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="handleUpdate"> 更新 </el-button>
-          <el-button @click="dialogPeriodVisible = false">取消</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog
-        @close="dialogDisableVisible = false"
-        :visible.sync="dialogDisableVisible"
-        width="45%"
-      >
-        <div class="el-dialog-div">
-          <span
-            style="
-              text-align: center;
-              display: block;
-              font-size: 22px;
-              line-height: 24px;
-              font-weight: bold;
-            "
-          >
-            <i class="el-icon-warning" style="color: orange" />
-            {{
-              "确定" + " 禁用 " + "用户 " + '"' + this.passwordUser + '"吗？'
-            }}
-          </span>
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="handle_disable"> 禁用 </el-button>
-          <el-button @click="dialogDisableVisible = false">取消</el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog
-        @close="dialogDeleteVisible = false"
-        :visible.sync="dialogDeleteVisible"
-        width="45%"
-      >
-        <div class="el-dialog-div">
-          <span
-            style="
-              text-align: center;
-              display: block;
-              font-size: 22px;
-              line-height: 24px;
-              font-weight: bold;
-            "
-          >
-            <i class="el-icon-warning" style="color: orange" />
-            {{
-              "确定" + " 删除 " + "用户 " + '"' + this.passwordUser + '"吗？'
-            }}
-          </span>
-          <br />
-          <span style="text-align: center; display: block">
-            删除后，将无法创建相同用户名的用户
-          </span>
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="handle_delete"> 删除 </el-button>
-          <el-button @click="dialogDeleteVisible = false">取消</el-button>
-        </div>
-      </el-dialog>
+      <DeleteRemoveDialog
+        :formVisible="formVisible"
+        :deleteOrRemove="buttonText"
+        :width="width"
+        :titleContext="titleContext"
+        v-on:closeFormDialog="closeFormDialog"
+        v-on:submitForm="submitForm"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { tableData, tableColumnList } from "./constant";
-import LineAlert from "@/apps/container/views/components/LineAlert";
-import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 import errGif from "@/assets/401_images/401.gif";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "UserList",
-  components: {
-    LineAlert,
-    FoldableBlock,
-  },
+  components: { DeleteRemoveDialog },
   data() {
     return {
       errGif: errGif + "?" + +new Date(),
-
-      page: {
-        count: 1,
-        current: 1,
-        size: 20,
-      },
       tableData,
       tableColumnList,
-      searchValue: "showName",
-      typeValue: "",
-      title: "",
-      passwordUser: "",
-
-      dialogPasswordVisible: false,
-
-      dialogPeriodVisible: false,
-      periodForm: {
-        radio: "永久",
-        date: "",
-      },
-      periodRules: {
-        date: [
-          { required: true, message: "时间范围是必填项", trigger: "change" },
-        ],
-      },
-
-      dialogDisableVisible: false,
-      dialogDeleteVisible: false,
-
-      batchDeleteVisible: false,
-      batchActiveVisible: false,
-      batchDisableVisible: false,
-      batchPeriodVisible: false,
-      periodBatchForm: {
-        radio: "永久",
-        date: "",
-      },
-      periodBatchRules: {},
-      password: "",
+      searchValue: "",
+      buttonText: "",
+      titleContext: "",
+      formVisible: false,
+      width: "",
+      dialogCreateVisible: false,
     };
   },
 
   created() {},
   methods: {
-    getList() {},
-    // 创建用户
-    handleBackupPolicy() {
-      // this.$router.push({ path: "/user-role-management/user/create" });
-      this.dialogPasswordVisible = true;
+    handleSearch() {},
+
+    handleCreate() {
+      this.dialogCreateVisible = true;
     },
 
-    handleUserDetail(obj) {
-      console.log(obj.userName);
+    handleDetail(obj) {
       this.$router.push({
-        path: "/user-role-management/user/detail",
-        query: { name: obj.userName },
+        path: "/cluster-management/backup-manage/detail",
+        query: { name: obj.name },
       });
     },
 
-    handleSearchChange(e) {},
-    handleSizeChange(val) {
-      this.page.size = val;
-      this.getList();
+    handleETCD() {
+      this.$router.push({
+        path: "/cluster-management/backup-manage/etcd",
+        query: { type: "add" },
+      });
     },
 
-    handleCurrentChange(val) {
-      this.page.current = val;
-      this.getList();
+    handleAction(obj, title) {
+      this.buttonText = title;
+      this.titleContext = `确定立即执行备份任务吗？`;
+      this.formVisible = true;
+      this.width = "35%";
     },
 
-    cancelPeriodDialog() {
-      this.dialogPeriodVisible = false;
+    handleDelete(obj, title) {
+      this.buttonText = title;
+      this.titleContext = `确认删除备份策略 "${obj.name}" 吗？`;
+      this.formVisible = true;
+      this.width = "45%";
     },
 
-    handleUpdatePeriod(obj, title) {
-      this.title = title;
-      this.dialogPeriodVisible = true;
-      this.passwordUser = obj.userName + " (" + obj.desc + ")";
-    },
-    handleUpdate() {
-      this.dialogPeriodVisible = false;
+    handleUpdate(obj) {
+      this.$router.push({
+        path: "/cluster-management/backup-manage/etcd",
+        query: { type: "update", name: obj.name },
+      });
     },
 
-    handleDisable(obj) {
-      this.dialogDisableVisible = true;
-      this.passwordUser = obj.userName + " (" + obj.desc + ")";
-    },
-    handle_disable() {},
-
-    handleDelete(obj) {
-      this.dialogDeleteVisible = true;
-      this.passwordUser = obj.userName + " (" + obj.desc + ")";
+    closeFormDialog() {
+      this.formVisible = false;
     },
 
-    handle_delete() {},
-
-    cacheSelected(selected) {
-      console.log("多选框被选中对象组成的数组", selected);
-      this.selectedDevice = selected;
-      this.batchVisible = false;
-      if (this.selectedDevice.length > 0) this.batchVisible = true;
-    },
-    handleBatchPeriod() {
-      this.batchPeriodVisible = true;
-    },
-    handle_batchPeriod() {},
-
-    handleBatchActive() {
-      this.batchActiveVisible = true;
-    },
-    handle_batchActive() {},
-
-    handleBatchDisable() {
-      this.batchDisableVisible = true;
-    },
-    handle_batchDisable() {},
-
-    handleBatchDelete() {
-      this.batchDeleteVisible = true;
-    },
-    handle_batchDelete() {},
+    submitForm() {},
   },
 };
 </script>
@@ -566,7 +368,7 @@ export default {
 }
 /*鼠标按下，没有抬起*/
 .buttonClass:active {
-  background: #2794f8;
+  // background: #2794f8;
   color: white;
 }
 </style>

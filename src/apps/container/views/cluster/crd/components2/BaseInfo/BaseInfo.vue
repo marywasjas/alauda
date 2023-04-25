@@ -16,17 +16,7 @@
           >
             <span>{{ item.label }}</span>
             : &nbsp;&nbsp;
-            <span v-if="item.label == '状态'">
-              <i
-                :class="
-                  item.value === '已绑定' ? 'el-icon-lock' : 'el-icon-unlock'
-                "
-                style="color: #67c23a"
-              />
-              {{ item.value }}
-            </span>
-
-            <span v-else-if="item.label == '标签'">
+            <span v-if="item.label == '标签'">
               <el-tooltip placement="top" effect="dark">
                 <div slot="content">{{ item.value }}</div>
                 <el-tag size="mini">
@@ -124,6 +114,7 @@
                 @click="handleUpdate('更新注解', 'nodeItems')"
               />
             </span>
+
             <span v-else>
               {{ item.value ? item.value : "-" }}
             </span>
@@ -146,20 +137,7 @@
           >
             <span>{{ item.label }}</span>
             : &nbsp;&nbsp;
-            <span v-if="item.label == '关联持久卷声明'">
-              <el-tooltip placement="top" effect="dark">
-                <template slot="content">{{ item.value }}</template>
-                <span>
-                  {{
-                    item.value.length > 15
-                      ? item.value.substring(0, 30) + "..."
-                      : item.value
-                  }}
-                </span>
-              </el-tooltip>
-            </span>
-
-            <span v-else>
+            <span>
               {{ item.value ? item.value : "-" }}
             </span>
           </el-col>
@@ -167,9 +145,17 @@
       </section>
     </BaseCard>
 
-    <el-dialog
-      @close="labelVisible = false"
-      :visible.sync="labelVisible"
+    <UpdateLabelsDialog
+      :title="title"
+      :updateLabelsVisible="labelOrNodeVisible"
+      @update:updateLabelsVisible="closeFormDialog"
+      :labelsDialogForm="title == '更新标签' ? obj.labelItems : obj.nodeItems"
+    />
+    <!-- width:"60%" -->
+
+    <!-- <el-dialog
+      @close="labelOrNodeVisible = false"
+      :visible.sync="labelOrNodeVisible"
       :title="title"
       width="60%"
     >
@@ -245,22 +231,24 @@
           v-if="title == '更新注解'"
           >更新</el-button
         >
-        <el-button @click="labelVisible = false">取消</el-button>
+        <el-button @click="labelOrNodeVisible = false">取消</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
+import UpdateLabelsDialog from "@/apps/container/views/components/UpdateLabelsDialog.vue";
 
 export default {
   name: "BaseInfo",
-  components: {},
+  components: { UpdateLabelsDialog },
   props: {},
   data() {
     return {
       title: "",
+      labelOrNodeVisible: false,
       baseInfoData: [
         {
           label: "资源类型",
@@ -326,20 +314,24 @@ export default {
         },
       ],
 
-      labelVisible: false,
-
       obj: {
-        labelItems: [],
-        nodeItems: [],
+        labelItems: [
+          { key: "label1", value: "chaosbale" },
+          { key: "label2", value: "chaosbale" },
+          { key: "label3", value: "chaosbale" },
+          { key: "label4", value: "chaosbale" },
+        ],
+        nodeItems: [
+          { key: "node1", value: "chaosbale" },
+          { key: "node2", value: "chaosbale" },
+        ],
       },
-      arrName: "",
+      // arrName: "",
     };
   },
   computed: {},
   watch: {},
-  created() {
-    this.detailName = this.$route.query.name;
-  },
+  created() {},
   mounted() {},
   methods: {
     setMinWidthEmpty(val) {
@@ -354,25 +346,28 @@ export default {
 
     handleUpdate(title, arr) {
       this.title = title;
-      this.arrName = arr;
-      this.labelVisible = true;
+      this.labelOrNodeVisible = true;
+      // this.arrName = arr;
     },
 
-    handleUpdateLabel() {},
-    handleUpdateNote() {},
-
-    handleAddParams(filed) {
-      const itemObj = {
-        id: nanoid(),
-        key: "",
-        value: "",
-      };
-      this.obj[filed].push(itemObj);
+    closeFormDialog() {
+      this.labelOrNodeVisible = false;
     },
 
-    handleDeleteParams(filed, item, index) {
-      this.obj[filed].splice(index, 1);
-    },
+    // handleUpdateLabel() {},
+    // handleUpdateNote() {},
+    // handleAddParams(filed) {
+    //   const itemObj = {
+    //     id: nanoid(),
+    //     key: "",
+    //     value: "",
+    //   };
+    //   this.obj[filed].push(itemObj);
+    // },
+
+    // handleDeleteParams(filed, item, index) {
+    //   this.obj[filed].splice(index, 1);
+    // },
   },
 };
 </script>

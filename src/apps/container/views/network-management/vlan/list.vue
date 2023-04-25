@@ -12,10 +12,19 @@
             placeholder="按名称过滤"
             size="small"
             class="margin-right10"
+            v-model="searchValue"
           >
-            <el-button slot="append" icon="el-icon-search" />
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="handleSearch"
+            />
           </el-input>
-          <el-button icon="el-icon-refresh-right" size="small" />
+          <el-button
+            icon="el-icon-refresh-right"
+            size="small"
+            @click="handleRefresh"
+          />
         </div>
       </div>
 
@@ -65,12 +74,11 @@
         label-width="135px"
       >
         <el-form-item label="名称">
-          <el-input v-model="createForm.name" style="width: 80%"></el-input>
+          <el-input v-model="createForm.name" style="width: 80%" />
         </el-form-item>
 
         <el-form-item label="VLAN id">
-          <el-input v-model="createForm.showName" style="width: 80%">
-          </el-input>
+          <el-input v-model="createForm.showName" style="width: 80%" />
         </el-form-item>
         <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
           <el-descriptions-item>
@@ -103,21 +111,20 @@
 </template>
 
 <script>
-import LineAlert from "@/apps/container/views/components/LineAlert";
 import { tableData, tableColumnList } from "./constant";
-import { nanoid } from "nanoid";
 
 export default {
   name: "ClusterList",
-  components: { LineAlert },
+  components: {},
   data() {
     return {
+      searchValue: "",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
         display: "table-cell",
         "vertical-align": "middle",
-        "margin-left": "120px",
+        "margin-left": "125px",
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
@@ -137,10 +144,7 @@ export default {
     };
   },
 
-  created() {
-    // 获取列表数据
-    // this.getList();
-  },
+  created() {},
 
   methods: {
     setMinWidthEmpty(val) {
@@ -152,16 +156,16 @@ export default {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
     },
-    // 搜索
-    onSearch() {
-      console.log(this.formInline);
-    },
+    handleSearch() {},
+    handleRefresh() {},
 
     handelCreate() {
+      this.createForm = this.$options.data().createForm;
       this.createVisible = true;
     },
     handle_create() {},
 
+    handelDetail(obj) {},
   },
 };
 </script>

@@ -36,5 +36,14 @@ export const tableColumnList = [
   }
 ]
 export const tableData = Mock.mock({
-  data: []
+  "data|2": [
+    {
+      name: "region-nfs",
+      storageScheme: "NFS",
+      type: "文件存储",
+      recycPolicy: "删除",
+      project: "region-devops",
+      time: "@date"
+    }
+  ]
 })

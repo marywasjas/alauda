@@ -6,10 +6,11 @@
           <el-form>
             <!-- 1 -->
             <el-form-item label="">
-              <el-button type="primary" @click="handelAdd">
+              <el-button type="primary" @click="handelAdd('创建资源对象')">
                 创建资源对象
               </el-button>
             </el-form-item>
+
             <!-- 2 -->
             <el-form-item label="">
               <el-select
@@ -20,9 +21,15 @@
                 class="resourceGroup"
               >
                 <span slot="prefix"> 资源组： </span>
-                <el-option label="全部" value="all" />
+                <el-option
+                  v-for="(v, index) in resource.version"
+                  :key="index"
+                  :label="`${v}/v1`"
+                  :value="v"
+                />
               </el-select>
             </el-form-item>
+
             <!-- 3 -->
             <el-form-item>
               <el-input
@@ -51,13 +58,12 @@
               </div>
             </li>
           </ul> -->
-
           <el-collapse v-model="activeNames" @change="handleChange" accordion>
             <el-collapse-item
               :title="'命名空间相关' + ' (' + resourceList.length + ')'"
               name="1"
             >
-              <ul class="scrollUL" style="">
+              <ul id="scrollUL">
                 <li
                   v-for="(item, index) in resourceList"
                   :key="index"
@@ -142,11 +148,14 @@
         >
           <el-table-column label="名称">
             <template slot-scope="scope">
-              <span class="cursor-pointer" @click="openDetails(scope.row)">{{
-                scope.row.name
-              }}</span>
+              <span
+                class="cursor-pointer"
+                @click="openDetails(scope.row, `${scope.row.name} 详情`)"
+                >{{ scope.row.name }}</span
+              >
             </template>
           </el-table-column>
+
           <el-table-column label="标签" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>
@@ -161,18 +170,31 @@
               </span>
             </template>
           </el-table-column>
+
+          <el-table-column label="命名空间" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <span>
+                {{ scope.row.namespace }}
+              </span>
+            </template>
+          </el-table-column>
+
           <el-table-column label="创建时间">
             <template slot-scope="scope">
               <span>{{ scope.row.createtime }}</span>
             </template>
           </el-table-column>
+
           <el-table-column width="60px">
             <template slot-scope="scope">
               <div class="operation-cell">
                 <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="handleEdit(scope.row)"
+                    <el-dropdown-item
+                      @click.native="
+                        handleEdit(scope.row, `更新 ${scope.row.name}`)
+                      "
                       >更新</el-dropdown-item
                     >
                     <el-dropdown-item
@@ -191,7 +213,7 @@
     <monaco-editor-dialog
       v-if="detailVisible"
       id="eventMonacoEditorDialog"
-      title="详情"
+      :title="yamlTitle"
       :visible="detailVisible"
       :code="code"
       :read-only="readOnly"
@@ -201,40 +223,25 @@
       @closeDetailsDialog="closeDetailsDialog"
     />
 
-    <el-dialog
-      @close="dialogDeleteVisible = false"
-      :visible.sync="dialogDeleteVisible"
+    <delete-remove-dialog
+      :formVisible="formVisible"
+      deleteOrRemove="删除"
       width="45%"
-    >
-      <div class="el-dialog-div">
-        <span
-          style="
-            text-align: center;
-            display: block;
-            font-size: 22px;
-            line-height: 24px;
-            font-weight: bold;
-          "
-        >
-          <i class="el-icon-warning" style="color: orange" />
-          {{ `确定删除资源 "${instanceName}" 吗？` }}
-        </span>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handle_delete"> 删除 </el-button>
-        <el-button @click="dialogDeleteVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+      :titleContext="`确定删除资源 &quot;${instanceName}&quot; 吗？`"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import Mock from "mockjs";
-// import { getResourceList } from "../../../../../mock/alarm/axiosApi";
 import MonacoEditorDialog from "@/apps/container/views/components/MonacoEditorDialog";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
+
 export default {
   name: "ResourceManagement",
-  components: { MonacoEditorDialog },
+  components: { MonacoEditorDialog, DeleteRemoveDialog },
   data() {
     const list = Mock.mock({
       "data|10": [
@@ -245,7 +252,7 @@ export default {
             "app.kubernetes.io/instance: test",
             "app.kubernetes.io/managed-by: Helm",
           ],
-          // namespace: "toda-elasticsearch-system",
+          namespace: "toda-elasticsearch-system",
           createtime: "2022-04-25 16:52:56",
           spec: {
             detail: {
@@ -294,9 +301,10 @@ export default {
         },
       ],
     });
+
     return {
       activeNames: "",
-      selectedGroup: "all",
+      selectedGroup: "",
       version: "",
       inputResource: "",
       resourceList: [],
@@ -425,7 +433,7 @@ export default {
         { id: 81, name: "Rule", version: ["crd.alauda.io"] },
       ],
       list,
-      // list: { data: [] },
+
       listQuery: {
         page: 1,
         limit: 20,
@@ -446,29 +454,23 @@ export default {
         copy: true,
       },
 
-      dialogDeleteVisible: false,
+      formVisible: false,
       instanceName: "",
+      yamlTitle: "",
     };
   },
   created() {
     this.resourceList = this.initResourceList;
     this.resource = this.resourceList[0];
     this.version = this.resource.version[0];
-    // this.getList();
   },
   methods: {
-    // getList() {
-    //   getResourceList().then((res) => {
-    //     console.log(res.data);
-    //     this.list.data = res.data.data;
-    //   });
-    // },
-
     // 事件详情
-    openDetails(row) {
+    openDetails(row, title) {
       this.detailVisible = true;
       this.readOnly = true;
       this.submitTxt = null;
+      this.yamlTitle = title;
       this.code = JSON.stringify(row.spec, null, 2);
     },
     closeDetailsDialog() {
@@ -507,17 +509,19 @@ export default {
     handleVersionChange(val) {
       console.log(val);
     },
-    handleEdit(row) {
+    handleEdit(row, title) {
       this.detailVisible = true;
       this.readOnly = false;
       this.submitTxt = "更新";
+      this.yamlTitle = title;
       this.code = JSON.stringify(row.spec, null, 2);
     },
     // 创建资源对象
-    handelAdd() {
+    handelAdd(title) {
       this.detailVisible = true;
       this.readOnly = false;
       this.submitTxt = "创建";
+      this.yamlTitle = title;
       this.code = JSON.stringify("", null, 2);
     },
     handleDelete(id) {
@@ -532,11 +536,15 @@ export default {
     },
 
     handleDeleteResource(obj) {
-      this.dialogDeleteVisible = true;
+      this.formVisible = true;
       this.instanceName = obj.name;
     },
 
-    handle_delete() {},
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
 
     handleChange() {},
   },
@@ -624,7 +632,7 @@ li {
     padding-left: 50px;
   }
 }
-.scrollUL {
+#scrollUL {
   height: 420px;
   overflow-y: scroll;
   width: 100%;

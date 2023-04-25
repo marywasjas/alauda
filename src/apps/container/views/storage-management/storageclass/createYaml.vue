@@ -19,7 +19,7 @@
       <el-button type="primary" @click="submitCreate">
         <span>创建</span>
       </el-button>
-      <el-button @click=" cancelCreate">取消</el-button>
+      <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
 </template>
@@ -47,59 +47,6 @@ export default {
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
-
-      infoForm: {
-        name: "",
-        showName: "",
-        desc: "",
-      },
-      infoRules: {
-        name: [{ required: true, message: "名称是必填项", trigger: "blur" }],
-        showName: [
-          { required: true, message: "显示名称是必填项", trigger: "blur" },
-        ],
-      },
-      serverForm: {
-        address: "",
-        userName: "",
-        password: "",
-        nameTips: "",
-      },
-      serverRules: {
-        address: [
-          {
-            required: true,
-            message: "服务提供方 URL是必填项",
-            trigger: "blur",
-          },
-        ],
-        userName: [
-          { required: true, message: "客户端 ID是必填项", trigger: "blur" },
-        ],
-        password: [
-          { required: true, message: "客户端秘钥是必填项", trigger: "blur" },
-        ],
-        nameTips: [
-          { required: true, message: "重定向 URI是必填项", trigger: "blur" },
-        ],
-      },
-
-      quotaForm: {
-        method: false,
-      },
-
-      idpForm: {
-        userName: "",
-        password: "",
-      },
-      idpRules: {
-        userName: [
-          { required: true, message: "用户名是必填项", trigger: "blur" },
-        ],
-        password: [
-          { required: true, message: "密码是必填项", trigger: "blur" },
-        ],
-      },
     };
   },
 
@@ -116,35 +63,15 @@ export default {
       }
     },
 
-    nextSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.active = 1;
-          // this.$refs["ruleForm"].resetFields();
-          this.$refs["ruleForm"].clearValidate();
-          this.ruleForm = this.$options.data().ruleForm;
-          // this.ruleForm = {
-          //   name: "",
-          //   showName: "",
-          //   desc: "",
-          //   roleType: "平台角色",
-          // };
-        } else {
-          return false;
-        }
-      });
+    handleBlur(value) {
+      this.inputCode = value;
     },
+
     submitCreate() {},
 
     // 取消-返回
     cancelCreate() {
       this.$router.go(-1);
-    },
-
-    updatePolicy() {
-      this.$router.push({
-        path: "/user-role-management/security-policy/update",
-      });
     },
   },
 };

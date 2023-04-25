@@ -13,13 +13,22 @@
 
         <div class="flex-center">
           <el-input
-            placeholder="按名称搜索"
+            placeholder="按名称过滤"
             size="small"
             class="margin-right10"
+            v-model="searchValue"
           >
-            <el-button slot="append" icon="el-icon-search" />
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="handleSearch"
+            />
           </el-input>
-          <el-button icon="el-icon-refresh-right" size="small" />
+          <el-button
+            icon="el-icon-refresh-right"
+            size="small"
+            @click="handleRefresh"
+          />
         </div>
       </div>
 
@@ -47,26 +56,25 @@
                   {{ scope.row[col.id] }}
                 </span>
               </div>
-              <div v-else-if="col.id === 'total'">
-                <!-- <p class="margin0"> -->
-                <i class="el-icon-cpu primary2-text" />
-                {{ scope.row.cpu }}{{ scope.row.cpuCompony }}
-                <!-- </p>
-                <p class="margin0"> -->
-                <i class="el-icon-bank-card primary-text" />
-                {{ scope.row.memory }}{{ scope.row.memoryCompony }}
-                <!-- </p> -->
-              </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
                 <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                      @click.native="handleDelete"
-                      :disabled="true"
+                    <el-tooltip
+                      effect="dark"
+                      class="item"
+                      placement="top"
+                      content="不可删除默认子网"
                     >
-                      删除
-                    </el-dropdown-item>
+                      <div>
+                        <el-dropdown-item
+                          @click.native="handleDelete"
+                          :disabled="true"
+                        >
+                          删除
+                        </el-dropdown-item>
+                      </div>
+                    </el-tooltip>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -125,7 +133,7 @@
         </el-form-item>
 
         <el-form-item label="网关" v-if="createForm.transMethod == 'Underlay'">
-          <el-input v-model="createForm.gateway"></el-input>
+          <el-input v-model="createForm.gateway" style="width: 80%"></el-input>
         </el-form-item>
         <el-descriptions
           size="small"
@@ -142,7 +150,7 @@
           <el-select
             v-model="createForm.vlan"
             @focus="setMinWidthEmpty"
-            style="width: 100%"
+            style="width: 80%"
           >
             <el-option
               v-for="item in []"
@@ -163,100 +171,110 @@
           </el-descriptions-item>
         </el-descriptions>
 
-        <el-form-item label="保留 IP" style="margin-bottom: 10px">
-          <el-row type="flex" class="row-bg">
-            <el-col :span="24">
-              <!-- 1 -->
-              <div>
-                <span style="margin-left: 10px">IP 形式</span>
-                <span style="margin-left: 200px">IP 地址</span>
-              </div>
-              <!-- 2 -->
-              <div class="grid-content bg-purple">
-                <div v-if="createForm.configurationItems.length > 0">
-                  <div
-                    v-for="(domain, index) in createForm.configurationItems"
-                    :key="domain.id"
-                    class="margin-bottom10 item-div"
-                  >
-                    <el-row>
-                      <el-col :span="9">
-                        <el-form-item>
-                          <el-select
-                            v-model="domain.selected"
-                            @focus="setMinWidthEmpty"
-                            style="width: 100%"
-                          >
-                            <el-option label="IP" value="IP" />
-                            <el-option label="IP 段" value="IP 段" />
-                          </el-select>
-                        </el-form-item>
-                      </el-col>
-                      <el-col
-                        :span="14"
-                        style="padding-left: 10px"
-                        v-if="domain.selected == 'IP'"
+        <el-row type="flex">
+          <el-col :span="22">
+            <el-form-item label="保留 IP" style="margin-bottom: 10px">
+              <el-row type="flex" class="row-bg">
+                <el-col :span="24">
+                  <!-- 1 -->
+                  <div>
+                    <span style="margin-left: 10px">IP 形式</span>
+                    <span style="margin-left: 200px">IP 地址</span>
+                  </div>
+                  <!-- 2 -->
+                  <div class="grid-content bg-purple">
+                    <div v-if="createForm.configurationItems.length > 0">
+                      <div
+                        v-for="(domain, index) in createForm.configurationItems"
+                        :key="domain.id"
+                        class="margin-bottom10 item-div"
                       >
-                        <el-form-item>
-                          <el-input
-                            v-model="domain.input"
-                            placeholder="输入 IP"
-                          />
-                        </el-form-item>
-                      </el-col>
-                      <el-col v-else :span="14" style="padding-left: 10px">
-                        <el-form-item>
-                          <el-input
-                            v-model="domain.input1"
-                            placeholder="输入 IP"
-                            style="width: 47%"
-                          />
-                          ~
-                          <el-input
-                            v-model="domain.input2"
-                            placeholder="输入 IP"
-                            style="width: 47%"
-                          />
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="1" style="padding-left: 10px">
-                        <div>
-                          <i
-                            class="el-icon-remove-outline cursor-pointer"
-                            @click="
-                              handleDelete('configurationItems', domain, index)
-                            "
-                          />
-                        </div>
-                      </el-col>
-                    </el-row>
+                        <el-row>
+                          <el-col :span="9">
+                            <el-form-item>
+                              <el-select
+                                v-model="domain.selected"
+                                @focus="setMinWidthEmpty"
+                                style="width: 100%"
+                              >
+                                <el-option label="IP" value="IP" />
+                                <el-option label="IP 段" value="IP 段" />
+                              </el-select>
+                            </el-form-item>
+                          </el-col>
+                          <el-col
+                            :span="14"
+                            style="padding-left: 10px"
+                            v-if="domain.selected == 'IP'"
+                          >
+                            <el-form-item>
+                              <el-input
+                                v-model="domain.input"
+                                placeholder="输入 IP"
+                              />
+                            </el-form-item>
+                          </el-col>
+                          <el-col v-else :span="14" style="padding-left: 10px">
+                            <el-form-item>
+                              <el-input
+                                v-model="domain.input1"
+                                placeholder="输入 IP"
+                                style="width: 47%"
+                              />
+                              ~
+                              <el-input
+                                v-model="domain.input2"
+                                placeholder="输入 IP"
+                                style="width: 47%"
+                              />
+                            </el-form-item>
+                          </el-col>
+                          <el-col :span="1" style="padding-left: 10px">
+                            <div>
+                              <i
+                                class="el-icon-remove-outline cursor-pointer"
+                                @click="
+                                  handleDelete(
+                                    'configurationItems',
+                                    domain,
+                                    index
+                                  )
+                                "
+                              />
+                            </div>
+                          </el-col>
+                        </el-row>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <p style="text-align: center">无保留 IP</p>
+                    </div>
+                    <div class="flex-center">
+                      <div
+                        class="cursor-pointer text-center hover-div"
+                        style="flex: 1"
+                        @click="handleAdd('configurationItems')"
+                      >
+                        <i class="el-icon-circle-plus-outline" />
+                        添加
+                      </div>
+                    </div>
                   </div>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip effect="dark" class="item" placement="top">
+              <template slot="content">
+                <div style="max-width: 450px">
+                  需作为固定 IP 分配的 IP，建议设置保留 IP
                 </div>
-                <div v-else>
-                  <p style="text-align: center">无保留 IP</p>
-                </div>
-                <div class="flex-center">
-                  <div
-                    class="cursor-pointer text-center hover-div"
-                    style="flex: 1"
-                    @click="handleAdd('configurationItems')"
-                  >
-                    <i class="el-icon-circle-plus-outline" />
-                    添加
-                  </div>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-          <el-tooltip effect="dark" class="item" placement="top">
-            <template slot="content">
-              <div style="max-width: 450px">
-                需作为固定 IP 分配的 IP，建议设置保留 IP
-              </div>
-            </template>
-            <i class="el-icon-question margin-left10 question-icon" />
-          </el-tooltip>
-        </el-form-item>
+              </template>
+              <i class="el-icon-question margin-left10 question-icon" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
 
         <el-form-item
           label="网关类型"
@@ -278,7 +296,7 @@
           <el-select
             v-model="createForm.netSegmentNode"
             @focus="setMinWidthEmpty"
-            style="width: 100%"
+            style="width: 80%"
           >
             <el-option
               v-for="item in []"
@@ -303,7 +321,10 @@
             createForm.transMethod == 'Overlay'
           "
         >
-          <el-input v-model="createForm.whiteList"></el-input>
+          <el-input
+            v-model="createForm.whiteList"
+            style="width: 80%"
+          ></el-input>
         </el-form-item>
 
         <el-form-item
@@ -332,22 +353,21 @@ export default {
   components: { LineAlert },
   data() {
     return {
+      searchValue: "",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
         display: "table-cell",
         "vertical-align": "middle",
-        "margin-left": "120px",
+        "margin-left": "125px",
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
       tableData,
       tableColumnList,
-      clusterOptions: [
-        { label: "global(global)", value: "global(global)" },
-        { label: "region(region)", value: "region(region)" },
-      ],
+
       createVisible: false,
+
       createForm: {
         name: "",
         netSegment: "",
@@ -361,14 +381,12 @@ export default {
         whiteList: "",
         nat: false,
       },
+
       createRules: {},
     };
   },
 
-  created() {
-    // 获取列表数据
-    // this.getList();
-  },
+  created() {},
 
   methods: {
     setMinWidthEmpty(val) {
@@ -380,10 +398,8 @@ export default {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
     },
-    // 搜索
-    onSearch() {
-      console.log(this.formInline);
-    },
+    handleSearch() {},
+    handleRefresh() {},
 
     handelCreate() {
       this.createVisible = true;

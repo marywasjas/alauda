@@ -6,6 +6,7 @@
           <div class="card-title right-header">
             <span v-if="type == 'add'">创建 {{ ruleForm.name }}</span>
             <span v-if="type == 'update'">更新 {{ ruleForm.name }}</span>
+
             <el-radio-group v-model="activeTab">
               <el-radio-button label="form">表单</el-radio-button>
               <el-radio-button label="yaml">YAML</el-radio-button>
@@ -17,6 +18,7 @@
             content='某些字段可能无法以表单形式表示，请选择 "YAML视图" 编辑完整字段设置。'
             style="margin-top: 20px"
           />
+
           <el-form
             ref="ruleForm"
             :model="ruleForm"
@@ -53,7 +55,30 @@
             <el-row>
               <el-col :span="20">
                 <el-form-item label="名称" prop="newName">
-                  <el-input v-model="ruleForm.newName" />
+                  <span v-if="type == 'update'">{{ ruleForm.newName }}</span>
+                  <el-input v-else v-model="ruleForm.newName" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="20">
+                <el-form-item label="命名空间" prop="namespace">
+                  <span v-if="type == 'update'">{{ ruleForm.namespace }}</span>
+                  <el-select
+                    v-else
+                    v-model="ruleForm.namespace"
+                    @focus="setMinWidthEmpty"
+                    style="width: 100%"
+                  >
+                    <el-option
+                      v-for="item in []"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.name"
+                    >
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -107,6 +132,13 @@
                             type="text"
                             @click="handleDelete('labels', domain, index)"
                           />
+                        </td>
+                      </tr>
+                      <tr v-if="this.ruleForm.labels.length == 0">
+                        <td colspan="5">
+                          <div style="text-align: center; color: #c8cacd">
+                            无数据
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -264,8 +296,8 @@
                   :contentStyle="rowCenter"
                 >
                   <el-descriptions-item>
-                    version string of this production</el-descriptions-item
-                  >
+                    version string of this production
+                  </el-descriptions-item>
                 </el-descriptions>
               </el-col>
             </el-row>
@@ -286,7 +318,7 @@
       </BaseCard>
     </div>
     <div class="fixed-div">
-      <el-button type="primary" class="margin-left10" @click="submitCreate">
+      <el-button type="primary" class="margin-left10" @click="submitForm">
         {{ type === "add" ? "创建" : "更新" }}
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
@@ -319,43 +351,34 @@ export default {
       ruleForm: {
         name: "",
         labels: [
-          {
-            id: nanoid(),
-            key: "",
-            value: "",
-          },
+          // { id: nanoid(), key: "", value: "" }
         ],
       },
       rules: {
-        name: [
-          { required: true, message: "请输入名称", trigger: "blur" },
-          {
-            min: 0,
-            max: 40,
-            message: "长度在 0 到 40 个字符",
-            trigger: "blur",
-          },
+        newName: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
-        showName: [
-          { required: true, message: "请输入显示名称", trigger: "blur" },
+        namespace: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
       },
-      fileList: [],
+
       currentCode: "{}",
       inputCode: {},
       language: "yaml",
     };
   },
   computed: {},
-  watch: {},
+
   created() {
     this.ruleForm.name = this.$route.query.name;
     this.type = this.$route.query.type;
     if (this.type == "update") {
       this.ruleForm = {
         name: this.$route.query.name,
-        version: "v1",
+        version: "v1beta1",
         newName: this.$route.query.name,
+        namespace: "kube-public",
         labels: [
           { id: nanoid(), key: "chart", value: "alauda-container-platform" },
           { id: nanoid(), key: "chart", value: "alauda-container-platform" },
@@ -373,7 +396,6 @@ export default {
       };
     }
   },
-  mounted() {},
   methods: {
     setMinWidthEmpty(val) {
       // 无数据的情况下，给请选择提示设置最小宽度
@@ -401,21 +423,12 @@ export default {
       };
       this.ruleForm[filed].push(obj);
     },
-    // 取消 按钮
+    // 取消
     cancelCreate() {
       this.$router.go(-1);
     },
     // 更新
-    submitCreate() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.$set(this.ruleForm, "code", this.inputCode);
-          console.log(this.ruleForm);
-        } else {
-          return false;
-        }
-      });
-    },
+    submitForm() {},
   },
 };
 </script>

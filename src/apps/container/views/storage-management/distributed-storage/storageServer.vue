@@ -4,23 +4,13 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <div>
-            <div
-              style="
-                font-size: 20px;
-                line-height: 24px;
-                font-weight: bold;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-              "
-            >
+            <div class="titleStyle">
               接入向导
               <el-radio-group v-model="method" v-if="active == 1">
                 <el-radio-button label="表单">表单</el-radio-button>
                 <el-radio-button label="yaml">YAML</el-radio-button>
               </el-radio-group>
             </div>
-            <!-- <div style="float: right"></div> -->
           </div>
 
           <el-steps :active="active" align-center style="margin-top: 10px">
@@ -426,12 +416,6 @@ export default {
           // this.$refs["ruleForm"].resetFields();
           this.$refs["ruleForm"].clearValidate();
           this.ruleForm = this.$options.data().ruleForm;
-          // this.ruleForm = {
-          //   name: "",
-          //   showName: "",
-          //   desc: "",
-          //   roleType: "平台角色",
-          // };
         } else {
           return false;
         }
@@ -578,5 +562,13 @@ export default {
   .el-pagination {
     text-align: right;
   }
+}
+.titleStyle {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

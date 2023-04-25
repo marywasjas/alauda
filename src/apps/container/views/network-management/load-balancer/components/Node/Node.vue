@@ -3,60 +3,55 @@
     <BaseCard>
       <section>
         <div style="text-align: left">
-          容器组：
-          <el-select filterable placeholder="请选择" style="margin-right: 10px">
-            <el-option
-              v-for="item in []"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          容器：
-          <el-select filterable placeholder="请选择">
-            <i slot="prefix" class="el-input__icon el-icon-search" />
-            <el-option
-              v-for="item in []"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <el-form
+            ref="ruleForm"
+            :model="ruleForm"
+            :rules="rules"
+            label-position="left"
+            inline
+          >
+            <el-form-item label="容器组：">
+              <el-select
+                filterable
+                placeholder="请选择"
+                style="margin-right: 10px"
+                v-model="ruleForm.containerGroup"
+              >
+                <el-option
+                  v-for="item in [
+                    {
+                      value: 'cpaas-system-rdsgs87g89',
+                      label: 'cpaas-system-rdsgs87g89',
+                    },
+                  ]"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="容器：">
+              <el-select
+                filterable
+                placeholder="请选择"
+                v-model="ruleForm.container"
+              >
+                <i slot="prefix" class="el-input__icon el-icon-search" />
+                <el-option
+                  v-for="item in [{ value: 'nginx', label: 'nginx' }]"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-form>
         </div>
 
         <!-- 2 表格 和 分页器-->
         <div class="card__content">
-          <Yaml/>
-          <!-- <el-table
-            :data="tableData.data"
-            style="width: 100%"
-            header-row-class-name="headerStyle"
-            class="margin-top"
-          >
-            <el-table-column
-              v-for="col in tableColumnList"
-              :key="col.id"
-              :label="col.label"
-              :show-overflow-tooltip="true"
-              :sortable="col.sortable"
-              :width="col.width"
-              :fixed="col.fixed"
-            >
-              <template slot-scope="scope">
-                <div v-if="col.id == 'name'">
-                  <span
-                    @click="handelDetails(scope.row)"
-                    class="cursor-pointer"
-                  >
-                    {{ scope.row[col.id] }}
-                  </span>
-                </div>
-                <div v-else>
-                  {{ scope.row[col.id] }}
-                </div>
-              </template>
-            </el-table-column>
-          </el-table> -->
+          <Yaml />
         </div>
       </section>
     </BaseCard>
@@ -65,15 +60,12 @@
 
 <script>
 import { tableColumnList, tableData } from "./constant/index";
-import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 import Yaml from "@/apps/container/views/components/Details/Yaml";
-
-
 import { nanoid } from "nanoid";
 
 export default {
   name: "Node",
-  components: { FoldableBlock,Yaml  },
+  components: { Yaml },
 
   props: {},
   data() {
@@ -89,6 +81,12 @@ export default {
       },
       tableColumnList,
       tableData,
+
+      ruleForm: {
+        containerGroup: "",
+        container: "",
+      },
+      rules: {},
     };
   },
   computed: {},
@@ -104,17 +102,6 @@ export default {
       if (domEmpty.length > 0) {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
-    },
-
-    handelDetails(obj) {
-      this.$router.push({
-        name: "ClusterNodeDetail",
-        query: { name: obj.name },
-      });
-    },
-    // 搜索
-    onSearch() {
-      console.log("搜索");
     },
   },
 };

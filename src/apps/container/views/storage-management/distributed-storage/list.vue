@@ -7,10 +7,7 @@
             <div style="font-size: 10px; margin: 15px 0 0 20px">
               <el-row style="height: 220px">
                 <el-col :span="24">
-                  <el-button
-                    class="buttonClass"
-                    @click="handleDetail('DcokerRegistry')"
-                  >
+                  <el-button class="buttonClass" @click="handleCreate">
                     <div
                       style="position: relative; padding: 32px; display: flex"
                     >
@@ -57,10 +54,7 @@
 
               <el-row style="height: 220px">
                 <el-col :span="24">
-                  <el-button
-                    class="buttonClass"
-                    @click="handleDetail2('DcokerRegistry')"
-                  >
+                  <el-button class="buttonClass" @click="handleImport">
                     <div
                       style="position: relative; padding: 32px; display: flex"
                     >
@@ -113,15 +107,11 @@
 </template>
 
 <script>
-import LineAlert from "@/apps/container/views/components/LineAlert";
-import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
-import { nanoid } from "nanoid";
-import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 import errGif from "@/assets/401_images/401.gif";
 
 export default {
   name: "ClusterCreate",
-  components: { LineAlert, MonacoEditor, FoldableBlock },
+  components: {},
   data() {
     return {
       errGif: errGif + "?" + +new Date(),
@@ -134,59 +124,6 @@ export default {
         "margin-left": "120px",
         "margin-top": "-20px",
         color: "#A9A9A9",
-      },
-
-      infoForm: {
-        name: "",
-        showName: "",
-        desc: "",
-      },
-      infoRules: {
-        name: [{ required: true, message: "名称是必填项", trigger: "blur" }],
-        showName: [
-          { required: true, message: "显示名称是必填项", trigger: "blur" },
-        ],
-      },
-      serverForm: {
-        address: "",
-        userName: "",
-        password: "",
-        nameTips: "",
-      },
-      serverRules: {
-        address: [
-          {
-            required: true,
-            message: "服务提供方 URL是必填项",
-            trigger: "blur",
-          },
-        ],
-        userName: [
-          { required: true, message: "客户端 ID是必填项", trigger: "blur" },
-        ],
-        password: [
-          { required: true, message: "客户端秘钥是必填项", trigger: "blur" },
-        ],
-        nameTips: [
-          { required: true, message: "重定向 URI是必填项", trigger: "blur" },
-        ],
-      },
-
-      quotaForm: {
-        method: false,
-      },
-
-      idpForm: {
-        userName: "",
-        password: "",
-      },
-      idpRules: {
-        userName: [
-          { required: true, message: "用户名是必填项", trigger: "blur" },
-        ],
-        password: [
-          { required: true, message: "密码是必填项", trigger: "blur" },
-        ],
       },
     };
   },
@@ -204,37 +141,13 @@ export default {
       }
     },
 
-    nextSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.active = 1;
-          // this.$refs["ruleForm"].resetFields();
-          this.$refs["ruleForm"].clearValidate();
-          this.ruleForm = this.$options.data().ruleForm;
-          // this.ruleForm = {
-          //   name: "",
-          //   showName: "",
-          //   desc: "",
-          //   roleType: "平台角色",
-          // };
-        } else {
-          return false;
-        }
-      });
-    },
-
-    // 取消-返回
-    cancelCreate() {
-      this.$router.go(-1);
-    },
-
-    handleDetail(name) {
+    handleCreate() {
       this.$router.push({
         path: "/storage-management/distributed-storage/storageCluster",
       });
     },
 
-    handleDetail2(name) {
+    handleImport() {
       this.$router.push({
         path: "/storage-management/distributed-storage/storageServer",
       });
@@ -414,7 +327,7 @@ export default {
 }
 /*鼠标按下，没有抬起*/
 .buttonClass:active {
-  background: #2794f8;
+  // background: #2794f8;
   color: white;
 }
 </style>

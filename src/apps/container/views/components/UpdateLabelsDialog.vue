@@ -38,9 +38,29 @@
             />
           </td>
         </tr>
+
+        <tr v-if="this.labelsDialogForm.length == 0">
+          <td colspan="5">
+            <div
+              style="
+                text-align: center;
+                color: #c8cacd;
+                height: 36px;
+                line-height: 36px;
+              "
+            >
+              无数据
+            </div>
+          </td>
+        </tr>
+
         <tr>
           <td colspan="5">
-            <div class="cursor-pointer text-center hover-div" style="height:36px;line-height: 36px;" @click="handleUpdateLabelsAdd">
+            <div
+              class="cursor-pointer text-center hover-div"
+              style="height: 36px; line-height: 36px"
+              @click="handleUpdateLabelsAdd"
+            >
               <i class="el-icon-circle-plus-outline" />
               添加
             </div>
@@ -50,61 +70,78 @@
     </table>
 
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="closeUpdateLabelsDialog">更新</el-button>
+      <el-button type="primary" @click="closeUpdateLabelsDialog"
+        >更新</el-button
+      >
       <el-button @click="closeUpdateLabelsDialog">取 消</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { nanoid } from 'nanoid'
+import { nanoid } from "nanoid";
 export default {
-  name: 'UpdateLabelsDialog',
+  name: "UpdateLabelsDialog",
   props: {
     updateLabelsVisible: {
       type: Boolean,
       default: () => {
-        return false
-      }
+        return false;
+      },
     },
     title: {
       type: String,
-      default: '更新标签'
-    }
+      default: "更新标签",
+    },
+    labelsDialogForm: {
+      type: Array,
+      default: () => {
+        return [
+          {
+            key: "app",
+            value: "chaosbale",
+          },
+          {
+            key: "name",
+            value: "chaosbale",
+          },
+        ];
+      },
+    },
   },
   data() {
     return {
-      labelsDialogForm: [
-        {
-          key: 'app',
-          value: 'chaosbale'
-        },
-        {
-          key: 'name',
-          value: 'chaosbale'
-        }
-      ]
-    }
+      // labelsDialogForm: [
+      //   {
+      //     key: "app",
+      //     value: "chaosbale",
+      //   },
+      //   {
+      //     key: "name",
+      //     value: "chaosbale",
+      //   },
+      // ],
+    };
   },
   methods: {
     closeUpdateLabelsDialog() {
-      this.$emit('update:updateLabelsVisible', false)
+      this.$emit("update:updateLabelsVisible", false);
     },
     // 删除弹窗内 匹配标签
     handleUpdateLabelsDelete(item, index) {
-      this.labelsDialogForm.splice(this.labelsDialogForm.indexOf(item), 1)
+      this.labelsDialogForm.splice(this.labelsDialogForm.indexOf(item), 1);
     },
     // 添加弹窗内 匹配标签
     handleUpdateLabelsAdd() {
       const obj = {
         id: nanoid(),
-        key: '',
-        value: ''
-      }
-      this.labelsDialogForm.push(obj)
-    }
-  }
-}
+        key: "",
+        value: "",
+      };
+      this.labelsDialogForm.push(obj);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

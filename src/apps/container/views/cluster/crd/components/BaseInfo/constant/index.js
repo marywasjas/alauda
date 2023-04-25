@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-export const portColumnList = [
+export const tableColumnList = [
   {
     id: 'name',
     label: '名称'
@@ -15,15 +15,14 @@ export const portColumnList = [
   {
     id: 'operation',
     label: '',
-    // fixed: 'right'
     width: '60px'
   }
 ]
 
-export const portData = Mock.mock({
+export const tableData = Mock.mock({
   'data|2': [{
     name: 'container-platform',
-    space: "@pick(['TCP', 'UDP'])",
+    space: "@pick(['admincipshiorg2', 'admincipshiorg1'])",
     time: '@date'
   }]
 })

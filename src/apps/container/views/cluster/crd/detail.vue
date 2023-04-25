@@ -1,15 +1,5 @@
 <template>
   <div class="Yaml-container">
-    <!-- <div class="detail-header">
-      <tab-header
-        :desc="desc"
-        :tab-list="tabList"
-        :active-name="activeName"
-        @changeActive="changeActive"
-      >
-      </tab-header>
-    </div> -->
-
     <div class="Yaml-header tab-header__header-wrapper">
       <el-tabs v-model="activeName" @tab-click="changeActive">
         <el-tab-pane
@@ -63,9 +53,7 @@ export default {
     this.activeName = this.tabList[0].name;
   },
   methods: {
-    changeActive(value) {
-      // this.activeName = value;
-    },
+    changeActive(val) {},
   },
 };
 </script>

@@ -25,7 +25,7 @@ export const tableColumnList = [
 ]
 export const tableData = Mock.mock({
   'data|2': [{
-    "name|1": ["k01057", "k01337"],
+    name: "etcd-backup-default",
     type: 'ETCD 备份',
     status: '已就绪',
     time: '@date',

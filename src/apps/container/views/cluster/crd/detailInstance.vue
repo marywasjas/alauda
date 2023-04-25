@@ -3,32 +3,33 @@
     <div class="detail-header">
       <tab-header
         :name="name"
-        :desc="desc"
         :tab-list="tabList"
         :active-name="activeName"
         @changeActive="changeActive"
+        :desc="desc"
       >
         <template v-slot:headerRight>
           <el-dropdown trigger="click">
-            <el-button type="primary" class="margin-left10"
-              >操作<i class="el-icon-arrow-down el-icon--right" />
+            <el-button type="primary" class="margin-left10">
+              操作
+              <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleUpdate"
-                >更新</el-dropdown-item
-              >
-              <el-tooltip
+              <el-dropdown-item @click.native="handleUpdate">
+                更新
+              </el-dropdown-item>
+              <!-- <el-tooltip
                 class="item"
                 effect="dark"
                 content="不可删除已绑定的持久卷"
                 placement="left-start"
               >
-                <div>
-                  <el-dropdown-item @click.native="handleDelete">
-                    删除
-                  </el-dropdown-item>
-                </div>
-              </el-tooltip>
+                <div> -->
+              <el-dropdown-item @click.native="handleDelete">
+                删除
+              </el-dropdown-item>
+              <!-- </div>
+              </el-tooltip> -->
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -37,39 +38,22 @@
 
     <component :is="comName" />
 
-    <el-dialog
-      @close="dialogDeleteVisible = false"
-      :visible.sync="dialogDeleteVisible"
+    <delete-remove-dialog
+      :formVisible="formVisible"
+      deleteOrRemove="删除"
       width="45%"
-    >
-      <div class="el-dialog-div">
-        <span
-          style="
-            text-align: center;
-            display: block;
-            font-size: 22px;
-            line-height: 24px;
-            font-weight: bold;
-          "
-        >
-          <i class="el-icon-warning" style="color: orange" />
-          {{ `确定删除资源实例 ${name} 吗？` }}
-        </span>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handle_delete"> 删除 </el-button>
-        <el-button @click="dialogDeleteVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+      :titleContext="`确定删除资源实例 ${name} 吗？`"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
-
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 import BaseInfo from "./components2/BaseInfo/BaseInfo.vue";
 import Yaml from "./components2/Yaml.vue";
-// import Event from "./components/Event/Event.vue";
 
 export default {
   name: "PersistentVolumeDetail",
@@ -77,13 +61,11 @@ export default {
     TabHeader,
     BaseInfo,
     Yaml,
-    // Event,
+    DeleteRemoveDialog,
   },
   data() {
     return {
-      dialogDeleteVisible: false,
-      // instanceName: "",
-
+      formVisible: false,
       name: "",
       desc: "",
       tabList: [
@@ -97,11 +79,6 @@ export default {
           name: "yaml",
           com: "Yaml",
         },
-        // {
-        //   label: "事件",
-        //   name: "event",
-        //   com: "Event",
-        // },
       ],
       activeName: "",
     };
@@ -122,6 +99,7 @@ export default {
     changeActive(value) {
       this.activeName = value;
     },
+
     handleUpdate(row) {
       this.$router.push({
         path: "/cluster-management/crd/create",
@@ -130,11 +108,14 @@ export default {
     },
 
     handleDelete(obj) {
-      this.dialogDeleteVisible = true;
-      this.instanceName = obj.name;
+      this.formVisible = true;
     },
 
-    handle_delete() {},
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
   },
 };
 </script>

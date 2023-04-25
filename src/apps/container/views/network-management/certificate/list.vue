@@ -8,18 +8,26 @@
       <!-- 1 搜索框 和 按钮-->
       <div class="card__header">
         <span>
-          <el-button type="primary" @click="handelCreate">创建集群</el-button>
+          <el-button type="primary" @click="handelCreate">创建证书</el-button>
         </span>
-
         <div class="flex-center">
           <el-input
             placeholder="按名称搜索"
             size="small"
             class="margin-right10"
+            v-model="searchValue"
           >
-            <el-button slot="append" icon="el-icon-search" />
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="handleSearch"
+            />
           </el-input>
-          <el-button icon="el-icon-refresh-right" size="small" />
+          <el-button
+            icon="el-icon-refresh-right"
+            size="small"
+            @click="handleRefresh"
+          />
         </div>
       </div>
 
@@ -43,31 +51,17 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'name'" class="cursor-pointer">
-                <span @click="handelDetails(scope.row)">
+                <span @click="handelDetail(scope.row)">
                   {{ scope.row[col.id] }}
                 </span>
-              </div>
-              <div v-else-if="col.id === 'total'">
-                <!-- <p class="margin0"> -->
-                <i class="el-icon-cpu primary2-text" />
-                {{ scope.row.cpu }}{{ scope.row.cpuCompony }}
-                <!-- </p>
-                <p class="margin0"> -->
-                <i class="el-icon-bank-card primary-text" />
-                {{ scope.row.memory }}{{ scope.row.memoryCompony }}
-                <!-- </p> -->
               </div>
               <div v-else-if="col.id === 'operation'" class="operation-cell">
                 <el-dropdown>
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                      @click.native="handleCapacityExpansion(scope.row)"
-                      >Kubectl 工具</el-dropdown-item
-                    >
-                    <el-dropdown-item @click.native="handleDelete(scope.row)"
-                      >删除</el-dropdown-item
-                    >
+                    <el-dropdown-item @click.native="handleExpan(scope.row)">
+                      Kubectl 工具
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -92,7 +86,7 @@
         :rules="createRules"
         label-width="135px"
       >
-        <el-form-item label="名称">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="createForm.name" style="width: 80%"></el-input>
         </el-form-item>
 
@@ -109,14 +103,18 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="指定项目" v-if="createForm.project == '指定项目'">
+        <el-form-item
+          label="指定项目"
+          prop="specifiedProject"
+          v-if="createForm.project == '指定项目'"
+        >
           <el-select
             v-model="createForm.specifiedProject"
             @focus="setMinWidthEmpty"
             style="width: 80%"
           >
             <el-option
-              v-for="item in clusterOptions"
+              v-for="item in []"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -124,7 +122,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="公钥">
+        <el-form-item label="公钥" prop="public">
           <el-input v-model="createForm.public" type="textarea" :rows="4">
           </el-input>
           <el-upload
@@ -136,7 +134,7 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="私钥">
+        <el-form-item label="私钥" prop="private">
           <el-input
             v-model="createForm.private"
             type="textarea"
@@ -169,12 +167,9 @@ export default {
   components: { LineAlert },
   data() {
     return {
+      searchValue: "",
       tableData,
       tableColumnList,
-      clusterOptions: [
-        { label: "global(global)", value: "global(global)" },
-        { label: "region(region)", value: "region(region)" },
-      ],
       createVisible: false,
       createForm: {
         name: "",
@@ -184,25 +179,44 @@ export default {
         public: "",
         private: "",
       },
-      createRules: {},
+      createRules: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        private: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        public: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        specifiedProject: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+      },
     };
   },
 
-  created() {
-    // 获取列表数据
-    // this.getList();
-  },
+  created() {},
 
   methods: {
-    // 搜索
-    onSearch() {
-      console.log(this.formInline);
+    setMinWidthEmpty(val) {
+      // 无数据的情况下，给请选择提示设置最小宽度
+      let domEmpty = document.getElementsByClassName(
+        "el-select-dropdown__empty"
+      );
+      if (domEmpty.length > 0) {
+        domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
+      }
     },
 
+    handleSearch() {},
+    handleRefresh() {},
+
     handelCreate() {
+      this.createForm = this.$options.data().createForm;
       this.createVisible = true;
     },
     handle_create() {},
+
+    handelDetail(obj) {},
   },
 };
 </script>

@@ -941,14 +941,30 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/cluster/backup/backupList/backupList.vue'),
             name: 'Backup-manageList',
             meta: { title: '备份管理' },
-            // hidden: true,
+          },
+          {
+            path: 'etcd',
+            component: () => import('@/apps/container/views/cluster/backup/backupList/etcd.vue'),
+            name: 'Backup-manageList',
+            meta: { title: '创建/更新 ETCD 备份' },
+            hidden: true,
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/cluster/backup/backupList/detail.vue'),
+            name: 'Backup-manageList',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
           },
           {
             path: 'restorelist',
             component: () => import('@/apps/container/views/cluster/backup/restoreList/restoreList.vue'),
             name: 'Restore-manageList',
             meta: { title: '恢复管理', },
-            // hidden: true,
           },
         ]
       },
@@ -1183,6 +1199,13 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/storage-management/storageclass/createStorageClass.vue'),
             name: 'UserCreate',
             meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'update',
+            component: () => import('@/apps/container/views/storage-management/storageclass/update.vue'),
+            name: 'UserCreate',
+            meta: { title: '更新', icon: 'icon', noCache: true, },
             hidden: true
           },
         ]

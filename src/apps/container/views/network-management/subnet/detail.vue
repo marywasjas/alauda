@@ -27,7 +27,16 @@
               <el-dropdown-item @click.native="handleExpandsubnet"
                 >扩容子网</el-dropdown-item
               >
-              <el-dropdown-item :disabled="true">删除</el-dropdown-item>
+              <el-tooltip
+                effect="dark"
+                class="item"
+                placement="bottom"
+                content="不可删除默认子网"
+              >
+                <div>
+                  <el-dropdown-item :disabled="true">删除</el-dropdown-item>
+                </div>
+              </el-tooltip>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -246,6 +255,7 @@ export default {
       ],
       activeName: "",
 
+      // 更新网关
       gatewayVisible: false,
       gatewayForm: {
         gatewayType: "分布式",
@@ -254,12 +264,14 @@ export default {
       },
       gatewayRules: {},
 
+      // 更新命名空间
       namespaceVisible: false,
       namespaceForm: {
         namespace: "",
       },
       namespaceRules: {},
 
+      // 更新白名单
       whitelistVisible: false,
       whitelistForm: {
         subnetIsolation: false,
@@ -267,6 +279,7 @@ export default {
       },
       whitelistRules: {},
 
+      // 更新扩容子网
       expandsubnetVisible: false,
       expandsubnetForm: {
         netSegment: "",
@@ -300,21 +313,25 @@ export default {
       this.activeName = value;
     },
 
+    // 子网
     handleGateway() {
       this.gatewayVisible = true;
     },
     handle_gateway() {},
 
+    // 命名空间
     handleNamespace() {
       this.namespaceVisible = true;
     },
     handle_namespace() {},
 
+    // 白名单
     handleWhitelist() {
       this.whitelistVisible = true;
     },
     handle_whitelist() {},
 
+    // 扩容子网
     handleExpandsubnet() {
       this.expandsubnetVisible = true;
     },

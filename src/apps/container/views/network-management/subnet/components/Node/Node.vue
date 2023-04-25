@@ -7,8 +7,13 @@
             placeholder="按 IP 过滤"
             size="small"
             style="margin-right: 10px; width: 25%"
+            v-model="searchValue"
           >
-            <el-button slot="append" icon="el-icon-search" />
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="handleSearch"
+            />
           </el-input>
         </div>
 
@@ -31,10 +36,7 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id == 'name'">
-                  <span
-                    @click="handelDetails(scope.row)"
-                    class="cursor-pointer"
-                  >
+                  <span class="cursor-pointer">
                     {{ scope.row[col.id] }}
                   </span>
                 </div>
@@ -63,6 +65,7 @@ export default {
   props: {},
   data() {
     return {
+      searchValue: "",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -90,17 +93,7 @@ export default {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
     },
-
-    handelDetails(obj) {
-      this.$router.push({
-        name: "ClusterNodeDetail",
-        query: { name: obj.name },
-      });
-    },
-    // 搜索
-    onSearch() {
-      console.log("搜索");
-    },
+    handleSearch() {},
   },
 };
 </script>

@@ -67,11 +67,10 @@ import TabHeader from "@/apps/container/views/components/TabHeader";
 import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
 import Node from "./components/Node/Node.vue";
 import clusterNet from "./components/clusterNet/clusterNet.vue";
-import LineAlert from "@/apps/container/views/components/LineAlert";
 
 export default {
   name: "ClusterDetail",
-  components: { TabHeader, BaseInfo, Node, LineAlert, clusterNet},
+  components: { TabHeader, BaseInfo, Node, clusterNet },
   data() {
     return {
       name: "",
@@ -94,33 +93,6 @@ export default {
         },
       ],
       activeName: "",
-
-      gatewayVisible: false,
-      gatewayForm: {
-        gatewayType: "分布式",
-        nat: true,
-        netSegmentNode: "",
-      },
-      gatewayRules: {},
-
-      namespaceVisible: false,
-      namespaceForm: {
-        namespace: "",
-      },
-      namespaceRules: {},
-
-      whitelistVisible: false,
-      whitelistForm: {
-        subnetIsolation: false,
-        whitelist: "",
-      },
-      whitelistRules: {},
-
-      expandsubnetVisible: false,
-      expandsubnetForm: {
-        netSegment: "",
-      },
-      expandsubnetRules: {},
     };
   },
   computed: {
@@ -148,27 +120,6 @@ export default {
     changeActive(value) {
       this.activeName = value;
     },
-
-    handleGateway() {
-      this.gatewayVisible = true;
-    },
-    handle_gateway() {},
-
-    handleNamespace() {
-      this.namespaceVisible = true;
-    },
-    handle_namespace() {},
-
-    handleWhitelist() {
-      this.whitelistVisible = true;
-    },
-    handle_whitelist() {},
-
-    handleExpandsubnet() {
-      this.expandsubnetVisible = true;
-    },
-
-    handle_expandsubnet() {},
   },
 };
 </script>

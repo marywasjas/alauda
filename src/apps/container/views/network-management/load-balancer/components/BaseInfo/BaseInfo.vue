@@ -32,7 +32,7 @@
               >
                 <i
                   :class="item.afterIcon"
-                  @click="update(item)"
+                  @click="editShowname(item)"
                   style="cursor: not-allowed"
                 />
               </el-tooltip>
@@ -68,13 +68,14 @@
     </BaseCard>
     <BaseCard>
       <header>
-        <div class="card-title right-header" >
-          <span >端口管理</span>
+        <div class="card-title right-header">
+          <span>端口管理</span>
           <el-input
-            v-model="portValue"
+            v-model="searchValue"
+            @keyup.enter.native="handleSearch"
             placeholder="按端口搜索"
             prefix-icon="el-icon-search"
-            style="width:30%"
+            style="width: 30%"
           ></el-input>
         </div>
       </header>
@@ -125,7 +126,8 @@ export default {
   props: {},
   data() {
     return {
-      portValue: "",
+      searchValue: "",
+      detailName: "",
       baseInfoData: [
         {
           label: "显示名称",
@@ -174,6 +176,7 @@ export default {
           },
         ],
       },
+
       tableColumnList: [
         {
           id: "port",
@@ -203,6 +206,10 @@ export default {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
     },
+
+    handleSearch() {},
+
+    editShowname(obj){}
   },
 };
 </script>

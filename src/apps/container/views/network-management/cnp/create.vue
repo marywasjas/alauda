@@ -98,6 +98,7 @@
                         display: flex;
                         flex-direction: column;
                         align-items: center;
+                        color: #c8cacd;
                       "
                       v-if="infoForm.nodeUpdateItems == 0"
                     >
@@ -186,6 +187,7 @@
                         display: flex;
                         flex-direction: column;
                         align-items: center;
+                        color: #c8cacd;
                       "
                       v-if="infoForm.noteItems == 0"
                     >
@@ -209,21 +211,18 @@
     </div>
 
     <div class="fixed-div">
-      <el-button type="primary" @click="prevSubmit">确定</el-button>
+      <el-button type="primary" @click="handleSubmit">确定</el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import LineAlert from "@/apps/container/views/components/LineAlert";
-import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
 import { nanoid } from "nanoid";
-import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 
 export default {
   name: "ClusterCreate",
-  components: { LineAlert, MonacoEditor, FoldableBlock },
+  components: {},
   data() {
     return {
       rowCenter: {
@@ -240,6 +239,8 @@ export default {
         nodeUpdateItems: [],
         noteItems: [],
       },
+
+      infoRules: {},
     };
   },
 
@@ -256,39 +257,7 @@ export default {
       }
     },
 
-    // 提交创建表单
-    submitCreate() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          console.log(this.ruleForm);
-        } else {
-          return false;
-        }
-      });
-    },
-
-    nextSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.active = 1;
-          // this.$refs["ruleForm"].resetFields();
-          this.$refs["ruleForm"].clearValidate();
-          this.ruleForm = this.$options.data().ruleForm;
-          // this.ruleForm = {
-          //   name: "",
-          //   showName: "",
-          //   desc: "",
-          //   roleType: "平台角色",
-          // };
-        } else {
-          return false;
-        }
-      });
-    },
-    prevSubmit() {
-      this.active = 0;
-      this.$refs["ruleForm"].clearValidate();
-    },
+    handleSubmit() {},
 
     // 取消-返回
     cancelCreate() {
@@ -303,7 +272,7 @@ export default {
       };
       this.infoForm[filed].push(obj);
     },
-    // 删除
+
     handleDeleteLabel(filed, item, index) {
       this.infoForm[filed].splice(index, 1);
     },

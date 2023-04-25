@@ -7,15 +7,15 @@
         </div>
         <div style="float: right; margin-top: -35px">
           <el-dropdown trigger="click">
-            <el-button class="margin-left10">
+            <el-button class="margin-left10" type="primary">
               操作
               <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="handleUpdate()">
+              <el-dropdown-item @click.native="handleUpdate">
                 更新
               </el-dropdown-item>
-              <el-dropdown-item @click.native="handleDelete()">
+              <el-dropdown-item @click.native="handleDelete">
                 删除
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -32,19 +32,7 @@
             class="label-value"
           >
             <span>{{ item.label }} </span>: &nbsp;&nbsp;
-            <span v-if="item.label === '状态'">
-              <i
-                :class="
-                  item.value === '正常'
-                    ? 'el-icon-success running'
-                    : 'el-icon-warning stop'
-                "
-                style="color: #67c23a"
-              />
-              <span> {{ item.value }} </span>
-            </span>
-
-            <span v-else>
+            <span>
               {{ item.value ? item.value : "-" }}
               <i :class="item.afterIcon" @click="update(item)" />
             </span>
@@ -82,14 +70,17 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="分配项目">
+        <el-form-item label="分配项目" prop="project">
           <el-select
             v-model="updateForm.project"
             @focus="setMinWidthEmpty"
             style="width: 80%"
           >
             <el-option
-              v-for="item in []"
+              v-for="item in [
+                { value: 'all', label: '所有项目' },
+                { value: 'baas', label: 'baas(云信)' },
+              ]"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -101,7 +92,7 @@
           <el-switch v-model="updateForm.cert"></el-switch>
         </el-form-item>
 
-        <el-form-item label="公钥" v-if="updateForm.cert == true">
+        <el-form-item label="公钥" prop="public" v-if="updateForm.cert == true">
           <el-input
             v-model="updateForm.public"
             type="textarea"
@@ -116,7 +107,11 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="私钥" v-if="updateForm.cert == true">
+        <el-form-item
+          label="私钥"
+          prop="private"
+          v-if="updateForm.cert == true"
+        >
           <el-input
             v-model="updateForm.private"
             type="textarea"
@@ -138,45 +133,30 @@
       </div>
     </el-dialog>
 
-    <el-dialog
-      @close="dialogDeleteVisible = false"
-      :visible.sync="dialogDeleteVisible"
-      width="40%"
-    >
-      <div class="el-dialog-div">
-        <span
-          style="
-            text-align: center;
-            display: block;
-            font-size: 22px;
-            line-height: 24px;
-            font-weight: bold;
-          "
-        >
-          <i class="el-icon-warning" style="color: orange" />
-          {{ `确定删除域名"${name}"吗` }}
-        </span>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handle_delete"> 删除 </el-button>
-        <el-button @click="dialogDeleteVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+    <delete-remove-dialog
+      :formVisible="formVisible"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+      width="35%"
+      :titleContext="`确定删除域名 &quot;${name}&quot; 吗？`"
+      deleteOrRemove="删除"
+    />
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
-import LineAlert from "@/apps/container/views/components/LineAlert";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "BaseInfo",
-  components: { LineAlert },
-
+  components: { DeleteRemoveDialog },
   props: {},
   data() {
     return {
       name: "",
+      formVisible: false,
+
       baseInfoData: [
         {
           label: "类型",
@@ -199,46 +179,31 @@ export default {
           value: "所有项目",
         },
       ],
-      // table: {
-      //   tableData: [
-      //   ],
-      //   cols: [
-      //     { label: "工具项目名称", id: "toolName" },
-      //     { label: "访问级别", id: "viewLevel" },
-      //     { label: "是否已关联", id: "relation" },
-      //     {
-      //       id: "operation",
-      //       label: "",
-      //       width: "60px",
-      //       fixed: "right",
-      //     },
-      //   ],
-      // },
 
       clusterOptions: [
         { label: "global(global)", value: "global(global)" },
         { label: "region(region)", value: "region(region)" },
       ],
       updateVisible: false,
+
       updateForm: {
         domainName: "",
         cluster: "",
         project: "",
         cert: false,
       },
-      updateRules: {},
 
-      dialogDeleteVisible: false,
-
-      createVisible: false,
-      createForm: {
-        type: "全域名",
-        domainName: "",
-        cluster: "",
-        project: "",
-        cert: false,
+      updateRules: {
+        project: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        private: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        public: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
       },
-      createRules: {},
     };
   },
   computed: {},
@@ -258,26 +223,26 @@ export default {
       }
     },
 
-    handelCreate() {
-      this.createVisible = true;
+    handleDelete() {
+      this.formVisible = true;
     },
-    handle_create() {},
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+    submitForm() {},
 
-    handleUpdate(obj) {
+    handleUpdate() {
       this.updateVisible = true;
-      this.updateForm.domainName = this.name;
-      this.updateForm.cluster = "region(region)";
-      this.updateForm.project = "所有项目";
+      this.updateForm = {
+        ...this.updateForm,
+        domainName: "*.d.ebchina.com",
+        cluster: "region(region)",
+        project: "all",
+        cert: false,
+      };
     },
 
     handle_update() {},
-
-    handleDelete(obj) {
-      this.dialogDeleteVisible = true;
-      this.name = obj.name;
-    },
-
-    handle_delete() {},
   },
 };
 </script>
