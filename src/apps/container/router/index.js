@@ -1406,6 +1406,22 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      {
+        path: 'alarm',
+        component: () => import('@/apps/container/views/maintenance-center/alarm/index'),
+        redirect: '/maintenanceCenter/monitor-platfrom/alarm',
+        name: 'MPAlarmMain',
+        meta: { title: '告警' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'alarmRealtime',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmRealtime/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '实时告警' },
+          },
+        ]
+      },
     ]
   },
 

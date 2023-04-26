@@ -3,7 +3,7 @@
     <div class="oam-main">
       <!-- 1 搜索框 和 按钮-->
       <div class="card__body">
-        <el-form :model="tabForm" label-suffix=":" label-width="80px">
+        <el-form :model="tabForm" label-suffix=":" label-width="75px">
           <el-row>
             <el-col :span="8">
               <el-form-item label="日志类型">
@@ -262,10 +262,6 @@ export default {
         { value: "fabricengine.baas-dev", label: "fabricengine.baas-dev" },
       ],
 
-      // monitorRules: {
-      //   name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-      // },
-
       total: 10,
       containerTime: "近 1 小时",
       timeOptions: [
@@ -282,6 +278,7 @@ export default {
         { value: "近 7 天", label: "近 7 天" },
         { value: "自定义", label: "自定义" },
       ],
+      
       tableData: [
         {
           date: "2020-11-11 13:23:23",
