@@ -8,80 +8,83 @@
               <span>资源总量统计</span>
             </div>
           </header> -->
-          <section style="display: flex">
-            <div class="card-title left-header" style="width: 18%">
+          <div class="container-box">
+            <div class="box">
               <i class="el-icon-document" />
-              <span>集群告警数</span>
+              <span style="margin-left: 5px">集群告警数</span>
               <div class="numStyle">0</div>
             </div>
-            <div class="divider" />
 
-            <div class="card-title left-header" style="width: 18%">
+            <div class="box">
               <i style="font-style: normal">N</i>
-              <span>节点告警数</span>
+              <span style="margin-left: 5px">节点告警数</span>
               <div class="numStyle">0</div>
             </div>
-            <div class="divider" />
 
-            <div class="card-title left-header" style="width: 18%">
+            <div class="box">
               <i class="el-icon-s-data" />
-              <span>部署告警数</span>
+              <span style="margin-left: 5px">部署告警数</span>
               <div class="numStyle">0</div>
             </div>
 
-            <div class="divider" />
-
-            <div class="card-title left-header" style="width: 18%">
+            <div class="box">
               <i class="el-icon-coin" />
-              <span></span>
+              <span style="margin-left: 5px">有状态副本集告警数</span>
               <div class="numStyle">0</div>
             </div>
 
-            <div class="divider" />
-
-            <div class="card-title left-header" style="width: 18%">
+            <div class="box">
               <i class="el-icon-coin" />
-              <span></span>
+              <span style="margin-left: 5px">守护进程集告警数</span>
               <div class="numStyle">0</div>
             </div>
-          </section>
+          </div>
         </BaseCard>
       </el-col>
     </el-row>
+
+    <div class="oam-main" style="height: calc(100vh - 150px)">
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <img
+          :src="errGif"
+          width="200"
+          height="200"
+          alt="Girl has dropped her ice cream."
+        />
+        <h3>无告警</h3>
+
+        <p
+          style="
+            color: rgba(150, 152, 155);
+            font-size: 14px;
+            width: 560px;
+            height: 60px;
+            text-align: center;
+          "
+        >
+          恭喜您，平台非常健康！
+        </p>
+        <!-- <el-button type="primary" style="margin-top: 12px" @click="deploy">
+          立即部署
+        </el-button> -->
+      </div>
+    </div>
   </div>
 </template>
 
 
 
 <script>
+import LineAlert from "@/apps/container/views/components/LineAlert";
+import errGif from "@/assets/401_images/401.gif";
+
 export default {
-    name: "BaseInfo",
-  components: { LineAlert, ProgressCard },
+  name: "BaseInfo",
+  components: { LineAlert },
   props: {},
   data() {
     return {
-      content:
-        "默认项目日志策略按照全局策略执行，项目下设置或开启日志策略后，将按照项目日志策略执行，原有日志将无法查询。",
-      content_addCluster:
-        "支持添加独立集群或联邦集群，不支持已加入到该项目下的集群成员对应的联邦集群，多选集群时默认设置同样配额。",
-      rowCenter_project: {
-        "max-width": "520px",
-        "word-break": "break-all",
-        display: "table-cell",
-        "vertical-align": "middle",
-        "margin-left": "-10px",
-        "margin-top": "2px",
-        color: "#A9A9A9",
-      },
-      rowCenter: {
-        "max-width": "520px",
-        "word-break": "break-all",
-        display: "table-cell",
-        "vertical-align": "middle",
-        "margin-left": "120px",
-        "margin-top": "-20px",
-        color: "#A9A9A9",
-      },
+      errGif: errGif + "?" + +new Date(),
       title: "",
 
       baseInfoData: [
@@ -121,7 +124,6 @@ export default {
           value: "",
         },
       ],
-
     };
   },
   computed: {},
@@ -147,6 +149,10 @@ export default {
   padding: 0 20px;
   background-color: $background-color;
   position: relative;
+}
+.oam-main {
+  background: #fff;
+  padding: 20px;
 }
 .component-div {
   height: 220px;
@@ -213,17 +219,34 @@ export default {
   height: 8px;
   border-radius: 50%;
 }
-.divider {
-  width: 0.5px;
-  border: 1px solid gray;
-  float: left;
-  height: 100px;
-  margin-left: 30px;
-}
 .numStyle {
-  font-size: 30px;
-  margin-left: 10px;
+  font-size: 40px;
   margin-top: 30px;
   color: #67c23a;
+}
+
+.container-box {
+  display: grid;
+  grid-template-columns: repeat(
+    5,
+    1fr
+  ); /* 将容器分成 5 列，并设置每列的宽度为 1fr */
+  grid-gap: 5px; /* 设置元素之间的距离为 10px */
+}
+.box {
+  height: 100px;
+  // background-color: #ccc;
+  position: relative; /* 让伪元素相对于父元素定位 */
+}
+.box::after {
+  content: "";
+  border-left: 2px solid #ccc;
+  position: absolute; /* 将伪元素设置为绝对定位 */
+  top: 0;
+  bottom: 0;
+  right: 12px; /* 调整伪元素的位置 */
+}
+.box:last-child::after {
+  display: none; /* 去掉第一个 div 元素前面的分割线 */
 }
 </style>

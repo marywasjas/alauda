@@ -1420,6 +1420,34 @@ export const containerAsyncRoutes = [
             name: 'AlarmRealtime',
             meta: { title: '实时告警' },
           },
+          {
+            path: 'alarmStrategy',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmStrategy/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '告警策略' },
+          },
+          {
+            path: 'alarmStrategy-create',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmStrategy/create'),
+            name: 'AlarmRealtime',
+            meta: { title: '创建/更新 告警策略' },
+            hidden: true
+          },
+
+          {
+            path: 'alarmHistory',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmHistory/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '告警历史' },
+          },
+
+          {
+            path: 'alarmSetting',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmSetting/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '告警设置' },
+          },
+
         ]
       },
     ]
