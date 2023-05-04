@@ -4,6 +4,7 @@
       <!-- 1 搜索框 和 按钮-->
       <el-form :model="tabForm" label-width="75px">
         <el-row>
+          <!-- 时间范围 -->
           <el-col :span="24">
             <el-form-item label="时间范围">
               <el-select v-model="tabForm.namespace">
@@ -19,9 +20,9 @@
 
           <el-col :span="12">
             <el-form-item label="资源类型">
-              <el-select v-model="tabForm.alarmStatus">
+              <el-select v-model="tabForm.resourceType">
                 <el-option
-                  v-for="con in alarmStatusOptions"
+                  v-for="con in resourceOptions"
                   :key="con.value"
                   :label="con.label"
                   :value="con.value"
@@ -31,10 +32,16 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="集群">
-              <el-select v-model="tabForm.silentStatus">
+            <el-form-item
+              label="集群"
+              v-if="
+                tabForm.resourceType != 'cluster' &&
+                tabForm.resourceType != 'node'
+              "
+            >
+              <el-select v-model="tabForm.cluster">
                 <el-option
-                  v-for="con in silentStatusOptions"
+                  v-for="con in clusterOptions"
                   :key="con.value"
                   :label="con.label"
                   :value="con.value"
@@ -44,10 +51,13 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="命名空间">
-              <el-select v-model="tabForm.alarmStatus">
+            <el-form-item
+              label="命名空间"
+              v-if="tabForm.resourceType != 'cluster'"
+            >
+              <el-select v-model="tabForm.namespace">
                 <el-option
-                  v-for="con in alarmStatusOptions"
+                  v-for="con in namespaceOptions"
                   :key="con.value"
                   :label="con.label"
                   :value="con.value"
@@ -58,9 +68,9 @@
 
           <el-col :span="12">
             <el-form-item label="告警策略">
-              <el-select v-model="tabForm.silentStatus">
+              <el-select v-model="tabForm.alarmPolicy">
                 <el-option
-                  v-for="con in silentStatusOptions"
+                  v-for="con in alarmPolicyOptions"
                   :key="con.value"
                   :label="con.label"
                   :value="con.value"
@@ -71,10 +81,10 @@
         </el-row>
 
         <div class="flex-center">
-          <el-form-item label="查询条件" style="margin-bottom: 10px; flex: 1">
+          <el-form-item label="关联资源" style="margin-bottom: 10px; flex: 1">
             <el-input
               v-model="tabForm.logType"
-              placeholder="请输入 守护进程集 名称"
+              :placeholder="resourceHolder"
               multiple
               collapse-tags
               style="width: 100%"
@@ -197,13 +207,14 @@ export default {
   components: {},
   data() {
     return {
+      resourceHolder: "",
+
       tabForm: {
         namespace: "all",
-        alarmStatus: "all",
-        silentStatus: "all",
-        creator: "all",
-        resourceType: "all",
-        name: "",
+        resourceType: "cluster",
+        cluster:"global",
+        alarmPolicy:"all",
+
       },
 
       namespaceOptions: [
@@ -229,29 +240,26 @@ export default {
         { label: "不重复", value: "不重复" },
       ],
 
-      alarmStatusOptions: [
+      alarmPolicyOptions: [
         { value: "all", label: "全部" },
         { value: "alarm", label: "告警" },
         { value: "processing", label: "处理中" },
         { value: "normal", label: "正常" },
       ],
 
-      silentStatusOptions: [
+      clusterOptions: [
         { value: "all", label: "全部" },
-        { value: "silenting", label: "静默中" },
-        { value: "pending", label: "等待中" },
+        { value: "global", label: "global" },
+        { value: "region", label: "region" },
       ],
 
-      creatorOptions: [{ value: "all", label: "全部" }],
 
       resourceOptions: [
-        { value: "all", label: "全部" },
         { value: "cluster", label: "集群" },
         { value: "node", label: "节点" },
         { value: "deploy", label: "部署" },
         { value: "daemon", label: "守护进程集" },
         { value: "stateReplica", label: "有状态副本集" },
-        { value: "microservices", label: "微服务" },
       ],
 
       resource: "",

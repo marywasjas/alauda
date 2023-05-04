@@ -1450,6 +1450,84 @@ export const containerAsyncRoutes = [
 
         ]
       },
+      {
+        path: 'notification',
+        component: () => import('@/apps/container/views/maintenance-center/notification/index'),
+        redirect: '/maintenanceCenter/monitor-platfrom/alarm',
+        name: 'NotificationMain',
+        meta: { title: '通知' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'notification-Strategy',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationStrategy/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '通知策略' },
+          },
+          {
+            path: 'create-notification-Strategy',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationStrategy/create'),
+            name: 'AlarmRealtime',
+            meta: { title: '创建通知策略' },
+            hidden: true
+          },
+          {
+            path: 'notification-Template',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationTemplate/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '通知模板' },
+          },
+          {
+            path: 'create-notification-Template',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationTemplate/create'),
+            name: 'AlarmRealtime',
+            meta: { title: '创建通知模板' },
+            hidden: true
+          },
+          {
+            path: 'notification-Receiver',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationReceiver/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '通知对象' },
+          },
+          {
+            path: 'notification-Sender',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationSender/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '通知发送人' },
+          },
+          {
+            path: 'notification-Server',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationServer/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '通知服务器' },
+          },
+          {
+            path: 'create-notification-Server',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationServer/create'),
+            name: 'AlarmRealtime',
+            meta: { title: '创建通知服务器' },
+            hidden: true
+          },
+          {
+            path: 'detail-notification-Server',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationServer/detail'),
+            name: 'AlarmRealtime',
+            meta: { title: '' },
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+            hidden: true
+          },
+          {
+            path: 'message-manage',
+            component: () => import('@/apps/container/views/maintenance-center/notification/messageManage/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '消息管理' },
+          },
+        ]
+      },
     ]
   },
 
