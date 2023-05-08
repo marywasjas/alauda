@@ -118,6 +118,12 @@ export default {
         domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
       }
     },
+    handelDetail(obj) {
+      this.$router.push({
+        path: "/maintenance-center/notification/detail-notification-Template",
+        query: { name: obj.name },
+      });
+    },
 
     handelCreate() {
       this.$router.push({

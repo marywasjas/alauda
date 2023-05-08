@@ -10,23 +10,11 @@
         </span>
 
         <div class="flex-center">
-          <el-select
-            v-model="searchType"
-            @focus="setMinWidthEmpty"
-            width="100%"
-            size="small"
-            class="margin-right10"
-          >
-            <el-option label="对象名称" value="name"> </el-option>
-            <el-option label="显示名称" value="showName"> </el-option>
-          </el-select>
-
-          <el-input
-            size="small"
-            class="margin-right10"
-            v-model="searchValue"
-            @keyup.enter.native="handleSearch"
-          >
+          <el-input v-model="searchValue" @keyup.enter.native="handleSearch">
+            <el-select slot="prepend" v-model="searchType"  style="width: 110px">
+              <el-option label="对象名称" value="name"> </el-option>
+              <el-option label="显示名称" value="showName"> </el-option>
+            </el-select>
             <el-button
               slot="append"
               icon="el-icon-search"

@@ -12,7 +12,6 @@
         <div class="flex-center">
           <el-input
             placeholder="按名称搜索"
-            size="small"
             class="margin-right10"
             v-model="searchValue"
           >
@@ -22,11 +21,7 @@
               @click="handleSearch"
             />
           </el-input>
-          <el-button
-            icon="el-icon-refresh-right"
-            size="small"
-            @click="handleRefresh"
-          />
+          <el-button icon="el-icon-refresh-right" @click="handleRefresh" />
         </div>
       </div>
 

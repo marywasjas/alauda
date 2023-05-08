@@ -3,40 +3,14 @@
     <el-row :gutter="24">
       <el-col :xs="24" :sm="24" :lg="24">
         <BaseCard>
-          <!-- <header>
-            <div class="card-title left-header">
-              <span>资源总量统计</span>
-            </div>
-          </header> -->
           <div class="container-box">
-            <div class="box">
-              <i class="el-icon-document" />
-              <span style="margin-left: 5px">集群告警数</span>
-              <div class="numStyle">0</div>
-            </div>
-
-            <div class="box">
-              <i style="font-style: normal">N</i>
-              <span style="margin-left: 5px">节点告警数</span>
-              <div class="numStyle">0</div>
-            </div>
-
-            <div class="box">
-              <i class="el-icon-s-data" />
-              <span style="margin-left: 5px">部署告警数</span>
-              <div class="numStyle">0</div>
-            </div>
-
-            <div class="box">
-              <i class="el-icon-coin" />
-              <span style="margin-left: 5px">有状态副本集告警数</span>
-              <div class="numStyle">0</div>
-            </div>
-
-            <div class="box">
-              <i class="el-icon-coin" />
-              <span style="margin-left: 5px">守护进程集告警数</span>
-              <div class="numStyle">0</div>
+            <div class="box" v-for="item in baseInfoData" :key="item.title">
+              <i style="font-style: normal" v-if="item.title == '节点告警数'">
+                N
+              </i>
+              <i :class="item.icon" v-else />
+              <span style="margin-left: 5px">{{ item.title }}</span>
+              <div class="numStyle">{{ item.num }}</div>
             </div>
           </div>
         </BaseCard>
@@ -64,9 +38,6 @@
         >
           恭喜您，平台非常健康！
         </p>
-        <!-- <el-button type="primary" style="margin-top: 12px" @click="deploy">
-          立即部署
-        </el-button> -->
       </div>
     </div>
   </div>
@@ -88,41 +59,11 @@ export default {
       title: "",
 
       baseInfoData: [
-        {
-          label: "显示名称",
-          value: "",
-        },
-        {
-          label: "创建人",
-          value: "admin@cpass.io",
-        },
-        {
-          label: "状态",
-          value: "正常",
-        },
-        {
-          label: "创建于",
-          value: "2023-02-15 15:41:56",
-        },
-        {
-          label: "项目管理员",
-          value: "",
-        },
-        {
-          label: "更新时间",
-          value: "2023-02-15",
-        },
-
-        {
-          label: "日志策略",
-          value: "全局策略",
-          afterIcon: "el-icon-edit",
-        },
-
-        {
-          label: "描述",
-          value: "",
-        },
+        { title: "集群告警数", icon: "el-icon-document", num: 0 },
+        { title: "节点告警数", icon: "", num: 0 },
+        { title: "部署告警数", icon: "el-icon-s-data", num: 0 },
+        { title: "有状态副本集告警数", icon: "el-icon-coin", num: 0 },
+        { title: "守护进程集告警数", icon: "el-icon-coin", num: 0 },
       ],
     };
   },

@@ -1485,6 +1485,17 @@ export const containerAsyncRoutes = [
             hidden: true
           },
           {
+            path: 'detail-notification-Template',
+            component: () => import('@/apps/container/views/maintenance-center/notification/notificationTemplate/detail'),
+            name: 'AlarmRealtime',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
             path: 'notification-Receiver',
             component: () => import('@/apps/container/views/maintenance-center/notification/notificationReceiver/list'),
             name: 'AlarmRealtime',
@@ -1528,8 +1539,92 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      {
+        path: 'inspection',
+        component: () => import('@/apps/container/views/maintenance-center/inspection/index'),
+        redirect: '/maintenanceCenter/inspection/list',
+        name: 'InspectionMain',
+        meta: { title: '巡检' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/maintenance-center/inspection/list'),
+            name: 'BlackBox',
+            meta: { title: '基础巡检' },
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/maintenance-center/inspection/detail'),
+            name: 'BlackBox',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+        ]
+      },
     ]
   },
+
+  // 平台管理--应用商店管理
+  {
+    path: '/catalog-management',
+    component: Layout,
+    redirect: '/catalog-management/chartrepo/list',
+    name: 'Catalog-Management',
+    meta: { title: '应用商店管理', icon: 'list' },
+    children: [
+      // 模板仓库
+      {
+        path: 'chartrepo',
+        component: () => import('@/apps/container/views/catalog-management/chartrepo/index'),
+        redirect: '/catalog-management/chartrepo/list',
+        name: 'ChartrepoMain',
+        meta: { title: '模拟仓库', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/catalog-management/chartrepo/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/catalog-management/chartrepo/detail'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+        ]
+      },
+      // Operators
+      {
+        path: 'volume-snapshot',
+        component: () => import('@/apps/container/views/storage-management/volume-snapshot/index'),
+        redirect: '/storage-management/volume-snapshot/list',
+        name: 'VolumeSnapshotMain',
+        meta: { title: 'Operators', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/storage-management/volume-snapshot/list'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+    ]
+  },
+
 
   // 平台管理--平台证书管理
   {

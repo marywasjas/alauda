@@ -2,8 +2,8 @@
   <div class="create-container">
     <div class="scroll-div">
       <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span style="font-size: 20px">
+        <div slot="header" class="headerStyle">
+          <span style="font-size: 20px; flex: 1">
             <span>重要事件总览</span>
             <el-tooltip effect="dark" class="item" placement="top">
               <template slot="content">
@@ -17,15 +17,7 @@
             </el-tooltip>
           </span>
 
-          <el-select
-            v-model="containerTime"
-            filterable
-            multiple
-            size="small"
-            placeholder="请选择"
-            style="float: right"
-          >
-            <!-- <i slot="prefix" class="el-input__icon el-icon-search" /> -->
+          <el-select v-model="containerTime" filterable placeholder="请选择">
             <el-option
               v-for="item in timeOptions"
               :key="item.value"
@@ -369,6 +361,11 @@ export default {
   background-color: $background-color;
   min-height: 100%;
   position: relative;
+  .headerStyle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .scroll-div {
     padding-bottom: 106px;
     .el-tooltip {
