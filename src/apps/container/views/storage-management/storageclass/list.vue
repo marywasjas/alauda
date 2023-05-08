@@ -69,7 +69,7 @@
               <div v-if="col.id === 'name'" class="name-cell">
                 <div>
                   <span
-                    @click="handleUserDetail(scope.row)"
+                    @click="handleDetail(scope.row)"
                     class="cursor-pointer"
                     style="font-size: 14px"
                   >
@@ -258,6 +258,13 @@ export default {
     },
     handleSearch() {},
     handleRefresh() {},
+
+    handleDetail(obj) {
+      this.$router.push({
+        path: "/storage-management/storageclass/detail",
+        query: { name: obj.name },
+      });
+    },
 
     handleClick() {
       this.$router.push({

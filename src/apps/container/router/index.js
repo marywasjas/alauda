@@ -1208,6 +1208,17 @@ export const containerAsyncRoutes = [
             meta: { title: '更新', icon: 'icon', noCache: true, },
             hidden: true
           },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/storage-management/storageclass/detail.vue'),
+            name: 'UserCreate',
+            meta: { title: '' },
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+            hidden: true
+          },
         ]
       },
       // 持久卷
@@ -1339,6 +1350,7 @@ export const containerAsyncRoutes = [
     name: 'MaintenanceCenter',
     meta: { title: '运维中心', icon: 'example' },
     children: [
+      // 监控
       {
         path: 'monitor-platfrom',
         component: () => import('@/apps/container/views/maintenance-center/monitor/index'),
@@ -1361,6 +1373,7 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      // 日志
       {
         path: 'log',
         component: () => import('@/apps/container/views/maintenance-center/log/index'),
@@ -1389,6 +1402,7 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      // 事件
       {
         path: 'event',
         component: () => import('@/apps/container/views/maintenance-center/event/index'),
@@ -1406,6 +1420,7 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      // 告警
       {
         path: 'alarm',
         component: () => import('@/apps/container/views/maintenance-center/alarm/index'),
@@ -1433,23 +1448,34 @@ export const containerAsyncRoutes = [
             meta: { title: '创建/更新 告警策略' },
             hidden: true
           },
-
+          {
+            path: 'alarmTemplate',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmTemplate/list'),
+            name: 'AlarmRealtime',
+            meta: { title: '告警模板' },
+          },
+          {
+            path: 'alarmTemplate-create',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmTemplate/create'),
+            name: 'AlarmRealtime',
+            meta: { title: '创建/更新 告警模板' },
+            hidden: true
+          },
           {
             path: 'alarmHistory',
             component: () => import('@/apps/container/views/maintenance-center/alarm/alarmHistory/list'),
             name: 'AlarmRealtime',
             meta: { title: '告警历史' },
           },
-
           {
             path: 'alarmSetting',
             component: () => import('@/apps/container/views/maintenance-center/alarm/alarmSetting/list'),
             name: 'AlarmRealtime',
             meta: { title: '告警设置' },
           },
-
         ]
       },
+      // 通知
       {
         path: 'notification',
         component: () => import('@/apps/container/views/maintenance-center/notification/index'),
@@ -1539,6 +1565,7 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+      // 巡检
       {
         path: 'inspection',
         component: () => import('@/apps/container/views/maintenance-center/inspection/index'),
@@ -1624,7 +1651,6 @@ export const containerAsyncRoutes = [
       },
     ]
   },
-
 
   // 平台管理--平台证书管理
   {

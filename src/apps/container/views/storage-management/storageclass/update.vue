@@ -1,25 +1,20 @@
 <template>
   <div class="create-update-container">
     <div class="scroll-div">
-      <BaseCard>
-        <header>
-          <div class="card-title right-header">
-            <span>更新 {{ name }}</span>
-          </div>
-        </header>
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span style="font-size: 20px">更新 {{ name }}</span>
+        </div>
 
-        <section>
-          <div class="yaml-div">
-            <monaco-editor
-              ref="monacoEditor"
-              :code="currentCode"
-              :read-only="false"
-              :language="language"
-              @handleBlur="handleBlur"
-            />
-          </div>
-        </section>
-      </BaseCard>
+        <!-- <monaco-editor
+          ref="monacoEditor"
+          :code="currentCode"
+          :read-only="false"
+          :language="language"
+          @handleBlur="handleBlur"
+        /> -->
+        <Yaml id="yaml-main" />
+      </el-card>
     </div>
 
     <div class="fixed-div">
@@ -32,13 +27,15 @@
 </template>
 
 <script>
-import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
-import LineAlert from "@/apps/container/views/components/LineAlert";
+import Yaml from "@/apps/container/views/components/Details/Yaml";
+// import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
 import { nanoid } from "nanoid";
 
 export default {
   name: "ConfigureDictionaryCreateUpdate",
-  components: { MonacoEditor, LineAlert },
+  // components: { MonacoEditor },
+  components: { Yaml },
+
   props: {},
   data() {
     return {
@@ -120,5 +117,17 @@ export default {
     border-radius: $border-radius-m;
     box-shadow: 0 0 4px 0 $box-shadow;
   }
+}
+</style>
+
+<style lang="scss" scoped>
+.yaml-main[data-v-370b1c7a] {
+  margin-top: 0px;
+  padding: 0px;
+  // background: #ffffff;
+  -webkit-box-shadow: 0px 0px 0px 0px rgba(50, 52, 55, 0.16);
+  box-shadow: 0px 0px 0px 0px rgba(50, 52, 55, 0.16);
+  border-radius: 0px;
+  margin-bottom: 16px;
 }
 </style>

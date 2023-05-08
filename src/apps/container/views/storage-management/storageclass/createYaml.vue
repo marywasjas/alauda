@@ -5,39 +5,121 @@
         <div slot="header" class="clearfix">
           <span style="font-size: 20px"> YAML 创建存储卷 </span>
         </div>
+        <div class="yaml-div">
+          <monaco-editor
+            ref="monacoEditor"
+            :code="currentCode"
+            :read-only="false"
+            :is-fullscreen="false"
+            :language="language"
+            @handleBlur="handleBlur"
+            :btn-visible="btnVisible"
+          />
 
-        <monaco-editor
-          ref="monacoEditor"
-          :code="currentCode"
-          :read-only="false"
-          :language="language"
-          @handleBlur="handleBlur"
-        />
+          <div class="tips-div">
+            YAML样例:
+            <p @click="quickInput">
+              <i class="el-icon-top" />
+              <span>写入</span>
+            </p>
+            <p @click="viewYaml">
+              <i class="el-icon-view" />
+              <span>查看</span>
+            </p>
+          </div>
+        </div>
       </el-card>
     </div>
+
     <div class="fixed-div">
-      <el-button type="primary" @click="submitCreate">
-        <span>创建</span>
-      </el-button>
+      <el-button type="primary" @click="submitCreate"> 创建 </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import LineAlert from "@/apps/container/views/components/LineAlert";
 import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
 import { nanoid } from "nanoid";
-import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 
 export default {
   name: "ClusterCreate",
-  components: { LineAlert, MonacoEditor, FoldableBlock },
+  components: { MonacoEditor },
   data() {
     return {
       currentCode: "{}",
       inputCode: {},
+      defaultCode: {
+        detail: {
+          cluster_name: "global",
+          event: {
+            count: 6713,
+            eventTime: null,
+            firstTimestamp: "2022-10-14T05:33:11Z",
+            involvedObject: {
+              apiVersion: "v1",
+              fieldPath: "spec.containers{ubuntu}",
+              kind: "Pod",
+              name: "ubuntu-bq84l",
+              namespace: "toda-elasticsearch-system",
+              resourceVersion: "519516627",
+              uid: "441f41bd-77d5-4f1d-90c4-2b0aee37e7e0",
+            },
+            lastTimestamp: "2022-11-07T01:33:22Z",
+            message:
+              'Container image "index.docker.io/library/ubuntu:latest" already present on machine',
+            metadata: {
+              creationTimestamp: "2022-11-07T01:18:15Z",
+              name: "ubuntu-bq84l.171dd899b971f3ab",
+              namespace: "toda-elasticsearch-system",
+              resourceVersion: "603142979",
+              uid: "c61582db-0ce2-469d-8606-9854962ffc82",
+            },
+            reason: "Pulled",
+            reportingComponent: "",
+            reportingInstance: "",
+            source: {
+              component: "kubelet",
+              host: "172.16.129.51",
+            },
+            type: "Normal",
+          },
+          operation: "Pulled",
+          operator: "kubelet@172.16.129.51",
+          source: "kubernetes",
+        },
+        log_level: 0,
+        resource_id: "441f41bd-77d5-4f1d-90c4-2b0aee37e7e0",
+        resource_type: "Pod",
+        time: "1667783895000000",
+      },
       language: "yaml",
+
+      btnVisible: {
+        autoUpdate: false,
+        import: true,
+        export: false,
+        find: false,
+        reset: false,
+        copy: false,
+        full: true,
+        exit: true,
+      },
+      defaultBtnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        find: true,
+        reset: false,
+        copy: true,
+        full: true,
+        exit: true,
+      },
+      detailVisible: false,
+      isFullscreen: false,
+      readOnly: true,
+      bigFull: false,
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -65,6 +147,37 @@ export default {
 
     handleBlur(value) {
       this.inputCode = value;
+    },
+
+    // 写入
+    quickInput() {
+      this.currentCode = JSON.stringify(this.defaultCode, null, 2);
+      const obj = {
+        autoUpdate: false,
+        import: true,
+        export: true,
+        reset: true,
+        find: true,
+        copy: true,
+      };
+      this.$set(this, "btnVisible", obj);
+    },
+    // 查看
+    viewYaml() {
+      this.detailVisible = true;
+      this.readOnly = true;
+      this.bigFull = false;
+      this.defaultBtnVisible = {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        find: true,
+        reset: false,
+        copy: true,
+        full: true,
+        exit: true,
+      };
+      this.defaultCodeStr = JSON.stringify(this.defaultCode, null, 2);
     },
 
     submitCreate() {},
@@ -97,11 +210,11 @@ export default {
     }
   }
   .yaml-div {
-    margin: 20px 0 20px 0;
-    padding: 20px;
-    background: #fff;
+    // margin: 20px 0 20px 0;
+    // padding: 20px;
+    // background: #fff;
     border-radius: $border-radius-m;
-    box-shadow: 0 0 4px 0 $box-shadow;
+    // box-shadow: 0 0 4px 0 $box-shadow;
     .tips-div {
       display: flex;
       align-items: center;
