@@ -30,6 +30,7 @@
           style="width: 100%"
           header-row-class-name="headerStyle"
           class="margin-top"
+          empty-text="无凭据"
         >
           <el-table-column
             v-for="col in tableColumnList3"
