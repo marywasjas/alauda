@@ -28,5 +28,21 @@ export const tableColumnList = [
   }
 ]
 export const tableData = Mock.mock({
-  'data': []
+  'data': [
+    {
+      name: "alarmTemplate",
+      type: "集群",
+      rules: 1,
+      noticeStrategy: "",
+      time: "1 天前",
+
+      ruleContent: [
+        {
+          rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+          type: "指标告警",
+          level: "严重"
+        }
+      ]
+    }
+  ]
 })

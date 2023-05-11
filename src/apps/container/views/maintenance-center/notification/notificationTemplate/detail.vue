@@ -25,10 +25,6 @@
       <el-divider></el-divider>
 
       <section class="component-div">
-        <!-- 基本信息 -->
-        <span style="font-size: 18px; font-weight: 500; margin-bottom: 14px">
-          基本信息
-        </span>
         <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
           <el-col
             v-for="item in baseInfoData"
@@ -39,157 +35,55 @@
             <span>{{ item.label }} </span>: &nbsp;&nbsp;
             <span>
               {{ item.value ? item.value : "-" }}
-              <!-- <i :class="item.afterIcon" @click="update(item)" /> -->
             </span>
+          </el-col>
+        </el-row>
+
+        <span style="font-size: 18px; font-weight: 500; margin-bottom: 14px">
+          模板配置
+        </span>
+
+        <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
+          <el-col :span="24">
+            <el-descriptions
+              class="margin-top"
+              :column="1"
+              :span="2"
+              border
+              label-width="150px"
+            >
+              <el-descriptions-item label-class-name="my-label">
+                <template slot="label">邮件主题</template>
+                {{ datas2 }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label"> 通知内容</template>
+                {{ datas }}
+              </el-descriptions-item>
+            </el-descriptions>
           </el-col>
         </el-row>
       </section>
     </BaseCard>
 
-    <!-- 更新 -->
-    <el-dialog
-      :title="title"
-      @close="createVisible = false"
-      :visible.sync="createVisible"
-      width="60%"
-    >
-      <el-form
-        ref="updateForm"
-        :model="updateForm"
-        :rules="updateRules"
-        label-width="135px"
-      >
-        <el-form-item label="名称" prop="name">
-          <span>{{ updateForm.name }}</span>
-        </el-form-item>
-
-        <el-form-item label="描述">
-          <el-input
-            type="textarea"
-            :rows="4"
-            v-model="updateForm.desc"
-            style="width: 80%"
-          />
-        </el-form-item>
-
-        <el-form-item label="类型">
-          <span>{{ updateForm.type }}</span>
-          <el-tooltip effect="dark" class="item" placement="top">
-            <template slot="content">
-              <div style="max-width: 450px">
-                Chart、Git、SVN：存放在远端仓库上的 Chart 模板。<br />
-                Local：本地集群上的 Chart
-                模板仓库，用于存放客户本地上传的模板、同时支持在本地删除模板。
-              </div>
-            </template>
-            <i class="el-icon-question margin-left10 question-icon" />
-          </el-tooltip>
-        </el-form-item>
-
-        <el-form-item
-          label="仓库地址"
-          prop="storeAddress"
-          v-if="updateForm.type == 'Chart'"
-        >
-          <el-input v-model="updateForm.storeAddress" style="width: 80%" />
-        </el-form-item>
-
-        <el-form-item
-          label="代码仓库地址"
-          prop="codeAddress"
-          v-if="updateForm.type != 'Chart' && updateForm.type != 'Local'"
-        >
-          <el-input v-model="updateForm.codeAddress" style="width: 80%" />
-        </el-form-item>
-
-        <el-form-item
-          label="目录"
-          prop="catalog"
-          v-if="updateForm.type != 'Chart' && updateForm.type != 'Local'"
-        >
-          <el-input v-model="updateForm.catalog" style="width: 80%" />
-        </el-form-item>
-
-        <el-form-item label="用户名" v-if="updateForm.type != 'Local'">
-          <el-input v-model="updateForm.userName" style="width: 80%" />
-        </el-form-item>
-
-        <el-form-item label="密码" v-if="updateForm.type != 'Local'">
-          <el-input v-model="updateForm.password" style="width: 80%" />
-        </el-form-item>
-
-        <el-form-item label="分配项目">
-          <el-radio-group v-model="updateForm.project">
-            <el-radio-button label="allProject">所有项目</el-radio-button>
-            <el-radio-button label="specProject">指定项目</el-radio-button>
-            <el-radio-button label="notassign">不分配</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item
-          label="指定项目"
-          v-if="updateForm.project == 'specProject'"
-          prop="specify"
-        >
-          <el-select
-            v-model="updateForm.specify"
-            @focus="setMinWidthEmpty"
-            multiple
-            style="width: 80%"
-          >
-            <el-option
-              v-for="item in projectOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handle_update">更新</el-button>
-        <el-button @click="createVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 删除 -->
-    <el-dialog
-      @close="deleteVisible = false"
-      :visible.sync="deleteVisible"
-      width="65%"
-    >
-      <div slot="title" class="header-title">
-        <span style="font-size: 22px; line-height: 24px; font-weight: bold">
-          <i class="el-icon-warning" style="color: red" />
-          删除模板仓库
-        </span>
-      </div>
-      <div class="el-dialog-div">
-        <div style="margin-bottom20">
-          {{
-            `确定删除模板仓库 ${deleteTitle} 吗？ 删除后，通过该仓库模板导入的所有的应用模板将同时被删除，已创建的应用不受影响`
-          }}
-        </div>
-        <div style="margin-top: 20px">
-          请输入 <span style="color: red">{{ deleteTitle }}</span> 确认删除
-        </div>
-        <el-input v-model="command"></el-input>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handle_delete"> 删除 </el-button>
-        <el-button @click="deleteVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+    <DeleteRemoveDialog
+      :formVisible="formVisible"
+      :deleteOrRemove="buttonText"
+      :width="width"
+      :titleContext="titleContext"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "BaseInfo",
-  components: {},
+  components: { DeleteRemoveDialog },
   props: {},
   data() {
     return {
@@ -204,6 +98,27 @@ export default {
       },
 
       detailTitle: "",
+
+      datas: `<h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3>`,
+
+      datas2:
+        "【'{{'externalLabels.status+`}}`'】 PAAS 平台告警: '{{'externalLabels.object'}}'的'{{'externalLabels.summary'}}'",
 
       baseInfoData: [
         {
@@ -224,49 +139,11 @@ export default {
         },
       ],
 
-      createVisible: false,
-      deleteVisible: false,
-      deleteTitle: "",
-      command: "",
-
-      updateForm: {
-        name: "",
-        desc: "",
-        type: "Chart",
-        storeAddress: "",
-        userName: "",
-        password: "",
-        project: "notassign",
-        codeAddress: "",
-        catalog: "",
-        specify: "",
-      },
-      updateRules: {
-        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-        storeAddress: [
-          { required: true, message: "必填项不能为空", trigger: "blur" },
-        ],
-        codeAddress: [
-          { required: true, message: "必填项不能为空", trigger: "blur" },
-        ],
-        catalog: [
-          { required: true, message: "必填项不能为空", trigger: "blur" },
-        ],
-        specify: [
-          { required: true, message: "必填项不能为空", trigger: "blur" },
-        ],
-      },
-
-      projectOptions: [
-        { label: "bass(云信)", value: "bass" },
-        { label: "chaos", value: "chaos" },
-        { label: "cpaas-dev", value: "cpaas-dev" },
-        { label: "cpaas-system", value: "cpaas-system" },
-        { label: "ebaims(集团审计信息管理系统)", value: "ebaims" },
-        { label: "ebump(统一监控)", value: "ebump" },
-        { label: "faq(智能问答)", value: "faq" },
-      ],
-      title: "",
+      titleContext: "",
+      buttonText: "",
+      formVisible: false,
+      width: "",
+      nodeText: "",
     };
   },
 
@@ -286,28 +163,23 @@ export default {
     },
 
     handleUpdate() {
-      this.updateForm = {
-        name: "public-charts",
-        desc: "",
-        type: "Local",
-        storeAddress: "",
-        userName: "",
-        password: "",
-        project: "allProject",
-        codeAddress: "",
-        catalog: "",
-        specify: "",
-      };
-      this.title = `更新 ${this.detailTitle}`;
-      this.createVisible = true;
+      this.$router.push({
+        path: "/maintenance-center/notification/create-notification-Template",
+        query: { name: this.detailTitle },
+      });
     },
-    handle_update() {},
 
     handleDelete() {
-      this.deleteTitle = this.detailTitle;
-      this.deleteVisible = true;
+      this.buttonText = "确定";
+      this.titleContext = `确定删除通知模板 "${this.detailTitle}" 吗？`;
+      this.formVisible = true;
+      this.width = "45%";
     },
-    handle_delete() {},
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
   },
 };
 </script>
@@ -440,4 +312,18 @@ export default {
   text-overflow: ellipsis;
   display: inline-block;
 }
+::v-deep .my-label .el-descriptions-item__label {
+  width: 120px; /* 设置较小的宽度 */
+}
+
+.el-descriptions .el-descriptions-item__label {
+  width: 120px; /* 设置默认的宽度 */
+}
+</style>
+
+
+<style scoped>
+/* ::v-deep .el-descriptions__body {
+  width: "700px";
+} */
 </style>

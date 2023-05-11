@@ -187,8 +187,11 @@
                       </div>
                     </div>
                     <div v-else>
-                      <p style="margin-left: 100px"></p>
+                      <p style="text-align: center; color: rgba(150, 152, 155)">
+                        无通知方式
+                      </p>
                     </div>
+
                     <div class="flex-center">
                       <div
                         class="cursor-pointer text-center hover-div"

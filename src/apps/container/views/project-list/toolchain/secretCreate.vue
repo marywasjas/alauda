@@ -3,9 +3,7 @@
     <div class="scroll-div">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <div style="font-size: 20px; line-height: 24px; font-weight: bold">
-            创建凭据
-          </div>
+          <div style="font-size: 20px; line-height: 24px">创建凭据</div>
         </div>
 
         <el-form
@@ -22,7 +20,7 @@
             <el-col :span="16">
               <el-input
                 v-model="infoForm.name"
-                placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+                placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-，最多 36 个字符"
               >
               </el-input>
             </el-col>
@@ -40,13 +38,21 @@
                 v-model="infoForm.toolType"
                 @focus="setMinWidthEmpty"
                 style="width: 100%"
+                @change="checkedTargetChange"
+                clearable
               >
-                <el-option
-                  v-for="item in [{ id: 'region', label: 'region(region)' }]"
-                  :key="item.id"
-                  :label="item.label"
-                  :value="item.id"
-                />
+                <el-option-group
+                  v-for="group in targetList"
+                  :key="group.label"
+                  :label="group.label"
+                >
+                  <el-option
+                    v-for="(item, index) in group.option"
+                    :key="index"
+                    :label="item"
+                    :value="item"
+                  />
+                </el-option-group>
               </el-select>
             </el-col>
           </el-form-item>
@@ -63,15 +69,42 @@
           </div>
 
           <line-alert
+            v-if="!toolChange"
             :content="
               `1. DevOps 工具对应支持的凭据类型，请参照 帮助文档` +
-              `\n` +
               `  2. 找不到你想要的类型？可以选择对应的工具类型试试`
             "
           />
           <el-form-item label="类型">
             <el-col :span="16">
-              <el-radio-group v-model="regionForm.type">
+              <el-radio-group
+                v-model="regionForm.type"
+                v-if="toolChange == 'SonarQube' || toolChange == 'Testlink'"
+              >
+                <el-radio-button label="令牌"></el-radio-button>
+              </el-radio-group>
+
+              <el-radio-group
+                v-model="regionForm.type"
+                v-if="
+                  toolChange == 'Docker Registry' ||
+                  toolChange == 'Harbor Registry' ||
+                  toolChange == 'JFrog Artifactory' ||
+                  toolChange == 'Nexus'
+                "
+              >
+                <el-radio-button label="用户名/密码"></el-radio-button>
+              </el-radio-group>
+
+              <el-radio-group
+                v-model="regionForm.type"
+                v-if="toolChange == 'Gitea' || toolChange == 'GitLab'"
+              >
+                <el-radio-button label="用户名/令牌"></el-radio-button>
+                <el-radio-button label="OAuth2"></el-radio-button>
+              </el-radio-group>
+
+              <el-radio-group v-model="regionForm.type" v-if="!toolChange">
                 <el-radio-button label="用户名/密码"></el-radio-button>
                 <el-radio-button label="OAuth2"></el-radio-button>
                 <el-radio-button label="SSH"></el-radio-button>
@@ -93,7 +126,9 @@
 
           <el-form-item
             v-if="
-              regionForm.type == '用户名/密码' || regionForm.type == '镜像服务'
+              regionForm.type == '用户名/密码' ||
+              regionForm.type == '镜像服务' ||
+              regionForm.type == '用户名/令牌'
             "
             label="用户名"
             prop="userName"
@@ -146,7 +181,11 @@
             </el-col>
           </el-form-item>
 
-          <el-form-item v-if="regionForm.type == 'SSH'" label="SSH" prop="ssh">
+          <el-form-item
+            v-if="regionForm.type == 'SSH'"
+            label="SSH 私钥"
+            prop="ssh"
+          >
             <el-col :span="16">
               <el-input v-model="regionForm.ssh" type="textarea" :rows="4">
               </el-input>
@@ -172,6 +211,16 @@
               <el-input v-model="regionForm.key" show-password> </el-input>
             </el-col>
           </el-form-item>
+
+          <el-form-item
+            v-if="regionForm.type == '令牌' || regionForm.type == '用户名/令牌'"
+            label="令牌"
+            prop="token"
+          >
+            <el-col :span="16">
+              <el-input v-model="regionForm.token" show-password> </el-input>
+            </el-col>
+          </el-form-item>
         </el-form>
       </el-card>
     </div>
@@ -184,9 +233,9 @@
 </template>
 
 <script>
+import { nanoid } from "nanoid";
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
-import { nanoid } from "nanoid";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 
 export default {
@@ -204,15 +253,35 @@ export default {
         color: "#A9A9A9",
       },
 
-      divData: [
-        { id: 1, label: "global" },
-        { id: 2, label: "region" },
+      base_data: [
+        {
+          label: "制品管理",
+          children: [
+            { label: "Docker Registry", value: "Docker Registry" },
+            { label: "Harbor Registry", value: "Harbor Registry" },
+            { label: "JFrog Artifactory", value: "JFrog Artifactory" },
+            { label: "Nexus", value: "Nexus" },
+          ],
+        },
+        {
+          label: "代码质量分析",
+          children: [{ label: "SonarQube", value: "SonarQube" }],
+        },
+        {
+          label: "代码管理",
+          children: [
+            { label: "Gitea", value: "Gitea" },
+            { label: "GitLab", value: "GitLab" },
+          ],
+        },
+        {
+          label: "测试管理",
+          children: [{ label: "Testlink", value: "Testlink" }],
+        },
       ],
+      // checkedTargetList: [], // 被选中的备选项
+      targetList: [], // select组件渲染所需的数据
 
-      clusterOptions: [
-        { label: "global", value: "global" },
-        { label: "region", value: "region" },
-      ],
       regionForm: {
         type: "用户名/密码",
         userName: "",
@@ -285,6 +354,13 @@ export default {
             trigger: "blur",
           },
         ],
+        token: [
+          {
+            required: true,
+            message: "必填项不能为空",
+            trigger: "blur",
+          },
+        ],
       },
 
       infoForm: {
@@ -292,6 +368,7 @@ export default {
         showName: "",
         toolType: "",
       },
+
       infoRules: {
         name: [
           {
@@ -301,10 +378,23 @@ export default {
           },
         ],
       },
+
+      toolChange: "",
     };
   },
 
-  created() {},
+  created() {
+    // base_data 重组成 select 组件所需的格式
+    for (var index in this.base_data) {
+      this.targetList.push({
+        label: this.base_data[index]["label"],
+        option: [], //重点
+      });
+      this.base_data[index]["children"].forEach((item) => {
+        this.targetList[index].option.push(item.label);
+      });
+    }
+  },
 
   methods: {
     setMinWidthEmpty(val) {
@@ -331,6 +421,33 @@ export default {
     // 取消-返回
     cancelCreate() {
       this.$router.go(-1);
+    },
+
+    checkedTargetChange(val) {
+      // this.$nextTick(() => {
+      //   this.$refs["regionForm"].resetFields();
+      // });
+      console.log(val);
+      this.toolChange = val;
+      if (!this.toolChange) {
+        this.regionForm.type = "用户名/密码";
+      }
+      if (
+        val == "Docker Registry" ||
+        val == "Harbor Registry" ||
+        val == "JFrog Artifactory" ||
+        val == "Nexus"
+      ) {
+        this.regionForm.type = "用户名/密码";
+      }
+
+      if (val == "SonarQube" || val == "Testlink") {
+        this.regionForm.type = "令牌";
+      }
+
+      if (val == "Gitea" || val == "GitLab") {
+        this.regionForm.type = "用户名/令牌";
+      }
     },
   },
 };
@@ -424,9 +541,9 @@ export default {
   position: relative;
   font-size: 18px;
   text-align: left;
-  padding-left: 9px;
+  padding-left: 11px;
   height: 40px;
-  line-height: 40px;
+  line-height: 42px;
 }
 .recomend-list h2:before {
   position: absolute;
@@ -441,7 +558,7 @@ export default {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-.el-card__body {
+::v-deep .el-card__body {
   padding: 20px;
   padding-top: 0;
 }

@@ -7,9 +7,13 @@
           <!-- 时间范围 -->
           <el-col :span="24">
             <el-form-item label="时间范围">
-              <el-select v-model="tabForm.namespace">
+              <el-select
+                v-model="tabForm.time"
+                @focus="setMinWidthEmpty"
+                style="width: 32%"
+              >
                 <el-option
-                  v-for="con in namespaceOptions"
+                  v-for="con in timeOptions"
                   :key="con.value"
                   :label="con.label"
                   :value="con.value"
@@ -20,7 +24,12 @@
 
           <el-col :span="12">
             <el-form-item label="资源类型">
-              <el-select v-model="tabForm.resourceType">
+              <el-select
+                v-model="tabForm.resourceType"
+                @change="handleType"
+                @focus="setMinWidthEmpty"
+                style="width: 70%"
+              >
                 <el-option
                   v-for="con in resourceOptions"
                   :key="con.value"
@@ -32,14 +41,12 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item
-              label="集群"
-              v-if="
-                tabForm.resourceType != 'cluster' &&
-                tabForm.resourceType != 'node'
-              "
-            >
-              <el-select v-model="tabForm.cluster">
+            <el-form-item label="集群" v-if="tabForm.resourceType != 'cluster'">
+              <el-select
+                v-model="tabForm.cluster"
+                @focus="setMinWidthEmpty"
+                style="width: 70%"
+              >
                 <el-option
                   v-for="con in clusterOptions"
                   :key="con.value"
@@ -53,9 +60,16 @@
           <el-col :span="12">
             <el-form-item
               label="命名空间"
-              v-if="tabForm.resourceType != 'cluster'"
+              v-if="
+                tabForm.resourceType != 'cluster' &&
+                tabForm.resourceType != 'node'
+              "
             >
-              <el-select v-model="tabForm.namespace">
+              <el-select
+                v-model="tabForm.namespace"
+                @focus="setMinWidthEmpty"
+                style="width: 70%"
+              >
                 <el-option
                   v-for="con in namespaceOptions"
                   :key="con.value"
@@ -68,10 +82,14 @@
 
           <el-col :span="12">
             <el-form-item label="告警策略">
-              <el-select v-model="tabForm.alarmPolicy">
+              <el-select
+                v-model="tabForm.alarmPolicy"
+                @focus="setMinWidthEmpty"
+                style="width: 70%"
+              >
                 <el-option
                   v-for="con in alarmPolicyOptions"
-                  :key="con.value"
+                  :key="con.label"
                   :label="con.label"
                   :value="con.value"
                 />
@@ -83,22 +101,19 @@
         <div class="flex-center">
           <el-form-item label="关联资源" style="margin-bottom: 10px; flex: 1">
             <el-input
-              v-model="tabForm.logType"
-              :placeholder="resourceHolder"
-              multiple
-              collapse-tags
+              v-model="tabForm.resName"
+              :placeholder="resNameHolder"
               style="width: 100%"
             >
             </el-input>
           </el-form-item>
 
           <el-form-item
-            label=""
             style="margin-bottom: 10px; margin-left: 10px"
             label-width="0px"
           >
-            <el-button type="primary">搜索</el-button>
-            <el-button>重置</el-button>
+            <el-button type="primary" @click="handleSearch">搜索</el-button>
+            <el-button @click="handleReset">重置</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -201,6 +216,7 @@
 
 <script>
 import { tableData, tableColumnList } from "./constant";
+import Mock from "mockjs";
 
 export default {
   name: "UserList",
@@ -210,16 +226,15 @@ export default {
       resourceHolder: "",
 
       tabForm: {
-        namespace: "all",
+        time: "近1小时",
         resourceType: "cluster",
-        cluster:"global",
-        alarmPolicy:"all",
-
+        cluster: "global",
+        alarmPolicy: "all",
+        resName: "",
       },
 
       namespaceOptions: [
         { value: "all", label: "全部" },
-        { value: "noUnder", label: "-(不在命名空间下)" },
         { value: "baas", label: "baas" },
         { value: "cart-manager", label: "cart-manager" },
         { value: "chaos", label: "chaos" },
@@ -228,23 +243,26 @@ export default {
       ],
 
       timeOptions: [
-        { label: "5分钟", value: "5分钟" },
-        { label: "10分钟", value: "10分钟" },
-        { label: "15分钟", value: "15分钟" },
-        { label: "30分钟", value: "30分钟" },
-        { label: "1小时", value: "1小时" },
-        { label: "3小时", value: "3小时" },
-        { label: "6小时", value: "6小时" },
-        { label: "12小时", value: "12小时" },
-        { label: "1天", value: "1天" },
-        { label: "不重复", value: "不重复" },
+        { label: "近30分钟", value: "近30分钟" },
+        { label: "近1小时", value: "近1小时" },
+        { label: "近6小时", value: "近6小时" },
+        { label: "近1天", value: "近1天" },
+        { label: "近3天", value: "近3天" },
+        { label: "近7天", value: "近7天" },
+        { label: "自定义时间", value: "自定义时间" },
       ],
 
       alarmPolicyOptions: [
         { value: "all", label: "全部" },
-        { value: "alarm", label: "告警" },
-        { value: "processing", label: "处理中" },
-        { value: "normal", label: "正常" },
+        {
+          value: "cpass-cert-manager-rules",
+          label: "cpass-cert-manager-rules",
+        },
+        { value: "cpass-kube-proxy-rules", label: "cpass-kube-proxy-rules" },
+        {
+          value: "cpass-prometheus-1-rules",
+          label: "cpass-prometheus-1-rules",
+        },
       ],
 
       clusterOptions: [
@@ -253,7 +271,6 @@ export default {
         { value: "region", label: "region" },
       ],
 
-
       resourceOptions: [
         { value: "cluster", label: "集群" },
         { value: "node", label: "节点" },
@@ -261,8 +278,6 @@ export default {
         { value: "daemon", label: "守护进程集" },
         { value: "stateReplica", label: "有状态副本集" },
       ],
-
-      resource: "",
 
       rowCenter: {
         "max-width": "520px",
@@ -279,81 +294,45 @@ export default {
         current: 1,
         size: 20,
       },
-      typeValue: "",
 
       tableData,
       tableColumnList,
 
-      resourceVisible: false,
-      resourceForm: {
-        cpu: "",
-        memory: "",
-        storage: "",
-        pods: "",
-        pvc: "",
-      },
-      resourceRules: {},
-
-      limitForm: {
-        cpuMax: "",
-        memoryMax: "",
-        cpuDefault: "",
-        memoryDefault: "",
-      },
-      limitRules: {
-        cpu: [{ required: true, message: "cpu is required", trigger: "blur" }],
-        memory: [
-          { required: true, message: "memory is required", trigger: "blur" },
-        ],
-      },
-
-      limitVisible: false,
+      resNameHolder: "",
     };
   },
 
-  created() {},
+  created() {
+    this.handleType();
+  },
   methods: {
-    handleClick() {
-      this.$router.push({
-        path: "/maintenance-center/alarm/alarmStrategy-create",
-      });
-    },
-    openDialog() {
-      this.$router.push({
-        path: "/maintenance-center/alarm/alarmStrategy-create",
-      });
+    setMinWidthEmpty(val) {
+      // 无数据的情况下，给请选择提示设置最小宽度
+      let domEmpty = document.getElementsByClassName(
+        "el-select-dropdown__empty"
+      );
+      if (domEmpty.length > 0) {
+        domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
+      }
     },
     handleSearch() {},
     handleReset() {},
 
-    getList() {},
-    handleStatusChange() {},
-
-    handleUserDetail(obj) {
-      console.log(obj.name);
-      this.$router.push({
-        path: "/project-list/namespace/detail",
-        query: { name: obj.name },
-      });
-    },
     handleSizeChange(val) {
       this.page.size = val;
-      this.getList();
+      // this.getList();
     },
 
     handleCurrentChange(val) {
       this.page.current = val;
-      this.getList();
+      // this.getList();
     },
 
-    handleResource(obj) {
-      this.resourceVisible = true;
-      this.resource = obj.name;
-    },
-    handleUpdate() {},
-
-    handleLimit(obj) {
-      this.limitVisible = true;
+    handleType() {
+      let result = this.resourceOptions.filter((item) => {
+        return item.value == this.tabForm.resourceType;
+      });
+      this.resNameHolder = `请输入 ${result[0].label} 名称`;
     },
   },
 };

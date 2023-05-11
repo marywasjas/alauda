@@ -122,7 +122,7 @@
               <div v-if="col.id === 'name'" class="name-cell">
                 <div>
                   <span
-                    @click="handleUserDetail(scope.row)"
+                    @click="handleDetail(scope.row)"
                     class="cursor-pointer"
                     style="font-size: 14px"
                   >
@@ -146,13 +146,13 @@
                 <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="handleResource(scope.row)">
+                    <el-dropdown-item @click.native="handleUpdate(scope.row)">
                       更新
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native="handleLimit(scope.row)">
+                    <el-dropdown-item @click.native="handleSilence(scope.row)">
                       设置静默
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native="handleLimit(scope.row)">
+                    <el-dropdown-item @click.native="handleDelete(scope.row)">
                       删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -160,7 +160,7 @@
               </div>
 
               <div v-else-if="col.id === 'notifyPolicy'">
-                <el-tooltip placement="bottom" effect="light">
+                <el-tooltip placement="left-start" effect="light">
                   <div slot="content">
                     <el-tag size="mini">
                       {{ scope.row[col.id] }}
@@ -169,6 +169,47 @@
                   <el-tag size="mini" style="cursor: pointer">
                     {{ "..." }}
                   </el-tag>
+                </el-tooltip>
+              </div>
+
+              <div v-else-if="col.id === 'alarmStatus'">
+                {{
+                  scope.row[col.id] == ""
+                    ? "-"
+                    : `${scope.row[col.id]} / ${scope.row[col.id]}`
+                }}
+                <el-tooltip placement="top" effect="light">
+                  <div slot="content">
+                    <el-table
+                      :data="
+                        Array(+scope.row.alarmStatus).fill(
+                          scope.row.statusData[0]
+                        )
+                      "
+                      style="width: 100%"
+                    >
+                      <el-table-column prop="rule" label="规则" width="500" />
+                      <el-table-column prop="type" label="告警类型" />
+                      <el-table-column prop="level" label="等级" />
+                      <el-table-column prop="state" label="状态">
+                        <template slot-scope="scope">
+                          <i
+                            :class="
+                              scope.row.state === '正常'
+                                ? 'el-icon-success running'
+                                : 'el-icon-warning stop'
+                            "
+                          />
+                          <span>{{ scope.row.state }}</span>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <el-progress
+                    :percentage="100"
+                    status="success"
+                    :show-text="false"
+                  />
                 </el-tooltip>
               </div>
 
@@ -193,188 +234,120 @@
         </div>
       </div>
 
+      <!-- 设置静默 -->
       <el-dialog
-        title="更新资源配额"
-        @close="resourceVisible = false"
-        :visible.sync="resourceVisible"
+        title="设置静默"
+        @close="silenceVisible = false"
+        :visible.sync="silenceVisible"
         width="60%"
       >
         <el-form
-          ref="resourceForm"
-          :model="resourceForm"
-          :rules="resourceRules"
+          ref="silenceForm"
+          :model="silenceForm"
+          :rules="silenceRules"
           label-width="135px"
         >
-          <el-form-item label="命名空间名称">
+          <el-form-item label="告警策略">
             <el-col :span="18">
-              <span>{{ resource }}</span>
+              <span>{{ silenceForm.name }}</span>
             </el-col>
           </el-form-item>
 
-          <el-form-item label="CPU">
-            <el-col :span="18">
-              <el-input v-model="resourceForm.cpu">
-                <template slot="append">核</template>
-              </el-input>
-            </el-col>
+          <el-form-item label="告警静默">
+            <el-switch v-model="silenceForm.silence" />
           </el-form-item>
-          <el-descriptions
-            size="small"
-            :colon="false"
-            :contentStyle="rowCenter"
-          >
-            <el-descriptions-item> 不限制 </el-descriptions-item>
-          </el-descriptions>
 
-          <el-form-item label="内存">
-            <el-col :span="18">
-              <el-input v-model="resourceForm.memory">
-                <template slot="append">Gi</template>
-              </el-input>
-            </el-col>
+          <el-form-item label="静默时间" v-if="silenceForm.silence == true">
+            <el-radio-group v-model="silenceForm.time">
+              <el-radio label="last">永久</el-radio>
+              <el-radio label="custom">自定义</el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-descriptions
-            size="small"
-            :colon="false"
-            :contentStyle="rowCenter"
-          >
-            <el-descriptions-item> 不限制 </el-descriptions-item>
-          </el-descriptions>
 
-          <el-form-item label="存储">
-            <el-col :span="18">
-              <el-input v-model="resourceForm.storage">
-                <template slot="append">Gi</template>
-              </el-input>
-            </el-col>
+          <el-form-item v-if="silenceForm.time == 'custom'" prop="customTime">
+            <el-date-picker
+              v-model="silenceForm.customTime"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            >
+            </el-date-picker>
           </el-form-item>
-          <el-descriptions
-            size="small"
-            :colon="false"
-            :contentStyle="rowCenter"
-          >
-            <el-descriptions-item> 不限制 </el-descriptions-item>
-          </el-descriptions>
-
-          <el-form-item label="Pods 数">
-            <el-col :span="18">
-              <el-input v-model="resourceForm.pods"> </el-input>
-            </el-col>
-          </el-form-item>
-          <el-descriptions
-            size="small"
-            :colon="false"
-            :contentStyle="rowCenter"
-          >
-            <el-descriptions-item> 最大值 1000 </el-descriptions-item>
-          </el-descriptions>
-
-          <el-form-item label="PVC 数">
-            <el-col :span="18">
-              <el-input v-model="resourceForm.pvc"> </el-input>
-            </el-col>
-          </el-form-item>
-          <el-descriptions
-            size="small"
-            :colon="false"
-            :contentStyle="rowCenter"
-          >
-            <el-descriptions-item> 不限制 </el-descriptions-item>
-          </el-descriptions>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="handleUpdate">更新</el-button>
-          <el-button @click="resourceVisible = false">取消</el-button>
+          <el-button type="primary" @click="handle_set">设置</el-button>
+          <el-button @click="silenceVisible = false">取消</el-button>
         </div>
       </el-dialog>
 
+      <!-- 删除 -->
+      <delete-remove-dialog
+        :formVisible="formVisible"
+        deleteOrRemove="删除"
+        width="45%"
+        :titleContext="`确定删除告警策略 &quot;${instanceName}&quot; 吗？`"
+        nodeText="删除后不可恢复。"
+        v-on:closeFormDialog="closeFormDialog"
+        v-on:submitForm="submitForm"
+      />
+
+      <!-- 模板创建 告警策略 -->
       <el-dialog
-        title="更新容器限额"
-        @close="limitVisible = false"
-        :visible.sync="limitVisible"
-        width="60%"
+        title="模板创建告警策略"
+        @close="tempCreateVisble = false"
+        :visible.sync="tempCreateVisble"
+        width="70%"
       >
         <el-form
-          ref="limitForm"
-          :model="limitForm"
-          :rules="limitRules"
+          ref="tempCreateForm"
+          :model="tempCreateForm"
+          :rules="tempCreateRules"
           label-width="135px"
         >
-          <!-- <el-form-item label="CPU" prop="cpu">
-            <el-col :span="10">
-              <el-input v-model="limitForm.cpu">
-                <template slot="append">m</template>
-                <template slot="prepend">最大值</template>
+          <el-form-item label="名称" prop="name">
+            <el-col :span="20">
+              <el-input
+                v-model="tempCreateForm.name"
+                placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+              >
               </el-input>
             </el-col>
-            <el-col :span="10" style="margin-left: 10px">
-              <el-input v-model="limitForm.cpu">
-                <template slot="append">m</template>
-                <template slot="prepend">默认值</template>
-              </el-input>
-            </el-col>
-          </el-form-item> -->
+          </el-form-item>
 
-          <!-- <el-form-item label="内存" prop="memory">
-            <el-col :span="10">
-              <el-input v-model="limitForm.memory">
-                <template slot="append">Mi</template>
-                <template slot="prepend">最大值</template>
-              </el-input>
+          <el-form-item label="显示名称" prop="showname">
+            <el-col :span="20">
+              <el-input
+                v-model="tempCreateForm.showname"
+                placeholder="最多 64 个字符"
+              />
             </el-col>
-            <el-col :span="10" style="margin-left: 10px">
-              <el-input v-model="limitForm.memory">
-                <template slot="append">Mi</template>
-                <template slot="prepend">默认值</template>
-              </el-input>
-            </el-col>
-          </el-form-item> -->
+          </el-form-item>
 
-          <el-row :gutter="20">
-            <el-col :span="13">
-              <el-form-item label="CPU" prop="cpu">
-                <el-input v-model="limitForm.cpuMax">
-                  <template slot="append">m</template>
-                  <template slot="prepend">最大值</template>
-                </el-input>
-              </el-form-item>
+          <el-form-item label="模板名称" prop="tempname">
+            <el-col :span="20">
+              <el-select
+                v-model="tempCreateForm.tempname"
+                @focus="setMinWidthEmpty"
+                multiple
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in tempnameOptions"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </el-col>
-
-            <el-col :span="13" style="margin-left: -145px">
-              <el-form-item prop="clusterPort">
-                <el-input v-model="limitForm.cpuDefault">
-                  <template slot="append">m</template>
-                  <template slot="prepend">默认值</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="13">
-              <el-form-item label="内存" prop="memory">
-                <el-input v-model="limitForm.memoryMax">
-                  <template slot="append">m</template>
-                  <template slot="prepend">最大值</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="13" style="margin-left: -145px">
-              <el-form-item prop="clusterPort">
-                <el-input v-model="limitForm.memoryDefault">
-                  <template slot="append">m</template>
-                  <template slot="prepend">默认值</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          </el-form-item>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="handleUpdate">更新</el-button>
-          <el-button @click="limitVisible = false">取消</el-button>
+          <el-button type="primary" @click="handle_tempCreate">创建</el-button>
+          <el-button @click="tempCreateVisble = false">取消</el-button>
         </div>
       </el-dialog>
     </div>
@@ -384,11 +357,13 @@
 <script>
 import { tableData, tableColumnList } from "./constant";
 import LineAlert from "@/apps/container/views/components/LineAlert";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "UserList",
   components: {
     LineAlert,
+    DeleteRemoveDialog,
   },
   data() {
     return {
@@ -436,7 +411,6 @@ export default {
         { value: "microservices", label: "微服务" },
       ],
 
-      resource: "",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -452,63 +426,79 @@ export default {
         current: 1,
         size: 20,
       },
-      typeValue: "",
 
       tableData,
       tableColumnList,
 
-      resourceVisible: false,
-      resourceForm: {
-        cpu: "",
-        memory: "",
-        storage: "",
-        pods: "",
-        pvc: "",
+      silenceVisible: false,
+      silenceForm: {
+        name: "",
+        silence: false,
+        time: "last",
+        customTime: "",
       },
-      resourceRules: {},
-
-      limitForm: {
-        cpuMax: "",
-        memoryMax: "",
-        cpuDefault: "",
-        memoryDefault: "",
-      },
-      limitRules: {
-        cpu: [{ required: true, message: "cpu is required", trigger: "blur" }],
-        memory: [
-          { required: true, message: "memory is required", trigger: "blur" },
+      silenceRules: {
+        customTime: [
+          { required: true, message: "必填项不能为空", trigger: "change" },
         ],
       },
 
-      limitVisible: false,
+      formVisible: false,
+      instanceName: "",
+
+      tempCreateVisble: false,
+      tempCreateForm: {
+        name: "",
+        showname: "",
+        tempname: "",
+      },
+      tempCreateRules: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        showname: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        tempname: [
+          { required: true, message: "必填项不能为空", trigger: "change" },
+        ],
+      },
+
+      tempnameOptions: [{ label: "alarm", value: "alarm" }],
     };
   },
 
   created() {},
   methods: {
-    handleClick() {
-      this.$router.push({
-        path: "/maintenance-center/alarm/alarmStrategy-create",
-      });
+    setMinWidthEmpty(val) {
+      // 无数据的情况下，给请选择提示设置最小宽度
+      let domEmpty = document.getElementsByClassName(
+        "el-select-dropdown__empty"
+      );
+      if (domEmpty.length > 0) {
+        domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
+      }
     },
+    handleClick() {
+      this.tempCreateForm = this.$options.data().tempCreateForm;
+      this.$nextTick(() => {
+        this.$refs["tempCreateForm"].resetFields();
+      });
+      this.tempCreateVisble = true;
+    },
+
+    handle_tempCreate() {},
+
     openDialog() {
       this.$router.push({
         path: "/maintenance-center/alarm/alarmStrategy-create",
       });
     },
+
+    handleUpdate() {},
+
     handleSearch() {},
     handleReset() {},
-
     getList() {},
-    handleStatusChange() {},
 
-    handleUserDetail(obj) {
-      console.log(obj.name);
-      this.$router.push({
-        path: "/project-list/namespace/detail",
-        query: { name: obj.name },
-      });
-    },
     handleSizeChange(val) {
       this.page.size = val;
       this.getList();
@@ -519,14 +509,29 @@ export default {
       this.getList();
     },
 
-    handleResource(obj) {
-      this.resourceVisible = true;
-      this.resource = obj.name;
+    handleSilence(obj) {
+      this.silenceForm = this.$options.data().silenceForm;
+      this.silenceForm.name = obj.name;
+      this.silenceVisible = true;
     },
-    handleUpdate() {},
+    handle_set() {},
 
-    handleLimit(obj) {
-      this.limitVisible = true;
+    handleDelete(obj) {
+      this.formVisible = true;
+      this.instanceName = obj.name;
+    },
+
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
+
+    handleDetail(obj) {
+      this.$router.push({
+        path: "/maintenance-center/alarm/alarmStrategy-detail",
+        query: { name: obj.name },
+      });
     },
   },
 };

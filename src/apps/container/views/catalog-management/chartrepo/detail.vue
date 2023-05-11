@@ -67,46 +67,68 @@
       <el-col :xs="24" :sm="24" :lg="24">
         <BaseCard>
           <header>
-            <div class="card-title left-header">
-              <span>应用模板</span>
-              <div style="float: right">
-                <!-- <el-button @click="handleUpdateQuota">更新配额</el-button> -->
+            <div class="titleStyle">
+              <div style="font-size: 22px">应用模板</div>
+              <div class="titleStyle">
+                <el-input
+                  style="margin-right: 10px"
+                  prefix-icon="el-icon-search"
+                  placeholder="按名称过滤"
+                  v-model="searchName"
+                  @keyup.enter.native="handleSerach"
+                />
+                <el-button @click="handleAddTemp">添加模板</el-button>
+                <el-button type="primary" @click="handleSyncTemp">
+                  同步模板
+                </el-button>
               </div>
             </div>
           </header>
-          <el-divider></el-divider>
-          <section class="component-div">
-            <el-table
-              :data="table.tableData"
-              style="width: 100%"
-              header-row-class-name="headerStyle"
-              class="margin-top"
-            >
-              <el-table-column
-                v-for="col in table.cols"
-                :key="col.id"
-                :label="col.label"
-                :show-overflow-tooltip="true"
-                :sortable="col.sortable"
-                :width="col.width"
-                :fixed="col.fixed"
-              >
-                <template slot-scope="scope">
-                  <div v-if="col.id === 'usage'" style="display: inline">
-                    <!-- <progress-card :chartData="progressData" /> -->
-                    {{ scope.row[col.id] }}
-                  </div>
-                  <div v-else-if="col.id === 'disrate'">
-                    <!-- <progress-card :chartData="progressData" /> -->
-                    {{ scope.row[col.id] }}
-                  </div>
-                  <div v-else>
-                    {{ scope.row[col.id] }}
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </section>
+
+          <div class="row-bg">
+            <div class="item" v-for="item in appTempData" :key="item.label">
+              <div class="buttonClass">
+                <div>
+                  <svg-icon
+                    icon-class="skill"
+                    style="width: 260px; height: 60px"
+                  />
+                </div>
+                <div class="wordStyle">{{ item.label }}</div>
+                <div
+                  class="wordStyle"
+                  style="font-size: 13px; color: rgba(150, 152, 152)"
+                  :title="item.desc"
+                >
+                  {{ item.desc }}
+                </div>
+                <div class="wordStyle" style="font-size: 12px">
+                  {{ item.version[0] }}
+                  <el-tooltip placement="bottom-end" effect="light">
+                    <div slot="content">2.15.0</div>
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-tooltip>
+                </div>
+                <el-dropdown
+                  style="position: absolute; top: 10px; right: 15px"
+                  trigger="click"
+                >
+                  <i class="el-icon-more" />
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="handleDeploy"
+                      >部署</el-dropdown-item
+                    >
+                    <el-dropdown-item @click.native="handleDelete"
+                      >管理版本</el-dropdown-item
+                    >
+                    <el-dropdown-item @click.native="handleDelete"
+                      >删除</el-dropdown-item
+                    >
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+            </div>
+          </div>
         </BaseCard>
       </el-col>
     </el-row>
@@ -114,8 +136,8 @@
     <!-- 更新 -->
     <el-dialog
       :title="title"
-      @close="createVisible = false"
-      :visible.sync="createVisible"
+      @close="updateVisible = false"
+      :visible.sync="updateVisible"
       width="60%"
     >
       <el-form
@@ -214,7 +236,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handle_update">更新</el-button>
-        <el-button @click="createVisible = false">取消</el-button>
+        <el-button @click="updateVisible = false">取消</el-button>
       </div>
     </el-dialog>
 
@@ -246,6 +268,63 @@
         <el-button @click="deleteVisible = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 添加模板 -->
+    <el-dialog
+      title="添加模板"
+      @close="addTempVisible = false"
+      :visible.sync="addTempVisible"
+      width="70%"
+    >
+      <div slot="title">
+        <span style="font-size: 18px">添加模板</span>
+        <el-tooltip effect="dark" class="item" placement="top">
+          <template slot="content">
+            <div style="max-width: 400px">可添加新模板或新版本模板</div>
+          </template>
+          <i class="el-icon-question margin-left10 question-icon" />
+        </el-tooltip>
+      </div>
+      <el-table
+        :data="tempData"
+        style="width: 100%"
+        header-row-class-name="headerStyle"
+        empty-text="无应用模板"
+      >
+        <el-table-column
+          v-for="col in tableColumnList_temp"
+          :key="col.id"
+          :label="col.label"
+          :show-overflow-tooltip="col['show-overflow-tooltip']"
+          :sortable="col.sortable"
+          :width="col.width"
+          :fixed="col.fixed"
+        >
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row[col.id] }}
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-upload
+        action="https://jsonplaceholder.typicode.com/posts/"
+        multiple
+        :limit="3"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :on-exceed="handleExceed"
+        :before-remove="beforeRemove"
+        :file-list="fileList"
+      >
+        <el-button type="primary" style="margin-top: 20px">上传模板</el-button>
+      </el-upload>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handle_addTemp">添加</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -258,6 +337,8 @@ export default {
   props: {},
   data() {
     return {
+      fileList: [],
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -269,6 +350,7 @@ export default {
       },
 
       detailTitle: "",
+      title: "",
 
       baseInfoData: [
         {
@@ -284,7 +366,6 @@ export default {
           value: "2022-10-24 14:00:00",
         },
       ],
-
       projectData: [
         {
           label: "分配项目",
@@ -292,51 +373,11 @@ export default {
         },
       ],
 
-      table: {
-        tableData: [
-          {
-            roleName: "CPU",
-            quota: "不限制",
-            usage: "- (0.32 核 / 不限制)",
-            disrate: "- (- / 不限制)",
-          },
-          {
-            roleName: "内存",
-            quota: "不限制",
-            usage: "- (6.46 Gi / 不限制)",
-            disrate: "- (- / 不限制)",
-          },
-          {
-            roleName: "存储",
-            quota: "不限制",
-            usage: "- (47.00 / 不限制)",
-            disrate: "- (- / 不限制)",
-          },
-          {
-            roleName: "Pods 数",
-            quota: "不限制",
-            usage: "-",
-            disrate: "- (1000.00 / 不限制)",
-          },
-          {
-            roleName: "PVC 数",
-            quota: "不限制",
-            usage: "- (17.00 / 不限制)",
-            disrate: "- (- / 不限制)",
-          },
-        ],
-        cols: [
-          { label: "资源类型", id: "roleName" },
-          { label: "配额", id: "quota" },
-          { label: "使用率", id: "usage" },
-          { label: "分配率", id: "disrate" },
-        ],
-      },
-      createVisible: false,
       deleteVisible: false,
       deleteTitle: "",
       command: "",
 
+      updateVisible: false,
       updateForm: {
         name: "",
         desc: "",
@@ -374,15 +415,81 @@ export default {
         { label: "ebump(统一监控)", value: "ebump" },
         { label: "faq(智能问答)", value: "faq" },
       ],
-      title: "",
+
+      searchName: "",
+
+      addTempVisible: false,
+      tableColumnList_temp: [
+        { id: "appTemp", label: "应用模板" },
+        { id: "version", label: "版本" },
+        { id: "status", label: "状态" },
+        { id: "guard", label: "守护者" },
+        { id: "time", label: "更新时间" },
+      ],
+      tempData: [],
+
+      appTempData: [
+        {
+          label: "chartmuseum",
+          desc: "Host your own Helm Chart Repository",
+          version: ["2.15.0"],
+        },
+        {
+          label: "docker-registry",
+          desc: "A Helm chart for Docker Registry",
+          version: ["v3.2.0"],
+        },
+        {
+          label: "elasticsearch",
+          desc: "Elastic helm chart for Elasticsearch",
+          version: ["7.8.1"],
+        },
+        {
+          label: "femas",
+          desc: "A Helm chart fro Femas",
+          version: ["v2.0.0"],
+        },
+        {
+          label: "pmem-redis",
+          desc: "Chart for PMEM Redis",
+          version: ["v3.0.0"],
+        },
+        {
+          label: "zookeeper",
+          desc: "Zookeeper是一个分布式的应用程序协调服务，可以为分布式程序提供的功能包括：配置维护、域名服务、分布式同步、组服务等",
+          version: ["v3.0.0"],
+        },
+      ],
     };
   },
 
   created() {
     this.detailTitle = this.$route.query.name;
   },
-  mounted() {},
+
   methods: {
+    // 文件列表移除文件时的钩子
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    // 点击文件列表中已上传的文件时的钩子
+    handlePreview(file) {
+      console.log(file);
+    },
+    // 文件超出个数限制时的钩子
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    // 删除文件之前的钩子，参数为上传的文件和文件列表，
+    //     若返回 false 或者返回 Promise 且被 reject，则停止删除。
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+
     setMinWidthEmpty(val) {
       // 无数据的情况下，给请选择提示设置最小宽度
       let domEmpty = document.getElementsByClassName(
@@ -407,7 +514,7 @@ export default {
         specify: "",
       };
       this.title = `更新 ${this.detailTitle}`;
-      this.createVisible = true;
+      this.updateVisible = true;
     },
     handle_update() {},
 
@@ -416,6 +523,21 @@ export default {
       this.deleteVisible = true;
     },
     handle_delete() {},
+
+    handleSerach() {},
+
+    handleAddTemp() {
+      this.addTempVisible = true;
+    },
+    handle_addTemp() {},
+
+    handleSyncTemp() {},
+
+    handleDeploy() {
+      this.$router.push({
+        path: "/catalog-management/chartrepo/deploy",
+      });
+    },
   },
 };
 </script>
@@ -493,8 +615,13 @@ export default {
     margin-bottom: -20px;
   }
   .row-bg {
-    padding: 0;
+    padding: 20px 20px;
     background-color: #f9fafc;
+    margin-top: 20px;
+
+    display: grid;
+    grid-template-columns: repeat(3, calc(33.33% - 13px));
+    grid-gap: 20px;
   }
   .grid-content {
     border-radius: 4px;
@@ -547,5 +674,40 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   display: inline-block;
+}
+.titleStyle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.buttonClass {
+  width: 300px;
+  height: 200px;
+  padding: 20px;
+  border: 1px solid rgba(150, 152, 155);
+  border-radius: 2px;
+  background: white;
+  position: relative;
+  cursor: pointer;
+}
+/*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
+.buttonClass:focus,
+.buttonClass:hover {
+  // background: #eaf5ff;
+  border: 1px solid #2794f8 !important;
+  // color: #2794f8;
+}
+.wordStyle {
+  width: 260px;
+  height: 29px;
+  text-align: center;
+  font-size: 18px;
+  margin: 10px 0;
+  text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>

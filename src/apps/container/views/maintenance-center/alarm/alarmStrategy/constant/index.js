@@ -42,9 +42,17 @@ export const tableData = Mock.mock({
     "connectResource|1": ["cert-manager", "kube-proxy", "coredns", "global", "全部节点"],
     "namespace|1": ["", "cert-manager", "kube-system", "cpaas-system",],
     notifyPolicy: "cpass-admin-notification",
-    "alarmStatus|1": ["7 / 7", "14 / 14", "2 / 2", "3 / 3"],
+    "alarmStatus|1": ["7", "14", "2", "3"],
     creator: "",
     desc: "平台组件Cert-manager",
     createTime: '@date',
+    statusData: [
+      {
+        rule: "工作负载容器组最近5分钟的重启次数 > 5 且持续 1 分钟",
+        type: "指标告警",
+        level: "警告",
+        state: "正常"
+      }
+    ]
   }]
 })

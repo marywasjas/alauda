@@ -1,6 +1,7 @@
 <template>
   <div class="create-container">
     <div class="scroll-div">
+      <!-- 基本信息 -->
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span style="font-size: 20px">基本信息</span>
@@ -12,11 +13,12 @@
             :rules="infoRules"
             label-width="135px"
           >
-            <!-- 名称 name -->
             <el-row>
               <el-col :span="22">
                 <el-form-item label="名称" prop="name">
+                  <span v-if="name">{{ this.name }}</span>
                   <el-input
+                    v-else
                     v-model="infoForm.name"
                     placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
                   />
@@ -24,7 +26,6 @@
               </el-col>
             </el-row>
 
-            <!-- 显示名称 showName -->
             <el-row>
               <el-col :span="22">
                 <el-form-item label="描述" prop="desc">
@@ -33,11 +34,11 @@
               </el-col>
             </el-row>
 
-            <!-- 描述 -->
             <el-row>
               <el-col :span="22">
-                <el-form-item label="描述">
-                  <el-radio-group v-model="infoForm.type">
+                <el-form-item label="资源类型">
+                  <span v-if="name">{{ infoForm.type }}</span>
+                  <el-radio-group v-model="infoForm.type" v-else>
                     <el-radio-button label="cluster">集群</el-radio-button>
                     <el-radio-button label="node">节点</el-radio-button>
                     <el-radio-button label="microserver"
@@ -54,6 +55,7 @@
         </div>
       </el-card>
 
+      <!-- 告警规则 -->
       <el-card class="box-card" style="margin-top: 20px">
         <div slot="header" class="clearfix">
           <span style="font-size: 20px">告警规则</span>
@@ -65,15 +67,16 @@
                 <thead>
                   <tr class="headerStyle">
                     <th>
-                      <div class="cell">规则</div>
+                      <span class="left-cell">规则</span>
                     </th>
                     <th>
-                      <div class="cell">告警类型</div>
+                      <span class="left-cell">告警类型</span>
                     </th>
                     <th>
-                      <div class="cell">等级</div>
+                      <span class="left-cell">等级</span>
                     </th>
                     <th>
+                      <!-- <div class="left-cell">操作</div> -->
                       <div class="cell">操作</div>
                     </th>
                   </tr>
@@ -85,13 +88,53 @@
                     :key="domain.id"
                   >
                     <td>
-                      <el-form-item>
-                        <el-input v-model="domain.key"> </el-input>
+                      <el-form-item style="width: 80%">
+                        <span>{{ domain.rule }}</span>
+                        <el-tooltip
+                          content="Bottom center"
+                          placement="top"
+                          effect="light"
+                        >
+                          <div slot="content">
+                            标签：
+                            <el-tag
+                              size="mini"
+                              style="margin-bottom: 10px"
+                              v-for="item in domain.labelItems"
+                              :key="item.value"
+                            >
+                              {{ `${item.key}:${item.value}` }}
+                            </el-tag>
+                            <br />
+                            注解：
+                            <el-tag
+                              size="mini"
+                              style="margin-bottom: 10px"
+                              v-for="item in domain.noteItems"
+                              :key="item.value"
+                            >
+                              {{ `${item.key}:${item.value}` }}
+                            </el-tag>
+                          </div>
+                          <i
+                            class="el-icon-document cursor-pointer"
+                            style="margin-left: 5px"
+                            v-if="
+                              domain.labelItems.length > 0 ||
+                              domain.noteItems.length > 0
+                            "
+                          />
+                        </el-tooltip>
                       </el-form-item>
                     </td>
                     <td>
                       <el-form-item>
-                        <el-input v-model="domain.value"> </el-input>
+                        <span>{{ domain.type }}</span>
+                      </el-form-item>
+                    </td>
+                    <td>
+                      <el-form-item>
+                        <span>{{ domain.level }}</span>
                       </el-form-item>
                     </td>
                     <td class="text-center">
@@ -100,7 +143,7 @@
                         class="cursor-pointer margin-left10 margin-right10"
                         type="text"
                         @click="
-                          handleDeleteLabel('nodeUpdateItems', domain, index)
+                          handleEditAlarmRules('nodeUpdateItems', domain, index)
                         "
                       />
                       <el-button
@@ -108,7 +151,11 @@
                         class="cursor-pointer margin-left10 margin-right10"
                         type="text"
                         @click="
-                          handleDeleteLabel('nodeUpdateItems', domain, index)
+                          handleDeleteAlarmRules(
+                            'nodeUpdateItems',
+                            domain,
+                            index
+                          )
                         "
                       />
                     </td>
@@ -127,7 +174,7 @@
                     <td colspan="5">
                       <div
                         class="cursor-pointer text-center hover-div"
-                        @click="handleAddLabel('nodeUpdateItems')"
+                        @click="handleAddAlarmRules"
                       >
                         <i class="el-icon-circle-plus-outline" />
                         添加告警规则
@@ -141,132 +188,125 @@
         </div>
       </el-card>
 
+      <!-- 策略配置 -->
       <el-card class="box-card" style="margin-top: 20px">
         <div slot="header" class="clearfix">
-          <div style="font-size: 20px">搜索设置</div>
-          <div style="float: right; margin-top: -15px">
-            <el-checkbox label="组搜索设置" v-model="quotaForm.method" />
-          </div>
+          <span style="font-size: 20px">策略配置</span>
         </div>
-
-        <div class="text item event-container" style="margin-top: 10px">
+        <div class="text item event-container">
           <el-form
-            ref="userForm"
-            :model="userForm"
-            :rules="userRules"
+            ref="configForm"
+            :model="configForm"
+            :rules="configRules"
             label-width="135px"
           >
-            <div class="recomend-list">
-              <h2>{{ "用户" }}</h2>
-            </div>
-
-            <el-form-item label="对象类型" prop="objType">
-              <el-col :span="14">
-                <el-input v-model="userForm.objType" />
+            <el-form-item label="通知策略">
+              <el-col :span="22">
+                <el-select
+                  @focus="setMinWidthEmpty"
+                  style="width: 100%"
+                  v-model="configForm.noticePolicy"
+                  placeholder="支持选择多个"
+                  multiple
+                >
+                  <el-option
+                    v-for="item in policyOptions"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
               </el-col>
             </el-form-item>
 
-            <el-form-item label="登录字段" prop="loginField">
-              <el-col :span="14">
-                <el-input v-model="userForm.loginField" />
+            <el-form-item label="告警发送间隔">
+              <el-col :span="22">
+                <el-radio-group v-model="configForm.sendInterval">
+                  <el-radio-button label="global">全局</el-radio-button>
+                  <el-radio-button label="custom">自定义</el-radio-button>
+                </el-radio-group>
+                <el-tooltip effect="dark" class="item" placement="top">
+                  <template slot="content">
+                    <div style="max-width: 450px">
+                      •
+                      如告警发生后未恢复正常，可设置间隔多久发送一次告警消息;<br />
+                      • 如设置为 "不重复"，则只在告警和恢复时发送告警消息;<br />
+                    </div>
+                  </template>
+                  <i class="el-icon-question margin-left10 question-icon" />
+                </el-tooltip>
               </el-col>
             </el-form-item>
+            <el-descriptions
+              size="small"
+              :colon="false"
+              :contentStyle="rowCenter"
+            >
+              <el-descriptions-item>
+                灾难告警 5分钟，严重告警 15分钟，警告告警 30分钟，提示告警 1小时
+              </el-descriptions-item>
+            </el-descriptions>
 
-            <el-form-item label="过滤条件">
-              <el-col :span="14">
-                <el-input v-model="userForm.filterCondition" />
+            <el-row :gutter="20" v-if="configForm.sendInterval == 'custom'">
+              <el-col :span="10" style="padding-left: 75px">
+                <el-form-item label="灾难告警" prop="disaster">
+                  <el-select v-model="configForm.disaster">
+                    <el-option
+                      v-for="item in timeOptions"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
-            </el-form-item>
 
-            <el-form-item label="搜索起点" prop="searchStart">
-              <el-col :span="14">
-                <el-input v-model="userForm.searchStart" />
+              <el-col :span="10">
+                <el-form-item label="严重告警" prop="clusterPort">
+                  <el-select v-model="configForm.serious">
+                    <el-option
+                      v-for="item in timeOptions"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
-            </el-form-item>
+            </el-row>
 
-            <el-form-item label="搜索范围">
-              <el-col :span="14">
-                <el-input v-model="userForm.searchScope" />
+            <el-row :gutter="20" v-if="configForm.sendInterval == 'custom'">
+              <el-col :span="10" style="padding-left: 75px">
+                <el-form-item label="警告告警" prop="disaster">
+                  <el-select v-model="configForm.warning">
+                    <el-option
+                      v-for="item in timeOptions"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
-            </el-form-item>
 
-            <el-form-item label="登录属性" prop="loginAttr">
-              <el-col :span="14">
-                <el-input v-model="userForm.loginAttr" />
+              <el-col :span="10">
+                <el-form-item label="提示告警" prop="clusterPort">
+                  <el-select v-model="configForm.tips">
+                    <el-option
+                      v-for="item in timeOptions"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
-            </el-form-item>
-
-            <el-form-item label="名称属性" prop="nameAttr">
-              <el-col :span="14">
-                <el-input v-model="userForm.nameAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="邮箱属性" prop="emailAttr">
-              <el-col :span="14">
-                <el-input v-model="userForm.emailAttr" />
-              </el-col>
-            </el-form-item>
-          </el-form>
-
-          <el-form
-            v-if="quotaForm.method == true"
-            ref="groupForm"
-            :model="groupForm"
-            :rules="groupRules"
-            label-width="135px"
-          >
-            <div class="recomend-list">
-              <h2>{{ "组" }}</h2>
-            </div>
-
-            <el-form-item label="对象类型" prop="objType">
-              <el-col :span="14">
-                <el-input v-model="groupForm.objType" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="登录字段" prop="loginField">
-              <el-col :span="14">
-                <el-input v-model="groupForm.loginField" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="过滤条件">
-              <el-col :span="14">
-                <el-input v-model="groupForm.filterCondition" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="搜索起点" prop="searchStart">
-              <el-col :span="14">
-                <el-input v-model="groupForm.searchStart" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="搜索范围">
-              <el-col :span="14">
-                <el-input v-model="groupForm.searchScope" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="登录属性" prop="loginAttr">
-              <el-col :span="14">
-                <el-input v-model="groupForm.loginAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="名称属性" prop="nameAttr">
-              <el-col :span="14">
-                <el-input v-model="groupForm.nameAttr" />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="邮箱属性" prop="emailAttr">
-              <el-col :span="14">
-                <el-input v-model="groupForm.emailAttr" />
-              </el-col>
-            </el-form-item>
+            </el-row>
           </el-form>
         </div>
       </el-card>
@@ -274,7 +314,8 @@
 
     <div class="fixed-div">
       <el-button type="primary" @click="handleSubmit">
-        <span>创建</span>
+        <span v-if="name">更新</span>
+        <span v-else>创建</span>
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
@@ -301,14 +342,18 @@
               <div style="max-width: 450px">
                 平台支持如下 2 种警告类型：<br />
                 指标警告：是平台根据客户需求而提炼的满足大部分客户需求大多数的指标项目，通过选择企业可快速达到对业务的监控及警告。<br />
-                自定义警告：则可由客户根据自己公司的使用特定，添加企业专属的<br />
+                自定义警告：则可由客户根据自己公司的使用特定，添加企业专属的指标规则，更好的满足企业对于告警的高阶需求。<br />
               </div>
             </template>
             <i class="el-icon-question margin-left10 question-icon" />
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="指标名称" prop="metricName">
+        <el-form-item
+          label="指标名称"
+          prop="metricName"
+          v-if="alarmRulesForm.type == 'metric'"
+        >
           <el-select v-model="alarmRulesForm.metricName" style="width: 80%">
             <el-option
               v-for="item in metricNameOptions"
@@ -318,6 +363,58 @@
             >
             </el-option>
           </el-select>
+        </el-form-item>
+
+        <el-form-item
+          label="指标名成"
+          prop="metricName2"
+          v-if="alarmRulesForm.type == 'custom'"
+        >
+          <el-input v-model="alarmRulesForm.metricName2" style="width: 80%" />
+        </el-form-item>
+
+        <el-form-item
+          label="表达式"
+          prop="expression"
+          v-if="alarmRulesForm.type == 'custom'"
+        >
+          <el-input v-model="alarmRulesForm.expression" style="width: 80%" />
+        </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item>
+            例如：(sum(up{job="apiserver"} == 1) / count(up{job="apiserver"})) *
+            100
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <el-form-item label="指标单位" v-if="alarmRulesForm.type == 'custom'">
+          <el-select style="width: 60%" v-model="alarmRulesForm.measure">
+            <el-option
+              v-for="item in measureOptions"
+              :key="item.label"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="图例参数" v-if="alarmRulesForm.type == 'custom'">
+          <el-input v-model="alarmRulesForm.params" style="width: 60%" />
+          <el-tooltip effect="dark" class="item" placement="top">
+            <template slot="content">
+              <div style="max-width: 450px">
+                •
+                说明：控制图表中曲线对应的名称，可以使用文本或者模板的形式。<br />
+                • 规则：输入值必须为 {{ ".xxxx" }} 格式，例如
+                {{ ".hostname" }}
+                将替换为表达式返回值的主机名标签对应的值。<br />
+                •
+                注：当输入了错误格式的图例参数时，图标种曲线对应名称将按照原始格式展示。<br />
+              </div>
+            </template>
+            <i class="el-icon-question margin-left10 question-icon" />
+          </el-tooltip>
         </el-form-item>
 
         <el-form-item label="触发条件" prop="triggerCond">
@@ -367,10 +464,134 @@
             <el-radio-button label="tips">提示告警</el-radio-button>
           </el-radio-group>
         </el-form-item>
+
+        <FoldableBlock btn-tex="更多">
+          <el-form-item label="标签" style="margin-bottom: 0">
+            <table border="0" style="width: 100%">
+              <thead>
+                <tr class="headerStyle">
+                  <th>
+                    <div class="cell">键</div>
+                  </th>
+                  <th>
+                    <div class="cell">值</div>
+                  </th>
+                  <th>
+                    <div class="cell">操作</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(domain, index) in alarmRulesForm.labelItems"
+                  :key="domain.id"
+                >
+                  <td>
+                    <el-form-item>
+                      <el-input v-model="domain.key" placeholder="键" />
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item>
+                      <el-input v-model="domain.value" placeholder="值" />
+                    </el-form-item>
+                  </td>
+                  <td class="text-center">
+                    <el-button
+                      icon="el-icon-remove-outline"
+                      class="cursor-pointer margin-left10 margin-right10"
+                      type="text"
+                      @click="handleDeleteLabel('labelItems', domain, index)"
+                    />
+                  </td>
+                </tr>
+
+                <tr v-if="alarmRulesForm.labelItems.length == 0">
+                  <td colspan="5">
+                    <div class="text-center" style="color: #a6a6a6">无标签</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5">
+                    <div
+                      class="cursor-pointer text-center hover-div"
+                      @click="handleAddLabel('labelItems')"
+                    >
+                      <i class="el-icon-circle-plus-outline" />
+                      添加
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </el-form-item>
+
+          <el-form-item label="注解" style="margin-bottom: 0">
+            <table border="0" style="width: 100%">
+              <thead>
+                <tr class="headerStyle">
+                  <th>
+                    <div class="cell">键</div>
+                  </th>
+                  <th>
+                    <div class="cell">值</div>
+                  </th>
+                  <th>
+                    <div class="cell">操作</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(domain, index) in alarmRulesForm.noteItems"
+                  :key="domain.id"
+                >
+                  <td>
+                    <el-form-item>
+                      <el-input v-model="domain.key" placeholder="键" />
+                    </el-form-item>
+                  </td>
+                  <td>
+                    <el-form-item>
+                      <el-input v-model="domain.value" placeholder="值" />
+                    </el-form-item>
+                  </td>
+                  <td class="text-center">
+                    <el-button
+                      icon="el-icon-remove-outline"
+                      class="cursor-pointer margin-left10 margin-right10"
+                      type="text"
+                      @click="handleDeleteLabel('noteItems', domain, index)"
+                    />
+                  </td>
+                </tr>
+
+                <tr v-if="alarmRulesForm.noteItems.length == 0">
+                  <td colspan="5">
+                    <div class="text-center" style="color: #a6a6a6">无标签</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5">
+                    <div
+                      class="cursor-pointer text-center hover-div"
+                      @click="handleAddLabel('noteItems')"
+                    >
+                      <i class="el-icon-circle-plus-outline" />
+                      添加
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </el-form-item>
+        </FoldableBlock>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleAddRules">添加</el-button>
+        <el-button type="primary" @click="handleAddRules('nodeUpdateItems')">
+          <span>{{ btnText }}</span>
+        </el-button>
         <el-button @click="alarmRulesVisible = false">取消</el-button>
       </div>
     </el-dialog>
@@ -379,12 +600,16 @@
 
 <script>
 import { nanoid } from "nanoid";
+import FoldableBlock from "@/apps/container/views/components/FoldableBlock.vue";
 
 export default {
   name: "ClusterCreate",
-  components: {},
+  components: { FoldableBlock },
   data() {
     return {
+      name: "",
+      btnText: "",
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -400,36 +625,67 @@ export default {
         desc: "",
         type: "cluster",
       },
-
       infoRules: {
         name: [{ required: true, message: "名称是必填项", trigger: "blur" }],
       },
+      configForm: {
+        noticePolicy: "",
+        sendInterval: "global",
+        disaster: "5min",
+        serious: "5min",
+        warning: "5min",
+        tips: "5min",
+      },
+      configRules: {},
 
       alarmForm: {
         nodeUpdateItems: [],
       },
-
       alarmRules: {},
 
+      // 告警规则
       alarmRulesVisible: false,
       alarmRulesTitle: "",
       alarmRulesForm: {
         type: "metric",
         metricName: "集群内的处于告警状态的告警数(cluster.alert.firing)",
+        metricName2: "",
         triggerCond: ">",
         number: "",
         persist: "30s",
         level: "disaster",
+        expression: "",
+        measure: "",
+        params: "",
+        labelItems: [],
+        noteItems: [],
       },
       alarmRulesRules: {
         metricName: [
           { required: true, message: "必填项不能为空", trigger: "change" },
         ],
+        metricName2: [
+          { required: true, message: "必填项不能为空", trigger: "change" },
+        ],
         triggerCond: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        expression: [
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
       },
 
+      measureOptions: [
+        { label: "%", value: "%" },
+        { label: "byte/second", value: "byte/second" },
+        { label: "byte", value: "byte" },
+        { label: "kb", value: "kb" },
+        { label: "mb", value: "mb" },
+        { label: "gb", value: "gb" },
+        { label: "core", value: "core" },
+        { label: "s", value: "s" },
+        { label: "ms", value: "ms" },
+      ],
       metricNameOptions: [
         {
           label: "集群内的处于告警状态的告警数(cluster.alert.firing)",
@@ -465,78 +721,54 @@ export default {
         { label: "持续 10 分钟", value: "10min" },
         { label: "持续 30 分钟", value: "30min" },
       ],
-
-      quotaForm: {
-        method: false,
-      },
-
-      userForm: {
-        objType: "inetOrgPerson",
-        loginField: "mail",
-        filterCondition: "",
-        searchStart: "dc=example,dc=org",
-        searchScope: "",
-        loginAttr: "uid",
-        nameAttr: "cn",
-        emailAttr: "mail",
-      },
-
-      userRules: {
-        objType: [
-          { required: true, message: "对象类型是必填项", trigger: "blur" },
-        ],
-        loginField: [
-          { required: true, message: "登陆字段是必填项", trigger: "blur" },
-        ],
-        searchStart: [
-          { required: true, message: "搜索起点是必填项", trigger: "blur" },
-        ],
-        loginAttr: [
-          { required: true, message: "登录属性是必填项", trigger: "blur" },
-        ],
-        nameAttr: [
-          { required: true, message: "名称属性是必填项", trigger: "blur" },
-        ],
-        emailAttr: [
-          { required: true, message: "邮箱属性是必填项", trigger: "blur" },
-        ],
-      },
-
-      groupForm: {
-        objType: "inetOrgPerson",
-        loginField: "mail",
-        filterCondition: "",
-        searchStart: "dc=example,dc=org",
-        searchScope: "",
-        loginAttr: "uid",
-        nameAttr: "cn",
-        emailAttr: "mail",
-      },
-
-      groupRules: {
-        objType: [
-          { required: true, message: "对象类型是必填项", trigger: "blur" },
-        ],
-        loginField: [
-          { required: true, message: "登陆字段是必填项", trigger: "blur" },
-        ],
-        searchStart: [
-          { required: true, message: "搜索起点是必填项", trigger: "blur" },
-        ],
-        loginAttr: [
-          { required: true, message: "登录属性是必填项", trigger: "blur" },
-        ],
-        nameAttr: [
-          { required: true, message: "名称属性是必填项", trigger: "blur" },
-        ],
-        emailAttr: [
-          { required: true, message: "邮箱属性是必填项", trigger: "blur" },
-        ],
-      },
+      policyOptions: [],
+      timeOptions: [
+        { label: "5分钟", value: "5min" },
+        { label: "10分钟", value: "10min" },
+        { label: "15分钟", value: "15min" },
+        { label: "30分钟", value: "30min" },
+        { label: "1小时", value: "1h" },
+        { label: "3小时", value: "3h" },
+        { label: "6小时", value: "6h" },
+        { label: "12小时", value: "12h" },
+        { label: "1天", value: "1day" },
+        { label: "不重复", value: "no-repeat" },
+      ],
     };
   },
 
-  created() {},
+  created() {
+    this.name = this.$route.query.name;
+    if (this.name) {
+      this.infoForm = {
+        name: this.name,
+        desc: "",
+        type: "cluster",
+      };
+
+      this.alarmForm = {
+        nodeUpdateItems: [
+          {
+            id: nanoid(),
+            rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+            type: "指标告警",
+            level: "严重",
+            labelItems: [],
+            noteItems: [],
+          },
+        ],
+      };
+
+      this.configForm = {
+        noticePolicy: "",
+        sendInterval: "global",
+        disaster: "5min",
+        serious: "5min",
+        warning: "5min",
+        tips: "5min",
+      };
+    }
+  },
 
   methods: {
     setMinWidthEmpty(val) {
@@ -549,41 +781,82 @@ export default {
       }
     },
 
-    handleSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.active = 1;
-          // this.$refs["ruleForm"].resetFields();
-          this.$refs["ruleForm"].clearValidate();
-          this.ruleForm = this.$options.data().ruleForm;
-        } else {
-          return false;
-        }
-      });
-    },
+    handleSubmit() {},
 
     // 取消-返回
     cancelCreate() {
       this.$router.go(-1);
     },
 
-    handleAddLabel(filed) {
+    // 添加
+    handleAddAlarmRules() {
       this.alarmRulesTitle = "添加告警规则";
-      this.ruleForm = this.$options.data().ruleForm;
+      this.btnText = "添加";
+      this.alarmRulesForm = this.$options.data().alarmRulesForm;
       this.alarmRulesVisible = true;
-      // const obj = {
-      //   id: nanoid(),
-      //   key: "",
-      //   value: "",
-      // };
-      // this.alarmForm[filed].push(obj);
     },
     // 删除
-    handleDeleteLabel(filed, item, index) {
+    handleDeleteAlarmRules(filed, item, index) {
       this.alarmForm[filed].splice(index, 1);
     },
 
-    handleAddRules() {},
+    handleEditAlarmRules(filed, item, index) {
+      this.alarmRulesTitle = "编辑告警规则";
+      this.btnText = "确定";
+      this.alarmRulesVisible = true;
+      this.alarmRulesForm = Object.assign(
+        {
+          type: "metric",
+          metricName: "集群内的处于告警状态的告警数(cluster.alert.firing)",
+          metricName2: "",
+          triggerCond: ">",
+          number: "30",
+          persist: "30s",
+          level: "disaster",
+          expression: "",
+          measure: "",
+          params: "",
+          labelItems: [],
+          noteItems: [],
+        },
+        { ...item, type: "metric", level: "disaster" }
+      );
+    },
+
+    handleAddRules(filed) {
+      this.alarmRulesVisible = false;
+      const obj = {
+        id: nanoid(),
+        rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+        type: "指标告警",
+        level: "严重",
+        labelItems: [],
+        noteItems: [],
+      };
+      const obj2 = {
+        id: nanoid(),
+        rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+        type: "指标告警",
+        level: "严重",
+        labelItems: [{ key: "a", value: "b" }],
+        noteItems: [{ key: "c", value: "d" }],
+      };
+      this.alarmForm[filed].push(obj, obj2);
+    },
+
+    // 添加
+    handleAddLabel(filed) {
+      const obj = {
+        id: nanoid(),
+        key: "",
+        value: "",
+      };
+      this.alarmRulesForm[filed].push(obj);
+    },
+    // 删除
+    handleDeleteLabel(filed, item, index) {
+      this.alarmRulesForm[filed].splice(index, 1);
+    },
   },
 };
 </script>
@@ -732,5 +1005,9 @@ export default {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+}
+.left-cell {
+  float: left;
+  margin-left: 1px;
 }
 </style>

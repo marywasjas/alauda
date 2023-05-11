@@ -112,14 +112,17 @@
                   style="margin-bottom: 10px; flex: 1"
                 >
                   <el-select
-                    v-model="tabForm.logType"
-                    placeholder="支持nodename/podname/containerid/containername/path，支持关键字查询，支持添加多个条件，按回车确定"
+                    v-model="tabForm.resName"
+                    placeholder="可输可选，按回车确定，支持添加多个资源名称"
                     multiple
-                    collapse-tags
                     style="width: 100%"
                   >
-                    <el-option label="11111" value="currentLog" />
-                    <el-option label="22222" value="historyLog" />
+                    <el-option
+                      v-for="con in []"
+                      :key="con.value"
+                      :label="con.label"
+                      :value="con.value"
+                    />
                   </el-select>
                 </el-form-item>
 
@@ -128,8 +131,10 @@
                   style="margin-bottom: 10px; margin-left: 10px"
                   label-width="0px"
                 >
-                  <el-button type="primary">搜索</el-button>
-                  <el-button>重置</el-button>
+                  <el-button type="primary" @click="handleSearch">
+                    搜索
+                  </el-button>
+                  <el-button @click="handleReset">重置</el-button>
                 </el-form-item>
               </div>
             </el-form>
@@ -243,6 +248,7 @@ export default {
         logType: "系统日志",
         project: "",
         namespace: "",
+        resName: "",
       },
       count: 4,
       detailVisible: false,
@@ -335,12 +341,7 @@ export default {
       this.openDialog();
     },
 
-    handleDetail() {
-      // this.$router.push({
-      //   path: "/project-list/toolchain/integrateDetail",
-      //   query: { name },
-      // });
-    },
+    handleDetail() {},
 
     handleSizeChange(val) {
       this.page.size = val;
@@ -351,6 +352,9 @@ export default {
       this.page.current = val;
       // this.onSearch();
     },
+
+    handleSearch() {},
+    handleReset() {},
   },
 };
 </script>

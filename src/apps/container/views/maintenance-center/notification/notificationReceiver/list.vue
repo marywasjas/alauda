@@ -11,7 +11,7 @@
 
         <div class="flex-center">
           <el-input v-model="searchValue" @keyup.enter.native="handleSearch">
-            <el-select slot="prepend" v-model="searchType"  style="width: 110px">
+            <el-select slot="prepend" v-model="searchType" style="width: 110px">
               <el-option label="对象名称" value="name"> </el-option>
               <el-option label="显示名称" value="showName"> </el-option>
             </el-select>
@@ -186,7 +186,7 @@
           <table border="0" style="width: 100%">
             <thead>
               <tr class="headerStyle">
-                <th>
+                <th style="width: 28%">
                   <div class="cell">类型</div>
                 </th>
                 <th>
@@ -260,6 +260,13 @@
                     type="text"
                     @click="handleDeleteItem('labels', domain, index)"
                   />
+                </td>
+              </tr>
+              <tr v-if="addForm.labels.length == 0">
+                <td colspan="5">
+                  <div class="text-center" style="color: rgba(150, 152, 155)">
+                    无通知对象
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -370,12 +377,12 @@ export default {
       this.title = "添加通知对象";
       this.updateVisible = true;
       this.addForm.labels = [
-        {
-          id: nanoid(),
-          type: "",
-          name: "",
-          showName: "",
-        },
+        // {
+        //   id: nanoid(),
+        //   type: "",
+        //   name: "",
+        //   showName: "",
+        // },
       ];
     },
 

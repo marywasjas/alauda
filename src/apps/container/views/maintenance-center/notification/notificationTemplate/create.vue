@@ -35,7 +35,9 @@
             <el-row>
               <el-col :span="22">
                 <el-form-item label="名称" prop="name">
+                  <span v-if="name">{{ name }}</span>
                   <el-input
+                    v-else
                     v-model="ruleForm.name"
                     placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
                   />
@@ -103,14 +105,38 @@
                 <el-radio :label="2">文本格式</el-radio>
               </el-radio-group>
             </el-form-item>
-            <monaco-editor
-              :read-only="false"
-              ref="monacoEditor"
-              :code="currentCode"
-              :language="language"
-              @handleBlur="handleBlur"
-            />
-            <!-- <el-input type="textarea" :row="6" v-model="textarea"></el-input> -->
+
+            <el-form-item>
+              <el-input
+                type="textarea"
+                resize="none"
+                :autosize="{ minRows: 20, maxRows: 20 }"
+                v-model="templateForm.textarea"
+                style="width: 60%; margin-right: 10px"
+              ></el-input>
+              <el-input
+                type="textarea"
+                resize="none"
+                :autosize="{ minRows: 20, maxRows: 20 }"
+                v-model="templateForm.desc"
+                style="width: 30%"
+              ></el-input>
+
+              <el-tooltip effect="dark" class="item" placement="left">
+                <template slot="content">
+                  <div style="max-width: 400px">
+                    可以直接编辑模板，模板内容只支持文本方式，支持填写中文信息
+                  </div>
+                </template>
+                <i class="el-icon-question margin-left10 question-icon" />
+              </el-tooltip>
+
+              <el-button type="text" @click="handlePreview">预览通知</el-button>
+              <div style="margin-top: -10px; margin-left: -40px">
+                <span>样例：HTML格式通知内容示例</span>
+                <el-button type="text" @click="handleView">查看</el-button>
+              </div>
+            </el-form-item>
           </el-form>
         </div>
       </el-card>
@@ -118,27 +144,91 @@
 
     <div class="fixed-div">
       <el-button type="primary" @click="submitCreate">
-        <span>创建</span>
+        <span v-if="name">更新</span>
+        <span v-else>创建</span>
       </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
+
+    <el-dialog
+      title="通知预览"
+      @close="previewVisible = false"
+      :visible.sync="previewVisible"
+      width="60%"
+    >
+      <section class="component-div">
+        <span style="font-size: 14px; font-weight: 500"> 服务器配置 </span>
+        <h3>
+          【告警中】 PAAS 平台告警：节点192.168.16.53的节点的CPU使用率超过80%
+        </h3>
+
+        <span style="font-size: 14px; font-weight: 500"> 通知内容 </span>
+        <el-row :gutter="24" style="margin-top: 14px">
+          <el-col
+            v-for="item in detailResData"
+            :key="item.label"
+            :span="24"
+            style="margin-top: 5px"
+          >
+            <span> {{ item.label }} </span>: &nbsp;&nbsp;
+            <span
+              v-if="item.label == '告警状态' || item.label == '触发数值'"
+              style="color: red"
+            >
+              {{ item.value }}
+            </span>
+            <span v-else>
+              {{ item.value }}
+            </span>
+          </el-col>
+        </el-row>
+      </section>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="previewVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
+
+    <monaco-editor-dialog
+      v-if="detailVisible"
+      id="eventMonacoEditorDialog"
+      title="查看"
+      :visible="detailVisible"
+      :code="code"
+      :read-only="readOnly"
+      :btn-visible="btnVisible"
+      :language="language"
+      :submit-txt="submitTxt"
+      @closeDetailsDialog="closeDetailsDialog"
+    />
   </div>
 </template>
 
 <script>
+import MonacoEditorDialog from "@/apps/container/views/components/MonacoEditorDialog";
 import LineAlert from "@/apps/container/views/components/LineAlert";
-import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
 import { nanoid } from "nanoid";
 
 export default {
   name: "ClusterCreate",
-  components: { LineAlert, MonacoEditor },
+  components: { LineAlert, MonacoEditorDialog },
   data() {
     return {
-      currentCode: "{}",
-      inputCode: {},
-      language: "",
-      defaultCode: {
+      // 事件详情数据
+      detailVisible: false,
+      readOnly: true,
+      code: "",
+      language: "json",
+      submitTxt: null,
+      btnVisible: {
+        autoUpdate: false,
+        import: false,
+        export: true,
+        reset: false,
+        find: true,
+        copy: true,
+      },
+      spec: {
         detail: {
           cluster_name: "global",
           event: {
@@ -182,7 +272,7 @@ export default {
         resource_type: "Pod",
         time: "1667783895000000",
       },
-
+      
       ruleForm: {
         templateType: 1,
         msgType: 1,
@@ -215,6 +305,24 @@ export default {
       templateForm: {
         emailTitle: "",
         content: 1,
+        textarea: `<h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
+      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
+      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3>`,
+        desc: `<h1>书写说明</h1>`,
       },
 
       templateRules: {
@@ -225,11 +333,29 @@ export default {
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
       },
+
+      previewVisible: false,
+
+      detailResData: [
+        { label: "告警状态", value: "告警中" },
+        { label: "告警等级", value: "警告" },
+        { label: "告警集群", value: "global" },
+        { label: "告警对象", value: "节点192.168.16.53" },
+        { label: "策略名称", value: "cpaas-node-rules" },
+        { label: "告警描述", value: "节点的CPU使用率超过80%" },
+        { label: "触发数值", value: "90%" },
+        { label: "告警时间", value: "2020-11-23 09:50:56" },
+      ],
+
+      name: "",
     };
   },
 
   created() {
-    this.currentCode = JSON.stringify(this.defaultCode, null, 2);
+    this.name = this.$route.query.name;
+    if (this.name) {
+      this.ruleForm.showName = "showName";
+    }
   },
 
   methods: {
@@ -261,6 +387,21 @@ export default {
     // 取消-返回
     cancelCreate() {
       this.$router.go(-1);
+    },
+
+    handlePreview() {
+      this.previewVisible = true;
+    },
+
+    handleView() {
+      this.detailVisible = true;
+      this.readOnly = true;
+      this.submitTxt = null;
+      this.code = JSON.stringify(this.spec, null, 2);
+    },
+
+    closeDetailsDialog() {
+      this.detailVisible = false;
     },
   },
 };

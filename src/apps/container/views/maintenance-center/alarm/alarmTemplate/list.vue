@@ -49,8 +49,41 @@
                   {{ scope.row[col.id] }}
                 </span>
               </div>
+
+              <div v-else-if="col.id === 'rules'" class="cursor-pointer">
+                <el-tooltip placement="top" effect="light">
+                  <div slot="content">
+                    <el-table :data="scope.row.ruleContent" style="width: 100%">
+                      <el-table-column prop="rule" label="规则" width="500">
+                      </el-table-column>
+                      <el-table-column prop="type" label="告警类型">
+                      </el-table-column>
+                      <el-table-column prop="level" label="等级">
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <span>
+                    {{ scope.row[col.id] }}
+                  </span>
+                </el-tooltip>
+              </div>
+
+              <div v-else-if="col.id === 'operation'" class="operation-cell">
+                <el-dropdown trigger="click">
+                  <i class="el-icon-more" />
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="handleUpdate(scope.row)">
+                      更新
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native="handleDelete(scope.row)">
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+
               <div v-else>
-                {{ scope.row[col.id] }}
+                {{ scope.row[col.id] ? scope.row[col.id] : "-" }}
               </div>
             </template>
           </el-table-column>
@@ -58,170 +91,26 @@
       </div>
     </div>
 
-    <el-dialog
-      title="添加桥接网络"
-      @close="createVisible = false"
-      :visible.sync="createVisible"
-      width="60%"
-    >
-      <el-form
-        ref="createForm"
-        :model="createForm"
-        :rules="createRules"
-        label-width="135px"
-      >
-        <el-form-item label="名称">
-          <el-input v-model="createForm.name" style="width: 80%"></el-input>
-        </el-form-item>
-
-        <el-form-item label="默认网卡名称">
-          <el-input v-model="createForm.showName" style="width: 80%">
-          </el-input>
-        </el-form-item>
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
-          <el-descriptions-item>
-            默认情况下，容器网络会使用次节点网络，来和物理网络互通
-          </el-descriptions-item>
-        </el-descriptions>
-
-        <el-row type="flex">
-          <el-col :span="22">
-            <el-form-item label="按节点配置网卡" style="margin-bottom: 10px">
-              <el-row type="flex" class="row-bg">
-                <el-col :span="24">
-                  <!-- 1 -->
-                  <div>
-                    <span style="margin-left: 10px">IP 形式</span>
-                    <span style="margin-left: 200px">IP 地址</span>
-                  </div>
-                  <!-- 2 -->
-                  <div class="grid-content bg-purple">
-                    <div v-if="createForm.configurationItems.length > 0">
-                      <div
-                        v-for="(domain, index) in createForm.configurationItems"
-                        :key="domain.id"
-                        class="margin-bottom10 item-div"
-                      >
-                        <el-row>
-                          <el-col :span="9">
-                            <el-form-item>
-                              <el-select
-                                v-model="domain.selected"
-                                @focus="setMinWidthEmpty"
-                                style="width: 100%"
-                              >
-                                <el-option label="IP" value="IP" />
-                                <el-option label="IP 段" value="IP 段" />
-                              </el-select>
-                            </el-form-item>
-                          </el-col>
-                          <el-col
-                            :span="14"
-                            style="padding-left: 10px"
-                            v-if="domain.selected == 'IP'"
-                          >
-                            <el-form-item>
-                              <el-input
-                                v-model="domain.input"
-                                placeholder="输入 IP"
-                              />
-                            </el-form-item>
-                          </el-col>
-                          <el-col v-else :span="14" style="padding-left: 10px">
-                            <el-form-item>
-                              <el-input
-                                v-model="domain.input1"
-                                style="width: 47%"
-                              />
-                              ~
-                              <el-input
-                                v-model="domain.input2"
-                                placeholder="输入 IP"
-                                style="width: 47%"
-                              />
-                            </el-form-item>
-                          </el-col>
-                          <el-col :span="1" style="padding-left: 10px">
-                            <div>
-                              <i
-                                class="el-icon-remove-outline cursor-pointer"
-                                @click="
-                                  handleDelete(
-                                    'configurationItems',
-                                    domain,
-                                    index
-                                  )
-                                "
-                              />
-                            </div>
-                          </el-col>
-                        </el-row>
-                      </div>
-                    </div>
-                    <div v-else>
-                      <p style="text-align: center">无节点配置网卡</p>
-                    </div>
-                    <div class="flex-center">
-                      <div
-                        class="cursor-pointer text-center hover-div"
-                        style="flex: 1"
-                        @click="handleAdd('configurationItems')"
-                      >
-                        <i class="el-icon-circle-plus-outline" />
-                        添加
-                      </div>
-                    </div>
-                  </div>
-                </el-col>
-              </el-row>
-            </el-form-item>
-          </el-col>
-          <el-col :span="2">
-            <el-tooltip effect="dark" class="item" placement="top">
-              <template slot="content">
-                <div style="max-width: 450px">
-                  针对特定节点指定需要使用的网卡
-                </div>
-              </template>
-              <i class="el-icon-question margin-left10 question-icon" />
-            </el-tooltip>
-          </el-col>
-        </el-row>
-
-        <el-form-item label="排除节点">
-          <el-select
-            v-model="createForm.specifiedProject"
-            @focus="setMinWidthEmpty"
-            style="width: 80%"
-          >
-            <el-option
-              v-for="item in clusterOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
-          <el-descriptions-item> 无需物理网络支持节点 </el-descriptions-item>
-        </el-descriptions>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handle_create">创建</el-button>
-        <el-button @click="createVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+    <delete-remove-dialog
+      :formVisible="formVisible"
+      deleteOrRemove="确定"
+      width="45%"
+      :titleContext="`确定删除告警模板 &quot;${name}&quot; 吗？`"
+      :nodeText="`删除后不可恢复`"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import { tableData, tableColumnList } from "./constant";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 import { nanoid } from "nanoid";
 
 export default {
   name: "ClusterList",
-  components: {},
+  components: { DeleteRemoveDialog },
   data() {
     return {
       searchValue: "",
@@ -236,18 +125,8 @@ export default {
       },
       tableData,
       tableColumnList,
-      clusterOptions: [
-        { label: "global(global)", value: "global(global)" },
-        { label: "region(region)", value: "region(region)" },
-      ],
-      createVisible: false,
-      createForm: {
-        name: "",
-        showName: "",
-        specifiedProject: "",
-        configurationItems: [],
-      },
-      createRules: {},
+      formVisible: false,
+      name: "",
     };
   },
 
@@ -271,24 +150,31 @@ export default {
         path: "/maintenance-center/alarm/alarmTemplate-create",
       });
     },
-    handle_create() {},
 
-    handleAdd(filed) {
-      const obj = {
-        id: nanoid(),
-        selected: "IP",
-        input: "",
-        input1: "",
-        input2: "",
-      };
-      this.createForm[filed].push(obj);
-    },
-    // 删除
-    handleDelete(filed, item, index) {
-      this.createForm[filed].splice(index, 1);
+    handleUpdate(obj) {
+      this.$router.push({
+        path: "/maintenance-center/alarm/alarmTemplate-create",
+        query: { name: obj.name },
+      });
     },
 
-    handelDetail(obj) {},
+    handleDelete(obj) {
+      this.formVisible = true;
+      this.name = obj.name;
+    },
+
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
+
+    handelDetail(obj) {
+      this.$router.push({
+        path: "/maintenance-center/alarm/alarmTemplate-detail",
+        query: { name: obj.name },
+      });
+    },
   },
 };
 </script>

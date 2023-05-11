@@ -131,9 +131,10 @@ export default {
       });
     },
 
-    handleUpdate() {
+    handleUpdate(obj) {
       this.$router.push({
         path: "/maintenance-center/notification/create-notification-Template",
+        query: { name: obj.name },
       });
     },
 

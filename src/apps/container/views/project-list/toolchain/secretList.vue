@@ -9,13 +9,16 @@
 
         <div class="flex-center">
           <el-input
-            style="width: 250px; margin-left: 20px"
-            suffix-icon="el-icon-search"
-            clearable
+            style="width: 250px"
             placeholder="按名称搜索"
             v-model="typeValue"
-            @keyup.enter.native="getList"
+            @keyup.enter.native="handleSearch"
           >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="handleSearch"
+            />
           </el-input>
         </div>
       </div>
@@ -38,12 +41,19 @@
             :fixed="col.fixed"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'" class="name-cell">
-                <div>
-                  <span @click="handleDetail(scope.row)" class="cursor-pointer">
-                    {{ scope.row[col.id] }}
-                  </span>
-                  <span>{{ scope.row.showName }}</span>
+              <div v-if="col.id === 'name'" class="cursor-pointer">
+                <div style="display: flex; flex: 1 1; align-items: center">
+                  <div style="margin-right: 10px">
+                    <i class="el-icon-picture" />
+                  </div>
+                  <div>
+                    <div @click="handleDetail(scope.row)">
+                      {{ scope.row[col.id] }}
+                    </div>
+                    <div style="font-size: 12px; color: gray">
+                      {{ scope.row.showName }}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -96,7 +106,7 @@
         <div class="el-dialog-div">
           <span
             style="
-              text-align: center;
+              text-align: start;
               display: block;
               font-size: 22px;
               line-height: 24px;
@@ -104,7 +114,7 @@
             "
           >
             <i class="el-icon-warning" style="color: red" />
-            {{ `确定删除 凭据"${removeRoleName}"吗？` }}
+            {{ `确定删除 凭据 "${removeRoleName}" 吗？` }}
           </span>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -113,29 +123,29 @@
         </div>
       </el-dialog>
 
+      <!--更新显示名称  -->
       <el-dialog
         title="更新显示名称"
-        @close="updateName = false"
-        :visible.sync="updateName"
+        @close="updateNameVisible = false"
+        :visible.sync="updateNameVisible"
         width="60%"
       >
         <div class="el-dialog-div">
           <el-form :model="nameForm" ref="nameForm" label-width="135px">
-            <!-- <el-col :span="18"> -->
             <el-form-item label="显示名称" style="width: 80%">
               <el-input v-model="nameForm.showName"></el-input>
             </el-form-item>
-            <!-- </el-col> -->
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="handle_update">更新</el-button>
-          <el-button @click="updateName = false">取消</el-button>
+          <el-button @click="updateNameVisible = false">取消</el-button>
         </div>
       </el-dialog>
 
+      <!-- 更新数据信息 -->
       <el-dialog
-        title="更新显示名称"
+        title="更新数据信息"
         @close="updateInfo = false"
         :visible.sync="updateInfo"
         width="60%"
@@ -152,17 +162,15 @@
             label-width="135px"
           >
             <el-form-item label="显示名称" style="width: 80%">
-              <!-- <el-input v-model="nameForm.showName"></el-input> -->
               <span>{{ infoForm.name }}</span>
             </el-form-item>
 
             <el-form-item label="工具类型" style="width: 80%">
-              <!-- <el-input v-model="nameForm.showName"></el-input> -->
+              <i class="el-icon-picture" />
               <span>{{ infoForm.toolType }}</span>
             </el-form-item>
 
             <el-form-item label="类型" style="width: 80%">
-              <!-- <el-input v-model="nameForm.showName"></el-input> -->
               <span>{{ infoForm.type }}</span>
             </el-form-item>
 
@@ -174,9 +182,9 @@
               :colon="false"
               :contentStyle="rowCenter"
             >
-              <el-descriptions-item
-                >请输入登录 GitLab 时使用的用户名</el-descriptions-item
-              >
+              <el-descriptions-item>
+                请输入登录 {{ infoForm.toolType }} 时使用的用户名
+              </el-descriptions-item>
             </el-descriptions>
 
             <el-form-item label="令牌" style="width: 80%" prop="token">
@@ -187,9 +195,9 @@
               :colon="false"
               :contentStyle="rowCenter"
             >
-              <el-descriptions-item
-                >前往 GitLab 设置页面生成令牌</el-descriptions-item
-              >
+              <el-descriptions-item>
+                前往 {{ infoForm.toolType }} 设置页面生成令牌
+              </el-descriptions-item>
             </el-descriptions>
           </el-form>
         </div>
@@ -201,10 +209,13 @@
 
       <el-drawer :visible.sync="drawer" direction="rtl" size="45%">
         <template slot="title">
-          <span>{{ title }}</span>
+          <span style="font-size: 22px; color: rgba(50, 52, 55)">
+            <i class="el-icon-picture" />
+            {{ title }}
+          </span>
           <div style="float: right">
             <el-dropdown trigger="click">
-              <el-button class="margin-left10">
+              <el-button class="margin-left10" size="small">
                 操作
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
@@ -224,32 +235,41 @@
         </template>
 
         <el-row :gutter="24" style="margin-left: 20px">
-          <el-col :span="15">
-            <el-descriptions title="用户信息" :column="1">
-              <el-descriptions-item label="显示名称">
-                {{ detailObj.showName }}
-              </el-descriptions-item>
-              <el-descriptions-item label="工具类型">
-                {{ "GitLab" }}
-              </el-descriptions-item>
-              <el-descriptions-item label="显示名称">
-                {{ detailObj.time }}
-              </el-descriptions-item>
-            </el-descriptions>
-            <el-descriptions title="数据" :column="1" style="margin-top: 20px">
-              <el-descriptions-item label="类型">
-                {{ detailObj.type }}
-              </el-descriptions-item>
-              <el-descriptions-item label="数据">
-                {{ "用户名、令牌" }}
-                <i
-                  class="el-icon-edit"
-                  style="cursor: pointer; color: #409eff"
-                  @click="handleUpdateInfo(detailObj)"
-                />
-              </el-descriptions-item>
-            </el-descriptions>
-          </el-col>
+          <section class="component-div">
+            <span style="font-size: 17px"> 服务器配置 </span>
+            <el-row :gutter="24" style="margin: 14px 0; margin-left: 20px">
+              <el-col
+                v-for="item in detailData"
+                :key="item.label"
+                :span="24"
+                style="font-size: 14px; margin-bottom: 15px"
+              >
+                <span> {{ item.label }} </span>: &nbsp;&nbsp;
+                <span>
+                  {{ item.value ? item.value : "-" }}
+                </span>
+              </el-col>
+            </el-row>
+            <span style="font-size: 17px"> 数据 </span>
+            <el-row :gutter="24" style="margin: 14px 0; margin-left: 20px">
+              <el-col
+                v-for="item in detailResData"
+                :key="item.label"
+                :span="24"
+                style="font-size: 14px; margin-bottom: 15px"
+              >
+                <span> {{ item.label }} </span>: &nbsp;&nbsp;
+                <span>
+                  {{ item.value ? item.value : "-" }}
+                  <i
+                    :class="item.afterIcon"
+                    style="cursor: pointer; color: #409eff"
+                    @click="handleUpdateInfo(detailObj)"
+                  />
+                </span>
+              </el-col>
+            </el-row>
+          </section>
         </el-row>
       </el-drawer>
     </div>
@@ -257,16 +277,12 @@
 </template>
 
 <script>
-import { tableColumnList3 } from "./constant";
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 
 export default {
   name: "UserList",
-  components: {
-    LineAlert,
-    FoldableBlock,
-  },
+  components: { LineAlert, FoldableBlock },
   data() {
     return {
       detailObj: "",
@@ -286,8 +302,7 @@ export default {
         current: 1,
         size: 20,
       },
-      batchVisible: false,
-      selectedDevice: [],
+
       tableData3: {
         data: [
           {
@@ -304,19 +319,62 @@ export default {
           },
         ],
       },
-      tableColumnList3,
-      statusOptions: [
-        { value: "all", label: "全部" },
-        { value: "normal", label: "未分组" },
+      tableColumnList3: [
+        {
+          id: "name",
+          label: "凭据名称",
+          sortable: true,
+        },
+        {
+          id: "type",
+          label: "类型",
+        },
+        {
+          id: "time",
+          label: "创建时间",
+          sortable: true,
+        },
+        {
+          id: "operation",
+          label: "",
+          width: "60px",
+          fixed: "right",
+        },
       ],
 
-      searchValue: "userName",
+      detailData: [
+        {
+          label: "显示名称",
+          value: "msg-server001",
+        },
+        {
+          label: "工具类型",
+          value: "GitLab",
+        },
+        {
+          label: "创建时间",
+          value: "2023-05-04 16:35:41",
+        },
+      ],
+
+      detailResData: [
+        {
+          label: "类型",
+          value: "用户名/令牌",
+        },
+        {
+          label: "数据信息",
+          value: "用户名、令牌",
+          afterIcon: "el-icon-edit",
+        },
+      ],
+
       typeValue: "",
 
       removeRoleName: "",
       removeDisable: false,
 
-      updateName: false,
+      updateNameVisible: false,
       nameForm: {
         showName: "",
       },
@@ -350,37 +408,40 @@ export default {
 
   created() {},
   methods: {
-    getList() {},
-    handleStatusChange() {},
+    handleSearch() {},
 
     createSecret() {
       this.$router.push({ path: "/project-list/toolchain/createSecret" });
     },
 
-    handleSearchChange(e) {},
     handleSizeChange(val) {
       this.page.size = val;
-      this.getList();
+      this.handleSearch();
     },
 
     handleCurrentChange(val) {
       this.page.current = val;
-      this.getList();
+      this.handleSearch();
     },
 
+    // 删除
     handleRemove(obj) {
       this.removeDisable = true;
       this.removeRoleName = obj.name;
     },
+    // 确定删除
     handle_remove() {},
 
+    // 更新显示名称
     handleUpdateName(obj) {
-      this.updateName = true;
+      this.updateNameVisible = true;
       this.nameForm.showName = obj.showName;
     },
+    // 确定更新
     handle_update() {},
 
     handleUpdateInfo(obj) {
+      this.infoForm = this.$options.data().infoForm;
       this.updateInfo = true;
       this.infoForm.name = obj.name;
       this.infoForm.toolType = "GitLab";

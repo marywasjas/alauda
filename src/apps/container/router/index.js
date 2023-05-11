@@ -1449,6 +1449,17 @@ export const containerAsyncRoutes = [
             hidden: true
           },
           {
+            path: 'alarmStrategy-detail',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmStrategy/detail'),
+            name: 'AlarmRealtime',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
             path: 'alarmTemplate',
             component: () => import('@/apps/container/views/maintenance-center/alarm/alarmTemplate/list'),
             name: 'AlarmRealtime',
@@ -1460,6 +1471,17 @@ export const containerAsyncRoutes = [
             name: 'AlarmRealtime',
             meta: { title: '创建/更新 告警模板' },
             hidden: true
+          },
+          {
+            path: 'alarmTemplate-detail',
+            component: () => import('@/apps/container/views/maintenance-center/alarm/alarmTemplate/detail'),
+            name: 'AlarmRealtime',
+            meta: { title: '' },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
           },
           {
             path: 'alarmHistory',
@@ -1610,7 +1632,7 @@ export const containerAsyncRoutes = [
         component: () => import('@/apps/container/views/catalog-management/chartrepo/index'),
         redirect: '/catalog-management/chartrepo/list',
         name: 'ChartrepoMain',
-        meta: { title: '模拟仓库', roles: ['admin'] },
+        meta: { title: '模板仓库', roles: ['admin'] },
         children: [
           {
             path: 'list',
@@ -1629,6 +1651,13 @@ export const containerAsyncRoutes = [
               if (to.query.name) to.meta.title = to.query.name;
               next();
             },
+          },
+          {
+            path: 'deploy',
+            component: () => import('@/apps/container/views/catalog-management/chartrepo/deploy'),
+            name: 'UserList',
+            meta: { title: '部署', icon: 'icon', noCache: true, },
+            hidden: true
           },
         ]
       },

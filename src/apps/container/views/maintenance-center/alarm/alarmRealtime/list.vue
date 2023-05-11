@@ -27,17 +27,7 @@
         />
         <h3>无告警</h3>
 
-        <p
-          style="
-            color: rgba(150, 152, 155);
-            font-size: 14px;
-            width: 560px;
-            height: 60px;
-            text-align: center;
-          "
-        >
-          恭喜您，平台非常健康！
-        </p>
+        <p class="alarmNote">恭喜您，平台非常健康！</p>
       </div>
     </div>
   </div>
@@ -173,6 +163,7 @@ export default {
     1fr
   ); /* 将容器分成 5 列，并设置每列的宽度为 1fr */
   grid-gap: 5px; /* 设置元素之间的距离为 10px */
+  margin-left: 20px;
 }
 .box {
   height: 100px;
@@ -189,5 +180,12 @@ export default {
 }
 .box:last-child::after {
   display: none; /* 去掉第一个 div 元素前面的分割线 */
+}
+.alarmNote {
+  color: rgba(150, 152, 155);
+  font-size: 14px;
+  width: 560px;
+  height: 60px;
+  text-align: center;
 }
 </style>

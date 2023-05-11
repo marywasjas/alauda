@@ -2,6 +2,18 @@
   <div class="oam-container">
     <div class="oam-main">
       <!-- 1 搜索框 和 按钮-->
+      <span style="font-size: 20px; flex: 1">
+        <sapn>全部消息</sapn>
+        <el-tooltip effect="dark" class="item" placement="right">
+          <template slot="content">
+            <div style="max-width: 400px">
+              系统保留近 7 天的消息<br />
+            </div>
+          </template>
+          <i class="el-icon-question margin-left10 question-icon" />
+        </el-tooltip>
+      </span>
+
       <div class="card__header">
         <span>
           <el-button type="primary" @click="handleCreate"> 创建消息 </el-button>
@@ -12,7 +24,6 @@
             v-model="searchType"
             @focus="setMinWidthEmpty"
             width="100%"
-            size="small"
             class="margin-right10"
           >
             <span slot="prefix" class="selectedStyle">消息类型： </span>
@@ -29,7 +40,6 @@
             v-model="searchTime"
             @focus="setMinWidthEmpty"
             width="100%"
-            size="small"
             class="margin-right10"
           >
             <span slot="prefix" class="">时间范围： </span>
@@ -347,6 +357,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 20px;
   }
   .filter-content {
     margin: 15px 20px 0px 0px;
@@ -425,10 +436,10 @@ export default {
 
 ::v-deep.selectStyle {
   .el-input--prefix .el-input__inner {
-    padding-left: 65px;
+    padding-left: 69px;
   }
   .el-input__prefix {
-    top: 10px;
+    top: 12px;
   }
 }
 
