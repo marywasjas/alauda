@@ -32,18 +32,14 @@
             class="label-value"
           >
             <span>{{ item.label }} </span>: &nbsp;&nbsp;
-            <span v-if="item.label === '状态'">
-              <i
-                :class="
-                  item.value === '正常'
-                    ? 'el-icon-success running'
-                    : 'el-icon-warning stop'
-                "
-                style="color: #67c23a"
-              />
-              <span> {{ item.value }} </span>
+            <span v-if="item.label === '访问地址'">
+              <span class="cursor-pointer"> {{ item.value }} </span>
             </span>
-
+            <span v-else-if="item.label === '凭据'">
+              <span class="cursor-pointer" @click="handleToSecret">
+                {{ item.value }}
+              </span>
+            </span>
             <span v-else>
               {{ item.value ? item.value : "-" }}
               <i :class="item.afterIcon" @click="update(item)" />
@@ -430,11 +426,15 @@ export default {
         },
         {
           label: "访问地址",
-          value: "",
+          value: "http://25.2.20.108:32001",
         },
         {
           label: "API 地址",
           value: "http://25.2.20.108:32001",
+        },
+        {
+          label: "凭据",
+          value: "baas-harbor",
         },
       ],
       table: {
@@ -580,6 +580,12 @@ export default {
       } else {
         this.deleteDisable = true;
       }
+    },
+
+    handleToSecret() {
+      this.$router.push({
+        path: "/project-list/toolchain/secretList",
+      });
     },
   },
 };
