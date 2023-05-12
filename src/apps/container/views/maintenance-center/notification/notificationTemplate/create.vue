@@ -133,8 +133,13 @@
 
               <el-button type="text" @click="handlePreview">预览通知</el-button>
               <div style="margin-top: -10px; margin-left: -40px">
-                <span>样例：HTML格式通知内容示例</span>
+                <span style="margin-right: 10px">
+                  样例：HTML格式通知内容示例
+                </span>
                 <el-button type="text" @click="handleView">查看</el-button>
+                <el-button type="text" @click="handleTrans">
+                  <i class="el-icon-top-right" />
+                </el-button>
               </div>
             </el-form-item>
           </el-form>
@@ -201,19 +206,34 @@
       :submit-txt="submitTxt"
       @closeDetailsDialog="closeDetailsDialog"
     />
+
+    <DeleteRemoveDialog
+      :formVisible="formVisible"
+      :deleteOrRemove="buttonText"
+      :width="width"
+      :titleContext="titleContext"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import MonacoEditorDialog from "@/apps/container/views/components/MonacoEditorDialog";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 import LineAlert from "@/apps/container/views/components/LineAlert";
 import { nanoid } from "nanoid";
 
 export default {
   name: "ClusterCreate",
-  components: { LineAlert, MonacoEditorDialog },
+  components: { LineAlert, MonacoEditorDialog, DeleteRemoveDialog },
   data() {
     return {
+      buttonText: "",
+      titleContext: "",
+      formVisible: false,
+      width: "",
+
       // 事件详情数据
       detailVisible: false,
       readOnly: true,
@@ -272,7 +292,7 @@ export default {
         resource_type: "Pod",
         time: "1667783895000000",
       },
-      
+
       ruleForm: {
         templateType: 1,
         msgType: 1,
@@ -305,24 +325,8 @@ export default {
       templateForm: {
         emailTitle: "",
         content: 1,
-        textarea: `<h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3><h1>富强、民主、文明、和谐</h1><br/>
-      <h2><font color="red">自由、平等、公正、法治</font></h2><br/>
-      <h3><font color="blue">爱国、敬业、诚信、友善</font></h3>`,
-        desc: `<h1>书写说明</h1>`,
+        textarea: "",
+        desc: "<h1>书写说明</h1>",
       },
 
       templateRules: {
@@ -353,6 +357,7 @@ export default {
 
   created() {
     this.name = this.$route.query.name;
+    this.templateForm.textarea = JSON.stringify(this.spec);
     if (this.name) {
       this.ruleForm.showName = "showName";
     }
@@ -403,6 +408,20 @@ export default {
     closeDetailsDialog() {
       this.detailVisible = false;
     },
+
+    handleTrans() {
+      this.buttonText = "替换";
+      this.titleContext =
+        '确定将原有模板内容替换为 "HTML 格式通知内容示例" 吗？';
+      this.formVisible = true;
+      this.width = "55%";
+    },
+
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
   },
 };
 </script>

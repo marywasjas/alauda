@@ -7,7 +7,7 @@
         </div>
         <div style="float: right; margin-top: -35px">
           <el-dropdown trigger="click">
-            <el-button class="margin-left10">
+            <el-button type="primary">
               操作
               <i class="el-icon-arrow-down el-icon--right" />
             </el-button>
@@ -16,7 +16,7 @@
                 更新集成信息
               </el-dropdown-item>
               <el-dropdown-item @click.native="handleDeleteProject">
-                删除
+                <span style="color: red"> 删除</span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -86,11 +86,39 @@
                 :fixed="col.fixed"
               >
                 <template slot-scope="scope">
-                  <div v-if="col.id === 'operation'" class="operation-cell">
-                    <el-dropdown>
+                  <div
+                    v-if="col.id === 'toolName'"
+                    class="cursor-pointer"
+                    @click="handleToolDetail(scope.row)"
+                  >
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div v-else-if="col.id === 'relation'">
+                    <i
+                      :class="
+                        scope.row.relation === '是'
+                          ? 'el-icon-success running'
+                          : 'el-icon-warning stop'
+                      "
+                    />
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div
+                    v-else-if="col.id === 'operation'"
+                    class="operation-cell"
+                  >
+                    <el-dropdown trigger="click">
                       <i class="el-icon-more" />
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>关联 / 取消项目</el-dropdown-item>
+                        <el-dropdown-item
+                          @click.native="handleRelation(scope.row)"
+                        >
+                          {{
+                            scope.row.relation === "是"
+                              ? "取消关联"
+                              : "关联项目"
+                          }}
+                        </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
                   </div>
@@ -122,22 +150,19 @@
         确定删除工具 "{{ name }}"
         吗？删除后项目下所有使用该工具的资源将无法使用。
       </div>
-      <!-- <div class="inputInfo copy_icon">
-        <el-input v-model="command" style="width: 95%"> </el-input>
-        <i
-          style="margin-left: 10px; cursor: pointer"
-          class="el-icon-document-copy"
-        ></i>
-      </div> -->
-
       <div style="margin-top: 10px">
         请输入 <span style="color: red">{{ name }}</span> 确定删除
       </div>
 
-      <el-input v-model="command"> </el-input>
+      <el-input v-model="command" @input="handleCommand"> </el-input>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handle_removeCluster">删除</el-button>
+        <el-button
+          type="danger"
+          @click="handle_removeCluster"
+          :disabled="deleteDisable"
+          >删除</el-button
+        >
         <el-button @click="deleteProjectVisible = false">取消</el-button>
       </div>
     </el-dialog>
@@ -175,10 +200,8 @@
           <!-- <el-input v-model="inteForm.secret" /> -->
           <el-select
             v-model="updateInfoForm.secret"
-            @change="handleSecretChange"
-            style="width: 75%"
+            style="width: 70%"
             @focus="setMinWidthEmpty"
-            size="small"
             placeholder="请选择凭证"
           >
             <!-- 其他工具类型凭据 -->
@@ -190,11 +213,7 @@
             >
             </el-option>
           </el-select>
-          <el-button
-            size="small"
-            style="margin-left: 15px"
-            @click="handleAddSecret"
-          >
+          <el-button style="margin-left: 35px" @click="handleAddSecret">
             添加凭证
           </el-button>
         </el-form-item>
@@ -277,53 +296,116 @@
         <el-button @click="addSecretVisible = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <DeleteRemoveDialog
+      :formVisible="formVisible"
+      :deleteOrRemove="buttonText"
+      width="40%"
+      :titleContext="titleContext"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
+
+    <el-drawer :visible.sync="drawer" direction="rtl" size="60%">
+      <template slot="title">
+        <span style="font-size: 22px; color: rgba(50, 52, 55)">
+          {{ ` ${toolTitle}  仓库列表` }}
+        </span>
+      </template>
+      <div style="margin: 20px">
+        <LineAlert
+          content="项目维度整体关联的平台项目无法在仓库列表里取消关联，请在项目列表下取消关联"
+        />
+
+        <el-table
+          :data="table.tableData2"
+          style="width: 100%"
+          header-row-class-name="headerStyle"
+          class="margin-top"
+        >
+          <el-table-column
+            v-for="col in table.cols2"
+            :key="col.id"
+            :label="col.label"
+            :show-overflow-tooltip="col['show-overflow-tooltip']"
+            :sortable="col.sortable"
+            :width="col.width"
+            :fixed="col.fixed"
+          >
+            <template slot-scope="scope">
+              <div v-if="col.id === 'relation'">
+                <i
+                  :class="
+                    scope.row.relation === '是'
+                      ? 'el-icon-success running'
+                      : 'el-icon-warning stop'
+                  "
+                />
+                {{ scope.row[col.id] }}
+              </div>
+              <div v-else-if="col.id === 'operation'" class="operation-cell">
+                <el-dropdown disabled>
+                  <i class="el-icon-more" />
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item> </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div v-else>
+                {{ scope.row[col.id] }}
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          :current-page="page.current"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="page.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="page.total"
+          class="margin-top text-right"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
 import LineAlert from "@/apps/container/views/components/LineAlert";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "BaseInfo",
-  components: { LineAlert },
+  components: { LineAlert, DeleteRemoveDialog },
 
   props: {},
   data() {
     return {
-      // inteForm: {
-      //   name: "docker-registry",
-      //   address: "",
-      //   apiAddress: "",
-      //   secret: "",
-      // },
-      // inteRules: {
-      //   name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-      //   apiAddress: [
-      //     { required: true, message: "必填项不能为空", trigger: "blur" },
-      //   ],
-      // },
+      deleteDisable: true,
+      drawer: false,
+      toolTitle: "",
       command: "",
       searchName: "",
       secretOptions: [
         { value: "18000664", label: "18000664" },
         { value: "baas-harbor", label: "baas-harbor" },
       ],
-      rowCenter_project: {
-        "max-width": "520px",
-        "word-break": "break-all",
-        display: "table-cell",
-        "vertical-align": "middle",
-        "margin-left": "-10px",
-        "margin-top": "2px",
-        color: "#A9A9A9",
+
+      page: {
+        total: 10,
+        current: 1,
+        pageSize: 10,
       },
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
         display: "table-cell",
         "vertical-align": "middle",
-        "margin-left": "120px",
+        "margin-left": "122px",
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
@@ -357,16 +439,36 @@ export default {
       ],
       table: {
         tableData: [
-          // {
-          //   roleName: "CPU",
-          //   quota: "不限制",
-          //   usage: "- (0.32 核 / 不限制)",
-          //   disrate: "- (- / 不限制)",
-          // },
+          { toolName: "bass", viewLevel: "私有", relation: "是" },
+          { toolName: "bass_dev", viewLevel: "公开", relation: "否" },
         ],
         cols: [
           { label: "工具项目名称", id: "toolName" },
           { label: "访问级别", id: "viewLevel" },
+          { label: "是否已关联", id: "relation" },
+          {
+            id: "operation",
+            label: "",
+            width: "60px",
+            fixed: "right",
+          },
+        ],
+        tableData2: [
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+          { storeName: "golang", relation: "是" },
+        ],
+        cols2: [
+          { label: "仓库名称", id: "storeName" },
           { label: "是否已关联", id: "relation" },
           {
             id: "operation",
@@ -403,6 +505,10 @@ export default {
           },
         ],
       },
+
+      buttonText: "",
+      titleContext: "",
+      formVisible: false,
     };
   },
   computed: {},
@@ -412,6 +518,16 @@ export default {
   },
   mounted() {},
   methods: {
+    getList() {},
+    handleSizeChange(val) {
+      this.page.size = val;
+      this.getList();
+    },
+
+    handleCurrentChange(val) {
+      this.page.current = val;
+      this.getList();
+    },
     setMinWidthEmpty(val) {
       // 无数据的情况下，给请选择提示设置最小宽度
       let domEmpty = document.getElementsByClassName(
@@ -433,6 +549,37 @@ export default {
 
     handleAddSecret() {
       this.addSecretVisible = true;
+    },
+
+    handleCreate() {},
+
+    handleRelation(obj) {
+      obj.relation == "是"
+        ? (this.buttonText = "取关")
+        : (this.buttonText = "关联");
+      obj.relation == "是"
+        ? (this.titleContext = `确定 取消 关联 ${obj.toolName} 项目吗？`)
+        : (this.titleContext = `确定 关联 ${obj.toolName} 项目吗？`);
+      this.formVisible = true;
+    },
+
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
+
+    handleToolDetail(obj) {
+      this.drawer = true;
+      this.toolTitle = obj.toolName;
+    },
+
+    handleCommand(val) {
+      if (this.command == this.name) {
+        this.deleteDisable = false;
+      } else {
+        this.deleteDisable = true;
+      }
     },
   },
 };
@@ -543,35 +690,6 @@ export default {
     cursor: pointer;
   }
 }
-// .container-top-left {
-//   width: 32%;
-//   height: 250px;
-//   border-right: 1px solid $border-color-one;
-//   padding-right: 20px;
-//   display: flex;
-//   align-items: center;
-//   .chart {
-//     height: 200px !important;
-//   }
-// }
-// .container-top-right {
-//   flex: 1;
-//   height: 250px;
-//   .el-select {
-//     margin-bottom: 20px;
-//   }
-//   .chart {
-//     height: 200px !important;
-//   }
-//   .el-divider--vertical {
-//     display: inline-block;
-//     width: 1px;
-//     height: 100%; //更改竖向分割线长度
-//     margin: 0 8px;
-//     vertical-align: middle;
-//     position: relative;
-//   }
-// }
 .card-title[data-v-8638ebe6] {
   font-size: 25px;
   line-height: 45px;

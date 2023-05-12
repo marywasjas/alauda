@@ -386,6 +386,7 @@
       width="70%"
     >
       <line-chart
+        v-if="alarmRulesVisible == true"
         :chart-data="containerLineData"
         :show-total="false"
         height="200%"
@@ -844,12 +845,6 @@ export default {
           yxz: "0",
         },
       ],
-      // data: [
-      //   { name: "@now('hour')", yzx: "0" },
-      //   { name: "@now('hour')", yzx: "0" },
-      //   { name: "@now('hour')", yzx: "0" },
-      //   { name: "@now('hour')", yzx: "0" },
-      // ],
     });
   },
 

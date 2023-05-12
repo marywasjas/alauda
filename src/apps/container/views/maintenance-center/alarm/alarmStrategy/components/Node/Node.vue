@@ -36,18 +36,18 @@
           >
             <span>{{ item.label }} </span>: &nbsp;&nbsp;
             <span>
-              <span 
-              v-if="item.label == '关联资源'"
-               class="cursor-pointer"
-               @click.native="handleToComputer"
-               >
+              <span
+                v-if="item.label == '关联资源'"
+                class="cursor-pointer"
+                @click.native="handleToComputer"
+              >
                 <!-- <el-tooltip
                   class="item"
                   effect="dark"
                   placement="top"
                   :content="item.value"
                 > -->
-                  {{ item.value ? item.value : "-" }}
+                {{ item.value ? item.value : "-" }}
                 <!-- </el-tooltip> -->
               </span>
 
@@ -58,10 +58,9 @@
       </section>
     </BaseCard>
 
-    <!-- 基本信息 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span style="font-size: 20px">基本信息</span>
+        <span style="font-size: 20px">告警规则</span>
       </div>
       <div class="text item event-container">
         <el-table
@@ -107,10 +106,33 @@
             :fixed="col.fixed"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'title'">
-                <div style="font-size: 16px">
+              <div v-if="col.id === 'level'">
+                <el-tag type="warning">
                   {{ scope.row[col.id] }}
-                </div>
+                </el-tag>
+              </div>
+              <div v-else-if="col.id === 'rule'">
+                <span> {{ scope.row[col.id] }}</span>
+                <i
+                  class="el-icon-document cursor-pointer"
+                  @click="handleDetail"
+                />
+              </div>
+              <div v-else-if="col.id === 'status'">
+                <i
+                  :class="
+                    scope.row.status === '正常'
+                      ? 'el-icon-success running'
+                      : 'el-icon-warning stop'
+                  "
+                />
+                <span> {{ scope.row[col.id] }}</span>
+              </div>
+              <div v-else-if="col.id === 'disable'">
+                <el-switch
+                  v-model="scope.row[col.id]"
+                  @click.native.prevent="disableChange(scope.row)"
+                />
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
@@ -211,13 +233,41 @@
       </div>
     </el-dialog>
 
-    <!-- 删除 -->
+    <!-- 规则详情 -->
+    <el-dialog
+      title="规则详情"
+      @close="detailVisible = false"
+      :visible.sync="detailVisible"
+      width="60%"
+    >
+      <div class="wrapper">
+        <div
+          class="item-wrapper"
+        >
+          <!-- v-for="(item,index )in detailData"
+          :key="index" -->
+          <div style="flex: 0 0 50px" class="item-icon">
+            <i class="el-icon-picture-outline" />
+          </div>
+          <div>
+            <div class="item-title">指标名称</div>
+            <div>workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)</div>
+          </div>
+        </div>
+      </div>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="detailVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 删除 / 禁用 -->
     <delete-remove-dialog
       :formVisible="formVisible"
-      deleteOrRemove="删除"
-      width="45%"
-      :titleContext="`确定删除告警策略 &quot;${name}&quot; 吗？`"
-      nodeText="删除后不可恢复。"
+      :deleteOrRemove="buttonText"
+      width="50%"
+      :titleContext="titleContext"
+      :nodeText="nodeText"
       v-on:closeFormDialog="closeFormDialog"
       v-on:submitForm="submitForm"
     />
@@ -234,6 +284,12 @@ export default {
   props: {},
   data() {
     return {
+      detailData: [
+        {
+          title: "指标名称",
+          content: "workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)",
+        },
+      ],
       silenceVisible: false,
       silenceForm: {
         name: "",
@@ -253,6 +309,8 @@ export default {
             rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
             type: "指标告警",
             level: "严重",
+            status: "正常",
+            disable: true,
             label: [
               { key: "a", value: "b" },
               { key: "c", value: "d" },
@@ -265,10 +323,15 @@ export default {
         { label: "规则", id: "rule", width: "500px" },
         { label: "告警类型", id: "type" },
         { label: "等级", id: "level" },
+        { label: "状态", id: "status" },
+        { label: "禁用/启用", id: "disable" },
       ],
 
       name: "",
       formVisible: false,
+      titleContext: "",
+      nodeText: "",
+      buttonText: "",
 
       baseInfoData: [
         {
@@ -318,6 +381,10 @@ export default {
             "全局 (灾难告警 5分钟，严重告警 15分钟，警告告警 30分钟，提示告警 1小时)",
         },
       ],
+
+      objSelected: "",
+
+      detailVisible: false,
     };
   },
   computed: {},
@@ -344,26 +411,48 @@ export default {
     },
     handle_set() {},
 
+    handleDetail() {
+      this.detailVisible = true;
+    },
+
     handleUpdate() {
       this.$router.push({
         path: "/maintenance-center/alarm/alarmStrategy-create",
         query: { name: this.name },
       });
     },
+    disableChange(obj) {
+      this.objSelected = obj;
+      if (obj.disable == false) {
+        obj.disable = !obj.disable;
+        this.formVisible = true;
+        this.titleContext = `确定关闭 "${obj.rule}" 吗？`;
+        this.nodeText = ``;
+        this.buttonText = "确定";
+      }
+    },
 
     handleDelete() {
       this.formVisible = true;
+      this.titleContext = `确定删除告警策略 "${this.name}" 吗？`;
+      this.nodeText = `删除后不可恢复。`;
+      this.buttonText = "删除";
     },
 
     closeFormDialog() {
       this.formVisible = false;
     },
 
-    submitForm() {},
+    submitForm() {
+      if (this.buttonText == "确定") {
+        this.objSelected.disable = false;
+        this.formVisible = false;
+      }
+    },
 
-    handleToComputer(){
-      
-    }
+    handleToComputer() {
+      console.log("计算组件");
+    },
   },
 };
 </script>
@@ -473,35 +562,6 @@ export default {
     cursor: pointer;
   }
 }
-// .container-top-left {
-//   width: 32%;
-//   height: 250px;
-//   border-right: 1px solid $border-color-one;
-//   padding-right: 20px;
-//   display: flex;
-//   align-items: center;
-//   .chart {
-//     height: 200px !important;
-//   }
-// }
-// .container-top-right {
-//   flex: 1;
-//   height: 250px;
-//   .el-select {
-//     margin-bottom: 20px;
-//   }
-//   .chart {
-//     height: 200px !important;
-//   }
-//   .el-divider--vertical {
-//     display: inline-block;
-//     width: 1px;
-//     height: 100%; //更改竖向分割线长度
-//     margin: 0 8px;
-//     vertical-align: middle;
-//     position: relative;
-//   }
-// }
 .card-title[data-v-8638ebe6] {
   font-size: 25px;
   line-height: 45px;
@@ -519,5 +579,25 @@ export default {
 }
 .el-tag + .el-tag {
   margin-left: 10px;
+}
+.wrapper {
+  padding: 0 20px;
+  min-height: 80px;
+}
+
+.item-wrapper {
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px solid rgba(237, 239, 242);
+  width: 100%;
+  height: 65px;
+}
+.item-title {
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(150, 152, 155);
+}
+.item-icon {
+  font-size: 30px;
 }
 </style>

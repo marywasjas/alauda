@@ -6,12 +6,15 @@
           <span>{{ "自定义模板配置" }}</span>
           <div style="float: right">
             <el-dropdown trigger="click">
-              <el-button class="margin-left10">
+              <el-button type="primary">
                 操作
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :disabled="true">
+                <el-dropdown-item
+                  :disabled="syncDisable"
+                  @click.native="syncStore"
+                >
                   同步模板仓库
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="configStore">
@@ -23,9 +26,46 @@
         </div>
       </header>
       <el-divider></el-divider>
-      <section>
-        <div style="text-align: 'center'">
-          <span>
+
+      <section v-if="!syncDisable">
+        <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
+          <el-col
+            v-for="item in baseInfoData"
+            :key="item.label"
+            :span="12"
+            class="label-value"
+          >
+            <span>{{ item.label }} </span>: &nbsp;&nbsp;
+            <span v-if="item.label == '模板仓库地址'">
+              <span class="cursor-pointer">{{ item.value }}</span>
+            </span>
+            <span v-else-if="item.label == '同步结果'">
+              <span>
+                <i
+                  :class="syncRes"
+                  :style="{
+                    color: syncRes == 'el-icon-error' ? '#F56C6C' : '#409EFF',
+                  }"
+                />
+                <span v-if="syncRes == 'el-icon-loading'">
+                  {{ (item.value = "模板仓库同步中...") }}
+                </span>
+
+                <span v-if="syncRes == 'el-icon-error'">
+                  {{ (item.value = "失败") }}
+                </span>
+              </span>
+            </span>
+            <span v-else>
+              {{ item.value ? item.value : "-" }}
+            </span>
+          </el-col>
+        </el-row>
+      </section>
+
+      <section v-else>
+        <div class="contentStyle">
+          <span style="font-size: 14px">
             您可以
             <el-button type="text" @click="configStore">配置模板仓库</el-button>
             ，导入您项目的专属流水线模板
@@ -42,13 +82,17 @@
               <div class="card__header">
                 <div style="text-align: right">
                   <el-input
-                    style="width: 200px"
-                    suffix-icon="el-icon-search"
+                    style="width: 250px"
                     clearable
                     placeholder="请输入模板名称"
                     v-model="typeValue"
                     @keyup.enter.native="getList"
                   >
+                    <el-button
+                      slot="append"
+                      icon="el-icon-search"
+                      @click="getList"
+                    />
                   </el-input>
                 </div>
               </div>
@@ -84,13 +128,17 @@
               <div class="card__header">
                 <div style="text-align: right">
                   <el-input
-                    style="width: 200px"
-                    suffix-icon="el-icon-search"
+                    style="width: 250px"
                     clearable
                     placeholder="请输入任务名称"
                     v-model="typeValue2"
                     @keyup.enter.native="getList"
                   >
+                    <el-button
+                      slot="append"
+                      icon="el-icon-search"
+                      @click="getList"
+                    />
                   </el-input>
                 </div>
               </div>
@@ -134,8 +182,8 @@
     >
       <div>
         <el-form
-          :model="configForm"
           ref="configForm"
+          :model="configForm"
           :rules="configRules"
           label-width="135px"
         >
@@ -147,26 +195,38 @@
           </el-form-item>
 
           <el-form-item
-            label="集成项目名称"
-            style="width: 80%"
             v-if="configForm.method == '选择'"
+            label="集成项目名称"
             prop="name"
           >
-            <el-input v-model="configForm.name"></el-input>
+            <el-select
+              clearable
+              v-model="configForm.name"
+              @focus="setMinWidthEmpty"
+              style="width: 75%"
+            >
+              <el-option
+                v-for="item in nameOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
 
           <el-form-item
-            label="代码仓库"
             v-if="configForm.method == '选择'"
+            label="代码仓库"
             prop="codeStore"
           >
             <el-select
+              clearable
               v-model="configForm.codeStore"
               @focus="setMinWidthEmpty"
               style="width: 75%"
             >
               <el-option
-                v-for="item in []"
+                v-for="item in storeOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -175,17 +235,18 @@
           </el-form-item>
 
           <el-form-item
-            label="代码分支"
             v-if="configForm.method == '选择'"
+            label="代码分支"
             prop="codeBranch"
           >
             <el-select
+              clearable
               v-model="configForm.codeBranch"
               @focus="setMinWidthEmpty"
               style="width: 75%"
             >
               <el-option
-                v-for="item in []"
+                v-for="item in branchOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -194,15 +255,15 @@
           </el-form-item>
 
           <el-form-item
+            v-if="configForm.method == '输入'"
             label="代码仓库地址"
             style="width: 80%"
-            v-if="configForm.method == '输入'"
             prop="codeAddress"
           >
             <el-input
               v-model="configForm.codeAddress"
               placeholder="支持 HTTP/HTTPS 地址形式"
-            ></el-input>
+            />
           </el-form-item>
 
           <el-form-item
@@ -215,20 +276,29 @@
           </el-form-item>
 
           <el-form-item
-            label="凭据"
             v-if="configForm.method == '输入'"
+            label="凭据"
             prop="secret"
           >
-            <el-input
-              v-model="configForm.secret"
+            <el-select
+              clearable
+              v-model="configForm.codeBranch"
               @focus="setMinWidthEmpty"
               style="width: 55%"
-            ></el-input>
-            <el-button
-              style="margin-left: 30px"
-              @click="addSecretVisible =true"
-              >添加凭据</el-button
             >
+              <el-option
+                v-for="item in secretOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <el-button
+              style="margin-left: 26px"
+              @click="addSecretVisible = true"
+            >
+              添加凭据
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -240,7 +310,7 @@
 
     <el-dialog
       title="创建凭证"
-      @close="addSecretVisible = false"
+      @close="handleCancelSecret"
       :visible.sync="addSecretVisible"
       width="60%"
     >
@@ -264,11 +334,43 @@
         <el-form-item label="显示名称" style="width: 80%">
           <el-input v-model="infoForm.showName"> </el-input>
         </el-form-item>
+
+        <el-form-item label="工具类型">
+          <el-select
+            clearable
+            v-model="configForm.codeBranch"
+            @focus="setMinWidthEmpty"
+            style="width: 75%"
+            @change="checkedTargetChange"
+          >
+            <el-option-group
+              v-for="group in targetList"
+              :key="group.label"
+              :label="group.label"
+            >
+              <el-option
+                v-for="(item, index) in group.option"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </el-option-group>
+          </el-select>
+        </el-form-item>
       </el-form>
 
       <div class="recomend-list">
         <h2>{{ "数据" }}</h2>
       </div>
+
+      <line-alert
+        v-if="!toolChange"
+        :content="
+          `1. DevOps 工具对应支持的凭据类型，请参照 帮助文档` +
+          `  2. 找不到你想要的类型？可以选择对应的工具类型试试`
+        "
+      />
+
       <el-form
         ref="dataForm"
         :model="dataForm"
@@ -276,32 +378,54 @@
         label-width="135px"
       >
         <el-form-item label="类型">
-          <el-radio-group v-model="dataForm.type">
-            <el-radio-button label="用户名/密码"></el-radio-button>
-          </el-radio-group>
+          <el-col :span="16">
+            <el-radio-group
+              v-model="dataForm.type"
+              v-if="toolChange == 'SonarQube' || toolChange == 'Testlink'"
+            >
+              <el-radio-button label="令牌"></el-radio-button>
+            </el-radio-group>
+
+            <el-radio-group
+              v-model="dataForm.type"
+              v-if="
+                toolChange == 'Docker Registry' ||
+                toolChange == 'Harbor Registry' ||
+                toolChange == 'JFrog Artifactory' ||
+                toolChange == 'Nexus'
+              "
+            >
+              <el-radio-button label="用户名/密码"></el-radio-button>
+            </el-radio-group>
+
+            <el-radio-group
+              v-model="dataForm.type"
+              v-if="toolChange == 'Gitea' || toolChange == 'GitLab'"
+            >
+              <el-radio-button label="用户名/令牌"></el-radio-button>
+              <el-radio-button label="OAuth2"></el-radio-button>
+            </el-radio-group>
+
+            <el-radio-group v-model="dataForm.type" v-if="!toolChange">
+              <el-radio-button label="用户名/密码"></el-radio-button>
+              <!-- <el-radio-button label="OAuth2"></el-radio-button>
+              <el-radio-button label="SSH"></el-radio-button>
+              <el-radio-button label="镜像服务"></el-radio-button>
+              <el-radio-button label="动态密钥"></el-radio-button> -->
+            </el-radio-group>
+          </el-col>
         </el-form-item>
 
         <el-form-item label="用户名" style="width: 80%" prop="name">
           <el-input
             v-model="dataForm.name"
             placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
-          >
-          </el-input>
+          />
         </el-form-item>
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
-          <el-descriptions-item
-            >请输入登录 {{ name }} 时使用的用户名</el-descriptions-item
-          >
-        </el-descriptions>
 
         <el-form-item label="密码" style="width: 80%" prop="password">
-          <el-input v-model="dataForm.password" show-password> </el-input>
+          <el-input v-model="dataForm.password" show-password />
         </el-form-item>
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
-          <el-descriptions-item
-            >请输入登录 {{ name }} 时使用的密码</el-descriptions-item
-          >
-        </el-descriptions>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -315,26 +439,20 @@
 <script>
 import { nanoid } from "nanoid";
 import LineAlert from "@/apps/container/views/components/LineAlert";
-// import ProgressCard from "./components/ProgressCard.vue";
 
 export default {
   name: "BaseInfo",
-  // components: { LineAlert, ProgressCard },
+  components: { LineAlert },
   props: {},
   data() {
     return {
+      syncRes: "el-icon-remove",
+      syncDisable: true,
+      name: "",
       activeName: "1",
       typeValue: "",
       typeValue2: "",
-      rowCenter_project: {
-        "max-width": "520px",
-        "word-break": "break-all",
-        display: "table-cell",
-        "vertical-align": "middle",
-        "margin-left": "-10px",
-        "margin-top": "2px",
-        color: "#A9A9A9",
-      },
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -372,6 +490,7 @@ export default {
         name: "",
         codeStore: "",
         codeBranch: "",
+
         codeAddress: "",
         secret: "",
       },
@@ -414,6 +533,29 @@ export default {
         ],
       },
 
+      nameOptions: [
+        { value: "etrust(gitlab)", label: "etrust(gitlab)" },
+        { value: "bass(gitlab)", label: "baas(gitlab)" },
+        { value: "etrust(gitlab-qcoqwq)", label: "etrust(gitlab-qcoqwq)" },
+      ],
+      storeOptions: [
+        { value: "ip-sec-frontend", label: "etrust(gitlab)" },
+        { value: "ip-sec", label: "ip-sec" },
+        { value: "e-trust", label: "e-trust" },
+        { value: "e-trust_frontend", label: "e-trust_frontend" },
+      ],
+      branchOptions: [
+        { value: "dev", label: "dev" },
+        { value: "development", label: "development" },
+        { value: "main", label: "main" },
+        { value: "nft", label: "nft" },
+        { value: "nft-development", label: "nft-development" },
+      ],
+      secretOptions: [
+        { value: "18000664", label: "18000664" },
+        { value: "bass-harbor", label: "bass-harbor" },
+      ],
+
       addSecretVisible: false,
 
       dataForm: {
@@ -427,27 +569,89 @@ export default {
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
       },
-
       infoForm: {
         secretName: "",
         showName: "",
+        toolType: "",
       },
       infoRules: {
         secretName: [
-          {
-            required: true,
-            message: "必填项不能为空",
-            trigger: "blur",
-          },
+          { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
       },
+
+      base_data: [
+        {
+          label: "制品管理",
+          children: [
+            { label: "Docker Registry", value: "Docker Registry" },
+            { label: "Harbor Registry", value: "Harbor Registry" },
+            { label: "JFrog Artifactory", value: "JFrog Artifactory" },
+            { label: "Nexus", value: "Nexus" },
+          ],
+        },
+        {
+          label: "代码质量分析",
+          children: [{ label: "SonarQube", value: "SonarQube" }],
+        },
+        {
+          label: "代码管理",
+          children: [
+            { label: "Gitea", value: "Gitea" },
+            { label: "GitLab", value: "GitLab" },
+          ],
+        },
+        {
+          label: "测试管理",
+          children: [{ label: "Testlink", value: "Testlink" }],
+        },
+      ],
+      // checkedTargetList: [], // 被选中的备选项
+      targetList: [], // select组件渲染所需的数据
+      toolChange: "",
+
+      baseInfoData: [
+        {
+          label: "模板仓库地址",
+          value: "http://gitlab.ebcpaas.com/baas/gateway",
+        },
+        {
+          label: "同步开始时间",
+          value: "2023-05-12 14:07:43",
+        },
+        {
+          label: "代码分支",
+          value: "m-dynamic-test",
+        },
+        {
+          label: "耗时",
+          value: "3 秒",
+        },
+        {
+          label: "同步结果",
+          value: "",
+        },
+      ],
     };
   },
   computed: {},
   watch: {},
-  created() {},
+  created() {
+    // base_data 重组成 select 组件所需的格式
+    for (var index in this.base_data) {
+      this.targetList.push({
+        label: this.base_data[index]["label"],
+        option: [], //重点
+      });
+      this.base_data[index]["children"].forEach((item) => {
+        this.targetList[index].option.push(item.label);
+      });
+    }
+  },
   mounted() {},
   methods: {
+    getList() {},
+
     setMinWidthEmpty(val) {
       // 无数据的情况下，给请选择提示设置最小宽度
       let domEmpty = document.getElementsByClassName(
@@ -458,18 +662,77 @@ export default {
       }
     },
 
-    handleChange() {},
-
     configStore() {
       this.configStoreVisible = true;
+      this.$nextTick(() => {
+        this.$refs["configForm"].resetFields();
+      });
+      this.configForm = this.$options.data().configForm;
     },
-    handleConfig() {},
+    handleConfig() {
+      this.syncDisable = false;
+      this.configStoreVisible = false;
+    },
 
     handleAddSecret() {
       this.addSecretVisible = true;
+      this.$nextTick(() => {
+        this.$refs["infoForm"].resetFields();
+      });
+      this.$nextTick(() => {
+        this.$refs["dataForm"].resetFields();
+      });
+      this.dataForm = this.$options.data().dataForm;
+      this.infoForm = this.$options.data().infoForm;
     },
 
-    handleCreate(){}
+    handleCreate() {},
+
+    checkedTargetChange(val) {
+      console.log(val);
+      this.$nextTick(() => {
+        this.$refs["dataForm"].resetFields();
+      });
+      this.toolChange = val;
+      if (!this.toolChange) {
+        this.dataForm.type = "用户名/密码";
+      }
+      if (
+        val == "Docker Registry" ||
+        val == "Harbor Registry" ||
+        val == "JFrog Artifactory" ||
+        val == "Nexus"
+      ) {
+        this.dataForm.type = "用户名/密码";
+      }
+
+      if (val == "SonarQube" || val == "Testlink") {
+        this.dataForm.type = "令牌";
+      }
+
+      if (val == "Gitea" || val == "GitLab") {
+        this.dataForm.type = "用户名/令牌";
+      }
+    },
+
+    handleCancelSecret() {
+      this.addSecretVisible = false;
+
+      this.$nextTick(() => {
+        this.$refs["infoForm"].resetFields();
+        this.$refs["dataForm"].resetFields();
+      });
+
+      this.dataForm = this.$options.data().dataForm;
+      this.infoForm = this.$options.data().infoForm;
+    },
+
+    syncStore() {
+      this.syncRes = "el-icon-loading";
+      setTimeout(() => {
+        this.syncRes = "el-icon-error";
+      }, 3000);
+    },
   },
 };
 </script>
@@ -579,35 +842,6 @@ export default {
     cursor: pointer;
   }
 }
-// .container-top-left {
-//   width: 32%;
-//   height: 250px;
-//   border-right: 1px solid $border-color-one;
-//   padding-right: 20px;
-//   display: flex;
-//   align-items: center;
-//   .chart {
-//     height: 200px !important;
-//   }
-// }
-// .container-top-right {
-//   flex: 1;
-//   height: 250px;
-//   .el-select {
-//     margin-bottom: 20px;
-//   }
-//   .chart {
-//     height: 200px !important;
-//   }
-//   .el-divider--vertical {
-//     display: inline-block;
-//     width: 1px;
-//     height: 100%; //更改竖向分割线长度
-//     margin: 0 8px;
-//     vertical-align: middle;
-//     position: relative;
-//   }
-// }
 .card-title[data-v-8638ebe6] {
   font-size: 25px;
   line-height: 45px;
@@ -629,5 +863,34 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   display: inline-block;
+}
+.contentStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  color: rgba(150, 152, 155);
+}
+.recomend-list h2 {
+  position: relative;
+  font-size: 18px;
+  text-align: left;
+  padding-left: 11px;
+  height: 40px;
+  line-height: 42px;
+}
+.recomend-list h2:before {
+  position: absolute;
+  content: "";
+  background-color: #409eff;
+  width: 4px;
+  height: 18px;
+  left: 0;
+  top: 50%;
+  margin-top: -8px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 </style>

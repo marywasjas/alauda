@@ -9,26 +9,18 @@
         </div>
 
         <div class="text item event-container">
-          <div style="padding-bottom: 20px">
-            <el-row style="background-color: rgb(242, 248, 254)">
-              <el-col :span="20" style="margin-left: 7px">
-                <div style="font-size: 18px">{{ name }}</div>
-                <div style="font-size: 10px; color: grey; margin: 15px 0 0 0">
-                  {{ "制品管理" }}
-                </div>
-              </el-col>
-              <el-col :span="3" style="margin-top: 7px">
-                <el-button
-                  round
-                  @click="
-                    () => {
-                      this.$router.go(-1);
-                    }
-                  "
-                  >重新选择工具</el-button
-                >
-              </el-col>
-            </el-row>
+          <div class="titleStyle" style="background: #ecf5ff">
+            <div style="width: 48px; height: 48px">
+              <i class="el-icon-picture-outline" style="font-size: 48px" />
+            </div>
+
+            <div style="flex: 1">
+              <div class="wordStyle">{{ name }}</div>
+              <div style="font-size: 12px; color: rgba(150, 152, 155)">
+                <span>制品管理</span>
+              </div>
+            </div>
+            <el-button @click="handleSelectTool">重新选择工具</el-button>
           </div>
 
           <line-alert :content="content" />
@@ -40,28 +32,27 @@
             label-position="right"
             label-width="100px"
           >
-            <el-form-item label="集成名称" prop="name" style="width: 50%">
+            <el-form-item label="集成名称" prop="name" style="width: 70%">
               <el-input v-model="inteForm.name" />
             </el-form-item>
-            <el-form-item label="访问地址" prop="address" style="width: 50%">
+            <el-form-item label="访问地址" prop="address" style="width: 70%">
               <el-input
                 v-model="inteForm.address"
                 placeholder='请输入以"http://"或"https://"开头的域名或IP 地址'
               />
             </el-form-item>
-            <el-form-item label="API 地址" prop="apiAddress" style="width: 50%">
+            <el-form-item label="API 地址" prop="apiAddress" style="width: 70%">
               <el-input
                 v-model="inteForm.apiAddress"
                 placeholder='请输入以"http://"或"https://"开头的域名或IP 地址'
               />
             </el-form-item>
-            <el-form-item label="凭据" prop="secret" style="width: 50%">
-              <!-- <el-input v-model="inteForm.secret" /> -->
+            <el-form-item label="凭据" prop="secret" style="width: 70%">
               <el-select
+                clearable
                 v-model="inteForm.secret"
                 @change="handleSecretChange"
                 style="width: 75%"
-                size="small"
                 placeholder="请选择凭证"
               >
                 <!-- 其他工具类型凭据 -->
@@ -73,14 +64,19 @@
                 >
                 </el-option>
               </el-select>
-              <el-button
-                size="small"
-                style="margin-left: 15px"
-                @click="handleAddSecret"
-              >
+              <el-button style="margin-left: 45px" @click="handleAddSecret">
                 添加凭证
               </el-button>
             </el-form-item>
+            <el-descriptions
+              size="small"
+              :colon="false"
+              :contentStyle="rowCenter"
+            >
+              <el-descriptions-item>
+                该工具使用的凭据，将该工具分配给项目时，默认将使用此凭据
+              </el-descriptions-item>
+            </el-descriptions>
           </el-form>
 
           <div style="float: right; margin-bottom: 20px">
@@ -191,7 +187,7 @@ export default {
         "word-break": "break-all",
         display: "table-cell",
         "vertical-align": "middle",
-        "margin-left": "125px",
+        "margin-left": "90px",
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
@@ -211,7 +207,6 @@ export default {
         { value: "18000664", label: "18000664" },
         { value: "baas-harbor", label: "baas-harbor" },
       ],
-
       infoForm: {
         secretName: "",
         showName: "",
@@ -280,6 +275,10 @@ export default {
       this.$router.go(-1);
     },
 
+    handleSelectTool() {
+      this.$router.go(-1);
+    },
+
     handleDetail(name) {
       this.$router.push({
         path: "/project-list/toolchain/integrateDetail",
@@ -291,6 +290,7 @@ export default {
       this.addSecretVisible = true;
     },
     handleCreate() {},
+
     handleInte() {},
   },
 };
@@ -488,5 +488,18 @@ export default {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+}
+.titleStyle {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px;
+  background: "#b3d8f";
+}
+.wordStyle {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
 }
 </style>

@@ -245,7 +245,7 @@ export default {
         size: 20,
       },
       tabForm: {
-        logType: "系统日志",
+        logType: "",
         project: "",
         namespace: "",
         resName: "",

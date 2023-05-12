@@ -4,20 +4,8 @@
 
 <script>
 import echarts from "echarts";
-require("echarts/theme/macarons"); // echarts theme
 import resize from "@/apps/container/views/dashboard/admin/components/mixins/resize";
-
-function addZero(i) {
-  if (i < 10) {
-    i = "0" + i;
-  }
-  return i;
-}
-const endHour = addZero(new Date().getHours());
-const startHour = addZero(new Date().getHours() - 1);
-const minute = addZero(new Date().getMinutes());
-const endTime = `${endHour}:${minute}`;
-const startTime = `${startHour}:${minute}`;
+require("echarts/theme/macarons"); // echarts theme
 
 export default {
   mixins: [resize],
@@ -57,6 +45,7 @@ export default {
     chartData: {
       handler(val) {
         this.initChart();
+        this.xTime();
       },
       deep: true,
     },
@@ -66,6 +55,7 @@ export default {
     // 初始化
     this.$nextTick(() => {
       this.initChart();
+      this.xTime();
     });
   },
 
@@ -77,12 +67,92 @@ export default {
     this.chart = null;
   },
   methods: {
-    getRecent15Minutes() {},
+    xTime() {
+      function addZero(i) {
+        if (i < 10) i = "0" + i;
+        return i;
+      }
+
+      var endHour = addZero(new Date().getHours());
+      var startHour = addZero(new Date().getHours() - 1);
+      var minute = addZero(new Date().getMinutes());
+      var endTime = `${endHour}:${minute}`;
+      var startTime = `${startHour}:${minute}`;
+
+      if (new Date().getMinutes() > 0 && new Date().getMinutes() < 15)
+        return [
+          startTime,
+          `${startHour}:15`,
+          `${startHour}:30`,
+          `${startHour}:45`,
+          `${endHour}:00`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() > 15 && new Date().getMinutes() < 30)
+        return [
+          startTime,
+          `${startHour}:30`,
+          `${startHour}:45`,
+          `${endHour}:00`,
+          `${endHour}:15`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() > 30 && new Date().getMinutes() < 45)
+        return [
+          startTime,
+          `${startHour}:45`,
+          `${endHour}:00`,
+          `${endHour}:15`,
+          `${endHour}:30`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() > 45 && new Date().getMinutes() < 60)
+        return [
+          startTime,
+          `${endHour}:00`,
+          `${endHour}:15`,
+          `${endHour}:30`,
+          `${endHour}:45`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() == 0)
+        return [
+          startTime,
+          `${startHour}:15`,
+          `${startHour}:30`,
+          `${startHour}:45`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() == 15)
+        return [
+          startTime,
+          `${startHour}:30`,
+          `${startHour}:45`,
+          `${endHour}:00`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() == 30)
+        return [
+          startTime,
+          `${startHour}:45`,
+          `${endHour}:00`,
+          `${endHour}:15`,
+          endTime,
+        ];
+      else if (new Date().getMinutes() == 45)
+        return [
+          startTime,
+          `${endHour}:00`,
+          `${endHour}:15`,
+          `${endHour}:30`,
+          endTime,
+        ];
+    },
 
     initChart() {
       this.chart = echarts.init(this.$el, "macarons");
 
-      const xAxisData = this.chartData.data.map((i) => i.name);
+      // const xAxisData = this.chartData.data.map((i) => i.name);
 
       let seriesData = [];
       seriesData = this.chartData.fields.map((i) => {
@@ -95,7 +165,7 @@ export default {
           itemStyle: {
             normal: {
               areaStyle: {
-                color: "#f3f8ff",
+                color: "#409EFF",
               },
             },
           },
@@ -144,7 +214,7 @@ export default {
       this.chart.setOption({
         xAxis: {
           // type:"time",
-          data: [startTime, endTime],
+          data: this.xTime(),
           // 坐标轴两边留白策略，类目轴和非类目轴的设置和表现不一样。
           boundaryGap: false,
           // 1. 类目轴中 boundaryGap 可以配置为 true 和 false。
@@ -176,6 +246,12 @@ export default {
         // 提示框组件
         tooltip: {
           trigger: "axis",
+          formatter: function (a) {
+            console.log(a);
+            return `${new Date().toLocaleDateString()}  ${a[0].axisValue}:00
+            ${a[0].marker}
+            `;
+          },
         },
 
         // 图例组件
