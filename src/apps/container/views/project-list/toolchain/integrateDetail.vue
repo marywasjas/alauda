@@ -144,7 +144,7 @@
           >
           </el-input>
         </el-form-item>
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter_secret">
           <el-descriptions-item
             >请输入登录 {{ name }} 时使用的用户名</el-descriptions-item
           >
@@ -153,7 +153,7 @@
         <el-form-item label="密码" style="width: 80%" prop="password">
           <el-input v-model="dataForm.password" show-password> </el-input>
         </el-form-item>
-        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter_secret">
           <el-descriptions-item
             >请输入登录 {{ name }} 时使用的密码</el-descriptions-item
           >
@@ -188,6 +188,16 @@ export default {
         display: "table-cell",
         "vertical-align": "middle",
         "margin-left": "90px",
+        "margin-top": "-20px",
+        color: "#A9A9A9",
+      },
+
+      rowCenter_secret: {
+        "max-width": "520px",
+        "word-break": "break-all",
+        display: "table-cell",
+        "vertical-align": "middle",
+        "margin-left": "125px",
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
@@ -250,25 +260,6 @@ export default {
     },
 
     handleSecretChange() {},
-
-    nextSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.active = 1;
-          // this.$refs["ruleForm"].resetFields();
-          this.$refs["ruleForm"].clearValidate();
-          this.ruleForm = this.$options.data().ruleForm;
-          // this.ruleForm = {
-          //   name: "",
-          //   showName: "",
-          //   desc: "",
-          //   roleType: "平台角色",
-          // };
-        } else {
-          return false;
-        }
-      });
-    },
 
     // 取消-返回
     cancelCreate() {
