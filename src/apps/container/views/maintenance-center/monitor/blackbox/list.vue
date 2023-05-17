@@ -15,8 +15,7 @@
 
         <div class="flex-center">
           <el-input
-            style="width: 330px; margin-right: 20px"
-            suffix-icon="el-icon-search"
+            style="width: 350px; margin-right: 20px"
             clearable
             placeholder="搜索"
             v-model="typeValue"
@@ -35,6 +34,11 @@
                 :value="item.value"
               />
             </el-select>
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="handleSearch"
+            />
           </el-input>
           <el-button icon="el-icon-refresh-right" />
         </div>
@@ -121,7 +125,7 @@
           <el-input
             v-else
             v-model="monitorForm.name"
-            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
+            placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-，最多 32 个字符"
             style="width: 80%"
           />
         </el-form-item>

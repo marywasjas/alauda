@@ -102,6 +102,11 @@
             :show-password="true"
           ></el-input>
         </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item>
+            设置发送人需要先申请对应邮箱的密码 / 授权码
+          </el-descriptions-item>
+        </el-descriptions>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handle_create">添加</el-button>

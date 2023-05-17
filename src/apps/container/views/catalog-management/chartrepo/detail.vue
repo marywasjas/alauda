@@ -103,9 +103,13 @@
                   {{ item.desc }}
                 </div>
                 <div class="wordStyle" style="font-size: 12px">
-                  {{ item.version[0] }}
+                  {{ item.version[0].vers }}
                   <el-tooltip placement="bottom-end" effect="light">
-                    <div slot="content">2.15.0</div>
+                    <div slot="content">
+                      <div v-for="ele in item.version" :key="ele.vers">
+                        {{ ele.vers }}
+                      </div>
+                    </div>
                     <i class="el-icon-arrow-down el-icon--right" />
                   </el-tooltip>
                 </div>
@@ -115,13 +119,15 @@
                 >
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="handleDeploy"
+                    <el-dropdown-item @click.native="handleDeploy(item)"
                       >部署</el-dropdown-item
                     >
-                    <el-dropdown-item @click.native="handleDelete"
+                    <el-dropdown-item
+                      @click.native="handleManageVersion(item.version)"
                       >管理版本</el-dropdown-item
                     >
-                    <el-dropdown-item @click.native="handleDelete"
+                    <el-dropdown-item
+                      @click.native="handleDeleteTemp(item.label)"
                       >删除</el-dropdown-item
                     >
                   </el-dropdown-menu>
@@ -261,10 +267,16 @@
         <div style="margin-top: 20px">
           请输入 <span style="color: red">{{ deleteTitle }}</span> 确认删除
         </div>
-        <el-input v-model="command"></el-input>
+        <el-input v-model="command" @input="handleCommand"></el-input>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handle_delete"> 删除 </el-button>
+        <el-button
+          type="danger"
+          @click="handle_delete"
+          :disabled="deleteDisable"
+        >
+          删除
+        </el-button>
         <el-button @click="deleteVisible = false">取消</el-button>
       </div>
     </el-dialog>
@@ -325,18 +337,108 @@
         <el-button type="primary" @click="handle_addTemp">添加</el-button>
       </div>
     </el-dialog>
+
+    <!-- 管理版本 -->
+    <el-dialog
+      title="管理版本"
+      @close="manageVersionVisible = false"
+      :visible.sync="manageVersionVisible"
+      width="70%"
+    >
+      <div slot="title">
+        <span style="font-size: 18px">管理版本</span>
+        <el-tooltip effect="dark" class="item" placement="top">
+          <template slot="content">
+            <div style="max-width: 400px">可添加新模板或新版本模板</div>
+          </template>
+          <i class="el-icon-question margin-left10 question-icon" />
+        </el-tooltip>
+      </div>
+      <el-table
+        :data="manageVersion"
+        style="width: 100%"
+        header-row-class-name="headerStyle"
+      >
+        <el-table-column
+          v-for="col in manageVersionCols"
+          :key="col.id"
+          :label="col.label"
+          :show-overflow-tooltip="col['show-overflow-tooltip']"
+          :sortable="col.sortable"
+          :width="col.width"
+          :fixed="col.fixed"
+        >
+          <template slot-scope="scope">
+            <div v-if="col.id == 'status'">
+              <i
+                :class="
+                  scope.row.status === '已就绪'
+                    ? 'el-icon-success running'
+                    : 'el-icon-warning stop'
+                "
+              />
+              {{ scope.row[col.id] }}
+            </div>
+            <div v-else-if="col.id === 'delete'">
+              <span
+                class="cursor-pointer"
+                @click="handleDeleteVers(scope.row.vers)"
+              >
+                删除
+              </span>
+            </div>
+            <div v-else>
+              {{ scope.row[col.id] ? scope.row[col.id] : "-" }}
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-upload
+        action="https://jsonplaceholder.typicode.com/posts/"
+        multiple
+        :limit="3"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :on-exceed="handleExceed"
+        :before-remove="beforeRemove"
+        :file-list="fileList"
+      >
+        <el-button type="primary" style="margin-top: 20px">上传模板</el-button>
+      </el-upload>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handle_addVersion">添加</el-button>
+      </div>
+    </el-dialog>
+
+    <delete-remove-dialog
+      :formVisible="formVisible"
+      :deleteOrRemove="buttonText"
+      width="40%"
+      :titleContext="titleContext"
+      :nodeText="nodeText"
+      v-on:closeFormDialog="closeFormDialog"
+      v-on:submitForm="submitForm"
+    />
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
+import DeleteRemoveDialog from "@/apps/container/views/components/DeleteRemoveDialog.vue";
 
 export default {
   name: "BaseInfo",
-  components: {},
+  components: { DeleteRemoveDialog },
   props: {},
   data() {
     return {
+      formVisible: false,
+      titleContext: "",
+      nodeText: "",
+      buttonText: "",
+
       fileList: [],
 
       rowCenter: {
@@ -376,6 +478,7 @@ export default {
       deleteVisible: false,
       deleteTitle: "",
       command: "",
+      deleteDisable: true,
 
       updateVisible: false,
       updateForm: {
@@ -432,33 +535,98 @@ export default {
         {
           label: "chartmuseum",
           desc: "Host your own Helm Chart Repository",
-          version: ["2.15.0"],
+          version: [
+            {
+              vers: "2.15.0",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: true,
+            },
+          ],
         },
         {
           label: "docker-registry",
           desc: "A Helm chart for Docker Registry",
-          version: ["v3.2.0"],
+          version: [
+            {
+              vers: "v3.2.0",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: true,
+            },
+          ],
         },
         {
           label: "elasticsearch",
           desc: "Elastic helm chart for Elasticsearch",
-          version: ["7.8.1"],
+          version: [
+            {
+              vers: "7.8.1",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: true,
+            },
+            {
+              vers: "7.8.0",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: false,
+            },
+          ],
         },
         {
           label: "femas",
           desc: "A Helm chart fro Femas",
-          version: ["v2.0.0"],
+          version: [
+            {
+              vers: "v2.0.0",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: true,
+            },
+          ],
         },
         {
           label: "pmem-redis",
           desc: "Chart for PMEM Redis",
-          version: ["v3.0.0"],
+          version: [
+            {
+              vers: "v3.0.0",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: true,
+            },
+          ],
         },
         {
           label: "zookeeper",
           desc: "Zookeeper是一个分布式的应用程序协调服务，可以为分布式程序提供的功能包括：配置维护、域名服务、分布式同步、组服务等",
-          version: ["v3.0.0"],
+          version: [
+            {
+              vers: "v3.0.0",
+              status: "已就绪",
+              maintainer: "",
+              time: "2022-10-24",
+              isLatest: true,
+            },
+          ],
         },
+      ],
+
+      manageVersionVisible: false,
+      manageVersion: [],
+      manageVersionCols: [
+        { label: "版本", id: "vers" },
+        { label: "状态", id: "status" },
+        { label: "守护者", id: "maintainer" },
+        { label: "更新时间", id: "time" },
+        { label: "", id: "delete", width: "60px" },
       ],
     };
   },
@@ -533,11 +701,47 @@ export default {
 
     handleSyncTemp() {},
 
-    handleDeploy() {
+    handleDeploy(obj) {
+      sessionStorage.setItem("tempVersion", JSON.stringify(obj));
       this.$router.push({
         path: "/catalog-management/chartrepo/deploy",
+        query: { name: obj.label + "." + this.detailTitle },
       });
     },
+
+    handleCommand(val) {
+      if (this.command == this.detailTitle) {
+        this.deleteDisable = false;
+      } else {
+        this.deleteDisable = true;
+      }
+    },
+
+    handleDeleteTemp(title) {
+      this.formVisible = true;
+      this.titleContext = `确定删除模板"${title}"吗？`;
+      this.buttonText = "删除";
+    },
+
+    closeFormDialog() {
+      this.formVisible = false;
+    },
+
+    submitForm() {},
+
+    handleDeleteVers(title) {
+      this.formVisible = true;
+      this.titleContext = `确定删除此模板版本 ${title} 吗？`;
+      this.nodeText = `删除后模板版本对应的模板应用将无法更新`;
+      this.buttonText = "删除";
+    },
+
+    handleManageVersion(versionArr) {
+      this.manageVersionVisible = true;
+      this.manageVersion = versionArr;
+    },
+
+    handle_addVersion() {},
   },
 };
 </script>

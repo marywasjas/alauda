@@ -109,6 +109,10 @@ export default {
           copy: false
         }
       }
+    },
+    autoUpdate:{
+      type: Boolean,
+      default: false
     }
   },
   data() {

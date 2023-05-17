@@ -47,10 +47,11 @@
           </header>
           <section class="component-div">
             <el-table
-              :data="table.tableData"
+              :data="table.data"
               style="width: 100%"
               header-row-class-name="headerStyle"
               class="margin-top"
+              empty-text="无数据"
             >
               <el-table-column
                 v-for="col in table.cols"
@@ -62,7 +63,11 @@
                 :fixed="col.fixed"
               >
                 <template slot-scope="scope">
-                  <div v-if="col.id === 'name'" class="cursor-pointer">
+                  <div
+                    v-if="col.id === 'name'"
+                    class="cursor-pointer"
+                    @click="handleToCluster"
+                  >
                     {{ scope.row[col.id] }}
                   </div>
                   <div v-else-if="col.id === 'status'">
@@ -131,6 +136,16 @@
 
 <script>
 import { nanoid } from "nanoid";
+import {
+  tableColsCluster,
+  tableDataCluster,
+  tableColsNode,
+  tableDataNode,
+  tableColsContainer,
+  tableDataContainer,
+  tableColsCerf,
+  tableDataCerf,
+} from "./constant";
 
 export default {
   name: "ClusterCreate",
@@ -138,11 +153,14 @@ export default {
   computed: {},
   created() {
     this.name = this.$route.query.name;
+    if (this.name) {
+      this.changeTable(this.name);
+    }
   },
   data() {
     return {
       name: "",
-      selectValue: "",
+      selectValue: "all",
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -152,17 +170,18 @@ export default {
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
+      tableColsCluster,
+      tableDataCluster,
+      tableColsNode,
+      tableDataNode,
+      tableColsContainer,
+      tableDataContainer,
+      tableColsCerf,
+      tableDataCerf,
 
       table: {
-        tableData: [
-          { name: "region", cluster: "自建", status: "预警", desc: "描述" },
-        ],
-        cols: [
-          { label: "名称", id: "name" },
-          { label: "集群类型", id: "cluster" },
-          { label: "风险状态", id: "status" },
-          { label: "", id: "desc", width: "60px" },
-        ],
+        data: [],
+        cols: [],
       },
     };
   },
@@ -179,6 +198,33 @@ export default {
     },
 
     handleSelect() {},
+
+    changeTable(type) {
+      switch (type) {
+        case "集群风险详情":
+          this.table.cols = tableColsCluster;
+          this.table.data = tableDataCluster.data;
+          break;
+        case "节点风险详情":
+          this.table.cols = tableColsNode;
+          this.table.data = tableDataNode.data;
+          break;
+        case "容器组风险详情":
+          this.table.cols = tableColsContainer;
+          this.table.data = tableDataContainer.data;
+          break;
+        default:
+          this.table.cols = tableColsCerf;
+          this.table.data = tableDataCerf.data;
+      }
+    },
+
+    handleToCluster() {
+      this.$router.push({
+        path: "/cluster-management/cluster/detail",
+        query: { name: "region" },
+      });
+    },
   },
 };
 </script>

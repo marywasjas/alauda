@@ -61,7 +61,7 @@ export default {
       data: [
         { title: "集群", chartData: containerData_cluster },
         { title: "节点", chartData: containerData_node },
-        { title: "容器", chartData: containerData_container },
+        { title: "容器组", chartData: containerData_container },
         { title: "证书", chartData: containerData_cerf },
       ],
     };

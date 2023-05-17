@@ -222,10 +222,16 @@
         <div style="margin-top: 20px">
           请输入 <span style="color: red">{{ deleteTitle }}</span> 确认删除
         </div>
-        <el-input v-model="command"></el-input>
+        <el-input v-model="command" @input="handleCommand"></el-input>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="handle_delete"> 删除 </el-button>
+        <el-button
+          type="danger"
+          @click="handle_delete"
+          :disabled="deleteDisable"
+        >
+          删除
+        </el-button>
         <el-button @click="deleteVisible = false">取消</el-button>
       </div>
     </el-dialog>
@@ -258,6 +264,7 @@ export default {
       deleteVisible: false,
       deleteTitle: "",
       command: "",
+      deleteDisable: true,
 
       createForm: {
         name: "",
@@ -357,6 +364,14 @@ export default {
       this.deleteVisible = true;
     },
     handle_delete() {},
+
+    handleCommand(val) {
+      if (this.command == this.deleteTitle) {
+        this.deleteDisable = false;
+      } else {
+        this.deleteDisable = true;
+      }
+    },
   },
 };
 </script>

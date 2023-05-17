@@ -110,7 +110,7 @@
 
                               <el-col
                                 :span="4"
-                                style="margin-top: 10px; margin-left: 10px"
+                                style="margin-top: 10px; margin-left: 30px"
                               >
                                 <el-form-item>
                                   <el-button
@@ -243,7 +243,9 @@
         <tbody>
           <tr v-for="(domain, index) in roleItems" :key="domain.id">
             <td>
-              <span>{{ typeName }}</span>
+              <span>
+                {{ typeName }}
+              </span>
             </td>
             <td>
               <el-input
@@ -265,6 +267,14 @@
             </td>
           </tr>
 
+          <tr v-if="roleItems.length == 0">
+            <td colspan="5">
+              <p style="text-align: center; color: rgba(150, 152, 155)">
+                无通知对象
+              </p>
+            </td>
+          </tr>
+
           <tr>
             <td colspan="5">
               <div
@@ -273,7 +283,7 @@
                 @click="handleAddParams('roleItems')"
               >
                 <i class="el-icon-circle-plus-outline" />
-                添加
+                添加通知策略
               </div>
             </td>
           </tr>

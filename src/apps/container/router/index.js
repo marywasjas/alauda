@@ -1663,23 +1663,55 @@ export const containerAsyncRoutes = [
       },
       // Operators
       {
-        path: 'volume-snapshot',
-        component: () => import('@/apps/container/views/storage-management/volume-snapshot/index'),
-        redirect: '/storage-management/volume-snapshot/list',
-        name: 'VolumeSnapshotMain',
+        path: 'operator',
+        component: () => import('@/apps/container/views/catalog-management/operator/index'),
+        redirect: '/catalog-management/operator/list',
+        name: 'OperatorMain',
         meta: { title: 'Operators', roles: ['admin'] },
         children: [
           {
             path: 'list',
-            component: () => import('@/apps/container/views/storage-management/volume-snapshot/list'),
-            name: 'VolumeSnapshotList',
-            meta: { title: '', icon: 'icon', noCache: true, },
+            component: () => import('@/apps/container/views/catalog-management/operator/list'),
+            meta: { title: '', },
             hidden: true
+          },
+          {
+            path: 'detail-operatorHub',
+            component: () => import('@/apps/container/views/catalog-management/operator/components/Node/detail'),
+            meta: { title: '', },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
+            path: 'detail-operatorDeploy',
+            component: () => import('@/apps/container/views/catalog-management/operator/components/Event/detail'),
+            meta: { title: '', },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
+            path: 'createInstance',
+            component: () => import('@/apps/container/views/catalog-management/operator/components/Event/components/BaseInfo/createInstance'),
+            meta: { title: '', },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
           },
         ]
       },
     ]
   },
+
+  // 平台管理--工具链管理
+
 
   // 平台管理--平台证书管理
   {

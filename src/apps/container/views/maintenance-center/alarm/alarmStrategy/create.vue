@@ -200,8 +200,15 @@
                         <span>{{ domain.level }}</span>
                       </el-form-item>
                     </td>
+
+                    <td>
+                      <el-form-item>
+                        <el-switch v-model="domain.disabled"></el-switch>
+                      </el-form-item>
+                    </td>
                     <td class="text-center">
                       <el-button
+                        :disabled="addRulesDisable"
                         icon="el-icon-edit-outline"
                         class="cursor-pointer margin-left10 margin-right10"
                         type="text"
@@ -385,13 +392,27 @@
       :visible.sync="alarmRulesVisible"
       width="70%"
     >
-      <line-chart
-        v-if="alarmRulesVisible == true"
-        :chart-data="containerLineData"
-        :show-total="false"
-        height="200%"
-        width="70%"
-      />
+      <div
+        style="display: flex; background: rgba(247, 249, 252); padding: 16px"
+      >
+        <line-chart
+          v-if="alarmRulesVisible == true"
+          :chart-data="containerLineData"
+          :show-total="false"
+          height="200%"
+          width="100%"
+        />
+        <!-- <div style="width: 30%; height: 200px">
+          <el-table :data="containerLineData.fields">
+            <el-table-column
+              v-for="col in chartColumnList"
+              :key="col.id"
+              :label="col.label"
+              :sortable="col.sortable"
+            ></el-table-column>
+          </el-table>
+        </div> -->
+      </div>
 
       <el-form
         ref="alarmRulesForm"
@@ -679,7 +700,12 @@ export default {
   components: { LineAlert, MonacoEditor, FoldableBlock, lineChart },
   data() {
     return {
+      addRulesDisable: false,
+
+      name: "",
+
       containerLineData: null,
+
       btnText: "",
 
       rowCenter: {
@@ -793,6 +819,7 @@ export default {
         number: "",
         persist: "30s",
         level: "disaster",
+        // disabled: true,
         expression: "",
         measure: "",
         params: "",
@@ -837,15 +864,71 @@ export default {
 
   created() {
     this.containerLineData = Mock.mock({
-      fields: [{ name: "global", flied: "yxz" }],
+      fields: [
+        { name: "global", flied: "yxz" },
+        { name: "region", flied: "abc" },
+      ],
       "data|6": [
         {
           name: "@now('hour')",
-          // yxz: "@integer(0 ,10)",
-          yxz: "0",
+          yxz: "@integer(0 ,1)",
+          abc: "@integer(0 ,1)",
         },
       ],
     });
+
+    this.name = this.$route.query.name;
+
+    if (this.$route.query.name) {
+      const obj = {
+        id: nanoid(),
+        rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+        type: "指标告警",
+        level: "严重",
+        disabled: true,
+        labelItems: [],
+        noteItems: [],
+      };
+      const obj2 = {
+        id: nanoid(),
+        rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+        type: "指标告警",
+        level: "严重",
+        disabled: true,
+        labelItems: [{ key: "a", value: "b" }],
+        noteItems: [{ key: "c", value: "d" }],
+      };
+      const obj3 = {
+        id: nanoid(),
+        rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+        type: "指标告警",
+        level: "严重",
+        disabled: true,
+        labelItems: [{ key: "a", value: "b" }],
+        noteItems: [{ key: "c", value: "d" }],
+      };
+      const obj4 = {
+        id: nanoid(),
+        rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
+        type: "指标告警",
+        level: "严重",
+        disabled: true,
+        labelItems: [{ key: "a", value: "b" }],
+        noteItems: [{ key: "c", value: "d" }],
+      };
+      this.alarmForm["nodeUpdateItems"].push(obj, obj2, obj3, obj4);
+
+      this.infoForm = {
+        name: this.name,
+        showname: "平台组件Cert-manager",
+        desc: "Cpaas平台组件Cert-manager的告警策略",
+        resourceType: "component",
+        resourceName: "",
+        microService: "",
+      };
+
+      this.addRulesDisable = true;
+    }
   },
 
   methods: {
@@ -907,6 +990,7 @@ export default {
         rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
         type: "指标告警",
         level: "严重",
+        disabled: true,
         labelItems: [],
         noteItems: [],
       };
@@ -915,6 +999,7 @@ export default {
         rule: "集群内的处于警告状态的警告数 > 30 且持续 30 秒",
         type: "指标告警",
         level: "严重",
+        disabled: true,
         labelItems: [{ key: "a", value: "b" }],
         noteItems: [{ key: "c", value: "d" }],
       };

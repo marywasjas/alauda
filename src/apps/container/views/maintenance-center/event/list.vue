@@ -68,7 +68,11 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="资源类型">
-                    <el-select v-model="tabForm.logType">
+                    <el-select
+                      v-model="tabForm.logType"
+                      clearable
+                      placeholder="默认为全部"
+                    >
                       <el-option
                         v-for="con in []"
                         :key="con.value"
@@ -81,7 +85,11 @@
 
                 <el-col :span="8">
                   <el-form-item label="命名空间">
-                    <el-select v-model="tabForm.project">
+                    <el-select
+                      v-model="tabForm.project"
+                      clearable
+                      placeholder="默认为全部"
+                    >
                       <el-option
                         v-for="con in []"
                         :key="con.value"
@@ -94,7 +102,11 @@
 
                 <el-col :span="8">
                   <el-form-item label="事件原因">
-                    <el-select v-model="tabForm.namespace">
+                    <el-select
+                      v-model="tabForm.namespace"
+                      clearable
+                      placeholder="默认为全部"
+                    >
                       <el-option
                         v-for="con in []"
                         :key="con.value"

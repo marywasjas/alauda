@@ -243,10 +243,10 @@ export default {
       btnVisible: {
         autoUpdate: false,
         import: false,
-        export: true,
+        export: false,
         reset: false,
-        find: true,
-        copy: true,
+        find: false,
+        copy: false,
       },
       spec: {
         detail: {
@@ -326,7 +326,7 @@ export default {
         emailTitle: "",
         content: 1,
         textarea: "",
-        desc: "<h1>书写说明</h1>",
+        desc: `<h1>书写说明</h1>`,
       },
 
       templateRules: {
@@ -515,5 +515,9 @@ export default {
     height: 65vh;
     overflow: auto;
   }
+}
+.el-textarea__inner {
+  font-family: "Microsoft";
+  font-size: 20px;
 }
 </style>

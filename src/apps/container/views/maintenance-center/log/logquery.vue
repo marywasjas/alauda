@@ -64,13 +64,14 @@
             <el-form-item label="查询条件" style="margin-bottom: 10px; flex: 1">
               <el-select
                 v-model="tabForm.logType"
-                placeholder="支持nodename/podname/containerid/containername/path，支持关键字查询，支持添加多个条件，按回车确定"
+                placeholder="支持nodename/podname/containerid/containername/path，支持关键字查询，按回车确定，支持添加多个条件"
                 multiple
-                collapse-tags
                 style="width: 100%"
               >
-                <el-option label="11111" value="currentLog" />
-                <el-option label="22222" value="historyLog" />
+                <el-option label="nodename:25.2.20.65" value="currentLog1" />
+                <el-option label="nodename:25.2.20.54" value="currentLog2" />
+                <el-option label="nodename:25.2.20.138" value="currentLog3" />
+                <el-option label="nodename:25.2.20.111" value="currentLog4" />
               </el-select>
             </el-form-item>
 
@@ -96,11 +97,7 @@
                 </div>
               </template>
               <i
-                class="
-                  el-icon-question
-                  margin-left10 margin-top-10px
-                  question-icon
-                "
+                class="el-icon-question margin-left10 margin-top-10px question-icon"
               />
             </el-tooltip>
           </div>
@@ -278,7 +275,7 @@ export default {
         { value: "近 7 天", label: "近 7 天" },
         { value: "自定义", label: "自定义" },
       ],
-      
+
       tableData: [
         {
           date: "2020-11-11 13:23:23",

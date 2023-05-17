@@ -172,6 +172,17 @@
                 </el-tooltip>
               </div>
 
+              <div v-else-if="col.id === 'connectResource'">
+                <el-tooltip placement="top" effect="dark">
+                  <div slot="content">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <span>
+                    {{ scope.row[col.id] }}
+                  </span>
+                </el-tooltip>
+              </div>
+
               <div v-else-if="col.id === 'alarmStatus'">
                 {{
                   scope.row[col.id] == ""
@@ -493,7 +504,12 @@ export default {
       });
     },
 
-    handleUpdate() {},
+    handleUpdate(obj) {
+      this.$router.push({
+        path: "/maintenance-center/alarm/alarmStrategy-create",
+        query: { name: obj.name },
+      });
+    },
 
     handleSearch() {},
     handleReset() {},

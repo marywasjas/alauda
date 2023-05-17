@@ -241,17 +241,13 @@
       width="60%"
     >
       <div class="wrapper">
-        <div
-          class="item-wrapper"
-        >
-          <!-- v-for="(item,index )in detailData"
-          :key="index" -->
+        <div class="item-wrapper" v-for="item in detailData" :key="item.title">
           <div style="flex: 0 0 50px" class="item-icon">
             <i class="el-icon-picture-outline" />
           </div>
           <div>
-            <div class="item-title">指标名称</div>
-            <div>workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)</div>
+            <div class="item-title">{{ item.title }}</div>
+            <div>{{ item.content }}</div>
           </div>
         </div>
       </div>
@@ -287,6 +283,22 @@ export default {
       detailData: [
         {
           title: "指标名称",
+          content: "workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)",
+        },
+        {
+          title: "标签",
+          content: "workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)",
+        },
+        {
+          title: "注释",
+          content: "workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)",
+        },
+        {
+          title: "表达式",
+          content: "workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)",
+        },
+        {
+          title: "描述",
           content: "workload.pod.cpu.utilization(工作负载下容器组的cpu使用率)",
         },
       ],
