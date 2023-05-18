@@ -177,7 +177,7 @@ export default {
           smooth: true,
           // 平滑曲线去掉拐点标志
           symbol: "none",
-          animationDuration: 2800,
+          animationDuration: 2000,
           animationEasing: "cubicInOut",
         };
       });
@@ -185,24 +185,15 @@ export default {
       this.chart.setOption({
         xAxis: {
           // // type:"time",
-          // data: this.xTime(),
+          data: this.xTime(),
           // // 坐标轴两边留白策略，类目轴和非类目轴的设置和表现不一样。
-          // boundaryGap: false,
+          boundaryGap: false,
           // // 1. 类目轴中 boundaryGap 可以配置为 true 和 false。
           // //         默认为 true，这时候刻度只是作为分隔线，标签和数据点都会在两个刻度之间的带(band)中间。
           // // 2. 非类目轴，包括时间，数值，对数轴，boundaryGap是一个两个值的数组，分别表示数据最小值和最大值的延伸范围，可以直接设置数值或者相对的百分比，在设置 min 和 max 后无效。
-          // axisTick: {
-          //   // 是否显示坐标轴刻度
-          //   show: true,
-          // },
-
-          type: "time",
-          axisLabel: {
-            formatter: function (value) {
-              // 自定义横坐标显示格式
-              console.log(value);
-              return echarts.format.formatTime("13:34", value); // 根据时间值返回小时:分钟格式的字符串
-            },
+          axisTick: {
+            // 是否显示坐标轴刻度
+            show: true,
           },
         },
         yAxis: {
@@ -224,7 +215,7 @@ export default {
 
         legend: {
           orient: "vertical", // 图例竖直排列
-          right: "230", // 图例在右侧
+          right: "180", // 图例在右侧
           top: "20%", // 图例垂直居中
           align: "left", // 图例文本左对齐
 

@@ -25,7 +25,7 @@
           </div>
 
           <div style="float: right">
-            <el-button type="primary">部署</el-button>
+            <el-button type="primary" @click="handleDeploy">部署</el-button>
           </div>
         </div>
       </header>
@@ -42,7 +42,9 @@
             <span>{{ item.label }} </span>: &nbsp;&nbsp;
             <span v-if="item.label == '供应商'">
               <span class="cursor-pointer">
-                <i class="el-icon-link">{{ item.value }}</i>
+                <i class="el-icon-link" @click="handleToPlatform">{{
+                  item.value
+                }}</i>
               </span>
             </span>
             <span v-else>
@@ -59,36 +61,446 @@
           <el-tabs v-model="activeName">
             <el-tab-pane label="详情信息" name="1">
               <section class="component-div">
-                <div style="padding: 0 16px">
-                  <h1 style="margin-bottom: 16px">{{ titleName }}</h1>
-
-                  <h3 style="margin: 18px 0">介绍</h3>
-
+                <!-- 1 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Ck Operator'">
+                  <h2 style="margin-bottom: 16px">{{ "ClickHouse" }}</h2>
                   <p>
-                    Kafka是由Apache软件基金会开发的一个开源流处理平台，由Scala和Java编写。Kafka是一种高吞吐量的分布式发布订阅消息系统，它可以处理消费者在网站中的所有动作流数据。
-                    这种动作（网页浏览，搜索和其他用户的行动）是在现代网络上的许多社会功能的一个关键因素。
-                    这些数据通常是由于吞吐量的要求而通过处理日志和日志聚合来解决。
-                    对于像Hadoop一样的日志数据和离线分析系统，但又要求实时处理的限制，这是一个可行的解决方案。Kafka的目的是通过Hadoop的并行加载机制来统一线上和离线的消息处理，也是为了通过集群来提供实时的消息。
+                    ClickHouse
+                    是一个开源的面向专栏的数据库管理系统，能够实时生成分析数据报告。查看
+                    ClickHouse 文档 可以获得更多的信息。
+                  </p>
+                  <h2 style="margin-bottom: 16px">
+                    {{ "ClickHouse Operator" }}
+                  </h2>
+                  <p>
+                    ClickHouse Operator
+                    可以自动创建、更改或删除ClickHouse集群环境中的节点。
+                  </p>
+                </div>
+                <!-- 2 -->
+                <div style="padding: 0 16px" v-if="titleName == 'DevOps Tools'">
+                  <h1 style="margin-bottom: 16px">{{ "DevOps Tools" }}</h1>
+                  <h2 style="margin-bottom: 16px">{{ "注意" }}</h2>
+                  <p>Gitea: 支持框架为 ARM、x86</p>
+                  <p>Gitlab: 支持框架为 x86</p>
+                  <p>Jenkins: 支持框架为 ARM、x86</p>
+                  <p>Harbor: 支持框架为 ARM、x86</p>
+                  <p>Sonarqube: 支持框架为 ARM、x86</p>
+                  <p>Nexus: 支持框架为 ARM、x86</p>
+                  <p>Testlink: 支持框架为 x86</p>
+                  <p>Gitlab-Official: 支持框架为 x86</p>
+                  <h2 style="margin-bottom: 16px">{{ "介绍" }}</h2>
+                  <p>
+                    DevOps Tools 是一个用部署可集成在 DevOps
+                    中使用的外部工具链集合，包括
+                    Jenkins、Gitlab、Harbor、Sonarqube
+                    等，在创建实例时，用户可根据实际用途，选择"自动集成到 DevOps
+                    工具链"或"不集成到 DevOps 工具链"两种形式。
+                  </p>
+                  <p><strong>Gitea</strong></p>
+                  <p>
+                    Gitea 是一个轻量级代码托管解决方案，它可以运行在任何 Go
+                    能够编译的平台。
+                  </p>
+                  <p><strong>Gitlab</strong></p>
+                  <p>
+                    Gitlab 是一个开源的版本控制系统，它使用 Git
+                    作为代码管理工具，并在此基础上搭建起来的 web 服务。
+                  </p>
+                  <p>
+                    该工具为 Gitlab
+                    的非官方正式版本，存在一些暂时无法修复的严重漏洞，强烈建议用户使用官方正式版本
+                    GitlabOfficial。该工具 Gitlab 会在下一个版本 v3.7
+                    中下线。已经在使用该 Gitlab
+                    的用户，请参考运维手册中基础运维的部分，根据 DevOps
+                    模块的《Gitlab 数据迁移至 GitlabOfficial
+                    方案》文档，尽快完成向 GitlabOfficial 工具迁移的工作。
+                  </p>
+                  <p><strong>Gitlab-Official</strong></p>
+                  <p>
+                    Gitlab-Official 是一个开源的版本控制系统，它使用 Git
+                    作为代码管理工具，并在此基础上搭建起来的 web 服务。
+                  </p>
+                  <p><strong>Jenkins</strong></p>
+                  <p>
+                    Jenkins 是基于 Java
+                    开发的一个重要的持续集成工具，它常与版本控制工具、构建工具结合使用。常用的版本控制工具有
+                    SVN、GIT，构建工具有 Maven、Ant、Gradle。
+                  </p>
+                  <p><strong>Harbor</strong></p>
+                  <p>
+                    Harbor 是构建企业级私有 docker 镜像仓库的开源解决方案，它是
+                    Docker Registry 的更高级封装，它具体友好的 Web UI
+                    界面，角色和用户权限管理，用户操作审计等功能。
+                  </p>
+                  <p><strong>Sonarqube</strong></p>
+                  <p>
+                    Sonarqube
+                    是一个代码质量管理工具，它可以迅速定位代码中潜在或明显的错误。
+                  </p>
+                  <p><strong>Nexus</strong></p>
+                  <p>
+                    Nexus
+                    是一个强大的仓库管理工具，能够极大地简化内部仓库的维护和外部仓库的访问。
+                  </p>
+                  <p><strong>Testlink</strong></p>
+                  <p>
+                    Testlink
+                    是基于web的测试用例管理工具，主要功能是测试用例的创建、管理和执行。
+                  </p>
+                </div>
+                <!-- 3 -->
+                <div
+                  style="padding: 0 16px"
+                  v-if="titleName == 'Etcd-Operator'"
+                >
+                  <h1 style="margin-bottom: 16px">{{ "Etcd-Operator" }}</h1>
+                  <p>
+                    etcd
+                    operator在Kubernetes上创建维护了高可用性的etcd集群，使工程师能够方便地部署和管理其应用程序地etcd集群。
+                  </p>
+                  <p>
+                    etcd是一个分布式键值存储，它提供了一种跨机器集群存储数据的可靠方法。etcd是开源的，可在GitHub上获得。etcd可以在网络分区期间优雅地处理leader选举，并且可以容忍包括leader在内地机器故障。
+                  </p>
+                  <p>
+                    <strong
+                      >支持版本：Kubernetes 1.8+、etcd
+                      3.2.13/3.3.24/3.4.14，其他大于etcd
+                      3.2.13的版本需要联网使用或自行上传到私有仓库</strong
+                    >
                   </p>
 
-                  <h3 style="margin: 18px 0">支持功能</h3>
+                  <h3>读写etcd</h3>
+                  <p>通过命令行工具etcdctl使用端口转发与etcd通信</p>
+                  <div
+                    style="
+                      width: 100%;
+               
+                      padding: 16px;
+                      background: #f6f8fa;
+                      border-radius: 6px;
+                      font-size:90%
+                      line-height:1.45
+                    "
+                  >
+                    <code>{{
+                      "$ etcdctl --namespace default port-forward service/example-client 2379:2379"
+                    }}</code>
+                    <br />
+                    <code>{{
+                      "$ etcdctl --endpoints http://127.0.0.1:2379 get /"
+                    }}</code>
+                  </div>
 
+                  <p>或者使用自动生成的Kubernetes服务直接访问API</p>
+                  <div
+                    style="
+                      width: 100%;
+                    
+                      padding: 16px;
+                      background: #f6f8fa;
+                      border-radius: 6px;
+                      font-size:90%
+                      line-height:1.45
+                    "
+                  >
+                    <code>{{
+                      "$ etcdctl --endpoints http://example-client.default.svc:2379 get /"
+                    }}</code>
+                  </div>
+
+                  <p>
+                    在将etcd集群公开在命名空间或集群之外之前，一定要确保它的安全(请参阅公共配置)。
+                  </p>
+
+                  <h3>支持的功能</h3>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>高可用性</strong>
+                      ectd的多个实例通过网络安全地组合到一起。单个故障或网络问题将被透明处理，以保持集群正常运行。
+                    </li>
+                    <li>
+                      <strong>自动更新</strong>
+                      更新到一个新的etcd版本就像所有Kubernetes地滚动更新一样。只要声明所需的版本，etcd服务就会自动安全的滚动更新到新的版本。
+                    </li>
+                    <li>
+                      <strong>备份恢复</strong>
+                      etcd operator可以备份和恢复etcd的数据。
+                    </li>
+                  </ul>
+
+                  <h3>公共配置</h3>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>配置TLS</strong>
+                      使用kubernetes secret资源指定静态TLS证书
+                    </li>
+                    <li>
+                      <strong>配置Node Selector和Affinity</strong>
+                      指定etcd pods在所有节点上的选举策略
+                    </li>
+                    <li>
+                      <strong>配置资源限额</strong>
+                      设置etcd pods在kubernetes上的资源限额
+                    </li>
+                    <li>
+                      <strong>配置存储类型</strong>
+                      根据需求设置存储类型
+                    </li>
+                  </ul>
+                </div>
+                <!-- 4 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Kafka'">
+                  <h1 style="margin-bottom: 16px">{{ titleName }}</h1>
+                  <h3 style="margin: 18px 0">介绍</h3>
+                  <p>
+                    Kafka是由Apache软件基金会开发的一个高吞吐量的分布式发布订阅消息系统，可以高效的处理消费者在网站中的所有动作流数据。Kafka
+                    Operator 提供了一种在 Kubernetes 上运行 Apache Kafka
+                    集群的办法，支持多种灵活部署配置。**支持版本：Kafka
+                    2.4.0、2.4.1、2.5.0、2.6.0、2.7.0**
+                  </p>
+                  <h3 style="margin: 18px 0">支持功能</h3>
                   <ul style="margin-top: 0.25em; padding-left: 2em">
                     <li>
                       <strong>管理Kafka集群</strong>
-                      部署和管理此复杂引用程序的所有组件
+                      部署和管理此复杂应用程序的所有组件，包括传统上难以管理的依赖项，例如Apache
+                      Zookeeper。
                     </li>
                     <li>
-                      <strong>管理Kafka集群</strong>
-                      部署和管理此复杂引用程序的所有组件
+                      <strong>包括Kafka Connect</strong>
+                      允许配置通用数据源和接收器，以将数据移入和移出Kafka集群。
                     </li>
                     <li>
-                      <strong>管理Kafka集群</strong>
-                      部署和管理此复杂引用程序的所有组件
+                      <strong>topic 管理</strong>
+                      在集群中创建和管理Kafka topic。
                     </li>
                     <li>
-                      <strong>管理Kafka集群</strong>
-                      部署和管理此复杂引用程序的所有组件
+                      <strong>用户管理</strong>
+                      在集群中创建和管理Kafka用户。
+                    </li>
+                    <li>
+                      <strong>连接器管理</strong>
+                      创建和管理Kafka Connect连接器。
+                    </li>
+                    <li>
+                      <strong>包括Kafka Mirror Maker 1和2</strong>
+                      允许在不同的Apache Kafka 集群之间存储数据。
+                    </li>
+                    <li>
+                      <strong>包括HTTP Kafka Bridge</strong>
+                      允许客户端通过HTTP协议通过Apache Kafka
+                      集群发送和接收消息。
+                    </li>
+                    <li>
+                      <strong>集群重新平衡</strong>
+                      使用内置的Cruise
+                      Control，可以根据指定的目标重新分配分区副本，以实现最佳的集群性能。
+                    </li>
+                    <li>
+                      <strong>监控</strong>
+                      使用Prometheus和提供的Grafana dashabords进行监控的内置支持
+                    </li>
+                    <li>内置的Cruise Control支持集群重新分配</li>
+                    <li>HTTP bridge 中的CORS支持</li>
+                    <li>改进了TLS的可配置性</li>
+                  </ul>
+                  <h3 style="margin: 18px 0">部署架构</h3>
+                  <p>
+                    Kafka部署架构中一共包含了三个Operator：Cluster
+                    Operator、User Operator和Topic
+                    Operator。在用户提交了创建资源 (Kafka CR) 之后，Cluster
+                    Operator会部署出一个Kafka集群和一个ZooKeeper集群。用户也可以通过创建User
+                    CR和Topic CR来创建Kafka User和Kafka
+                    Topic。部署架构图如下图所示。
+                  </p>
+
+                  <h3 style="margin: 18px 0">快速上手</h3>
+                  <p>要快速启动并运行，请查看我们的快速入门指南</p>
+                </div>
+                <!-- 5 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Katanomi'">
+                  <h2 style="margin-bottom: 16px">介绍</h2>
+                  <p>
+                    Katanomi 是平台自研的 DevOps 核心组件，实现了 DevOps
+                    的主要核心功能，是使用基于 Tekton
+                    实现的持续构建和持续发布功能的必装组件。
+                  </p>
+                  <p>
+                    如需使用基于 Tekton 的核心功能，需要提前在业务集群中同时部署
+                    Katanomi、Tekton、Knative 三个工具。
+                  </p>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      Katanomi：DevOps的核心组件，实现了工具链集成绑定、凭据管理、持续构建、持续发布等功能
+                    </li>
+                    <li>
+                      Tekton：为持续构建和持续发布两个功能提供流水线的执行引擎
+                    </li>
+                    <li>
+                      Knative：流水线的事件触发机制，如代码仓库触发器、镜像仓库触发器等
+                    </li>
+                  </ul>
+                </div>
+                <!-- 6 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Knative'">
+                  <h2 style="margin-bottom: 16px">介绍</h2>
+                  <p>
+                    Knative 是开源的 serverless 架构方案，旨在提供一套简单易用的
+                    serverless 方案，把 serverless 标准化。
+                  </p>
+                  <p>
+                    Knative 系统包含三个模块，其中此 operator 工具仅引用了
+                    Eventing 模块，用来实现 DevOps 流水线的事件触发机制。
+                  </p>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      Build：构建系统，把用户定义的函数和应用 build 成容器镜像
+                    </li>
+                    <li>
+                      Serving：服务系统，用来配置应用的路由、升级策略、自动扩缩容等功能
+                    </li>
+                    <li>Eventing：事件系统，用来自动完成事件的绑定和触发</li>
+                  </ul>
+                </div>
+                <!-- 7 -->
+                <div
+                  style="padding: 0 16px"
+                  v-if="titleName == 'KubeVirt HyperConverged Cluster Operator'"
+                >
+                  <p>
+                    <strong>HyperConverged Cluster Operator</strong> is an
+                    Operator pattern for managing multi-oparetor products.
+                    Specifcally, the HyperConverged Cluster Operator manages the
+                    deployment of KubeVirt, Containerized Data Importer
+                    (CDI),Virtual Machine import operator and Cluster Network
+                    Addons (CNA) operators.
+                  </p>
+
+                  <p>
+                    <strong>KubeVirt</strong> is a virtual machine management
+                    add-on for Kubernetes. The aim is to provide a common ground
+                    for virtualization solutions on top of Kubernetes.
+                  </p>
+
+                  <h1 style="margin-bottom: 16px">
+                    {{ "Virtualization extension for Kubernetes" }}
+                  </h1>
+                  <p>
+                    At its core, KubeVirt extends Kubernetes by adding
+                    additional virtualization resource types (especially the
+                    VirtualMachine type) through Kubernetes's Custom Resource
+                    Definitions API. By using this mechanism, the Kubernetes API
+                    can be used to manage these VirtualMachine resources
+                    alongside all other resources Kubernetes provides.
+                  </p>
+
+                  <p>
+                    The resources themselves are not enough to launch virtual
+                    machines. For this to happen the
+                    <em>functionality and business logic</em> needs to be added
+                    to the cluster. The functionality is not added to Kubernetes
+                    itself, but rather added to a Kubernetes cluster by
+                    <em>running</em> additional controllers and agents on an
+                    existing cluster.
+                  </p>
+
+                  <p>
+                    The necessary controllers and agents are provided by
+                    KubeVirt.
+                  </p>
+
+                  <p>As of today KubeVirt can be used to declaratively</p>
+
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>Create a predefined VM</li>
+                    <li>Schedule a VM on a Kubernetes cluster</li>
+                    <li>Launch a VM</li>
+                    <li>Migrate a VM</li>
+                    <li>Stop a VM</li>
+                    <li>Delete a VM</li>
+                  </ul>
+
+                  <h1 style="margin-bottom: 16px">
+                    {{ "Start using KubeVirt" }}
+                  </h1>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>Try our quickstart at kubernetes.io.</li>
+                    <li>See our user documentation at kubevirt.io/docs.</li>
+                  </ul>
+
+                  <h1 style="margin-bottom: 16px">
+                    {{ "Start developing KubeVirt" }}
+                  </h1>
+                  <p>
+                    To set up a development environment please read our Getting
+                    Started Guide. To learn how to contribute, please read our
+                    contribution guide.
+                  </p>
+                  <p>
+                    You can learn more about how KubeVirt is designed (and why
+                    it is that way), and learn more about the major components
+                    by taking a look at our developer documentation:
+                  </p>
+
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>Architecture - High-level view on the Architecture</li>
+                    <li>Components - Detailed look at all components</li>
+                    <li>API Reference</li>
+                  </ul>
+
+                  <h1 style="margin-bottom: 16px">
+                    {{ "Community" }}
+                  </h1>
+                  <p>
+                    If you got enough of code and want to speak to people, then
+                    you got a couple of options:
+                  </p>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>Follow us on Twitter</li>
+                    <li>
+                      Chat with us in the #virtualization channel of the
+                      Kubernetes Slack
+                    </li>
+                    <li>Discuss with us on the kubevirt-dev Google Group</li>
+                    <li>
+                      Stay informed about designs and upcoming events by
+                      watching our community content
+                    </li>
+                  </ul>
+
+                  <h1 style="margin-bottom: 16px">
+                    {{ "License" }}
+                  </h1>
+                  <p>
+                    KubeVirt is distributed under the Apache License, Version
+                    2.0.
+                  </p>
+                </div>
+                <!-- 8 -->
+                <div style="padding: 0 16px" v-if="titleName == 'MongoDB'">
+                  <h1 style="margin-bottom: 16px">{{ "MongoDB" }}</h1>
+                  <h3 style="margin-bottom: 16px">介绍</h3>
+                  <p>
+                    MongoDB 是一个基于分布式文件存储的数据库，旨在为 WEB
+                    应用提供可扩展的高性能数据存储解决方案，具有高性能、可扩展、易部署、易使用等特性，存取数据非常方便
+                  </p>
+                  <p><strong>支持版本：MongoDB 4.2 & 4.4</strong></p>
+
+                  <h3 style="margin-bottom: 16px">支持的功能</h3>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>集群扩展</strong> - 通过改变 size
+                      参数来增加和移除副本集成员，最小高可用副本集成员数量为3。
+                    </li>
+                    <li>
+                      <strong>监控</strong> - 轻松部署 Percona
+                      控制面板，以便于监控 MongoDB 副本集中各个节点状态。
+                    </li>
+                    <li>
+                      <strong>自动备份</strong> -
+                      配置自动备份，使其按计划运行或随时按需运行。备份是使用
+                      Percona Backup for MongoDB (PBM)
+                      执行的，可以存储在任何与S3兼容的云存储提供商中。
                     </li>
                   </ul>
                 </div>
@@ -153,6 +565,88 @@
       :submit-txt="submitTxt"
       @closeDetailsDialog="closeDetailsDialog"
     />
+
+    <el-dialog
+      title="部署 Operator"
+      @close="deployVisible = false"
+      :visible.sync="deployVisible"
+      width="70%"
+      :append-to-body="true"
+    >
+      <el-form
+        ref="deployForm"
+        :model="deployForm"
+        :rules="deployRules"
+        label-width="135px"
+      >
+        <el-form-item label="Operator">
+          <span>{{ "xxx-xxx-xxx-operator" }}</span>
+        </el-form-item>
+
+        <el-form-item label="升级策略">
+          <el-radio-group v-model="deployForm.policy">
+            <el-radio-button label="手动">手动</el-radio-button>
+            <el-radio-button label="自动">自动</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-descriptions size="small" :colon="false" :contentStyle="rowCenter">
+          <el-descriptions-item>
+            同一命名空间下仅支持单一升级策略。更改升级策略后，该命名空间所有已安装
+            operator 的升级策略将同步修改
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <el-form-item label="频道" prop="channel">
+          <el-select
+            v-model="deployForm.channel"
+            @focus="setMinWidthEmpty"
+            style="width: 80%"
+          >
+            <el-option
+              v-for="item in [{ value: 'alpha', label: 'alpha' }]"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="集群">
+          <span>{{ "global" }}</span>
+        </el-form-item>
+
+        <el-form-item label="安装模式">
+          <el-radio-group v-model="deployForm.installMode">
+            <el-radio-button label="集群模式">集群模式</el-radio-button>
+            <el-radio-button label="命名空间模式">命名空间模式</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item
+          label="命名空间"
+          v-if="deployForm.installMode == '命名空间模式'"
+          prop="namespace"
+        >
+          <el-select
+            v-model="deployForm.namespace"
+            @focus="setMinWidthEmpty"
+            style="width: 80%"
+          >
+            <el-option
+              v-for="item in namespaceOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handle_deploy">部署</el-button>
+        <el-button @click="deployVisible = false"> 取消 </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -175,6 +669,7 @@ export default {
       typeValue2: "",
 
       titleName: "",
+
       // 事件详情数据
       detailVisible: false,
       readOnly: true,
@@ -236,11 +731,11 @@ export default {
       },
 
       rowCenter: {
-        "max-width": "520px",
+        "max-width": "700px",
         "word-break": "break-all",
         display: "table-cell",
         "vertical-align": "middle",
-        "margin-left": "120px",
+        "margin-left": "123px",
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
@@ -385,6 +880,32 @@ export default {
           value: "ARM，x86",
         },
       ],
+
+      deployVisible: false,
+
+      deployRules: {
+        channel: [
+          { required: true, message: "必填项不能为空", trigger: "change" },
+        ],
+        namespace: [
+          { required: true, message: "必填项不能为空", trigger: "change" },
+        ],
+      },
+      deployForm: {
+        policy: "自动",
+        channel: "alpha",
+        installMode: "集群模式",
+        namespace: "",
+      },
+
+      namespaceOptions: [
+        { value: "noUnder", label: "-(不在命名空间下)" },
+        { value: "baas", label: "baas" },
+        { value: "cart-manager", label: "cart-manager" },
+        { value: "chaos", label: "chaos" },
+        { value: "cpass-dev", label: "cpass-dev" },
+        { value: "cpass-system", label: "cpass-system" },
+      ],
     };
   },
   computed: {},
@@ -416,6 +937,17 @@ export default {
 
     closeDetailsDialog() {
       this.detailVisible = false;
+    },
+
+    handleDeploy() {
+      this.deployForm = this.$options.data().deployForm;
+      this.deployVisible = true;
+    },
+
+    handle_deploy() {},
+
+    handleToPlatform() {
+      console.log("跳转到平台");
     },
   },
 };

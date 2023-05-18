@@ -167,20 +167,136 @@
                     :contentStyle="rowCenter"
                   >
                     <el-descriptions-item>
-                      请输入服务的访问地址
-                      Service的Type为"NodePort"时，请输入http://IP:端口，且该"端口"必须与Service的Node
-                      Port一致
-                      Service的Type为"Ingress"时，请输入对应访问地址，例如：http://kubernetes.io。
+                      Gitea
+                      管理员用户名为：gitea_admin.密码必须包含至少一个大写英文字母、小写英文字母、数字、特殊符号(注：不支持
+                      & 符号)，且仅在初始安装时支持修改密码。
                     </el-descriptions-item>
                   </el-descriptions>
                 </foldable-block>
               </div>
             </div>
+
             <div class="event-list-wrapper">
               <div class="resource event-card">
-                <foldable-block btn-tex="Account">
-                  <el-form-item label="Password" prop="password">
-                    <el-input v-model="infoForm.password" />
+                <foldable-block btn-tex="Persistence">
+                  <el-form-item label="Existing Claim">
+                    <el-input v-model="infoForm.existing" />
+                  </el-form-item>
+                  <el-descriptions
+                    size="small"
+                    :colon="false"
+                    :contentStyle="rowCenter"
+                  >
+                    <el-descriptions-item>
+                      Type为"PVC"时，必须填
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-form-item label="Node Name">
+                    <el-input v-model="infoForm.nodeName" />
+                  </el-form-item>
+                  <el-descriptions
+                    size="small"
+                    :colon="false"
+                    :contentStyle="rowCenter"
+                  >
+                    <el-descriptions-item>
+                      Type为"LocalPath"时，必须填
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-form-item label="Path">
+                    <el-input v-model="infoForm.path" />
+                  </el-form-item>
+                  <el-descriptions
+                    size="small"
+                    :colon="false"
+                    :contentStyle="rowCenter"
+                  >
+                    <el-descriptions-item>
+                      Type为"LocalPath"时，必须填
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-form-item label="Type">
+                    <el-select
+                      v-model="infoForm.type"
+                      @focus="setMinWidthEmpty"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in [
+                          { label: 'PVC', value: 'pvc' },
+                          { label: 'LocalPath', value: 'localpath' },
+                        ]"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </foldable-block>
+              </div>
+            </div>
+
+            <div class="event-list-wrapper">
+              <div class="resource event-card">
+                <foldable-block btn-tex="Service">
+                  <el-form-item label="Http Port">
+                    <el-input v-model="infoForm.httpPort" />
+                  </el-form-item>
+                  <el-descriptions
+                    size="small"
+                    :colon="false"
+                    :contentStyle="rowCenter"
+                  >
+                    <el-descriptions-item>
+                      Type为"NodePort"时，必须填
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-form-item label="Https Port">
+                    <el-input v-model="infoForm.httpsPort" />
+                  </el-form-item>
+                  <el-descriptions
+                    size="small"
+                    :colon="false"
+                    :contentStyle="rowCenter"
+                  >
+                    <el-descriptions-item>
+                      Type为"NodePort"时，必须填
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-form-item label="Ssh Port">
+                    <el-input v-model="infoForm.sshPort" />
+                  </el-form-item>
+                  <el-descriptions
+                    size="small"
+                    :colon="false"
+                    :contentStyle="rowCenter"
+                  >
+                    <el-descriptions-item>
+                      Type为"NodePort"时，必须填
+                    </el-descriptions-item>
+                  </el-descriptions>
+
+                  <el-form-item label="Type">
+                    <el-select
+                      v-model="infoForm.serviceType"
+                      @focus="setMinWidthEmpty"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in [
+                          { label: 'NodePort', value: 'nodePort' },
+                          { label: 'Ingress', value: 'ingress' },
+                        ]"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
                   </el-form-item>
                 </foldable-block>
               </div>
@@ -253,6 +369,11 @@ export default {
       namespace: "baas",
       external: "",
       labelItems: [],
+      type: "pvc",
+      httpPort: 30000,
+      httpsPort: 30001,
+      sshPort: 30002,
+      serviceType: "nodePort",
 
       apiVersion: "operator.devops.alauda.io/v1alpha",
       kind: "Gitlab",

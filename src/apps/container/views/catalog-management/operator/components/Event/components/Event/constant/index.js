@@ -1,31 +1,28 @@
 import Mock from 'mockjs'
 export const tableColumnList = [
   {
-    id: 'name',
-    label: '名称'
+    id: 'status',
+    label: '状态'
   },
   {
-    id: 'quota',
-    label: '配额'
+    id: 'reason',
+    label: '原因'
+  },
+  {
+    id: 'message',
+    label: '消息'
   },
   {
     id: 'time',
-    label: '创建时间',
-    width:"180px"
+    label: '最近更新时间',
   },
 
 ]
 export const tableData = Mock.mock({
   'data|10': [{
-    name: '@word(7, 20)',
+    "status|1": ['Pending', 'InstallReady', 'Installing', 'Succeeded'],
     time: '@date',
-    quota: '@integer(0,100)',
-    // cpu: 1,
-    // cpuCompony: '核',
-    // memory: '512',
-    // memoryCompony: 'Gi',
-    cpu: "不限制",
-    memory: '不限制',
-    storage: "不限制"
+    message: '@word(30, 50)',
+    reason: '@word(10, 20)',
   }]
 })

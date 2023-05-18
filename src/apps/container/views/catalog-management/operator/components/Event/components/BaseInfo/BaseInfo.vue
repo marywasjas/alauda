@@ -119,7 +119,38 @@
             </el-tab-pane>
 
             <el-tab-pane label="部署/运行状态" name="3">
-              <section class="component-div"></section>
+              <section class="component-div">
+                <section>
+                  <el-table
+                    class="margin-top"
+                    :data="tableData.data"
+                    style="width: 100%"
+                    height="100%"
+                    header-row-class-name="headerStyle"
+                  >
+                    <el-table-column
+                      v-for="col in tableColumnList"
+                      :key="col.id"
+                      :label="col.label"
+                      :width="col.width"
+                      :show-overflow-tooltip="col['show-overflow-tooltip']"
+                    >
+                      <template slot-scope="scope">
+                        <div v-if="col.id === 'message'">
+                          {{
+                            scope.row[col.id].length > 20
+                              ? scope.row[col.id].substring(0, 20) + "..."
+                              : scope.row[col.id]
+                          }}
+                        </div>
+                        <div v-else>
+                          {{ scope.row[col.id] }}
+                        </div>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </section>
+              </section>
             </el-tab-pane>
           </el-tabs>
         </BaseCard>
@@ -230,6 +261,28 @@ export default {
       tableData,
       tableColumnList,
 
+      table: {
+        data: [],
+        cols: [
+          {
+            id: "status",
+            label: "状态",
+          },
+          {
+            id: "reason",
+            label: "原因",
+          },
+          {
+            id: "message",
+            label: "消息",
+          },
+          {
+            id: "time",
+            label: "最近更新时间",
+          },
+        ],
+      },
+
       appTempData: [
         {
           label: "Gitea",
@@ -275,6 +328,17 @@ export default {
     // this.detailData.filter((item) => {
     //   return item.label == "显示名称";
     // })[0].value = this.$route.query.name;
+
+    this.table.data = Mock.mock({
+      "data|10": [
+        {
+          "status|1": ["Pending", "InstallReady", "Installing", "Succeeded"],
+          time: "@date",
+          message: "@word(30, 50)",
+          reason: "@word(10, 20)",
+        },
+      ],
+    });
   },
   mounted() {},
   methods: {

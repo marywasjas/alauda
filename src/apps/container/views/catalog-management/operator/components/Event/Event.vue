@@ -5,7 +5,7 @@
         <el-input
           style="width: 250px; margin-right: 20px"
           clearable
-          placeholder="按项目名称搜索"
+          placeholder="按名称搜索"
           v-model="searchName"
           @keyup.enter.native="handleSearch"
         >

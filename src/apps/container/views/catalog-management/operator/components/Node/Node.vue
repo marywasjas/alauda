@@ -2,7 +2,11 @@
   <div class="container margin-top">
     <el-form :model="selectedForm" label-width="100px" style="margin-top: 15px">
       <el-form-item label="分类目录">
-        <el-radio-group v-model="selectedForm.category" size="medium">
+        <el-radio-group
+          v-model="selectedForm.category"
+          size="medium"
+          @input="handleCategory"
+        >
           <el-radio-button label="all">全部</el-radio-button>
           <el-radio-button label="大数据">大数据</el-radio-button>
           <el-radio-button label="中间件">中间件</el-radio-button>
@@ -16,7 +20,11 @@
       </el-form-item>
 
       <el-form-item label="能力等级">
-        <el-radio-group v-model="selectedForm.level" size="medium">
+        <el-radio-group
+          v-model="selectedForm.level"
+          size="medium"
+          @input="handleLevel"
+        >
           <el-radio-button label="all">全部</el-radio-button>
           <el-radio-button label="基本安装">基本安装</el-radio-button>
           <el-radio-button label="无缝升级">无缝升级</el-radio-button>
@@ -27,7 +35,11 @@
       </el-form-item>
 
       <el-form-item label="供应商类型">
-        <el-radio-group v-model="selectedForm.type" size="medium">
+        <el-radio-group
+          v-model="selectedForm.type"
+          size="medium"
+          @input="handleType"
+        >
           <el-radio-button label="all">全部</el-radio-button>
           <el-radio-button label="用户自研">用户自研</el-radio-button>
           <el-radio-button label="开源社区">开源社区</el-radio-button>
@@ -50,7 +62,11 @@
           v-model="nameSearch"
           @keyup.enter.native="handleSearch"
         />
-        <el-select v-model="sortSearch" class="selectStyle">
+        <el-select
+          v-model="sortSearch"
+          class="selectStyle"
+          @change="handleSort"
+        >
           <span slot="prefix">排序：</span>
           <el-option
             v-for="item in [
@@ -68,51 +84,32 @@
     <div class="row-bg">
       <div class="item" v-for="item in appTempData" :key="item.label">
         <div class="buttonClass">
+          <!-- 1 -->
           <div style="display: flex">
             <div style="margin-right: 12px">
               <svg-icon icon-class="skill" style="width: 42px; height: 42px" />
             </div>
-
-            <div
-              style="
-                flex: 1 1 0%;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              "
-            >
-              <span
-                :title="item.label"
-                style="
-                  font-size: 18px;
-                  height: 24px;
-                  line-height: 24px;
-                  text-align: left;
-                "
-              >
+            <div class="itemWrapped">
+              <span class="titleWrapped" :title="item.label">
                 {{ item.label }}
               </span>
-              <div
-                style="
-                  font-size: 12px;
-                  line-height: 16px;
-                  margin-top: 2px;
-                  color: rgba(150, 152, 155);
-                "
-              >
-                由 <span class="cursor-pointer">平台</span> 提供
+              <div class="platformWrapped">
+                由
+                <span class="cursor-pointer" @click="handleToPlatform">
+                  平台
+                </span>
+                提供
               </div>
             </div>
-
             <div class="rightStyle" :class="{ rightStyleColor: item.color }">
               {{ item.platform }}
             </div>
           </div>
-
+          <!-- 2 -->
           <div class="descStyle" :title="item.desc">
             {{ item.desc }}
           </div>
-
+          <!-- 3 -->
           <div style="margin-top: 27px">
             <el-button type="primary" size="small" @click="handleDeploy(item)">
               部署
@@ -128,6 +125,7 @@
       @close="deployVisible = false"
       :visible.sync="deployVisible"
       width="70%"
+      :append-to-body="true"
     >
       <el-form
         ref="deployForm"
@@ -201,6 +199,37 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handle_deploy">部署</el-button>
         <el-button @click="deployVisible = false"> 取消 </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      @close="installVisible = false"
+      :visible.sync="installVisible"
+      width="70%"
+      :append-to-body="true"
+    >
+      <div slot="title" class="header-title">
+        <span style="font-size: 18px; line-height: 24px">
+          <i class="el-icon-warning" style="color: orange" />
+          平台认证 Operator
+        </span>
+      </div>
+
+      <div class="el-dialog-div">
+        <div style="margin-bottom20">
+          由
+          <span class="cursor-pointer" @click="handleToPlatform"> 平台 </span>
+          提供。平台已对其进行检查并验证，但不承诺服务等级协议
+          (SLA)。使用中若出现问题，请联系提供方寻求帮助。
+        </div>
+      </div>
+
+      <div slot="footer" class="dialog-footer">
+        <el-checkbox v-model="showTips" style="float: left"
+          >不再显示此提示信息</el-checkbox
+        >
+        <el-button type="primary" @click="handleInstall">继续安装</el-button>
+        <el-button @click="handleQuit"> 放弃 </el-button>
       </div>
     </el-dialog>
   </div>
@@ -333,7 +362,11 @@ export default {
         },
       ],
 
+      installVisible: false,
+      showTips: false,
+      
       deployVisible: false,
+
       deployRules: {
         channel: [
           { required: true, message: "必填项不能为空", trigger: "change" },
@@ -377,9 +410,17 @@ export default {
     handleSearch() {},
 
     handleDeploy(obj) {
-      this.deployForm = this.$options.data().deployForm;
-      this.deployVisible = true;
-      // this.deployForm.operator = obj.label;
+      if (obj.platform == "平台自研") {
+        this.deployForm = this.$options.data().deployForm;
+        this.deployVisible = true;
+      } else {
+        if (this.showTips == true) {
+          this.deployForm = this.$options.data().deployForm;
+          this.deployVisible = true;
+        } else {
+          this.installVisible = true;
+        }
+      }
     },
 
     handle_deploy() {},
@@ -389,6 +430,35 @@ export default {
         path: "/catalog-management/operator/detail-operatorHub",
         query: { name: obj.label },
       });
+    },
+
+    handleCategory(val) {
+      console.log(val);
+    },
+
+    handleLevel(val) {
+      console.log(val);
+    },
+
+    handleType(val) {
+      console.log(val);
+    },
+
+    handleSort(val) {},
+
+    handleToPlatform() {
+      console.log("跳转到平台");
+    },
+
+    handleInstall() {
+      this.installVisible = false;
+      this.deployForm = this.$options.data().deployForm;
+      this.deployVisible = true;
+    },
+
+    handleQuit() {
+      this.showTips = false;
+      this.installVisible = false;
     },
   },
 };
@@ -481,5 +551,23 @@ export default {
   line-height: 20px;
   margin-top: 16px;
   color: rgba(100, 102, 105);
+}
+.itemWrapped {
+  flex: 1 1 0%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  .titleWrapped {
+    font-size: 18px;
+    height: 24px;
+    line-height: 24px;
+    text-align: left;
+  }
+  .platformWrapped {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 2px;
+    color: rgba(150, 152, 155);
+  }
 }
 </style>

@@ -14,7 +14,9 @@
         >
           <el-form-item label="名称" prop="name">
             <el-col :span="16">
+              <span v-if="name">{{ infoForm.name }}</span>
               <el-input
+                v-else
                 v-model="infoForm.name"
                 placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-"
               />
@@ -24,6 +26,7 @@
           <el-form-item label="显示名称" prop="showname">
             <el-col :span="16">
               <el-input
+                :disabled="disabled.showname"
                 v-model="infoForm.showname"
                 placeholder="最多 64 个字符"
               />
@@ -32,13 +35,14 @@
 
           <el-form-item label="描述">
             <el-col :span="16">
-              <el-input v-model="infoForm.desc" />
+              <el-input v-model="infoForm.desc" :disabled="disabled.desc" />
             </el-col>
           </el-form-item>
 
           <el-form-item label="资源类型">
             <el-col :span="16">
-              <el-radio-group v-model="infoForm.resourceType">
+              <span v-if="name">{{ infoForm.resourceType }}</span>
+              <el-radio-group v-model="infoForm.resourceType" v-else>
                 <el-radio-button label="cluster">集群</el-radio-button>
                 <el-radio-button label="node">节点</el-radio-button>
                 <el-radio-button label="microservice">微服务</el-radio-button>
@@ -203,12 +207,14 @@
 
                     <td>
                       <el-form-item>
-                        <el-switch v-model="domain.disabled"></el-switch>
+                        <el-switch
+                          v-model="domain.disabled"
+                          :disabled="disabled.disable"
+                        ></el-switch>
                       </el-form-item>
                     </td>
                     <td class="text-center">
                       <el-button
-                        :disabled="addRulesDisable"
                         icon="el-icon-edit-outline"
                         class="cursor-pointer margin-left10 margin-right10"
                         type="text"
@@ -217,6 +223,7 @@
                         "
                       />
                       <el-button
+                        :disabled="disabled.addRules"
                         icon="el-icon-remove-outline"
                         class="cursor-pointer margin-left10 margin-right10"
                         type="text"
@@ -291,7 +298,10 @@
 
             <el-form-item label="告警发送间隔">
               <el-col :span="22">
-                <el-radio-group v-model="configForm.sendInterval">
+                <el-radio-group
+                  v-model="configForm.sendInterval"
+                  :disabled="disabled.sendInterval"
+                >
                   <el-radio-button label="global">全局</el-radio-button>
                   <el-radio-button label="custom">自定义</el-radio-button>
                 </el-radio-group>
@@ -382,7 +392,9 @@
     </div>
 
     <div class="fixed-div">
-      <el-button type="primary" @click="handleSubmit">创建</el-button>
+      <el-button type="primary" @click="handleSubmit">
+        <span>{{ name ? "更新" : " 创建" }}</span>
+      </el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
 
@@ -399,7 +411,7 @@
           v-if="alarmRulesVisible == true"
           :chart-data="containerLineData"
           :show-total="false"
-          height="200%"
+          height="240%"
           width="100%"
         />
         <!-- <div style="width: 30%; height: 200px">
@@ -657,7 +669,7 @@
 
                 <tr v-if="alarmRulesForm.noteItems.length == 0">
                   <td colspan="5">
-                    <div class="text-center" style="color: #a6a6a6">无标签</div>
+                    <div class="text-center" style="color: #a6a6a6">无注解</div>
                   </td>
                 </tr>
                 <tr>
@@ -700,8 +712,6 @@ export default {
   components: { LineAlert, MonacoEditor, FoldableBlock, lineChart },
   data() {
     return {
-      addRulesDisable: false,
-
       name: "",
 
       containerLineData: null,
@@ -779,7 +789,12 @@ export default {
         { label: "持续 10 分钟", value: "10min" },
         { label: "持续 30 分钟", value: "30min" },
       ],
-      policyOptions: [],
+      policyOptions: [
+        {
+          label: "cpass-admin-notification",
+          value: "cpass-admin-notification",
+        },
+      ],
       timeOptions: [
         { label: "5分钟", value: "5min" },
         { label: "10分钟", value: "10min" },
@@ -859,6 +874,14 @@ export default {
       alarmRulesItems: [],
 
       alarmDialogVisible: false,
+
+      disabled: {
+        showname: false,
+        desc: false,
+        addRules: false,
+        disable: false,
+        sendInterval: false,
+      },
     };
   },
 
@@ -922,12 +945,25 @@ export default {
         name: this.name,
         showname: "平台组件Cert-manager",
         desc: "Cpaas平台组件Cert-manager的告警策略",
-        resourceType: "component",
-        resourceName: "",
-        microService: "",
+        // resourceType: "component",
+        resourceType: "计算组件",
+        resourceName: "cert-manager",
+        microService: "cert-manager",
+        namespace: "cert-manager",
       };
 
-      this.addRulesDisable = true;
+      this.configForm = {
+        noticePolicy: ["cpass-admin-notification"],
+        sendInterval: "global",
+      };
+
+      this.disabled = {
+        showname: true,
+        desc: true,
+        addRules: true,
+        disable: true,
+        sendInterval: true,
+      };
     }
   },
 

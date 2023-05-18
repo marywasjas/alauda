@@ -1,19 +1,7 @@
 <template>
   <div class="calculation-container-group">
     <BaseCard>
-      <header>
-        <div class="card-title left-header" />
-      </header>
       <section>
-        <div class="flex-center" style="float: right; margin-bottom: 15px">
-          <el-input
-            placeholder="按名称过滤"
-            size="small"
-            class="margin-right10"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="onSearch"/>
-          </el-input>
-        </div>
         <el-table
           class="margin-top"
           :data="tableData.data"
@@ -29,18 +17,12 @@
             :show-overflow-tooltip="col['show-overflow-tooltip']"
           >
             <template slot-scope="scope">
-              <div v-if="col.id === 'name'">
-                {{ scope.row[col.id] }}
-              </div>
-              <div v-else-if="col.id === 'quota'">
-                <p class="margin10">
-                  <i class="el-icon-cpu primary2-text" />
-                  {{ scope.row.cpu }}
-                  <i class="el-icon-bank-card primary-text" />
-                  {{ scope.row.memory }}
-                  <i class="el-icon-coin primary-text" />
-                  {{ scope.row.storage }}
-                </p>
+              <div v-if="col.id === 'message'">
+                {{
+                  scope.row[col.id].length > 20
+                    ? scope.row[col.id].substring(0, 20) + "..."
+                    : scope.row[col.id]
+                }}
               </div>
               <div v-else>
                 {{ scope.row[col.id] }}
@@ -69,13 +51,13 @@ import { tableColumnList, tableData } from "./constant/index";
 
 export default {
   name: "Event",
-  // components: { MonacoEditorDialog },
+  components: {},
   props: {},
   data() {
     return {
       tableColumnList,
       tableData,
-      // detailVisible: false,
+
       page: {
         total: 10,
         current: 1,
@@ -87,12 +69,7 @@ export default {
   watch: {},
   created() {},
   mounted() {},
-  methods: {
-    // 搜索
-    onSearch() {
-      console.log("搜索");
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

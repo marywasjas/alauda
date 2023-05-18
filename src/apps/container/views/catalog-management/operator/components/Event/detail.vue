@@ -51,9 +51,6 @@ import TabHeader from "@/apps/container/views/components/TabHeader";
 import BaseInfo from "./components/BaseInfo/BaseInfo.vue";
 import Node from "./components/Node/Node.vue";
 import Event from "./components/Event/Event.vue";
-import Monitor from "./components/Monitor/Monitor.vue";
-import Func from "./components/Func/Func.vue";
-import Plugins from "./components/Plugins/Plugins.vue";
 
 export default {
   name: "ClusterDetail",
@@ -62,14 +59,9 @@ export default {
     BaseInfo,
     Node,
     Event,
-    Func,
-    Plugins,
-    Monitor,
   },
   data() {
     return {
-      fromPath: "",
-      plugins: "",
       name: "",
       desc: "",
       tabList: [
@@ -79,32 +71,17 @@ export default {
           com: "BaseInfo",
         },
         {
-          label: "节点",
+          label: "介绍",
           name: "node",
           com: "Node",
         },
         {
-          label: "关联项目",
+          label: "部署 / 运行状态",
           name: "event",
           com: "Event",
         },
-        {
-          label: "功能组件",
-          name: "func",
-          com: "Func",
-        },
-        {
-          label: "监控",
-          name: "monitor",
-          com: "Monitor",
-        },
-        {
-          label: "插件",
-          name: "plugins",
-          com: "Plugins",
-        },
       ],
-      activeName: "",
+      activeName: "baseInfo",
     };
   },
   computed: {
@@ -116,63 +93,13 @@ export default {
   },
   created() {
     this.name = this.$route.query.name;
-    this.desc = this.$route.query.desc;
-    // if (this.fromPath.name == "VolumeSnapshotList") {
-    //   this.activeName = this.tabList[5].name;
-    //   console.log(this.activeName )
-    // } else {
-    //   this.activeName = this.tabList[0].name;
-    // }
+    // this.desc = this.$route.query.desc;
   },
   methods: {
     changeActive(value) {
+      console.log(this.activeName, value);
       this.activeName = value;
     },
-
-    handelDelete() {
-      const returnMsgList = [
-        `确定删除集群"${this.name}"吗？该集群被以下 10个 项目使用。删除之后，仍会保留 Kubernetes 集群及项目下资源。如需要清理 Kubernetes 集群及项目下资源，请复制以下资源清理命令，并在该集群下进行清理。`,
-
-        `请输入${this.name}确定删除`,
-      ];
-      const newData = [];
-      const h = this.$createElement;
-      for (const i in returnMsgList) {
-        newData.push(h("p", null, returnMsgList[i]));
-      }
-      this.$prompt(h("div", null, newData), "删除集群", {
-        confirmButtonText: "删除",
-        cancelButtonText: "取消",
-        type: "error",
-        inputValidator: (val) => {
-          if (val === this.name) {
-            return true;
-          }
-          return false;
-        },
-        inputErrorMessage: "输入不正确",
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "已删除",
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消",
-          });
-        });
-    },
-  },
-  beforeRouteEnter(to, from, next) {
-    console.log(to, from);
-    // next();
-    next((vm) => {
-      vm.fromPath = from;
-      console.log(vm.fromPath);
-    });
   },
 };
 </script>
