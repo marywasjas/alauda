@@ -115,17 +115,89 @@
             </el-tab-pane>
 
             <el-tab-pane label="介绍" name="2">
-              <section class="component-div"></section>
+              <section class="component-div">
+                <div style="padding: 0 ">
+                  <!-- v-if="titleName == 'DevOps Tools'" -->
+                  <h1 style="margin-bottom: 16px">{{ "DevOps Tools" }}</h1>
+                  <h2 style="margin-bottom: 16px">{{ "注意" }}</h2>
+                  <p>Gitea: 支持框架为 ARM、x86</p>
+                  <p>Gitlab: 支持框架为 x86</p>
+                  <p>Jenkins: 支持框架为 ARM、x86</p>
+                  <p>Harbor: 支持框架为 ARM、x86</p>
+                  <p>Sonarqube: 支持框架为 ARM、x86</p>
+                  <p>Nexus: 支持框架为 ARM、x86</p>
+                  <p>Testlink: 支持框架为 x86</p>
+                  <p>Gitlab-Official: 支持框架为 x86</p>
+                  <h2 style="margin-bottom: 16px">{{ "介绍" }}</h2>
+                  <p>
+                    DevOps Tools 是一个用部署可集成在 DevOps
+                    中使用的外部工具链集合，包括
+                    Jenkins、Gitlab、Harbor、Sonarqube
+                    等，在创建实例时，用户可根据实际用途，选择"自动集成到 DevOps
+                    工具链"或"不集成到 DevOps 工具链"两种形式。
+                  </p>
+                  <p><strong>Gitea</strong></p>
+                  <p>
+                    Gitea 是一个轻量级代码托管解决方案，它可以运行在任何 Go
+                    能够编译的平台。
+                  </p>
+                  <p><strong>Gitlab</strong></p>
+                  <p>
+                    Gitlab 是一个开源的版本控制系统，它使用 Git
+                    作为代码管理工具，并在此基础上搭建起来的 web 服务。
+                  </p>
+                  <p>
+                    该工具为 Gitlab
+                    的非官方正式版本，存在一些暂时无法修复的严重漏洞，强烈建议用户使用官方正式版本
+                    GitlabOfficial。该工具 Gitlab 会在下一个版本 v3.7
+                    中下线。已经在使用该 Gitlab
+                    的用户，请参考运维手册中基础运维的部分，根据 DevOps
+                    模块的《Gitlab 数据迁移至 GitlabOfficial
+                    方案》文档，尽快完成向 GitlabOfficial 工具迁移的工作。
+                  </p>
+                  <p><strong>Gitlab-Official</strong></p>
+                  <p>
+                    Gitlab-Official 是一个开源的版本控制系统，它使用 Git
+                    作为代码管理工具，并在此基础上搭建起来的 web 服务。
+                  </p>
+                  <p><strong>Jenkins</strong></p>
+                  <p>
+                    Jenkins 是基于 Java
+                    开发的一个重要的持续集成工具，它常与版本控制工具、构建工具结合使用。常用的版本控制工具有
+                    SVN、GIT，构建工具有 Maven、Ant、Gradle。
+                  </p>
+                  <p><strong>Harbor</strong></p>
+                  <p>
+                    Harbor 是构建企业级私有 docker 镜像仓库的开源解决方案，它是
+                    Docker Registry 的更高级封装，它具体友好的 Web UI
+                    界面，角色和用户权限管理，用户操作审计等功能。
+                  </p>
+                  <p><strong>Sonarqube</strong></p>
+                  <p>
+                    Sonarqube
+                    是一个代码质量管理工具，它可以迅速定位代码中潜在或明显的错误。
+                  </p>
+                  <p><strong>Nexus</strong></p>
+                  <p>
+                    Nexus
+                    是一个强大的仓库管理工具，能够极大地简化内部仓库的维护和外部仓库的访问。
+                  </p>
+                  <p><strong>Testlink</strong></p>
+                  <p>
+                    Testlink
+                    是基于web的测试用例管理工具，主要功能是测试用例的创建、管理和执行。
+                  </p>
+                </div>
+              </section>
             </el-tab-pane>
 
-            <el-tab-pane label="部署/运行状态" name="3">
+            <el-tab-pane label="部署 / 运行状态" name="3">
               <section class="component-div">
                 <section>
                   <el-table
                     class="margin-top"
                     :data="tableData.data"
                     style="width: 100%"
-                    height="100%"
                     header-row-class-name="headerStyle"
                   >
                     <el-table-column
@@ -261,28 +333,6 @@ export default {
       tableData,
       tableColumnList,
 
-      table: {
-        data: [],
-        cols: [
-          {
-            id: "status",
-            label: "状态",
-          },
-          {
-            id: "reason",
-            label: "原因",
-          },
-          {
-            id: "message",
-            label: "消息",
-          },
-          {
-            id: "time",
-            label: "最近更新时间",
-          },
-        ],
-      },
-
       appTempData: [
         {
           label: "Gitea",
@@ -328,17 +378,6 @@ export default {
     // this.detailData.filter((item) => {
     //   return item.label == "显示名称";
     // })[0].value = this.$route.query.name;
-
-    this.table.data = Mock.mock({
-      "data|10": [
-        {
-          "status|1": ["Pending", "InstallReady", "Installing", "Succeeded"],
-          time: "@date",
-          message: "@word(30, 50)",
-          reason: "@word(10, 20)",
-        },
-      ],
-    });
   },
   mounted() {},
   methods: {

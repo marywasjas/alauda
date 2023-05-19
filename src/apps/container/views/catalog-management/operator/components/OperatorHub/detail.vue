@@ -11,16 +11,9 @@
             <div style="font-size: 20px; line-height: 28px">
               {{ titleName }}
             </div>
-            <div
-              style="
-                font-size: 14px;
-                line-height: 20px;
-                color: rgba(100, 102, 105);
-              "
-            >
-              {{
-                "clickhouse 是一个开源的面向专栏的数据库管理系统，能够实时生成分析数据报告。"
-              }}
+            <div class="noteStyle">
+              clickhouse
+              是一个开源的面向专栏的数据库管理系统，能够实时生成分析数据报告。
             </div>
           </div>
 
@@ -504,6 +497,357 @@
                     </li>
                   </ul>
                 </div>
+
+                <!-- 9 -->
+                <div
+                  style="padding: 0 16px"
+                  v-if="titleName == 'MySQL Group Replication'"
+                >
+                  <h3>介绍</h3>
+                  <p>
+                    该 Operator 以 InnoDB 和组复制为基础，为运行在 Kubernetes
+                    上的 MySQL 提供完整的高可用决解方案
+                  </p>
+                  <p>
+                    <strong>版本支持：MySQL 8.0</strong>
+                  </p>
+
+                  <h3>支持功能</h3>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>支持单主和多主</li>
+                    <li>内置监控</li>
+                    <li>持久化存储</li>
+                    <li>支持备份恢复</li>
+                    <li>资源配置</li>
+                    <li>密码设置</li>
+                    <li>读写分离和路由</li>
+                    <li>节点选择和亲和性</li>
+                    <li>污点和容忍性设置</li>
+                  </ul>
+                </div>
+
+                <!-- 10 -->
+                <div
+                  style="padding: 0 16px"
+                  v-if="titleName == 'MySQL PXC Cluster'"
+                >
+                  <h1>MySQL</h1>
+                  <h3>介绍</h3>
+                  <p>
+                    MySQL 是全球最受欢迎的关系型数据库之一，作为开源软件组合
+                    LAMP (Linux + Apache + MySQL + Perl/PHP/Python)
+                    中的重要一环，广泛应用于各类应用场景。MySQL Operator
+                    提供了自动创建，更改，删除 Percona XtraDB
+                    数据库集群节点的功能，通过这些功能可以方便的初始化新的数据库集群或扩展现有的数据库集群。MySQL
+                    Operator 还包含了所有必要的 Kubernetes
+                    配置来帮助你配置一个合适的Percona XtraDB 集群。
+                  </p>
+                  <p>
+                    <strong>版本支持：5.7</strong>
+                  </p>
+
+                  <h3>支持功能</h3>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>多主框架</strong>
+                      真正的多点读写集群，在任何时候读取到最新数据。
+                    </li>
+                    <li>
+                      <strong>同步复制</strong>
+                      集群的不同节点之间数据同步，没有延迟；即使在数据库挂掉之后，不会丢失数据。
+                    </li>
+                    <li>
+                      <strong>并发复制</strong>
+                      从节点在应用数据时，支持并行执行，从而有更好的性能表现。
+                    </li>
+                    <li>
+                      <strong>故障热切</strong>
+                      在出现数据库故障时，因为支持多点写入，切换非常容易。
+                    </li>
+                    <li>
+                      <strong>热插拔</strong>
+                      在服务器间，如果数据库主节点挂了，只要监控程序发现的够快，不可服务时间就会变得非常少。在节点故障期间，节点本身对集群影响非常小。
+                    </li>
+                    <li>
+                      <strong>自动节点克隆</strong>
+                      在新增节点或者停机维护时，增量数据或者基础数据不需要和管理员手动备份；PXC会自动拉取在线节点数据，从而实现最终一致性。
+                    </li>
+                    <li>
+                      <strong>集群扩展</strong>
+                      可以通过修改 "size" 参数来增加或者移除集群成员
+                    </li>
+                    <li>
+                      <strong>用户管理</strong>
+                      增加、删除、修改用户权限
+                    </li>
+                  </ul>
+
+                  <h3 style="margin-bottom: 16px">快速上手</h3>
+                  <p>要快速启动并运行，请查看我们的快速入门指南</p>
+                </div>
+
+                <!-- 11 -->
+                <div style="padding: 0 16px" v-if="titleName == 'PostgreSQL'">
+                  <h1>PostgreSQL</h1>
+                  <h3>介绍</h3>
+                  <p>
+                    经过30多年的积极开发严禁，PostgreSQL以可靠性、丰富功能和强大性能而著称，被业界誉为"最先进的开源关系型数据库"。
+                    PostgreSQL支持大部分的SQL标准并且提供了很多其他现代特性，如复杂查询、外键、触发器、视图、事务完整性、多版本并发控制等。Postgres
+                    Operator 提供了在 Kubernetes 上自动创建、更新和管理 Postgres
+                    集群的功能。
+                  </p>
+                  <p>
+                    <strong>版本支持：PostgreSQL 9.6、10、11、12</strong>
+                  </p>
+
+                  <h3>支持功能</h3>
+
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>免运维</strong>
+                      通过 PostgreSQL 资源配置集群
+                    </li>
+                    <li>
+                      <strong>可伸缩</strong>
+                      通过 Patroni 实现 PostgreSQL 集群高可用
+                    </li>
+                    <li>
+                      <strong>滚动更新</strong>
+                      PostgreSQL 集群，包括：小版本更新
+                    </li>
+                    <li>使用 PG Bouncer 作为数据库连接池</li>
+                    <li>还原和克隆 PostgreSQL 集群 (包括大版本升级)</li>
+                    <li>可以配置 S3 bucket 的逻辑备份</li>
+                    <li>使用 S3 WAL 备份集群</li>
+                    <li>可为非云环境配置</li>
+                    <li>K8s 上的基本凭证和用户管理，简化了应用程序部署</li>
+                    <li>用于创建和编辑 PostgreSQL 集群的 UI</li>
+                  </ul>
+
+                  <h3 style="margin-bottom: 16px">部署架构</h3>
+                  <p>下图展示了一个新的PostgreSQL集群会创建的各种资源种类</p>
+
+                  <h3 style="margin-bottom: 16px">快速上手</h3>
+                  <p>要快速启动并运行，请查看我们的快速入门指南</p>
+                </div>
+
+                <!-- 12 -->
+                <div
+                  style="padding: 0 16px"
+                  v-if="titleName == 'Prometheus Operator'"
+                >
+                  <p>
+                    基于Kubernetes的Prometheus
+                    Operator提供了一个简单易用的对Kubernetes服务的监控定义方式，和对Prometheus和Alertmanager实例的部署和管理方式。
+                  </p>
+
+                  <p>部署以后，Prometheus Operator可以提供一些特性</p>
+
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>创建/销毁</strong>
+                      你可以用Prometheus
+                      Operator简单地在你的Kubernetes命名空间启动一个Prometheus
+                    </li>
+                    <li>
+                      <strong>简易配置</strong>
+                      你可以基于Prometheus等自定义资源，简单地配置Prometheus的基础配置，比如版本、持久存储、保留策略、福本数等等。
+                    </li>
+                    <li>
+                      <strong>基于labels获取服务目标</strong>
+                      基于与Kubernetes类似的label查询，自动生成监控目标配置；不需要学习Prometheus
+                      指定的的配置语法。
+                    </li>
+                  </ul>
+
+                  <h3 style="margin-bottom: 16px">其他特性</h3>
+                  <p><strong>高可用</strong></p>
+                  <p>
+                    可以在失败域间运行多个实例。数据会被备份。这会让你的监控服务在电力断供期间保持可用状态，这个时候你可能
+                    最需要它。
+                  </p>
+                  <p><strong>滚动升级</strong></p>
+                  <p>
+                    无服务间断地滚动升级Prometheus到新的版本，很方便地保持更新。
+                  </p>
+                  <p><strong>处理容器地动态特性</strong></p>
+                  <p>
+                    告警规则可以附加到一组容器而不是单个单例，对于容器部署的高度动态特性，这种事最理想的。
+                  </p>
+                </div>
+
+                <!-- 13 -->
+                <div style="padding: 0 16px" v-if="titleName == 'RabbitMQ'">
+                  <h1>RabbitMQ</h1>
+                  <h3 style="margin-bottom: 16px">介绍</h3>
+                  <p>
+                    RabbitMQ是实现了高级消息队列协议 (AMQP) 的开源消息代理软件
+                    (亦称面向消息的中间件)。RabbitMQ
+                    有成千上万的用户，是最受欢迎的开源消息代理之一。从 T-Mobile
+                    到 Runtastic，RabbitMQ
+                    在全球范围内的小型初创企业和大型企业中都得到使用。
+                  </p>
+
+                  <p>
+                    <strong>支持版本：3.8.16 3.8.12 3.8.11</strong>
+                  </p>
+
+                  <h3 style="margin-bottom: 16px">支持的功能</h3>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>可靠性</strong>
+                      RabbitMQ
+                      使用一些机制来确保可靠性，如持久化、传输确认及发布确认等。
+                    </li>
+                    <li>
+                      <strong>灵活的路由</strong>
+                      在消息进入队列之前，通过交换器来路由消息。对于典型的路由功能，RabbitMQ
+                      已经提供了一些内置的交换器来实现。针对更复杂的路由功能，可以将多个交换器绑定在一起，也可以通过插件机制来实现自己的交换器。
+                    </li>
+                    <li>
+                      <strong>扩展性</strong>
+                      多个 RabbitMQ
+                      节点可以组成一个集群，也可以根据实际业务情况动态地扩展集群中节点。
+                    </li>
+                    <li>
+                      <strong>高可用性</strong>
+                      队列可以在集群中地机器上设置镜像，使得在部分节点出现问题的情况下队列仍然使用。
+                    </li>
+                  </ul>
+
+                  <h3 style="margin-bottom: 16px">快速上手</h3>
+                  <p>要快速启动并运行，请查看我们的快速入门指南。</p>
+                </div>
+
+                <!-- 14 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Redis'">
+                  <h2 style="margin-bottom: 16px">介绍</h2>
+                  <p>
+                    Redis (Remote Dictionary Server)，即远程字典服务，是一个使用
+                    ANSI C
+                    编写的开源、支持网络、基于内存、可选持久性的键值对存储数据库，并提供多种语言的
+                    API。Redis Operator 是一款基于 Kubernetes，创建、配置并管理
+                    Redis 实例的 Redis Operator，支持集群、哨兵两种部署架构。
+                  </p>
+
+                  <p>
+                    <strong>支持版本：Redis 4.0、5.0、6.0</strong>
+                  </p>
+
+                  <h2 style="margin-bottom: 16px">支持的功能</h2>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>支持集群、哨兵两种部署架构</li>
+                    <li>内置监控</li>
+                    <li>PVC 动态存储</li>
+                    <li>支持备份恢复</li>
+                    <li>资源配额</li>
+                    <li>密码和无密码设置</li>
+                    <li>节点选择和亲和性</li>
+                    <li>优先类和管理部署优先级</li>
+                    <li>SecurityContext 支持</li>
+                  </ul>
+
+                  <h2 style="margin-bottom: 16px">部署架构</h2>
+                  <p>下图展示了 Redis 的部署架构图</p>
+
+                  <h2 style="margin-bottom: 16px">快速上手</h2>
+                  <p class="cursor-pointer">
+                    要快速并运行，请查看我们的 快速入门指南
+                  </p>
+                </div>
+
+                <!-- 15 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Rook-Ceph'">
+                  <h2 style="margin-bottom: 16px">介绍</h2>
+                  <p>
+                    Rook-Ceph operator 可以用于打包、部署、管理、升级和扩展 Ceph
+                    存储，为基础设置服务(Logging、Metrics、Registry)以及
+                    Kubernetes 集群中的有状态应用程序提供持久存储。
+                  </p>
+
+                  <h2 style="margin-bottom: 16px">Rook-Ceph Operator</h2>
+
+                  <p>
+                    Rook-Ceph 是一个云原生的存储服务，便于与 Kubernetes
+                    集群中需要持久化存储的应用程序进行最佳集成，并在后台处理诸如供应和管理等繁重工作。
+                  </p>
+
+                  <p>
+                    Ceph
+                    是一个可大规模扩展的、软件定义的云本地存储平台，提供块、文件和对象存储服务。
+                    Ceph 可用于支持各种应用程序，包括关系数据库、NoSQL
+                    数据库、CI/CD 工具集、消息传递、AI/ML 和分析应用程序。 Ceph
+                    是一个经过验证的存储平台，支持世界上一些最大的存储部署，并拥有一个大型的、充满活力的开源社区支持该项目。
+                  </p>
+
+                  <h2 style="margin-bottom: 16px">支持功能</h2>
+
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      <strong>高可用性和弹性</strong> - Ceph
+                      没有单点故障(SPOF)，所有组件以高可用的方式本地工作
+                    </li>
+                    <li>
+                      <strong>数据冗余</strong> - Ceph
+                      可以通过多副本的方式来提供数据冗余
+                    </li>
+                    <li>
+                      <strong>数据保护</strong> - Ceph
+                      定期清理不一致的对象，并在必要时修复它们，确保您的副本总是一致的
+                    </li>
+                    <li>
+                      <strong>块、文件和对象存储服务</strong> - Ceph
+                      同时支持文件、块和对象存储，能够解决所有应用程序的存储需求
+                    </li>
+                  </ul>
+
+                  <h2 style="margin-bottom: 16px">快速上手</h2>
+                  <p class="cursor-pointer">
+                    {{ "https://rook.io/docs/rook/v1.5/ceph-quickstart.html" }}
+                  </p>
+                </div>
+
+                <!-- 16 -->
+                <div style="padding: 0 16px" v-if="titleName == 'Tekton'">
+                  <h2 style="margin-bottom: 16px">介绍</h2>
+                  <p>
+                    Tekton 是一个功能非常强大而灵活的 CI/CD 开源的云原生框架。
+                  </p>
+
+                  <p>
+                    Tekton 的前身是 Knative 项目的 build-pipeline
+                    项目，这个项目是为了给 build 模块增加 pipeline
+                    的功能，但是随着不同功能加入到 Knative build 模块中，build
+                    模块越来越变得像一个通用的 CI/CD 系统，于是，build-pipeline
+                    被剥离除了 Knative，就变成了现在的 Tekton，而 Tekton
+                    也从此变成了功能全面、标准化的云原生 CI/CD 解决方案。
+                  </p>
+                  <h2 style="margin-bottom: 16px">Tekton 的特点</h2>
+                  <ul style="margin-top: 0.25em; padding-left: 2em">
+                    <li>
+                      可定制：Tekton
+                      是完全可定制的，具有高度的灵活性，用户可以定义非常详细的构建快目录，在各种场景中使用
+                    </li>
+                    <li>
+                      可重复使用：Tekton
+                      是完全可移植的，用户都可以使用给定的流水线并重用其构建块，可以使得开发人员无需"造轮子"就可以快速构建复杂得流水线
+                    </li>
+                    <li>
+                      可扩展：Tekton Catalog 是社区驱动得 Tekton
+                      构建块存储库，用户可以使用 Tekton Catalog
+                      中定义的组件快速创建新的流水线并扩展现有管道
+                    </li>
+                    <li>
+                      标准化：Tekton 在 Kubernetes
+                      集群上作为扩展安装和运行，并使用完善的 Kubernetes
+                      资源模型，Tekton 工作负载在 Kubernetes Pod 内执行
+                    </li>
+                    <li>
+                      伸缩性：要增加工作负载容量，只需添加新的节点到集群即可，Tekton
+                      可随集群扩展，无需重新定义资源分配或对管道进行任何其他修改
+                    </li>
+                  </ul>
+                </div>
               </section>
             </el-tab-pane>
 
@@ -516,28 +860,8 @@
                     :key="item.label"
                   >
                     <div class="buttonClass">
-                      <div
-                        style="
-                          font-size: 18px;
-                          height: 24px;
-                          line-height: 24px;
-                          margin-bottom: 16px;
-                        "
-                      >
-                        KafkaBridge
-                      </div>
-
-                      <div
-                        style="
-                          font-size: 14px;
-                          height: 85px;
-                          line-height: 20px;
-                          margin-bottom: 16px;
-                        "
-                      >
-                        KafkaBridge集群
-                      </div>
-
+                      <div class="noteStyle_2">KafkaBridge</div>
+                      <div class="noteStyle_3">KafkaBridge集群</div>
                       <div class="cursor-pointer" style="font-size: 14px">
                         <i class="el-icon-document" @click="handleView">
                           查看样例 YAML
@@ -914,6 +1238,12 @@ export default {
     this.titleName = this.$route.query.name;
   },
   mounted() {},
+  beforeRouteEnter(to, from, next) {
+    document.body.scrollTop = 0;
+    // firefox
+    // document.documentElement.scrollTop = 0;
+    next();
+  },
   methods: {
     getList() {},
 
@@ -1146,5 +1476,23 @@ li {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+.noteStyle {
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(100, 102, 105);
+}
+.noteStyle_2 {
+  font-size: 18px;
+  height: 24px;
+  line-height: 24px;
+  margin-bottom: 16px;
+}
+.noteStyle_3 {
+  font-size: 14px;
+  height: 85px;
+  line-height: 20px;
+  margin-bottom: 16px;
+  color: rgba(100, 102, 105);
 }
 </style>

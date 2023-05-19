@@ -23,9 +23,9 @@
 
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
-import Node from "./components/Node/Node.vue";
-import Event from "./components/Event/Event.vue";
 import LineAlert from "@/apps/container/views/components/LineAlert";
+import OperatorHub from "./components/OperatorHub/OperatorHub.vue";
+import Operators from "./components/Operators/Operators.vue";
 
 import { nanoid } from "nanoid";
 
@@ -33,8 +33,8 @@ export default {
   name: "ClusterDetail",
   components: {
     TabHeader,
-    Node,
-    Event,
+    OperatorHub,
+    Operators,
     LineAlert,
   },
   data() {
@@ -45,12 +45,12 @@ export default {
         {
           label: "OperatorHub",
           name: "node",
-          com: "Node",
+          com: "OperatorHub",
         },
         {
           label: "已部署 Operators",
           name: "event",
-          com: "Event",
+          com: "Operators",
         },
       ],
       activeName: "",

@@ -1677,7 +1677,7 @@ export const containerAsyncRoutes = [
           },
           {
             path: 'detail-operatorHub',
-            component: () => import('@/apps/container/views/catalog-management/operator/components/Node/detail'),
+            component: () => import('@/apps/container/views/catalog-management/operator/components/OperatorHub/detail'),
             meta: { title: '', },
             hidden: true,
             beforeEnter: (to, from, next) => {
@@ -1687,7 +1687,7 @@ export const containerAsyncRoutes = [
           },
           {
             path: 'detail-operatorDeploy',
-            component: () => import('@/apps/container/views/catalog-management/operator/components/Event/detail'),
+            component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/detail'),
             meta: { title: '', },
             hidden: true,
             beforeEnter: (to, from, next) => {
@@ -1697,7 +1697,17 @@ export const containerAsyncRoutes = [
           },
           {
             path: 'createInstance',
-            component: () => import('@/apps/container/views/catalog-management/operator/components/Event/components/BaseInfo/createInstance'),
+            component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/components/BaseInfo/createInstance'),
+            meta: { title: '', },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
+            path: 'detailInstance',
+            component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/components/BaseInfo/detailInstance'),
             meta: { title: '', },
             hidden: true,
             beforeEnter: (to, from, next) => {

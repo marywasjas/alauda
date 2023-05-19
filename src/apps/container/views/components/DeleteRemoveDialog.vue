@@ -4,21 +4,23 @@
       :visible.sync="formVisible"
       :width="width"
       :before-close="closeFormDialog"
+      height="80%"
     >
       <div
         style="
           display: flex;
           flex-wrap: wrap;
-          align-items: center;
-          justify-content: center;
+          flex-direction: column;
+          align-content: flex-start;
+          align-items: flex-start;
         "
       >
-        <span class="titleStyle">
+        <div class="titleStyle">
           <i class="el-icon-warning" style="color: orange" />
           {{ titleContext }}
-        </span>
+        </div>
         <!-- <span style="margin-top:20px">删除后将无法恢复，且导致相关联的告警策略无法监控数据。</span> -->
-        <span style="margin-top: 20px">{{ nodeText }}</span>
+        <div style="margin-left: 28px; margin-top: 15px">{{ nodeText }}</div>
       </div>
 
       <span slot="footer" class="dialog-footer">
@@ -95,5 +97,11 @@ export default {
   font-size: 22px;
   line-height: 24px;
   font-weight: bold;
+}
+::v-deep .el-dialog__body {
+  padding: 0px 20px;
+  color: #606266;
+  font-size: 14px;
+  word-break: break-all;
 }
 </style>
