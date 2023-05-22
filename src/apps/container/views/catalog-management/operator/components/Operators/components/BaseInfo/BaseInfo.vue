@@ -430,7 +430,7 @@ export default {
     font-weight: 400;
   }
   i {
-    color: $color-primary;
+    // color: $color-primary;
     margin-left: 10px;
     cursor: pointer;
   }

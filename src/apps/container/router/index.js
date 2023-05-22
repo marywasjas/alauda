@@ -1723,6 +1723,112 @@ export const containerAsyncRoutes = [
   // 平台管理--工具链管理
 
 
+  // 平台管理--流水线管理
+
+
+  // 平台管理--服务网络
+  {
+    path: '/service-management',
+    component: Layout,
+    redirect: '/service-management/service-mesh/list',
+    name: 'Service-Management',
+    meta: { title: '服务网络', icon: 'table' },
+    children: [
+      // 网格列表
+      {
+        path: 'service-mesh',
+        component: () => import('@/apps/container/views/service-management/service-mesh/index'),
+        redirect: '/service-management/service-mesh/list',
+        name: 'ServiceMeshMain',
+        meta: { title: '网格网络', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/service-management/service-mesh/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/service-management/service-mesh/create'),
+            name: 'UserList',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'detail',
+            component: () => import('@/apps/container/views/service-management/service-mesh/detail'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+        ]
+      },
+      // Operators
+      // {
+      //   path: 'operator',
+      //   component: () => import('@/apps/container/views/catalog-management/operator/index'),
+      //   redirect: '/catalog-management/operator/list',
+      //   name: 'OperatorMain',
+      //   meta: { title: 'Operators', roles: ['admin'] },
+      //   children: [
+      //     {
+      //       path: 'list',
+      //       component: () => import('@/apps/container/views/catalog-management/operator/list'),
+      //       meta: { title: '', },
+      //       hidden: true
+      //     },
+      //     {
+      //       path: 'detail-operatorHub',
+      //       component: () => import('@/apps/container/views/catalog-management/operator/components/OperatorHub/detail'),
+      //       meta: { title: '', },
+      //       hidden: true,
+      //       beforeEnter: (to, from, next) => {
+      //         if (to.query.name) to.meta.title = to.query.name;
+      //         next();
+      //       },
+      //     },
+      //     {
+      //       path: 'detail-operatorDeploy',
+      //       component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/detail'),
+      //       meta: { title: '', },
+      //       hidden: true,
+      //       beforeEnter: (to, from, next) => {
+      //         if (to.query.name) to.meta.title = to.query.name;
+      //         next();
+      //       },
+      //     },
+      //     {
+      //       path: 'createInstance',
+      //       component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/components/BaseInfo/createInstance'),
+      //       meta: { title: '', },
+      //       hidden: true,
+      //       beforeEnter: (to, from, next) => {
+      //         if (to.query.name) to.meta.title = to.query.name;
+      //         next();
+      //       },
+      //     },
+      //     {
+      //       path: 'detailInstance',
+      //       component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/components/BaseInfo/detailInstance'),
+      //       meta: { title: '', },
+      //       hidden: true,
+      //       beforeEnter: (to, from, next) => {
+      //         if (to.query.name) to.meta.title = to.query.name;
+      //         next();
+      //       },
+      //     },
+      //   ]
+      // },
+    ]
+  },
+
+
   // 平台管理--平台证书管理
   {
     path: '/platformCert-management',

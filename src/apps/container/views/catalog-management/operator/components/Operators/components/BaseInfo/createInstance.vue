@@ -316,21 +316,29 @@
               v-if="type"
               style="margin-top: 10px"
             >
-              <monaco-editor
-                ref="monacoEditor"
-                :code="currentCode"
-                :read-only="false"
-                :language="language"
-                @handleBlur="handleBlur"
-                :btn-visible="btnVisible"
-              />
+              <div
+                style="
+                  background: rgba(247, 249, 252);
+                  border: 10px solid rgba(247, 249, 252);
+                "
+              >
+                <monaco-editor
+                  class="yamlStyle"
+                  ref="monacoEditor"
+                  :code="currentCode"
+                  :read-only="false"
+                  :language="language"
+                  @handleBlur="handleBlur"
+                  :btn-visible="btnVisible"
+                />
+              </div>
             </el-form-item>
             <el-descriptions
               size="small"
               :colon="false"
               :contentStyle="rowCenter"
             >
-              <el-descriptions-item>
+              <el-descriptions-item v-if="type">
                 默认的 Broker 配置。其中 configmap 的 namespace 需要与
                 KnativeEventing 实例保存一致！
               </el-descriptions-item>
@@ -352,7 +360,7 @@
     </div>
 
     <div class="fixed-div">
-      <el-button type="primary" @click="nextSubmit">
+      <el-button type="primary" @click="handleSubmit">
         <span v-if="type">更新</span>
         <span v-else>创建</span>
       </el-button>
@@ -452,7 +460,9 @@ export default {
         { id: "cpaas-dev", label: "cpaas-dev" },
       ],
 
-      infoForm: {},
+      infoForm: {
+        labelItems: [],
+      },
 
       infoRules: {
         name: [{ required: true, message: "名称是必填项", trigger: "blur" }],
@@ -467,44 +477,51 @@ export default {
   },
 
   created() {
-    this.type = this.$route.query.type;
-    // if (this.type == "update") {
-    // }
     this.currentCode = JSON.stringify(this.defaultCode, null, 2);
-    this.titleName = this.$route.query.name;
-    this.infoForm = {
-      name: "gitlab-sample",
-      showName: "",
-      namespace: "baas",
-      external: "",
-      labelItems: [],
-      type: "pvc",
-      httpPort: 30000,
-      httpsPort: 30001,
-      sshPort: 30002,
-      serviceType: "nodePort",
 
-      apiVersion: "operator.devops.alauda.io/v1alpha",
-      kind: "Gitlab",
-      metadata: {
+    this.titleName = this.$route.query.name;
+    this.type = this.$route.query.type;
+
+    if (this.type) {
+      this.infoForm.labelItems = [
+        { id: 1, key: "key1", value: "value1" },
+        { id: 2, key: "key2", value: "value2" },
+      ];
+    } else {
+      this.infoForm = {
         name: "gitlab-sample",
-      },
-      spec: {
-        account: null,
-        integratedIntoPlatform: false,
-        persistence: {
-          type: "LcalPath",
+        showName: "",
+        namespace: "baas",
+        external: "",
+        labelItems: [],
+        type: "pvc",
+        httpPort: 30000,
+        httpsPort: 30001,
+        sshPort: 30002,
+        serviceType: "nodePort",
+
+        apiVersion: "operator.devops.alauda.io/v1alpha",
+        kind: "Gitlab",
+        metadata: {
+          name: "gitlab-sample",
         },
-        service: {
-          nodePort: {
-            httpPort: 30000,
-            httpsPort: 30001,
-            sshPort: 30002,
+        spec: {
+          account: null,
+          integratedIntoPlatform: false,
+          persistence: {
+            type: "LcalPath",
           },
-          type: "NodePort",
+          service: {
+            nodePort: {
+              httpPort: 30000,
+              httpsPort: 30001,
+              sshPort: 30002,
+            },
+            type: "NodePort",
+          },
         },
-      },
-    };
+      };
+    }
   },
 
   methods: {
@@ -523,23 +540,17 @@ export default {
       this.inputCode = value;
     },
 
-    nextSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.active = 1;
-          // this.$refs["ruleForm"].resetFields();
-          this.$refs["ruleForm"].clearValidate();
-          this.ruleForm = this.$options.data().ruleForm;
-          // this.ruleForm = {
-          //   name: "",
-          //   showName: "",
-          //   desc: "",
-          //   roleType: "平台角色",
-          // };
-        } else {
-          return false;
-        }
-      });
+    handleSubmit() {
+      // this.$refs["ruleForm"].validate((valid) => {
+      //   if (valid) {
+      //     this.active = 1;
+      //     // this.$refs["ruleForm"].resetFields();
+      //     this.$refs["ruleForm"].clearValidate();
+      //     this.ruleForm = this.$options.data().ruleForm;
+      //   } else {
+      //     return false;
+      //   }
+      // });
     },
 
     // 取消-返回
@@ -716,5 +727,14 @@ export default {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.08);
   border-radius: 4px;
   /* margin-bottom: 16px; */
+}
+.yamlStyle {
+  // margin-top: 10px;
+  padding: 0px;
+  // background: rgba(150, 152, 155);
+  -webkit-box-shadow: 0px 0px 0px 0px rgba(50, 52, 55, 0.16);
+  box-shadow: 0px 0px 0px 0px rgba(50, 52, 55, 0.16);
+  border-radius: 0px;
+  margin-bottom: 16px;
 }
 </style>
