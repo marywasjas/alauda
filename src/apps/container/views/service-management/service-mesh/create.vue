@@ -1412,7 +1412,7 @@ export default {
 .component-div {
   margin-top: 16px;
   margin-left: 136px;
-  padding: 20px;
+  padding: 10px;
   background: rgba(247, 249, 252);
   .container-div {
     background: #fff;
@@ -1435,7 +1435,5 @@ export default {
     cursor: pointer;
   }
 }
-// .memory {
-//   margin-left: 35px !important;
-// }
+
 </style>
