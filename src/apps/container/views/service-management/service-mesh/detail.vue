@@ -17,9 +17,10 @@
 
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
+import LineAlert from "@/apps/container/views/components/LineAlert";
 import ServiceNet from "./components/ServiceNet/ServiceNet.vue";
 import ComList from "./components/ComList/ComList.vue";
-import LineAlert from "@/apps/container/views/components/LineAlert";
+import GatewayList from "./components/GatewayList/GatewayList.vue";
 
 import { nanoid } from "nanoid";
 
@@ -30,6 +31,7 @@ export default {
     LineAlert,
     ServiceNet,
     ComList,
+    GatewayList,
   },
   data() {
     return {
@@ -45,6 +47,11 @@ export default {
           label: "组件列表",
           name: "comList",
           com: "ComList",
+        },
+        {
+          label: "网关列表",
+          name: "gatewayList",
+          com: "GatewayList",
         },
       ],
       activeName: "",

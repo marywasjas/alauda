@@ -1726,13 +1726,13 @@ export const containerAsyncRoutes = [
   // 平台管理--流水线管理
 
 
-  // 平台管理--服务网络
+  // 平台管理--服务网格
   {
     path: '/service-management',
     component: Layout,
     redirect: '/service-management/service-mesh/list',
     name: 'Service-Management',
-    meta: { title: '服务网络', icon: 'table' },
+    meta: { title: '服务网格', icon: 'table' },
     children: [
       // 网格列表
       {
@@ -1761,6 +1761,24 @@ export const containerAsyncRoutes = [
             component: () => import('@/apps/container/views/service-management/service-mesh/detail'),
             name: 'UserList',
             meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
+            path: 'createGateway',
+            component: () => import('@/apps/container/views/service-management/service-mesh/components/GatewayList/create'),
+            name: 'UserList',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'detailGateway',
+            component: () => import('@/apps/container/views/service-management/service-mesh/components/GatewayList/detail'),
+            name: 'UserList',
+            meta: { title: '创建', icon: 'icon', noCache: true, },
             hidden: true,
             beforeEnter: (to, from, next) => {
               if (to.query.name) to.meta.title = to.query.name;
@@ -1825,6 +1843,89 @@ export const containerAsyncRoutes = [
       //     },
       //   ]
       // },
+    ]
+  },
+
+
+  // 平台管理--运营统计
+  {
+    path: '/meter',
+    component: Layout,
+    redirect: '/meter/summary/list',
+    name: 'Meter',
+    meta: { title: '运营统计', icon: 'excel' },
+    children: [
+      // 运营统计
+      {
+        path: 'summary',
+        component: () => import('@/apps/container/views/meter/summary/index'),
+        redirect: '/meter/summary/list',
+        name: 'SummaryMain',
+        meta: { title: '运营概览', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/meter/summary/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+
+      // 统计报表
+      {
+        path: 'report',
+        component: () => import('@/apps/container/views/meter/report/index'),
+        redirect: '/meter/report/list',
+        name: 'ReportMain',
+        meta: { title: '统计报表', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/meter/report/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+
+      // 计量明细
+      {
+        path: 'detail',
+        component: () => import('@/apps/container/views/meter/detail/index'),
+        redirect: '/meter/detail/list',
+        name: 'DetailMain',
+        meta: { title: '计量明细', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/meter/detail/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
+
+      // 导出记录
+      {
+        path: 'export',
+        component: () => import('@/apps/container/views/meter/export/index'),
+        redirect: '/meter/export/list',
+        name: 'ExportMain',
+        meta: { title: '导出记录', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/meter/export/list'),
+            name: 'VolumeSnapshotList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
     ]
   },
 

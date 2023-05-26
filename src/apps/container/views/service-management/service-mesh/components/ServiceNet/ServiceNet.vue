@@ -58,11 +58,6 @@
     </BaseCard>
 
     <el-card class="box-card">
-      <!-- <header>
-          <div class="card-title left-header">
-            <span>{{ "网格" }}</span>
-          </div>
-        </header> -->
       <div slot="header" class="clearfix">
         <span style="font-size: 20px">网格部署</span>
       </div>
@@ -71,7 +66,6 @@
           :data="tableData.data"
           style="width: 100%"
           header-row-class-name="headerStyle"
-          @sort-change="setSort"
         >
           <el-table-column
             v-for="col in tableColumnList"
@@ -294,114 +288,233 @@
     </el-card>
 
     <el-dialog
-      title="更新显示名称"
+      title="更新网格配置"
       @close="updateVisible = false"
       :visible.sync="updateVisible"
-      width="60%"
+      width="80%"
     >
-      <el-form ref="updateForm" :model="updateForm" label-width="135px">
-        <el-form-item label="显示名称">
-          <el-input v-model="updateForm.showName"></el-input>
-        </el-form-item>
+      <el-form
+        ref="updateForm"
+        :model="updateForm"
+        :rules="updateRules"
+        label-width="135px"
+      >
+        <label class="el-form-item__label" style="width: 135px">
+          Sidecar 资源配置
+        </label>
+        <div class="component-div-dialog">
+          <el-row type="flex" class="container-div" style="padding-top: 20px">
+            <el-col :span="11">
+              <el-form-item prop="cpu">
+                <el-input v-model="updateForm.cpu">
+                  <template slot="prepend">CPU</template>
+                  <template slot="append">核</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="11" style="margin-left: -100px">
+              <el-form-item prop="memory">
+                <el-input v-model="updateForm.memory">
+                  <template slot="prepend">内存</template>
+                  <template slot="append">Mi</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+
+        <label class="el-form-item__label" style="width: 135px">
+          调用链配置
+        </label>
+        <div class="component-div-dialog">
+          <el-row type="flex" class="container-div" style="padding-top: 20px">
+            <el-col :span="11">
+              <el-form-item label="采样率">
+                <el-input v-model="updateForm.sampleRate" style="width: 85%">
+                  <template slot="append">%</template>
+                </el-input>
+                <el-tooltip effect="dark" class="item" placement="top">
+                  <template slot="content">
+                    <div style="max-width: 450px">
+                      为减少数据采集对系统的压力，根据业务需要设置监控数据的采样率，用于控制调用链数据采集的比率，默认为
+                      100%
+                    </div>
+                  </template>
+                  <i class="el-icon-question margin-left10 question-icon" />
+                </el-tooltip>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="11">
+              <el-form-item label="对接 Kafka">
+                <el-switch v-model="updateForm.kafka"></el-switch>
+                <el-tooltip effect="dark" class="item" placement="top">
+                  <template slot="content">
+                    <div style="max-width: 450px">
+                      开启时，调用链数据将通过 Kafka 写入
+                      Elasticsearch，避免流量过大时增加对 Elasticsearch
+                      的写入压力，但存在一定的调用链查询延迟；关闭时，调用链数据将直接写入
+                      Elasticsearch。
+                    </div>
+                  </template>
+                  <i class="el-icon-question margin-left10 question-icon" />
+                </el-tooltip>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+
+        <label class="el-form-item__label" style="width: 135px">
+          Elasticsearch 对接
+        </label>
+        <div class="component-div-dialog">
+          <el-row class="container-div" style="padding-top: 20px">
+            <el-col :span="24">
+              <el-form-item label="来源">
+                <el-radio-group
+                  v-model="updateForm.origin_elastic"
+                  @input="handleRadio"
+                >
+                  <el-radio-button label="平台提供"></el-radio-button>
+                  <el-radio-button label="自定义"></el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="22">
+              <el-form-item label="URL" prop="url">
+                <el-input
+                  v-model="updateForm.url_elastic"
+                  placeholder="请输入 Elasticsearch 地址"
+                />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="24" v-if="updateForm.origin_elastic == '自定义'">
+              <el-form-item label="保密字典">
+                <el-select
+                  v-model="updateForm.dictionary_elastic"
+                  @focus="setMinWidthEmpty"
+                  style="width: 65%"
+                  placeholder="请选择保密字典"
+                >
+                  <el-option
+                    v-for="item in dictionaryOptions_elastic"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+
+                <el-button
+                  type="primary"
+                  style="margin-left: 40px"
+                  @click="handleCreateDict('elastic')"
+                  >新建保密字典</el-button
+                >
+              </el-form-item>
+              <el-descriptions
+                size="small"
+                :colon="false"
+                :contentStyle="rowCenter"
+              >
+                <el-descriptions-item>
+                  您可前往 global 集群的 cpaas-system
+                  命名空间管理存储了认证信息的保密字典
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-col>
+          </el-row>
+        </div>
+
+        <label class="el-form-item__label" style="width: 135px">
+          监控系统对接
+        </label>
+        <div class="component-div-dialog">
+          <el-row class="container-div" style="padding-top: 20px">
+            <el-col :span="24">
+              <el-form-item label="来源">
+                <el-radio-group v-model="updateForm.origin_monitor">
+                  <el-radio-button label="平台提供"></el-radio-button>
+                  <el-radio-button label="自定义"></el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="22">
+              <el-form-item label="监控系统类型">
+                <span v-if="updateForm.origin_monitor == '平台提供'">
+                  Prometheus
+                </span>
+
+                <el-select
+                  v-else
+                  v-model="updateForm.monitorType"
+                  @focus="setMinWidthEmpty"
+                  style="width: 100%"
+                  placeholder="请选择保密字典"
+                >
+                  <el-option
+                    v-for="item in monitorOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="22">
+              <el-form-item label="URL" prop="url_monitor">
+                <el-input
+                  v-model="updateForm.url_monitor"
+                  :disabled="urlDisabled2"
+                />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="24" v-if="updateForm.origin_monitor == '自定义'">
+              <el-form-item label="保密字典">
+                <el-select
+                  v-model="updateForm.dictionary"
+                  @focus="setMinWidthEmpty"
+                  style="width: 65%"
+                  placeholder="请选择保密字典"
+                >
+                  <el-option
+                    v-for="item in dictionaryOptions_monitor"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+
+                <el-button
+                  type="primary"
+                  style="margin-left: 40px"
+                  @click="handleCreateDict('monitor')"
+                  >新建保密字典</el-button
+                >
+              </el-form-item>
+              <el-descriptions
+                size="small"
+                :colon="false"
+                :contentStyle="rowCenter"
+              >
+                <el-descriptions-item>
+                  您可前往 global 集群的 cpaas-system
+                  命名空间管理存储了认证信息的保密字典
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-col>
+          </el-row>
+        </div>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handle_update">更新</el-button>
         <el-button @click="updateVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      title="部署进度"
-      @close="deployVisible = false"
-      :visible.sync="deployVisible"
-      width="70%"
-    >
-      <!-- <el-form ref="updateForm" :model="updateForm" label-width="135px">
-        <el-form-item label="显示名称">
-          <el-input v-model="updateForm.showName"></el-input>
-        </el-form-item>
-      </el-form> -->
-
-      <el-tabs tab-position="left">
-        <el-tab-pane label="Operators" style="height: 100%">
-          <div style="margin-bottom: 15px; margin-left: 5px">
-            部署信息
-            <i class="el-icon-success running" />
-            Operators 部署成功
-          </div>
-
-          <div
-            style="
-              background: rgba(247, 249, 252);
-              border: 10px solid rgba(247, 249, 252);
-            "
-          >
-            <monaco-editor
-              class="yamlStyle"
-              ref="monacoEditor"
-              :code="currentCode"
-              :read-only="true"
-              :language="language"
-              @handleBlur="handleBlur"
-              :btn-visible="btnVisible"
-            />
-          </div>
-        </el-tab-pane>
-
-        <el-tab-pane label="组件实例">
-          <div style="margin-bottom: 15px; margin-left: 5px">
-            部署信息
-            <i class="el-icon-success running" />
-            组件实例 部署成功
-          </div>
-
-          <div
-            style="
-              background: rgba(247, 249, 252);
-              border: 10px solid rgba(247, 249, 252);
-            "
-          >
-            <monaco-editor
-              class="yamlStyle"
-              ref="monacoEditor2"
-              :code="currentCode2"
-              :read-only="true"
-              :language="language"
-              @handleBlur="handleBlur2"
-              :btn-visible="btnVisible2"
-            />
-          </div>
-        </el-tab-pane>
-
-        <el-tab-pane label="组件运行检查">
-          <div style="margin-bottom: 15px; margin-left: 5px">
-            部署信息
-            <i class="el-icon-success running" />
-            组件运行检查 部署成功
-          </div>
-
-          <div
-            style="
-              background: rgba(247, 249, 252);
-              border: 10px solid rgba(247, 249, 252);
-            "
-          >
-            <monaco-editor
-              class="yamlStyle"
-              ref="monacoEditor2"
-              :code="currentCode2"
-              :read-only="true"
-              :language="language"
-              @handleBlur="handleBlur2"
-              :btn-visible="btnVisible2"
-            />
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="deployVisible = false">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -421,6 +534,66 @@ export default {
   data() {
     return {
       activeName: "1",
+
+      updateVisible: false,
+
+      updateForm: {
+        cpu: "0.1",
+        memory: "128",
+        sampleRate: "100",
+        kafka: false,
+        origin_elastic: "平台提供",
+        url_elastic: "http://25.2.20.203:443/es_proxy",
+        dictionary_elastic: "",
+        origin_monitor: "平台提供",
+        url_monitor: "http://25.2.20.203:443/es_proxy",
+        monitorType: "victoriaMetrics",
+        automatic: false,
+
+        nodeAntiAffi: "期望",
+
+        instanceNum: 1,
+
+        cpu_gateway: "0.5",
+        memory_gateway: "0.5",
+      },
+
+      updateRules: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        version: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        cluster: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        cpu: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        memory: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        url_elastic: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        url_monitor: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        instanceNum: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        cpu_gateway: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        memory_gateway: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+      },
+
+      urlDisabled: false,
+      urlDisabled2: false,
+
+      monitorOptions: [
+        { label: "Prometheus", value: "prometheus" },
+        { label: "VictoriaMetrics", value: "victoriaMetrics" },
+      ],
 
       detailResData: [
         {
@@ -447,10 +620,6 @@ export default {
       ],
 
       titleName: "",
-
-      updateForm: {
-        showName: "",
-      },
 
       updateVisible: false,
       deployVisible: false,
@@ -576,9 +745,16 @@ export default {
       }
     },
 
-    handleUpdate(obj) {
+    handleUpdate() {
       this.updateVisible = true;
-      this.updateForm.showName = obj.value;
+    },
+
+    handleRadio(val) {
+      if (val == "自定义") {
+        this.updateForm.url_elastic = "";
+      } else {
+        this.updateForm.url_elastic = "http://25.2.20.203:443/es_proxy";
+      }
     },
 
     handle_update() {},
@@ -740,6 +916,32 @@ export default {
   box-shadow: 0px 0px 0px 0px rgba(50, 52, 55, 0.16);
   border-radius: 0px;
   margin-bottom: 16px;
+}
+.component-div-dialog {
+  margin-top: 16px;
+  margin-left: 136px;
+  padding: 10px;
+  background: rgba(247, 249, 252);
+  .container-div {
+    background: #fff;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+}
+.label-value {
+  margin-bottom: 12px;
+  margin-top: 12px;
+  span {
+    font-size: $font-size-14;
+    font-weight: bold;
+  }
+  span:last-child {
+    font-weight: 400;
+  }
+  i {
+    margin-left: 10px;
+    cursor: pointer;
+  }
 }
 ::v-deep .el-tabs__item:hover {
   // color: orange;
