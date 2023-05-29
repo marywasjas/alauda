@@ -1,38 +1,29 @@
 import Mock from 'mockjs'
 export const tableColumnList = [
-  {
-    id: 'name',
-    label: '证书名称名称',
-    sortable: true,
-    fixed: true,
-    width:250
-  },
-  {
-    id: 'status',
-    label: '证书状态',
-  },
-  {
-    id: 'cluster',
-    label: '所属集群',
-    sortable: true,
-  },
-  {
-    id: 'nodeIP',
-    label: '节点 IP',
-  },
-  {
-    id: 'time',
-    label: '到期时间',
-    sortable: true,
-  },
+  { label: "容器组名称", id: "container", sortable: true, width: "135px" },
+  { label: "所属命名空间名称", id: "namespace" },
+  { label: "所属集群", id: "cluster", },
+  { label: "所属项目", id: "project" },
+  { label: "CPU 使用总量", id: "cpu", sortable: true, width: "135px" },
+  { label: "内存使用总量", id: "memory", sortable: true, width: "130px" },
+  { label: "开始时间", id: "startTime", },
+  { label: "结束时间", id: "endTime", },
 ]
+
 export const tableData = Mock.mock({
-  'data|40': [{
-    name: '@word(3, 7)',
-    "status|1": ["正常", "异常"],
-    "cluster|1": ["global", "region"],
-    "nodeIP|1": ["25.2.20.182", "25.2.20.2", "25.2.20.72", "25.2.20.90",],
-    time: "@date"
-  }]
+  'data|20': [
+
+    {
+      container: "peer01-admin",
+      namespace: "adminipdasfda",
+      cluster: "region",
+      project: "baas",
+      cpu: "0.35",
+      memory: "1.74",
+      startTime: "00:00:00",
+      endTime: "10:00:00"
+    },
+
+  ]
 })
 

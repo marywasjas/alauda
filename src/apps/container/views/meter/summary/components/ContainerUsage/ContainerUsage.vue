@@ -58,7 +58,7 @@
                   <div style="padding-left: 80px">
                     <el-progress
                       :percentage="showPercentage(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#5200f5"
                       class="barStyle"
                     />
@@ -95,14 +95,16 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'spaceName'">
-                  <div class="cursor-pointer">{{ scope.row[col.id] }}</div>
+                  <div class="cursor-pointer" @click="handleDetail(scope.row)">
+                    {{ scope.row[col.id] }}
+                  </div>
                 </div>
 
                 <div v-else-if="col.id === 'usage'">
                   <div style="padding-left: 55px">
                     <el-progress
                       :percentage="showPercentage2(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#5200f5"
                       class="barStyle2"
                     />
@@ -189,7 +191,7 @@
                   <div style="padding-left: 80px">
                     <el-progress
                       :percentage="showPercentage3(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#00b2d6"
                       class="barStyle"
                     />
@@ -233,7 +235,7 @@
                   <div style="padding-left: 55px">
                     <el-progress
                       :percentage="showPercentage4(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#00b2d6"
                       class="barStyle2"
                     />
@@ -336,6 +338,10 @@ export default {
       }
     },
 
+    handleDetail(obj){
+      
+    },
+
     handleStatistics(e) {
       if (e == 1) {
         this.toggleIndex = 0;
@@ -360,7 +366,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -372,7 +378,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -384,7 +390,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -396,12 +402,11 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
     format(a, num) {
-      // console.log(a, num);
       return () => {
         return num;
       };

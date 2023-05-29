@@ -1787,62 +1787,6 @@ export const containerAsyncRoutes = [
           },
         ]
       },
-      // Operators
-      // {
-      //   path: 'operator',
-      //   component: () => import('@/apps/container/views/catalog-management/operator/index'),
-      //   redirect: '/catalog-management/operator/list',
-      //   name: 'OperatorMain',
-      //   meta: { title: 'Operators', roles: ['admin'] },
-      //   children: [
-      //     {
-      //       path: 'list',
-      //       component: () => import('@/apps/container/views/catalog-management/operator/list'),
-      //       meta: { title: '', },
-      //       hidden: true
-      //     },
-      //     {
-      //       path: 'detail-operatorHub',
-      //       component: () => import('@/apps/container/views/catalog-management/operator/components/OperatorHub/detail'),
-      //       meta: { title: '', },
-      //       hidden: true,
-      //       beforeEnter: (to, from, next) => {
-      //         if (to.query.name) to.meta.title = to.query.name;
-      //         next();
-      //       },
-      //     },
-      //     {
-      //       path: 'detail-operatorDeploy',
-      //       component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/detail'),
-      //       meta: { title: '', },
-      //       hidden: true,
-      //       beforeEnter: (to, from, next) => {
-      //         if (to.query.name) to.meta.title = to.query.name;
-      //         next();
-      //       },
-      //     },
-      //     {
-      //       path: 'createInstance',
-      //       component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/components/BaseInfo/createInstance'),
-      //       meta: { title: '', },
-      //       hidden: true,
-      //       beforeEnter: (to, from, next) => {
-      //         if (to.query.name) to.meta.title = to.query.name;
-      //         next();
-      //       },
-      //     },
-      //     {
-      //       path: 'detailInstance',
-      //       component: () => import('@/apps/container/views/catalog-management/operator/components/Operators/components/BaseInfo/detailInstance'),
-      //       meta: { title: '', },
-      //       hidden: true,
-      //       beforeEnter: (to, from, next) => {
-      //         if (to.query.name) to.meta.title = to.query.name;
-      //         next();
-      //       },
-      //     },
-      //   ]
-      // },
     ]
   },
 
@@ -1929,6 +1873,19 @@ export const containerAsyncRoutes = [
     ]
   },
 
+  // 平台管理--审计
+  {
+    path: '/audit',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/apps/container/views/audit/index'),
+        name: 'AuditMain',
+        meta: { title: '审计', icon: 'form' }
+      }
+    ],
+  },
 
   // 平台管理--平台证书管理
   {

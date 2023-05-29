@@ -58,7 +58,7 @@
                   <div style="padding-left: 80px">
                     <el-progress
                       :percentage="showPercentage(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#5200f5"
                       class="barStyle"
                     />
@@ -102,7 +102,7 @@
                   <div style="padding-left: 55px">
                     <el-progress
                       :percentage="showPercentage2(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#5200f5"
                       class="barStyle2"
                     />
@@ -189,7 +189,7 @@
                   <div style="padding-left: 80px">
                     <el-progress
                       :percentage="showPercentage3(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#00b2d6"
                       class="barStyle"
                     />
@@ -233,7 +233,7 @@
                   <div style="padding-left: 55px">
                     <el-progress
                       :percentage="showPercentage4(scope.row.usage) * 100"
-                      :format="format(percentage, scope.row.usage)"
+                      :format="format(scope.row, scope.row.usage)"
                       color="#00b2d6"
                       class="barStyle2"
                     />
@@ -360,7 +360,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -372,7 +372,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -384,7 +384,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -396,12 +396,11 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
     format(percentage, num) {
-      // console.log(percentage, num);
       return () => {
         return num;
       };

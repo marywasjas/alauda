@@ -24,12 +24,12 @@
                 <span> 核 * 小时</span>
               </div>
 
-              <div class="titleStyle">
+              <!-- <div class="titleStyle">
                 <el-radio-group v-model="statistics" @input="handleStatistics">
                   <el-radio-button label="1">按目录统计</el-radio-button>
                   <el-radio-button label="2">按命名空间统计</el-radio-button>
                 </el-radio-group>
-              </div>
+              </div> -->
             </div>
           </header>
 
@@ -152,7 +152,7 @@
                 <span> GB * 小时</span>
               </div>
 
-              <div class="titleStyle">
+              <!-- <div class="titleStyle">
                 <el-radio-group
                   v-model="statistics2"
                   @input="handleStatistics2"
@@ -160,7 +160,7 @@
                   <el-radio-button label="1">按目录统计</el-radio-button>
                   <el-radio-button label="2">按命名空间统计</el-radio-button>
                 </el-radio-group>
-              </div>
+              </div> -->
             </div>
           </header>
 
@@ -360,7 +360,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -372,7 +372,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -384,7 +384,7 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
@@ -396,12 +396,11 @@ export default {
           return item.usage;
         })
       );
-      console.log(num / maxNum);
+      // console.log(num / maxNum);
       return num / maxNum;
     },
 
     format(a, num) {
-      console.log(a, num);
       return () => {
         return num;
       };

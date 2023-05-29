@@ -2,13 +2,12 @@
   <div class="detail-container">
     <div class="detail-header">
       <tab-header
+        :name="name"
         :desc="desc"
         :tab-list="tabList"
         :active-name="activeName"
         @changeActive="changeActive"
       >
-        运营概览
-
         <template v-slot:headerRight>
           <el-radio-group v-model="timeSelected" @input="handleTime">
             <el-radio-button label="1">本月</el-radio-button>
@@ -45,7 +44,8 @@ export default {
     return {
       timeSelected: "1",
 
-      name: "",
+      name: "运营概览",
+
       desc: "",
       tabList: [
         {
@@ -90,7 +90,7 @@ export default {
     },
   },
   created() {
-    this.name = this.$route.query.name;
+    // this.name = this.$route.query.name;
     // this.desc = this.$route.query.desc;
   },
   methods: {
