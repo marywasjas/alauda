@@ -148,7 +148,9 @@
                   />
                 </svg>
                 <span style="margin-left: 5px">CPU 使用总量:</span>
-                <span style="color: #5200f5">{{ "4687.51" }}</span>
+                <span style="color: #5200f5">
+                  {{ cpu_total * divData.length }}
+                </span>
                 <span style="margin-left: 5px">核 * 小时</span>
               </div>
 
@@ -167,7 +169,9 @@
                   />
                 </svg>
                 <span style="margin-left: 5px">内存使用总量:</span>
-                <span style="color: #00b2d6">{{ "51771.43" }}</span>
+                <span style="color: #00b2d6">
+                  {{ memory_total * divData.length }}
+                </span>
                 <span style="margin-left: 5px">GB * 小时</span>
               </div>
             </div>
@@ -200,7 +204,7 @@
                           d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0zm-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3h-7zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"
                         />
                       </svg>
-                      <span style="margin: 0 80px 0 5px">0.00</span>
+                      <span style="margin: 0 80px 0 5px">{{ cpu_total }}</span>
 
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -215,7 +219,7 @@
                           d="M1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.586a1 1 0 0 0 .707-.293l.353-.353a.5.5 0 0 1 .708 0l.353.353a1 1 0 0 0 .707.293H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1Zm.5 1h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm5 0h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm4.5.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4ZM2 10v2H1v-2h1Zm2 0v2H3v-2h1Zm2 0v2H5v-2h1Zm3 0v2H8v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Z"
                         />
                       </svg>
-                      <span style="margin-left: 5px">0.00</span>
+                      <span style="margin-left: 5px">{{ memory_total }}</span>
                     </div>
                   </div>
                   <el-table
@@ -280,6 +284,9 @@ export default {
     return {
       divData: [],
 
+      cpu_total: "",
+      memory_total: "",
+
       tabForm: {
         stats: "containerUsage",
         time: "",
@@ -303,12 +310,17 @@ export default {
       ],
 
       projectOptions: [
+        // { value: "all", label: "全部" },
         { value: "baas", label: "baas" },
+        { value: "cpass-dev", label: "cpass-dev" },
         { value: "cpass-system", label: "cpass-system" },
-        { value: "chaos", label: "chaos" },
-        { value: "federateai", label: "federateai" },
         { value: "ebaims", label: "ebaims" },
+        { value: "ebump", label: "ebump" },
+        { value: "faq", label: "faq" },
+        { value: "faqrobot", label: "faqrobot" },
+        { value: "federateai", label: "federateai" },
         { value: "region-devops", label: "region-devops" },
+        { value: "test-kubectl-cp", label: "test-kubectl-cp" },
       ],
 
       namespaceOptions: [{ value: "all", label: "全部" }],
@@ -329,9 +341,35 @@ export default {
   },
 
   created() {
-    this.handleChangeTitle("all");
     this.getOriginTime();
-    this.tabForm.project = this.$route.query.name;
+    this.handleChangeTitle("all");
+    this.cpu_total = this.tableData.data
+      .map((item) => {
+        return +item.cpu;
+      })
+      .reduce((sum, current) => sum + current, 0)
+      .toFixed();
+
+    this.memory_total = this.tableData.data
+      .map((item) => {
+        return +item.memory;
+      })
+      .reduce((sum, current) => sum + current, 0)
+      .toFixed();
+
+    if (this.$route.query.type) {
+      this.tabForm.project = this.$route.query.project;
+      this.tabForm.stats = this.$route.query.type;
+      this.tabForm.cluster = this.$route.query.cluster;
+      if (this.tabForm.cluster != "all") {
+        this.tabForm.namespace = this.$route.query.namespace;
+        this.namespaceOptions.push({
+          value: this.$route.query.namespace,
+          label: this.$route.query.namespace,
+        });
+      }
+      this.handleChangeTitle(this.tabForm.cluster);
+    }
   },
   methods: {
     setMinWidthEmpty(val) {
@@ -382,6 +420,7 @@ export default {
       }
 
       this.tabForm.time = [year + month + "01", year + month + day];
+      console.log("time==>", this.tabForm.time);
 
       for (var k = 1; k <= new Date().getDate(); k++) {
         if (k >= 1 && k <= 9) {
@@ -389,33 +428,56 @@ export default {
         }
         this.divData.push({ id: year + month + k, label: year + month + k });
       }
+
+      console.log(this.divData);
     },
   },
 
   watch: {
     "tabForm.time": {
       handler(newVal, oldVal) {
-        console.log(newVal, oldVal);
+        console.log("watch==>", newVal, oldVal);
         if (oldVal != "") {
           this.divData = [];
 
-          let a = newVal[0]
-            .slice(newVal[0].length - 2, newVal[0].length)
-            .replace("0", "");
+          let a = newVal[0].slice(newVal[0].length - 2, newVal[0].length);
+          let b = newVal[1].slice(newVal[1].length - 2, newVal[1].length);
+          let c = newVal[0].substring(0, 6);
+          let d = newVal[1].substring(0, 6);
+          if (a[0] == "0") a = a.slice(1);
+          if (b[0] == "0") b = b.slice(1);
+          console.log(c,d)
 
-          let b = newVal[1]
-            .slice(newVal[1].length - 2, newVal[1].length)
-            .replace("0", "");
-
-          let c = newVal[1].substring(0, 6);
-
-          console.log(c);
-
-          for (var k = a; k <= b; k++) {
-            if (k >= 1 && k <= 9) {
-              k = "0" + k;
+          if (c != d) {
+            for (var k = a; k <= 31; k++) {
+              if (k >= 1 && k <= 9) {
+                k = "0" + k;
+              }
+              this.divData.push({ id: c + k, label: c + k });
             }
-            this.divData.push({ id: c + k, label: c + k });
+
+            for (var k = 1; k <= b; k++) {
+              if (k >= 1 && k <= 9) {
+                k = "0" + k;
+              }
+              this.divData.push({ id: d + k, label: d + k });
+            }
+          } else {
+            for (var k = a; k <= b; k++) {
+              if (k >= 1 && k <= 9) {
+                k = "0" + k;
+              }
+              this.divData.push({ id: c + k, label: c + k });
+            }
+          }
+
+          if (this.divData.length > 31) {
+            this.$message({
+              type: "info",
+              message: "一次性最多支持查看 31天的数据",
+            });
+            this.getOriginTime();
+            return;
           }
         }
       },

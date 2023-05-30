@@ -17,11 +17,12 @@ export const tableColumnList = [
 ]
 export const tableData = Mock.mock({
   'data': [
-    { projectName: "cpass-system", usage: "4749.97", total: "92.73" },
-    { projectName: "baas", usage: "207.33", total: "4.05" },
-    { projectName: "region-devops", usage: "56.22", total: "1.10" },
-    { projectName: "federateai", usage: "44.46", total: "0.87" },
-    { projectName: "ebaims", usage: "43.04", total: "0.84" },
+    { projectName: "federateai", usage: "4749.97", total: "92.73" },
+    { projectName: "faq", usage: "207.33", total: "4.05" },
+    { projectName: "ebaims", usage: "56.22", total: "1.10" },
+    { projectName: "region-devops", usage: "44.46", total: "0.87" },
+    { projectName: "cpaas-system", usage: "43.04", total: "0.84" },
+    { projectName: "其他项目", usage: "0.00", total: "0.00" },
   ]
 })
 
@@ -51,36 +52,43 @@ export const tableColumnList2 = [
 export const tableData2 = Mock.mock({
   'data': [
     {
-      spaceName: "kube-system",
-      cluster: "global",
-      project: "cpass-system",
+      spaceName: "faq-robot",
+      cluster: "region",
+      project: "faq",
       usage: "2053.38",
       total: "31.17"
     },
     {
-      spaceName: "cpass-system",
-      cluster: "global",
-      project: "cpass-system",
+      spaceName: "federateai-training",
+      cluster: "region",
+      project: "federateai",
       usage: "1053.78",
       total: "18.56"
     },
     {
-      spaceName: "cpass-system",
+      spaceName: "federateai-exchange",
       cluster: "region",
-      project: "cpass-system",
+      project: "federateai",
       usage: "874.62",
       total: "15.40"
     },
     {
-      spaceName: "kube-system",
+      spaceName: "federateai-serving",
       cluster: "region",
-      project: "",
+      project: "federateai",
       usage: "776.26",
       total: "13.67"
     },
     {
-      spaceName: "operators",
+      spaceName: "federateai-kubefate",
       cluster: "region",
+      project: "federateai",
+      usage: "593.07",
+      total: "10.45"
+    },
+    {
+      spaceName: "其他命名空间",
+      cluster: "",
       project: "",
       usage: "593.07",
       total: "10.45"
@@ -107,13 +115,15 @@ export const tableColumnList3 = [
 ]
 export const tableData3 = Mock.mock({
   'data': [
-    { projectName: "cpass-system", usage: "44155.60", total: "83.56" },
-    { projectName: "baas", usage: "3071.99", total: "5.81" },
-    { projectName: "faq", usage: "1754.56", total: "3.32" },
-    { projectName: "region-decops", usage: "1310.98", total: "2.48" },
-    { projectName: "federateai", usage: "1286.50", total: "2.43" },
+    { projectName: "federateai", usage: "4749.97", total: "92.73" },
+    { projectName: "faq", usage: "207.33", total: "4.05" },
+    { projectName: "ebaims", usage: "56.22", total: "1.10" },
+    { projectName: "region-devops", usage: "44.46", total: "0.87" },
+    { projectName: "cpaas-system", usage: "43.04", total: "0.84" },
+    { projectName: "其他项目", usage: "0.00", total: "0.00" },
   ]
 })
+
 
 export const tableColumnList4 = [
   {
@@ -140,39 +150,46 @@ export const tableColumnList4 = [
 export const tableData4 = Mock.mock({
   'data': [
     {
-      spaceName: "cpaas-system",
+      spaceName: "faq-robot",
       cluster: "region",
-      project: "cpass-system",
-      usage: "23024.54",
-      total: "39.89"
+      project: "faq",
+      usage: "2053.38",
+      total: "31.17"
     },
     {
-      spaceName: "cpass-system",
-      cluster: "global",
-      project: "cpass-system",
-      usage: "12262.29",
-      total: "21.24"
+      spaceName: "federateai-training",
+      cluster: "region",
+      project: "federateai",
+      usage: "1053.78",
+      total: "18.56"
     },
     {
-      spaceName: "cpass-system",
+      spaceName: "federateai-exchange",
       cluster: "region",
-      project: "cpass-system",
-      usage: "8830.95",
-      total: "15.30"
+      project: "federateai",
+      usage: "874.62",
+      total: "15.40"
     },
     {
-      spaceName: "kube-system",
+      spaceName: "federateai-serving",
       cluster: "region",
+      project: "federateai",
+      usage: "776.26",
+      total: "13.67"
+    },
+    {
+      spaceName: "federateai-kubefate",
+      cluster: "region",
+      project: "federateai",
+      usage: "593.07",
+      total: "10.45"
+    },
+    {
+      spaceName: "其他命名空间",
+      cluster: "",
       project: "",
-      usage: "4029.74",
-      total: "6.98"
-    },
-    {
-      spaceName: "operators",
-      cluster: "region",
-      project: "",
-      usage: "2157.26",
-      total: "3.74"
+      usage: "593.07",
+      total: "10.45"
     },
   ]
 })

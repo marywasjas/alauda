@@ -51,7 +51,16 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'projectName'">
-                  <div class="cursor-pointer">{{ scope.row[col.id] }}</div>
+                  <div v-if="scope.row.projectName == '其他项目'">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div
+                    v-else
+                    class="cursor-pointer"
+                    @click="handleToReport(scope.row, statistics)"
+                  >
+                    {{ scope.row[col.id] }}
+                  </div>
                 </div>
 
                 <div v-else-if="col.id === 'usage'">
@@ -95,7 +104,19 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'spaceName'">
-                  <div class="cursor-pointer">{{ scope.row[col.id] }}</div>
+                  <div v-if="scope.row.spaceName == '其他命名空间'">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div v-else-if="scope.row.project == ''">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div
+                    v-else
+                    class="cursor-pointer"
+                    @click="handleToReport(scope.row, statistics2)"
+                  >
+                    {{ scope.row[col.id] }}
+                  </div>
                 </div>
 
                 <div v-else-if="col.id === 'usage'">
@@ -183,7 +204,16 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'projectName'">
-                  <div class="cursor-pointer">{{ scope.row[col.id] }}</div>
+                  <div v-if="scope.row.projectName == '其他项目'">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div
+                    v-else
+                    class="cursor-pointer"
+                    @click="handleToReport(scope.row, statistics2)"
+                  >
+                    {{ scope.row[col.id] }}
+                  </div>
                 </div>
 
                 <div v-else-if="col.id === 'usage'">
@@ -227,7 +257,19 @@
             >
               <template slot-scope="scope">
                 <div v-if="col.id === 'spaceName'">
-                  <div class="cursor-pointer">{{ scope.row[col.id] }}</div>
+                  <div v-if="scope.row.spaceName == '其他命名空间'">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div v-else-if="scope.row.project == ''">
+                    {{ scope.row[col.id] }}
+                  </div>
+                  <div
+                    v-else
+                    class="cursor-pointer"
+                    @click="handleToReport(scope.row, statistics2)"
+                  >
+                    {{ scope.row[col.id] }}
+                  </div>
                 </div>
 
                 <div v-else-if="col.id === 'usage'">
@@ -300,11 +342,6 @@ export default {
       toggleIndex: 0,
       toggleIndex2: 0,
 
-      formVisible: false,
-      titleContext: "",
-      nodeText: "",
-      buttonText: "",
-
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -314,14 +351,10 @@ export default {
         "margin-top": "-20px",
         color: "#A9A9A9",
       },
-
-      detailTitle: "",
     };
   },
 
-  created() {
-    this.detailTitle = this.$route.query.name;
-  },
+  created() {},
 
   methods: {
     setMinWidthEmpty(val) {
@@ -402,6 +435,22 @@ export default {
       return () => {
         return num;
       };
+    },
+
+    handleToReport(obj, stats) {
+      if (stats == "1") {
+        stats = "project";
+      } else {
+        stats = "namespace";
+      }
+      this.$router.push({
+        path: "/meter/report/list",
+        query: {
+          type: "containerQuota",
+          name: obj.projectName || obj.project,
+          granularity: stats,
+        },
+      });
     },
   },
 };

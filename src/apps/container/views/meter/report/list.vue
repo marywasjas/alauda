@@ -14,6 +14,7 @@
                 v-model="tabForm.stats"
                 @focus="setMinWidthEmpty"
                 style="width: 100%"
+                @change="handleStats"
               >
                 <el-option
                   v-for="con in statsOption"
@@ -83,7 +84,7 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="con in namespaceOptions"
+                  v-for="con in projectOptions"
                   :key="con.value"
                   :label="con.label"
                   :value="con.value"
@@ -142,7 +143,9 @@
                   />
                 </svg>
                 <span style="margin-left: 5px">CPU 使用总量:</span>
-                <span style="color: #5200f5">{{ "4687.51" }}</span>
+                <span style="color: #5200f5">
+                  {{ cpu_total * divData.length }}
+                </span>
                 <span style="margin-left: 5px">核 * 小时</span>
               </div>
 
@@ -161,7 +164,9 @@
                   />
                 </svg>
                 <span style="margin-left: 5px">内存使用总量:</span>
-                <span style="color: #00b2d6">{{ "51771.43" }}</span>
+                <span style="color: #00b2d6">
+                  {{ memory_total * divData.length }}
+                </span>
                 <span style="margin-left: 5px">GB * 小时</span>
               </div>
             </div>
@@ -194,7 +199,7 @@
                           d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0zm-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3h-7zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"
                         />
                       </svg>
-                      <span style="margin: 0 80px 0 5px">0.00</span>
+                      <span style="margin: 0 80px 0 5px">{{ cpu_total }}</span>
 
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +214,7 @@
                           d="M1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.586a1 1 0 0 0 .707-.293l.353-.353a.5.5 0 0 1 .708 0l.353.353a1 1 0 0 0 .707.293H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1Zm.5 1h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm5 0h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5Zm4.5.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4ZM2 10v2H1v-2h1Zm2 0v2H3v-2h1Zm2 0v2H5v-2h1Zm3 0v2H8v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Zm2 0v2h-1v-2h1Z"
                         />
                       </svg>
-                      <span style="margin-left: 5px">0.00</span>
+                      <span style="margin-left: 5px">{{ memory_total }}</span>
                     </div>
                   </div>
                   <el-table
@@ -228,11 +233,35 @@
                     >
                       <template slot-scope="scope">
                         <div v-if="col.id === 'details'">
+                          <el-tooltip
+                            v-if="
+                              !scope.row.projectName &&
+                              (tabForm.stats == 'containerUsage' ||
+                                tabForm.stats == 'containerQuota')
+                            "
+                            class="item"
+                            effect="dark"
+                            content="当命名空间不在任何项目下时，无法查看明细"
+                            placement="top"
+                            ><div>
+                              <el-button type="text" :disabled="true">
+                                明细
+                              </el-button>
+                            </div>
+                          </el-tooltip>
+
                           <el-button
+                            v-else-if="
+                              tabForm.stats == 'containerUsage' ||
+                              tabForm.stats == 'containerQuota'
+                            "
                             type="text"
                             @click="handleDetail(scope.row)"
-                            >明细</el-button
                           >
+                            明细
+                          </el-button>
+
+                          <div v-else></div>
                         </div>
                         <div v-else>
                           {{ scope.row[col.id] }}
@@ -262,8 +291,21 @@ export default {
   components: { LineAlert, FoldableBlock },
   data() {
     return {
+      rowCenter: {
+        "max-width": "520px",
+        "word-break": "break-all",
+        display: "table-cell",
+        "vertical-align": "middle",
+        "margin-left": "125px",
+        "margin-top": "-20px",
+        color: "#A9A9A9",
+      },
+
       title: "",
       statsTitle: "",
+
+      cpu_total: "",
+      memory_total: "",
 
       divData: [],
 
@@ -278,8 +320,8 @@ export default {
       statsOption: [
         { value: "containerUsage", label: "容器组使用量" },
         { value: "containerQuota", label: "容器组配额" },
-        { value: "cart-manager", label: "命名空间配额" },
-        { value: "chaos", label: "项目配额" },
+        { value: "namespace", label: "命名空间配额" },
+        { value: "project", label: "项目配额" },
       ],
 
       granularityOptions: [
@@ -287,26 +329,24 @@ export default {
         { value: "namespace", label: "命名空间" },
       ],
 
-      namespaceOptions: [
-        { value: "all", label: "全部" },
+      projectOptions: [
+        // { value: "all", label: "全部" },
         { value: "baas", label: "baas" },
-        { value: "cart-manager", label: "cart-manager" },
-        { value: "chaos", label: "chaos" },
         { value: "cpass-dev", label: "cpass-dev" },
         { value: "cpass-system", label: "cpass-system" },
+        { value: "ebaims", label: "ebaims" },
+        { value: "ebump", label: "ebump" },
+        { value: "faq", label: "faq" },
+        { value: "faqrobot", label: "faqrobot" },
+        { value: "federateai", label: "federateai" },
+        { value: "region-devops", label: "region-devops" },
+        { value: "test-kubectl-cp", label: "test-kubectl-cp" },
       ],
 
-      rowCenter: {
-        "max-width": "520px",
-        "word-break": "break-all",
-        display: "table-cell",
-        "vertical-align": "middle",
-        "margin-left": "125px",
-        "margin-top": "-20px",
-        color: "#A9A9A9",
-      },
+      tableData: {},
+      tableColumnList: [],
 
-      tableData: {
+      tableData_all_project: {
         data: [
           { projectName: "cpass-system", cpu: "4160.90", memory: "46062.25" },
           { projectName: "baas", cpu: "138.80", memory: "3204.94" },
@@ -316,8 +356,66 @@ export default {
           { projectName: "region-devops", cpu: "4160.90", memory: "46062.25" },
         ],
       },
-      tableColumnList: [
+      tableColumnList_all_project: [
         { label: "项目名称", id: "projectName", sortable: true },
+        { label: "CPU 使用总量(核 * 小时)", id: "cpu", sortable: true },
+        { label: "内存使用总量(GB * 小时)", id: "memory", sortable: true },
+        { label: "", id: "details", width: "60px" },
+      ],
+
+      tableData_all_namespace: {
+        data: [
+          {
+            namespace: "kube-system",
+            cluster: "global",
+            projectName: "bass",
+            cpu: "4160.90",
+            memory: "46062.25",
+          },
+          {
+            namespace: "kube-system",
+            cluster: "region",
+            projectName: "cpaas-system",
+            cpu: "4160.90",
+            memory: "46062.25",
+          },
+          {
+            namespace: "kube-system",
+            cluster: "global",
+            projectName: "",
+            cpu: "4160.90",
+            memory: "46062.25",
+          },
+          {
+            namespace: "kube-system",
+            cluster: "region",
+            projectName: "chaos",
+            cpu: "4160.90",
+            memory: "46062.25",
+          },
+          {
+            namespace: "kube-system",
+            cluster: "global",
+            projectName: "",
+            cpu: "4160.90",
+            memory: "46062.25",
+          },
+        ],
+      },
+      tableColumnList_all_namespace: [
+        {
+          label: "命名空间名称",
+          id: "namespace",
+          sortable: true,
+          width: "135px",
+        },
+        { label: "所属集群", id: "cluster", width: "80px" },
+        {
+          label: "所属项目",
+          id: "projectName",
+          sortable: true,
+          width: "135px",
+        },
         { label: "CPU 使用总量(核 * 小时)", id: "cpu", sortable: true },
         { label: "内存使用总量(GB * 小时)", id: "memory", sortable: true },
         { label: "", id: "details", width: "60px" },
@@ -326,8 +424,56 @@ export default {
   },
 
   created() {
-    this.handleChangeTitle("project");
     this.getOriginTime();
+    this.handleChangeTitle("project");
+
+    this.cpu_total = this.tableData.data
+      .map((item) => {
+        return +item.cpu;
+      })
+      .reduce((sum, current) => sum + current, 0);
+
+    this.memory_total = this.tableData.data
+      .map((item) => {
+        return +item.memory;
+      })
+      .reduce((sum, current) => sum + current, 0);
+
+    if (this.$route.query.type) {
+      this.tabForm.stats = this.$route.query.type;
+      this.tabForm.granularity = this.$route.query.granularity;
+      this.handleChangeTitle(this.$route.query.granularity);
+      if (this.$route.query.granularity == "project") {
+        this.tableData = {
+          data: [
+            {
+              projectName: this.$route.query.name,
+              cpu: "4160.90",
+              memory: "46062.25",
+            },
+          ],
+        };
+        this.cpu_total = "4160.90";
+        this.memory_total = "46062.25";
+      } else {
+        this.tableData = {
+          data: [
+            {
+              namespace: "kube-system",
+              cluster: "global",
+              projectName: this.$route.query.name,
+              cpu: "4160.90",
+              memory: "46062.25",
+            },
+          ],
+        };
+        this.cpu_total = "4160.90";
+        this.memory_total = "46062.25";
+      }
+
+      this.tabForm.project = "2";
+      this.tabForm.projectSelected.push(this.$route.query.name);
+    }
   },
 
   methods: {
@@ -350,12 +496,18 @@ export default {
         projectSelected: [],
       };
       this.getOriginTime();
+      this.handleChangeTitle("project");
     },
 
     handleDetail(obj) {
       this.$router.push({
         path: "/meter/detail/list",
-        query: { name: obj.projectName },
+        query: {
+          type: this.tabForm.stats, // 容器组使用量 / 容器组配额
+          project: obj.projectName,
+          cluster: obj.cluster || "all",
+          namespace: obj.namespace,
+        },
       });
     },
 
@@ -363,6 +515,36 @@ export default {
       this.title = this.granularityOptions.filter((item) => {
         return item.value == val;
       })[0].label;
+
+      if (val == "project") {
+        this.tableData = this.tableData_all_project;
+        this.tableColumnList = this.tableColumnList_all_project;
+        this.cpu_total = this.tableData.data
+          .map((item) => {
+            return +item.cpu;
+          })
+          .reduce((sum, current) => sum + current, 0);
+
+        this.memory_total = this.tableData.data
+          .map((item) => {
+            return +item.memory;
+          })
+          .reduce((sum, current) => sum + current, 0);
+      } else {
+        this.tableData = this.tableData_all_namespace;
+        this.tableColumnList = this.tableColumnList_all_namespace;
+        this.cpu_total = this.tableData.data
+          .map((item) => {
+            return +item.cpu;
+          })
+          .reduce((sum, current) => sum + current, 0);
+
+        this.memory_total = this.tableData.data
+          .map((item) => {
+            return +item.memory;
+          })
+          .reduce((sum, current) => sum + current, 0);
+      }
     },
 
     getOriginTime() {
@@ -374,33 +556,68 @@ export default {
       this.tabForm.time = [year + month, year + month];
       this.divData = [{ id: this.tabForm.time[0], time: this.tabForm.time[0] }];
     },
+
+    handleStats(val) {
+      if (val == "project") {
+        this.granularityOptions = [{ value: "project", label: "项目" }];
+        this.tabForm.granularity = "project";
+        this.handleChangeTitle("project");
+      } else {
+        this.granularityOptions = [
+          { value: "project", label: "项目" },
+          { value: "namespace", label: "命名空间" },
+        ];
+      }
+    },
   },
 
   watch: {
     "tabForm.time": {
       handler(newVal, oldVal) {
         console.log(newVal, oldVal);
-
         if (oldVal != "") {
           this.divData = [];
 
-          let a = newVal[0]
-            .slice(newVal[0].length - 2, newVal[0].length)
-            .replace("0", "");
+          let a = newVal[0].slice(newVal[0].length - 2, newVal[0].length);
+          let b = newVal[1].slice(newVal[1].length - 2, newVal[1].length);
+          let c = newVal[0].substring(0, 4);
+          let d = newVal[1].substring(0, 4);
+          if (a[0] == "0") a = a.slice(1);
+          if (b[0] == "0") b = b.slice(1);
 
-          let b = newVal[1]
-            .slice(newVal[1].length - 2, newVal[1].length)
-            .replace("0", "");
-
-          let c = newVal[1].substring(0, 4);
-
-          for (var k = a; k <= b; k++) {
-            if (k >= 1 && k <= 9) {
-              k = "0" + k;
+          if (c != d) {
+            for (var k = a; k <= 12; k++) {
+              if (k >= 1 && k <= 9) {
+                k = "0" + k;
+              }
+              this.divData.push({ id: c + k, label: c + k });
             }
-            this.divData.push({ id: c + k, label: c + k });
+
+            for (var k = 1; k <= b; k++) {
+              if (k >= 1 && k <= 9) {
+                k = "0" + k;
+              }
+              this.divData.push({ id: d + k, label: d + k });
+            }
+          } else {
+            for (var k = a; k <= b; k++) {
+              if (k >= 1 && k <= 9) {
+                k = "0" + k;
+              }
+              this.divData.push({ id: c + k, label: c + k });
+            }
+          }
+
+          if (this.divData.length > 6) {
+            this.$message({
+              type: "info",
+              message: "一次性最多支持查看 6个月的数据",
+            });
+            this.getOriginTime()
+            return;
           }
         }
+
         // this.divData = Array.from(new Set(newVal)).map((item) => {
         //   return { id: item, time: item };
         // });
