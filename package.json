@@ -49,6 +49,7 @@
     "vue-drawio-preview": "^1.0.2",
     "vue-i18n": "^8.24.4",
     "vue-iframe": "^0.0.0",
+    "vue-json-excel": "^0.3.0",
     "vue-router": "3.0.2",
     "vue-splitpane": "1.0.4",
     "vuedraggable": "2.20.0",
