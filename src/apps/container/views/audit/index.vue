@@ -75,6 +75,7 @@ export default {
 .Yaml-container {
   min-height: 100%;
   padding: 20px;
+  padding-top: 0;
   background-color: $background-color;
   .Yaml-header {
     background-color: #fff;

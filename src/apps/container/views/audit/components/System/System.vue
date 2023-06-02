@@ -144,8 +144,8 @@
             :header="exportHeader"
             :name="`平台审计记录 - ${titleTime}.xls`"
             type="csv"
-            :before-generate="handleExcel"
           >
+            <!-- :before-generate="handleExcel" -->
             <el-tooltip
               class="item"
               effect="dark"
@@ -554,7 +554,17 @@ export default {
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    "tabForm.filerTime": {
+      deep: true,
+      handler: function (time) {
+        console.log(time);
+        if (time == "自定义") {
+          this.tabForm.filerTime = "近 30 分钟";
+        }
+      },
+    },
+  },
   created() {},
   mounted() {},
   methods: {
@@ -614,6 +624,7 @@ export default {
         this.$set(this.tabForm.filerTime, 0, "");
         this.$set(this.tabForm.filerTime, 1, "");
         this.timepicker = true;
+        this.tabForm.filerTime = "近 30 分钟";
       }
     },
 
@@ -642,10 +653,14 @@ export default {
       this.titleTime = currentTime;
 
       if (this.timepicker == false) {
-        this.tabForm.filerTime = this.tabForm.filerTime
-          .join(",")
-          .replace(",", " - ")
-          .replace('"', "");
+        if (this.tabForm.filerTime == "近 30 分钟") {
+          this.tabForm.filerTime == "近 30 分钟";
+        } else {
+          this.tabForm.filerTime = this.tabForm.filerTime
+            .join(",")
+            .replace(",", " - ")
+            .replace('"', "");
+        }
       }
 
       this.exportHeader = [
@@ -662,9 +677,9 @@ export default {
       console.log(this.exportHeader);
     },
 
-    handleExcel(a, b, c) {
-      console.log(a, b, c);
-    },
+    // handleExcel(a, b, c) {
+    //   console.log(a, b, c);
+    // },
 
     closeDetailsDialog() {
       this.editVisible = false;
@@ -689,5 +704,4 @@ export default {
   height: 8px;
   border-radius: 50%;
 }
-</style>
 </style>
