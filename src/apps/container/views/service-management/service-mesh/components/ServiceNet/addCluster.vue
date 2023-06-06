@@ -3,7 +3,7 @@
     <div class="scroll-div">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <div style="font-size: 20px; line-height: 24px">创建服务网络</div>
+          <div style="font-size: 20px; line-height: 24px">添加集群</div>
         </div>
 
         <el-form
@@ -13,53 +13,66 @@
           label-width="135px"
         >
           <div class="recomend-list">
-            <h2>{{ "基本信息" }}</h2>
+            <h2>{{ "网格信息" }}</h2>
           </div>
 
-          <!-- 名称 -->
-          <el-form-item label="名称" prop="name">
+          <!-- 服务网络 -->
+          <el-form-item label="服务网络">
             <el-col :span="22">
-              <el-input
-                v-model="infoForm.name"
-                placeholder="以 a-z 开头，以 a-z、0-9 结尾，支持使用 a-z、0-9、-，最多 32 个字符。"
-              >
-              </el-input>
+              <span>{{ infoForm.name }}</span>
             </el-col>
           </el-form-item>
 
-          <!-- 显示名称 -->
-          <el-form-item label="显示名称">
+          <!-- istio 版本-->
+          <el-form-item label="istio 版本">
             <el-col :span="22">
-              <el-input v-model="infoForm.showName"> </el-input>
+              {{ infoForm.version }}
             </el-col>
           </el-form-item>
 
-          <!-- 版本 -->
-          <el-form-item label="Istio 版本" prop="version">
+          <!-- 网格的集群 -->
+          <el-form-item label="已加入网格的集群">
             <el-col :span="22">
-              <el-select
-                v-model="infoForm.version"
-                @focus="setMinWidthEmpty"
+              <el-table
+                :data="infoForm.clusterData"
                 style="width: 100%"
+                header-row-class-name="headerStyle"
+                size="middle"
               >
-                <el-option
-                  v-for="item in versionOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                <el-table-column
+                  v-for="col in [
+                    { value: 'cluster', label: '集群' },
+                    { value: 'region', label: '所属地域' },
+                    { value: 'version', label: 'Kubernetes 版本' },
+                  ]"
+                  :key="col.label"
+                  :label="col.label"
+                  :value="col.value"
+                >
+                  <template slot-scope="scope">
+                    <div v-if="col.value === 'cluster'">
+                      <div
+                        class="cursor-pointer"
+                        @click="handleToCluster(scope.row.cluster)"
+                      >
+                        {{ scope.row[col.value] }}
+                      </div>
+                      <div style="color: rgba(150, 152, 155)">
+                        {{ scope.row[col.value] }}
+                      </div>
+                    </div>
+                    <div v-else>
+                      {{ scope.row[col.value] ? scope.row[col.value] : "-" }}
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-col>
           </el-form-item>
-          <el-descriptions
-            size="small"
-            :colon="false"
-            :contentStyle="rowCenter"
-          >
-            <el-descriptions-item>
-              支持的 Kubernetes 版本：1.19，1.20，1.21，1.22
-            </el-descriptions-item>
-          </el-descriptions>
+
+          <div class="recomend-list">
+            <h2>{{ "基本信息" }}</h2>
+          </div>
 
           <!-- 集群 -->
           <el-form-item label="集群" prop="cluster">
@@ -68,309 +81,26 @@
                 v-model="infoForm.cluster"
                 @focus="setMinWidthEmpty"
                 style="width: 100%"
-                @change="clusterChange"
               >
-                <el-option
-                  v-for="item in clusterOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="当前服务网络已存在该集群"
+                  placement="top-start"
+                >
+                  <el-option label="global(global)" value="global" disabled />
+                </el-tooltip>
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="该集群网络模式与已加入网络的集群不一致"
+                  placement="top-start"
+                >
+                  <el-option label="region(region)" value="region" disabled />
+                </el-tooltip>
               </el-select>
             </el-col>
           </el-form-item>
-
-          <div class="component-div" v-if="clusterInfo">
-            <el-row :gutter="24" class="container-div">
-              <el-col
-                class="label-value"
-                v-for="item in detailData"
-                :key="item.label"
-                :span="12"
-              >
-                <span> {{ item.label }} </span>
-                : &nbsp;&nbsp;
-
-                <span v-if="item.label == '状态'">
-                  <i
-                    :class="
-                      item.value === '部署成功'
-                        ? 'el-icon-success running'
-                        : 'el-icon-warning stop'
-                    "
-                  />
-                  {{ item.value }}
-                </span>
-
-                <span v-else-if="item.label == '标签'">
-                  <el-tooltip
-                    placement="top"
-                    effect="dark"
-                    style="margin-right: 10px"
-                  >
-                    <div slot="content">{{ item.value[0] }}</div>
-                    <el-tag size="mini">
-                      {{
-                        item.value[0].length > 15
-                          ? item.value[0].substring(0, 30) + "..."
-                          : item.value[0]
-                      }}
-                    </el-tag>
-                  </el-tooltip>
-
-                  <el-tooltip placement="bottom" effect="light">
-                    <div slot="content" v-for="ele in item.value" :key="ele">
-                      <el-tag size="mini" style="margin-bottom: 10px">
-                        {{ ele }}
-                      </el-tag>
-                      <br />
-                    </div>
-                    <el-tag size="mini" style="cursor: pointer">
-                      {{ "..." }}
-                    </el-tag>
-                  </el-tooltip>
-                </span>
-
-                <span v-else>
-                  {{ item.value ? item.value : "-" }}
-                </span>
-              </el-col>
-            </el-row>
-          </div>
-
-          <div class="recomend-list">
-            <h2>{{ "网格配置" }}</h2>
-          </div>
-
-          <el-row type="flex">
-            <el-col :span="10">
-              <el-form-item prop="cpu" label="Sidecar 资源配置">
-                <el-input v-model="infoForm.cpu">
-                  <template slot="prepend">CPU</template>
-                  <template slot="append">核</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="10" style="margin-left: -100px">
-              <el-form-item prop="memory">
-                <el-input v-model="infoForm.memory">
-                  <template slot="prepend">内存</template>
-                  <template slot="append">Mi</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <label class="el-form-item__label" style="width: 135px">
-            调用链配置
-          </label>
-          <div class="component-div">
-            <el-row type="flex" class="container-div" style="padding-top: 20px">
-              <el-col :span="11">
-                <el-form-item label="采样率">
-                  <el-input v-model="infoForm.sampleRate" style="width: 85%">
-                    <template slot="append">%</template>
-                  </el-input>
-                  <el-tooltip effect="dark" class="item" placement="top">
-                    <template slot="content">
-                      <div style="max-width: 450px">
-                        为减少数据采集对系统的压力，根据业务需要设置监控数据的采样率，用于控制调用链数据采集的比率，默认为
-                        100%
-                      </div>
-                    </template>
-                    <i class="el-icon-question margin-left10 question-icon" />
-                  </el-tooltip>
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="11">
-                <el-form-item label="对接 Kafka">
-                  <el-switch v-model="infoForm.kafka"></el-switch>
-                  <el-tooltip effect="dark" class="item" placement="top">
-                    <template slot="content">
-                      <div style="max-width: 450px">
-                        开启时，调用链数据将通过 Kafka 写入
-                        Elasticsearch，避免流量过大时增加对 Elasticsearch
-                        的写入压力，但存在一定的调用链查询延迟；关闭时，调用链数据将直接写入
-                        Elasticsearch。
-                      </div>
-                    </template>
-                    <i class="el-icon-question margin-left10 question-icon" />
-                  </el-tooltip>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
-
-          <label class="el-form-item__label" style="width: 135px">
-            Elasticsearch 对接
-          </label>
-          <div class="component-div">
-            <el-row class="container-div" style="padding-top: 20px">
-              <el-col :span="24">
-                <el-form-item label="来源">
-                  <el-radio-group v-model="infoForm.origin_elastic">
-                    <el-radio-button label="平台提供"></el-radio-button>
-                    <el-radio-button label="自定义"></el-radio-button>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="22" v-if="infoForm.origin_elastic == '平台提供'">
-                <el-form-item label="URL" prop="url_elastic">
-                  <el-input v-model="infoForm.url_elastic" disabled />
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="22" v-if="infoForm.origin_elastic == '自定义'">
-                <el-form-item label="URL" prop="url_elastic">
-                  <el-input
-                    v-model="infoForm.url_elastic"
-                    placeholder="请输入 Elasticsearch 地址"
-                  />
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="24" v-if="infoForm.origin_elastic == '自定义'">
-                <el-form-item label="保密字典">
-                  <el-select
-                    v-model="infoForm.dictionary_elastic"
-                    @focus="setMinWidthEmpty"
-                    style="width: 70%"
-                    placeholder="请选择保密字典"
-                  >
-                    <el-option
-                      v-for="item in dictionaryOptions_elastic"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-
-                  <el-button
-                    type="primary"
-                    style="margin-left: 10px"
-                    @click="handleCreateDict('elastic')"
-                  >
-                    新建保密字典
-                  </el-button>
-                </el-form-item>
-                <el-descriptions
-                  size="small"
-                  :colon="false"
-                  :contentStyle="rowCenter"
-                >
-                  <el-descriptions-item>
-                    您可前往 global 集群的 cpaas-system
-                    命名空间管理存储了认证信息的保密字典
-                  </el-descriptions-item>
-                </el-descriptions>
-              </el-col>
-            </el-row>
-          </div>
-
-          <label class="el-form-item__label" style="width: 135px">
-            监控系统对接
-          </label>
-          <div class="component-div">
-            <el-row class="container-div" style="padding-top: 20px">
-              <el-col :span="24">
-                <el-form-item label="来源">
-                  <el-radio-group v-model="infoForm.origin_monitor">
-                    <el-radio-button label="平台提供"></el-radio-button>
-                    <el-radio-button label="自定义"></el-radio-button>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="22">
-                <el-form-item
-                  label="监控系统类型"
-                  v-if="infoForm.origin_monitor == '平台提供'"
-                >
-                  <span> {{ "-" }} </span>
-                </el-form-item>
-
-                <el-form-item label="监控系统类型" v-else prop="monitorType">
-                  <el-select
-                    v-model="infoForm.monitorType"
-                    @focus="setMinWidthEmpty"
-                    style="width: 100%"
-                    placeholder="请选择保密字典"
-                  >
-                    <el-option
-                      v-for="item in monitorOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-descriptions
-                  size="small"
-                  :colon="false"
-                  :contentStyle="rowCenter"
-                  v-if="infoForm.origin_monitor == '自定义'"
-                >
-                  <el-descriptions-item>
-                    请确保当前集群已部署 VictoriaMetrics 代理
-                  </el-descriptions-item>
-                </el-descriptions>
-              </el-col>
-
-              <el-col :span="22" v-if="infoForm.origin_monitor == '平台提供'">
-                <el-form-item label="URL" prop="url_monitor">
-                  <el-input v-model="infoForm.url_monitor" disabled />
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="22" v-if="infoForm.origin_monitor == '自定义'">
-                <el-form-item label="URL" prop="url_monitor">
-                  <el-input
-                    v-model="infoForm.url_monitor"
-                    placeholder="请输入监控系统的访问地址"
-                  />
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="24" v-if="infoForm.origin_monitor == '自定义'">
-                <el-form-item label="保密字典">
-                  <el-select
-                    v-model="infoForm.dictionary"
-                    @focus="setMinWidthEmpty"
-                    style="width: 70%"
-                    placeholder="请选择保密字典"
-                  >
-                    <el-option
-                      v-for="item in dictionaryOptions_monitor"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-
-                  <el-button
-                    type="primary"
-                    style="margin-left: 10px"
-                    @click="handleCreateDict('monitor')"
-                  >
-                    新建保密字典
-                  </el-button>
-                </el-form-item>
-                <el-descriptions
-                  size="small"
-                  :colon="false"
-                  :contentStyle="rowCenter"
-                >
-                  <el-descriptions-item>
-                    您可前往 global 集群的 cpaas-system
-                    命名空间管理存储了认证信息的保密字典
-                  </el-descriptions-item>
-                </el-descriptions>
-              </el-col>
-            </el-row>
-          </div>
 
           <div class="recomend-list">
             <h2>{{ "网关" }}</h2>
@@ -1177,7 +907,7 @@
         <i class="el-icon-cpu primary2-text" />2.6核
         <i class="el-icon-bank-card primary-text" /> 5572Mi
       </div>
-      <el-button type="primary" @click="submitCreate">创建</el-button>
+      <el-button type="primary" @click="submitCreate">添加</el-button>
       <el-button @click="cancelCreate">取消</el-button>
     </div>
 
@@ -1271,7 +1001,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleSure">确定</el-button>
+        <el-button type="primary" @click="handleSure">添加</el-button>
         <el-button @click="handleCancel">取消</el-button>
       </div>
     </el-dialog>
@@ -1301,105 +1031,7 @@ export default {
 
       clusterInfo: false,
 
-      detailData: [
-        {
-          label: "网络模式",
-          value: "calico",
-        },
-        {
-          label: "Kubernetes 版本",
-          value: "1.21.10",
-        },
-        {
-          label: "可用资源",
-          value: "CPU 6.47核/192.00核 内存 76.83Gi/371.0",
-        },
-
-        {
-          label: "所属地域",
-          value: "",
-        },
-      ],
-
-      infoForm: {
-        // 基本信息
-        name: "",
-        showName: "",
-        version: "1.12.4",
-        cluster: "",
-        // 网格配置
-        cpu: "0.1",
-        memory: "128",
-        sampleRate: "100",
-        kafka: false,
-
-        origin_elastic: "平台提供",
-        url_elastic: "",
-        dictionary_elastic: "",
-
-        origin_monitor: "平台提供",
-        monitorType: "victoriaMetrics",
-        url_monitor: "",
-        automatic: false,
-
-        // 网关
-        nodeAntiAffi_ingress: "期望",
-        deployNode_ingress: [],
-        automatic_ingress: false,
-        instanceNum_ingress: 1,
-        instanceNum_ingress_min: 2,
-        instanceNum_ingress_max: 4,
-        cpu_ingress: "0.5",
-        memory_ingress: "500",
-
-        nodeAntiAffi_egress: "期望",
-        deployNode_egress: [],
-        automatic_egress: false,
-        instanceNum_egress: 1,
-        instanceNum_egress_min: 2,
-        instanceNum_egress_max: 4,
-        cpu_egress: "0.5",
-        memory_egress: "500",
-
-        // istiod
-        automatic_istiod: false,
-        instanceNum_istiod: 1,
-        instanceNum_istiod_min: 2,
-        instanceNum_istiod_max: 4,
-        cpu_istiod: "0.5",
-        memory_istiod: "2048",
-
-        // asm
-        instanceNum_asm: 1,
-        cpu_asm: "0.5",
-        memory_asm: "360",
-
-        // flagger
-        instanceNum_flagger: 1,
-        cpu_flagger: "0.5",
-        memory_flagger: "3600",
-
-        // collector
-        automatic_collector: false,
-        instanceNum_collector: 1,
-        instanceNum_collector_min: 2,
-        instanceNum_collector_max: 4,
-        cpu_collector: "0.5",
-        memory_collector: "3000",
-
-        // query
-        instanceNum_query: 1,
-        cpu_query: "0.5",
-        memory_query: "3600",
-
-        // grafana
-        automatic_grafana: false,
-        instanceNum_grafana: 1,
-        instanceNum_grafana: 2,
-        instanceNum_grafana: 4,
-        cpu_grafana: "0.5",
-        memory_grafana: "3000",
-      },
+      infoForm: {},
 
       infoRules: {
         name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
@@ -1486,7 +1118,71 @@ export default {
     };
   },
 
-  created() {},
+  created() {
+    // this.name = this.$route.query.name
+    this.infoForm = {
+      name: this.$route.query.name,
+      version: "1.12.4",
+      clusterData: [{ cluster: "global", region: "", version: "1.21.10" }],
+      // 网关
+      nodeAntiAffi_ingress: "期望",
+      deployNode_ingress: [],
+      automatic_ingress: false,
+      instanceNum_ingress: 1,
+      instanceNum_ingress_min: 2,
+      instanceNum_ingress_max: 4,
+      cpu_ingress: "0.5",
+      memory_ingress: "500",
+
+      nodeAntiAffi_egress: "期望",
+      deployNode_egress: [],
+      automatic_egress: false,
+      instanceNum_egress: 1,
+      instanceNum_egress_min: 2,
+      instanceNum_egress_max: 4,
+      cpu_egress: "0.5",
+      memory_egress: "500",
+
+      // istiod
+      automatic_istiod: false,
+      instanceNum_istiod: 1,
+      instanceNum_istiod_min: 2,
+      instanceNum_istiod_max: 4,
+      cpu_istiod: "0.5",
+      memory_istiod: "2048",
+
+      // asm
+      instanceNum_asm: 1,
+      cpu_asm: "0.5",
+      memory_asm: "360",
+
+      // flagger
+      instanceNum_flagger: 1,
+      cpu_flagger: "0.5",
+      memory_flagger: "3600",
+
+      // collector
+      automatic_collector: false,
+      instanceNum_collector: 1,
+      instanceNum_collector_min: 2,
+      instanceNum_collector_max: 4,
+      cpu_collector: "0.5",
+      memory_collector: "3000",
+
+      // query
+      instanceNum_query: 1,
+      cpu_query: "0.5",
+      memory_query: "3600",
+
+      // grafana
+      automatic_grafana: false,
+      instanceNum_grafana: 1,
+      instanceNum_grafana: 2,
+      instanceNum_grafana: 4,
+      cpu_grafana: "0.5",
+      memory_grafana: "3000",
+    };
+  },
 
   methods: {
     setMinWidthEmpty(val) {
@@ -1499,10 +1195,11 @@ export default {
       }
     },
 
-    clusterChange(val) {
-      if (val) {
-        this.clusterInfo = true;
-      }
+    handleToCluster(cluster) {
+      this.$router.push({
+        path: "/cluster-management/cluster/detail",
+        query: { name: cluster },
+      });
     },
 
     handleCreateDict(type) {

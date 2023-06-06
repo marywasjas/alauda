@@ -78,33 +78,62 @@
       <el-form
         ref="updateForm"
         :model="updateForm"
-        label-width="135px"
+        label-width="110px"
         :rules="updateRules"
       >
         <!-- 1 -->
         <div class="component-div" style="margin-left: 0px">
           <div class="container-div" style="padding-top: 20px; display: flex">
-            <div style="flex: 3 1 60%; padding-left: 10px">
-              <div style="font-size: 16px; font-weight: bold">istio</div>
+            <div style="flex: 3 1 50%; padding-left: 10px">
+              <div style="font-size: 16px; font-weight: bold">istiod</div>
               <div style="font-size: 14px; color: rgba(150, 152, 155)">
                 istiod 控制面组件，负责配置下发等功能。
               </div>
             </div>
 
             <div>
-              <el-col :span="18" style="display: flex">
+              <el-col :span="6">
                 <!-- 1 -->
                 <el-form-item label="自动扩缩容">
                   <el-switch v-model="updateForm.auto_istiod" size="small" />
                 </el-form-item>
-                <!-- 2 -->
+              </el-col>
+
+              <el-col :span="18" v-if="updateForm.auto_istiod == false">
                 <el-form-item label="实例数" prop="instance_istiod">
                   <el-input
                     v-model="updateForm.instance_istiod"
                     size="small"
-                    style="width: 300px"
+                    style="width: 370px"
                   />
                 </el-form-item>
+              </el-col>
+
+              <el-col :span="18" v-else>
+                <div style="display: flex">
+                  <el-form-item label="实例数" prop="instance_istiod_min">
+                    <el-input
+                      v-model="updateForm.instance_istiod_min"
+                      size="small"
+                      style="width: 180px"
+                    >
+                      <template slot="prepend">最小值</template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item
+                    prop="instance_istiod_max"
+                    style="margin-left: -100px"
+                  >
+                    <el-input
+                      v-model="updateForm.instance_istiod_max"
+                      size="small"
+                      style="width: 180px"
+                    >
+                      <template slot="prepend">最大值</template>
+                    </el-input>
+                  </el-form-item>
+                </div>
               </el-col>
 
               <el-col :span="18" style="display: flex">
@@ -134,10 +163,11 @@
             </div>
           </div>
         </div>
+
         <!-- 2 -->
         <div class="component-div" style="margin-left: 0px">
           <div class="container-div" style="padding-top: 20px; display: flex">
-            <div style="flex: 3 1 60%; padding-left: 10px">
+            <div style="flex: 3 1 50%; padding-left: 10px">
               <div style="font-size: 16px; font-weight: bold">
                 asm-controller
               </div>
@@ -183,10 +213,11 @@
             </div>
           </div>
         </div>
+
         <!-- 3 -->
         <div class="component-div" style="margin-left: 0px">
           <div class="container-div" style="padding-top: 20px; display: flex">
-            <div style="flex: 3 1 60%; padding-left: 10px">
+            <div style="flex: 3 1 50%; padding-left: 10px">
               <div style="font-size: 16px; font-weight: bold">flagger</div>
               <div style="font-size: 14px; color: rgba(150, 152, 155)">
                 灰度发布组件,用于执行自动化灰度发布。
@@ -229,10 +260,11 @@
             </div>
           </div>
         </div>
+
         <!-- 4 -->
         <div class="component-div" style="margin-left: 0px">
           <div class="container-div" style="padding-top: 20px; display: flex">
-            <div style="flex: 3 1 60%; padding-left: 10px">
+            <div style="flex: 3 1 50%; padding-left: 10px">
               <div style="font-size: 16px; font-weight: bold">
                 jaeger-prod-collector
               </div>
@@ -242,21 +274,48 @@
             </div>
 
             <div>
-              <el-col :span="18" style="display: flex">
+              <el-col :span="6">
+                <!-- 1 -->
                 <el-form-item label="自动扩缩容">
-                  <el-switch
-                    v-model="updateForm.instance_collector"
-                    size="small"
-                  />
+                  <el-switch v-model="updateForm.auto_collector" size="small" />
                 </el-form-item>
+              </el-col>
 
+              <el-col :span="18" v-if="updateForm.auto_collector == false">
                 <el-form-item label="实例数" prop="instance_collector">
                   <el-input
                     v-model="updateForm.instance_collector"
                     size="small"
-                    style="width: 300px"
-                  ></el-input>
+                    style="width: 370px"
+                  />
                 </el-form-item>
+              </el-col>
+
+              <el-col :span="18" v-else>
+                <div style="display: flex">
+                  <el-form-item label="实例数" prop="instance_collector_min">
+                    <el-input
+                      v-model="updateForm.instance_collector_min"
+                      size="small"
+                      style="width: 180px"
+                    >
+                      <template slot="prepend">最小值</template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item
+                    prop="instance_collector_max"
+                    style="margin-left: -100px"
+                  >
+                    <el-input
+                      v-model="updateForm.instance_collector_max"
+                      size="small"
+                      style="width: 180px"
+                    >
+                      <template slot="prepend">最大值</template>
+                    </el-input>
+                  </el-form-item>
+                </div>
               </el-col>
 
               <el-col :span="18" style="display: flex">
@@ -288,10 +347,11 @@
             </div>
           </div>
         </div>
+
         <!-- 5 -->
         <div class="component-div" style="margin-left: 0px">
           <div class="container-div" style="padding-top: 20px; display: flex">
-            <div style="flex: 3 1 60%; padding-left: 10px">
+            <div style="flex: 3 1 50%; padding-left: 10px">
               <div style="font-size: 16px; font-weight: bold">
                 jaeger-prod-query
               </div>
@@ -337,10 +397,11 @@
             </div>
           </div>
         </div>
+
         <!-- 6 -->
         <div class="component-div" style="margin-left: 0px">
           <div class="container-div" style="padding-top: 20px; display: flex">
-            <div style="flex: 3 1 60%; padding-left: 10px">
+            <div style="flex: 3 1 50%; padding-left: 10px">
               <div style="font-size: 16px; font-weight: bold">grafana</div>
               <div style="font-size: 14px; color: rgba(150, 152, 155)">
                 服务网格监控组件。
@@ -348,18 +409,48 @@
             </div>
 
             <div>
-              <el-col :span="18" style="display: flex">
+              <el-col :span="6">
+                <!-- 1 -->
                 <el-form-item label="自动扩缩容">
                   <el-switch v-model="updateForm.auto_grafana" size="small" />
                 </el-form-item>
+              </el-col>
 
+              <el-col :span="18" v-if="updateForm.auto_grafana == false">
                 <el-form-item label="实例数" prop="instance_grafana">
                   <el-input
                     v-model="updateForm.instance_grafana"
                     size="small"
-                    style="width: 300px"
-                  ></el-input>
+                    style="width: 370px"
+                  />
                 </el-form-item>
+              </el-col>
+
+              <el-col :span="18" v-else>
+                <div style="display: flex">
+                  <el-form-item label="实例数" prop="instance_grafana_min">
+                    <el-input
+                      v-model="updateForm.instance_grafana_min"
+                      size="small"
+                      style="width: 180px"
+                    >
+                      <template slot="prepend">最小值</template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item
+                    prop="instance_grafana_max"
+                    style="margin-left: -100px"
+                  >
+                    <el-input
+                      v-model="updateForm.instance_grafana_max"
+                      size="small"
+                      style="width: 180px"
+                    >
+                      <template slot="prepend">最大值</template>
+                    </el-input>
+                  </el-form-item>
+                </div>
               </el-col>
 
               <el-col :span="18" style="display: flex">
@@ -367,7 +458,7 @@
                   <el-input
                     v-model="updateForm.cpu_grafana"
                     size="small"
-                    style="width: 220px"
+                    style="width: 180px"
                   >
                     <template slot="prepend">CPU</template>
                     <template slot="append">核</template>
@@ -473,34 +564,52 @@ export default {
         // 1
         auto_istiod: false,
         instance_istiod: "1",
+        instance_istiod_min: "2",
+        instance_istiod_max: "4",
+
         cpu_istiod: "0.5",
         memory_istiod: "2048",
+
         // 2
         instance_asm: "1",
         cpu_asm: "0.5",
         memory_asm: "2048",
+
         // 3
         instance_flagger: "1",
         cpu_flagger: "0.5",
         memory_flagger: "2048",
+
         // 4
         auto_collector: false,
         instance_collector: "1",
+        instance_collector_min: "2",
+        instance_collector_max: "4",
         cpu_collector: "0.5",
         memory_collector: "2048",
+
         // 5
         instance_query: "1",
         cpu_query: "0.5",
         memory_query: "2048",
+
         // 6
-        auto_grafana: true,
+        auto_grafana: false,
         instance_grafana: "1",
+        instance_grafana_min: "2",
+        instance_grafana_max: "4",
         cpu_grafana: "0.5",
         memory_grafana: "2048",
       },
 
       updateRules: {
         instance_istiod: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        instance_istiod_min: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        instance_istiod_max: [
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
         cpu_istiod: [
@@ -533,6 +642,14 @@ export default {
         instance_collector: [
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
+
+        instance_collector_min: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        instance_collector_max: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+
         cpu_collector: [
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
@@ -553,6 +670,14 @@ export default {
         instance_grafana: [
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
+
+        instance_grafana_min: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        instance_grafana_max: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+
         cpu_grafana: [
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
@@ -588,8 +713,11 @@ export default {
     },
 
     handleUpdate() {
+      this.updateForm = this.$options.data().updateForm;
       this.updateVisible = true;
     },
+
+    handle_update() {},
   },
 };
 </script>

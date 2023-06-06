@@ -13,7 +13,7 @@
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="handleEdit">
-              编辑订阅
+              更新网关
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -21,7 +21,7 @@
 
       <el-row :gutter="24" style="">
         <span class="titleStyle"> 基本信息 </span>
-        <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
+        <el-row :gutter="24" style="margin: 14px 0 14px 20px">
           <el-col
             v-for="item in detailResData"
             :key="item.label"
@@ -46,7 +46,7 @@
         </el-row>
 
         <span class="titleStyle"> 部署配置 </span>
-        <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
+        <el-row :gutter="24" style="margin: 14px 0 14px 20px">
           <el-col
             v-for="item in detailResData2"
             :key="item.label"
@@ -89,7 +89,7 @@
         </el-row>
 
         <span class="titleStyle"> 端口规划 </span>
-        <el-row :gutter="24" style="margin: 0 20px; margin-top: 14px">
+        <el-row :gutter="24" style="margin: 35px; margin-top: 14px">
           <el-table
             :data="tableData.data"
             style="width: 100%"
@@ -135,7 +135,7 @@
         </el-row>
 
         <span class="titleStyle"> 外部服务 </span>
-        <el-row :gutter="24" style="margin: 0 20px; margin-top: 14px">
+        <el-row :gutter="24" style="margin: 35px; margin-top: 14px">
           <el-table
             :data="tableData2.data"
             style="width: 100%"
@@ -194,6 +194,136 @@
       :submit-txt="submitTxt"
       @closeDetailsDialog="closeDetailsDialog"
     />
+
+    <el-dialog
+      title="更新网关"
+      @close="updateGatewayVisible = false"
+      :visible.sync="updateGatewayVisible"
+      width="60%"
+    >
+      <el-form
+        ref="updateGateway"
+        :model="updateGateway"
+        label-width="135px"
+        :rules="updateGatewayRules"
+      >
+        <el-form-item label="节点反亲和">
+          <el-radio-group v-model="updateGateway.node">
+            <el-radio-button label="1">强制</el-radio-button>
+            <el-radio-button label="2">期望</el-radio-button>
+          </el-radio-group>
+          <el-tooltip effect="dark" class="item" placement="top">
+            <template slot="content">
+              <div style="max-width: 450px">
+                节点反亲和类型为"强制"，则实例数等于部署节点数，不能修改<br />
+                节点反亲和类型为"期望"，实例数可手动修改，可控制自动扩缩容状态
+                <br />
+              </div>
+            </template>
+            <i class="el-icon-question margin-left10 question-icon" />
+          </el-tooltip>
+        </el-form-item>
+
+        <el-form-item label="部署节点" prop="deploy">
+          <el-select
+            clearable
+            multiple
+            v-model="updateGateway.deploy"
+            @focus="setMinWidthEmpty"
+            style="width: 80%"
+            placeholder="请选择部署节点"
+          >
+            <el-option
+              v-for="item in deployNodeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="实例数" v-if="updateGateway.node == '1'">
+          <span>
+            {{ this.updateGateway.instanceNum }}
+          </span>
+        </el-form-item>
+
+        <div v-else>
+          <el-col :span="6">
+            <!-- 1 -->
+            <el-form-item label="自动扩缩容">
+              <el-switch v-model="updateGateway.auto" size="small" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="18" v-if="updateGateway.auto == false">
+            <el-form-item label="实例数" prop="instance_collector">
+              <el-input
+                v-model="updateGateway.instanceNum"
+                size="small"
+                style="width: 370px"
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="18" v-else>
+            <div style="display: flex">
+              <el-form-item label="实例数" prop="instance_collector_min">
+                <el-input
+                  v-model="updateGateway.instanceNum_max"
+                  size="small"
+                  style="width: 180px"
+                >
+                  <template slot="prepend">最小值</template>
+                </el-input>
+              </el-form-item>
+
+              <el-form-item
+                prop="instance_collector_max"
+                style="margin-left: -100px"
+              >
+                <el-input
+                  v-model="updateGateway.instanceNum_min"
+                  size="small"
+                  style="width: 180px"
+                >
+                  <template slot="prepend">最大值</template>
+                </el-input>
+              </el-form-item>
+            </div>
+          </el-col>
+        </div>
+
+        <el-col :span="18" style="display: flex">
+          <el-form-item label="资源配额" prop="cpu_collector">
+            <el-input
+              v-model="updateGateway.cpu_collector"
+              size="small"
+              style="width: 220px"
+            >
+              <template slot="prepend">CPU</template>
+              <template slot="append">核</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item prop="memory_collector" style="margin-left: -100px">
+            <el-input
+              v-model="updateGateway.memory_collector"
+              size="small"
+              style="width: 220px"
+            >
+              <template slot="prepend">内存</template>
+              <template slot="append">Mi</template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer" style="margin-top: 100px">
+        <el-button type="primary" @click="handleUpdateName"> 更新 </el-button>
+        <el-button @click="updateGatewayVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -358,6 +488,39 @@ export default {
           desc: "Testlink 是一个基于web的测试用例管理工具，主要功能是测试用例的创建、管理和执行。",
         },
       ],
+
+      updateGatewayVisible: false,
+
+      updateGateway: {
+        node: "1",
+        deploy: [],
+        instanceNum: "1",
+        instanceNum2: "1",
+        instanceNum_min: "1",
+        instanceNum_max: "1",
+        auto: false,
+      },
+
+      updateGatewayRules: {},
+
+      deployNodeOptions: [
+        {
+          value: "25.2.20.108",
+          label: "25.2.20.108",
+        },
+        {
+          value: "25.2.20.10822",
+          label: "25.2.20.10822",
+        },
+        {
+          value: "25.2.20.10833",
+          label: "25.2.20.10833",
+        },
+        {
+          value: "25.2.20.10844",
+          label: "25.2.20.10844",
+        },
+      ],
     };
   },
   computed: {},
@@ -397,6 +560,10 @@ export default {
         path: "/catalog-management/operator/createInstance",
         query: { name: obj.label },
       });
+    },
+
+    handleEdit() {
+      this.updateGatewayVisible = true;
     },
   },
 };

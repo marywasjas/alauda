@@ -22,6 +22,7 @@ export const tableColumnList = [
     width: "60px"
   },
 ]
+
 export const tableData = Mock.mock({
   'data': [
     {
@@ -32,3 +33,28 @@ export const tableData = Mock.mock({
     }
   ]
 })
+
+export const tableColumnList2 = [
+  {
+    id: 'name',
+    label: '名称',
+  },
+  {
+    id: 'project',
+    label: '所属项目',
+  },
+  {
+    id: 'policy',
+    label: '策略下发',
+  },
+  {
+    id: 'operation',
+    label: '',
+    width: "60px"
+  },
+]
+
+export const tableData2 = Mock.mock({
+  'data': []
+})
+

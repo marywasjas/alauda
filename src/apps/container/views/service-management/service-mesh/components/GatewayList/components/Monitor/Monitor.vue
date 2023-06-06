@@ -8,7 +8,7 @@
           <span style="margin-right: 10px">正常{{ 1 }} </span>
           <span style="margin-right: 10px">异常{{ 0 }} </span>
         </div>
-        <el-col :span="24" style="">
+        <el-col :span="24" style="margin-bottom: 20px">
           <el-progress
             style="width: 50%"
             :percentage="100"
@@ -18,48 +18,20 @@
           />
         </el-col>
 
-        <div class="titleStyle">部署配置</div>
-        <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
-          <el-col
-            v-for="item in detailResData2"
-            :key="item.label"
-            :span="12"
-            class="label-value"
-          >
-            <span> {{ item.label }} </span>: &nbsp;&nbsp;
+        <div class="titleStyle">实时告警</div>
 
-            <span v-if="item.label == '命名空间'">
-              <span class="cursor-pointer">
-                {{ item.value }}
-              </span>
-            </span>
-
-            <span v-else-if="item.label == '项目'">
-              <span class="cursor-pointer">
-                {{ item.value }}
-              </span>
-            </span>
-
-            <span v-else-if="item.label == '部署节点'">
-              <el-tag size="mini">
-                {{ item.value }}
-              </el-tag>
-            </span>
-
-            <span v-else-if="item.label == '资源配额'">
-              <span>
-                <i class="el-icon-cpu primary2-text" />
-                {{ `${item.value.cpu} 核` }}
-              </span>
-              <span>
-                <i class="el-icon-bank-card primary-text" />
-                {{ `${item.value.memory} Mi` }}
-              </span>
-            </span>
-
-            <span v-else> {{ item.value ? item.value : "-" }} </span>
-          </el-col>
-        </el-row>
+        <!-- <BaseCard> -->
+        <div class="container-box">
+          <div class="box" v-for="item in baseInfoData" :key="item.title">
+            <i style="font-style: normal" v-if="item.title == '节点告警数'">
+              N
+            </i>
+            <i :class="item.icon" v-else />
+            <span style="margin-left: 5px">{{ item.title }}</span>
+            <div class="numStyle">{{ item.num }}</div>
+          </div>
+        </div>
+        <!-- </BaseCard> -->
       </el-row>
     </el-card>
 
@@ -97,6 +69,14 @@ export default {
   data() {
     return {
       activeName: "1",
+
+      baseInfoData: [
+        { title: "集群告警数", icon: "el-icon-document", num: 0 },
+        { title: "节点告警数", icon: "", num: 0 },
+        { title: "部署告警数", icon: "el-icon-s-data", num: 0 },
+        { title: "有状态副本集告警数", icon: "el-icon-coin", num: 0 },
+        { title: "守护进程集告警数", icon: "el-icon-coin", num: 0 },
+      ],
 
       detailResData: [
         { label: "显示名称", value: "" },
@@ -375,40 +355,48 @@ export default {
   grid-template-columns: repeat(3, calc(33.33% - 13px));
   grid-gap: 20px;
 }
-.buttonClass {
-  width: 290px;
-  height: 180px;
-  padding: 20px;
-  border: 1px solid rgba(150, 152, 155);
-  border-radius: 2px;
-  background: white;
-  position: relative;
-  // cursor: pointer;
-}
-/*鼠标悬浮，没有按下；鼠标按下后抬起，没有移开*/
-.buttonClass:focus,
-.buttonClass:hover {
-  // background: #eaf5ff;
-  border: 1px solid #2794f8 !important;
-  // color: #2794f8;
-}
-.wordStyle {
-  font-size: 14px;
-  height: 65px;
-  line-height: 21px;
-  margin-bottom: 16px;
-  color: rgba(100, 102, 105);
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
 .titleStyle {
   font-size: 18px;
   font-weight: 500;
   margin: 14px 0;
   margin-left: 15px;
+}
+.container-box {
+  display: grid;
+  grid-template-columns: repeat(
+    5,
+    1fr
+  ); /* 将容器分成 5 列，并设置每列的宽度为 1fr */
+  grid-gap: 5px; /* 设置元素之间的距离为 10px */
+  margin-left: 16px;
+}
+.box {
+  height: 100px;
+  // background-color: #ccc;
+  position: relative; /* 让伪元素相对于父元素定位 */
+}
+.box::after {
+  content: "";
+  border-left: 2px solid #ccc;
+  position: absolute; /* 将伪元素设置为绝对定位 */
+  top: 0;
+  bottom: 0;
+  right: 12px; /* 调整伪元素的位置 */
+}
+.box:last-child::after {
+  display: none; /* 去掉第一个 div 元素前面的分割线 */
+}
+.alarmNote {
+  color: rgba(150, 152, 155);
+  font-size: 14px;
+  width: 560px;
+  height: 60px;
+  text-align: center;
+}
+.numStyle {
+  font-size: 40px;
+  margin-top: 30px;
+  color: #67c23a;
 }
 </style>

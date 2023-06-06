@@ -11,13 +11,22 @@
                 <i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="handleUpdate">
+                <el-dropdown-item @click.native="handleUpdateGrid">
                   更新网格配置
                 </el-dropdown-item>
-                <el-dropdown-item @click.native="handleSilence">
-                  配置地域负载
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="handleDelete">
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="单集群服务网络不支持此功能"
+                  placement="left-end"
+                >
+                  <div>
+                    <el-dropdown-item disabled style="cursor: not-allowed">
+                      配置地域负载
+                    </el-dropdown-item>
+                  </div>
+                </el-tooltip>
+                <el-dropdown-item @click.native="handleAddCluster">
                   添加集群
                 </el-dropdown-item>
                 <el-dropdown-item @click.native="handleDelete">
@@ -45,7 +54,7 @@
               <i
                 :class="item.afterIcon"
                 class="cursor-pointer margin-left10"
-                @click="handleUpdate(item)"
+                @click="handleUpdate"
               />
             </span>
 
@@ -59,7 +68,10 @@
 
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span style="font-size: 20px">网格部署</span>
+        <span style="font-size: 20px"> 网格部署 </span>
+        <span style="font-size: 14px; margin-left: 20px" class="cursor-pointer">
+          多集群管理模式说明<i class="el-icon-document" />
+        </span>
       </div>
       <el-row :gutter="24">
         <el-table
@@ -78,7 +90,12 @@
           >
             <template slot-scope="scope">
               <div v-if="col.id === 'cluster'">
-                <div class="cursor-pointer">{{ scope.row[col.id] }}</div>
+                <div
+                  class="cursor-pointer"
+                  @click="handleToCluster(scope.row.cluster)"
+                >
+                  {{ scope.row[col.id] }}
+                </div>
                 <div style="color: rgba(150, 152, 155)">
                   {{ scope.row[col.id] }}
                 </div>
@@ -103,9 +120,21 @@
                 <el-dropdown trigger="click">
                   <i class="el-icon-more" />
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="handleRemove(scope.row)">
-                      移除
-                    </el-dropdown-item>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="网格下仅有一个集群，不可移除"
+                      placement="left-end"
+                    >
+                      <div style="cursor: not-allowed">
+                        <el-dropdown-item
+                          disabled
+                          @click.native="handleRemove(scope.row)"
+                        >
+                          移除
+                        </el-dropdown-item>
+                      </div>
+                    </el-tooltip>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
@@ -133,7 +162,7 @@
               margin-left: 15px;
             "
           >
-            服务器配置
+            Sidecar 配置
           </span>
           <el-row :gutter="24" style="margin-top: 14px; margin-left: 20px">
             <el-col
@@ -245,11 +274,6 @@
     </el-card>
 
     <el-card class="box-card" style="margin-top: 15px">
-      <!-- <header>
-          <div class="card-title left-header">
-            <span>{{ "网格" }}</span>
-          </div>
-        </header> -->
       <div slot="header" class="clearfix">
         <span style="font-size: 20px">命名空间</span>
       </div>
@@ -258,12 +282,13 @@
         <el-tab-pane label="global" name="1">
           <el-table
             class="margin-top"
-            :data="tableData.data"
+            :data="tableData2.data"
             style="width: 100%"
             header-row-class-name="headerStyle"
+            empty-text="无命名空间"
           >
             <el-table-column
-              v-for="col in tableColumnList"
+              v-for="col in tableColumnList2"
               :key="col.id"
               :label="col.label"
               :width="col.width"
@@ -287,6 +312,7 @@
       </el-tabs>
     </el-card>
 
+    <!-- 更新网格配置 -->
     <el-dialog
       title="更新网格配置"
       @close="updateVisible = false"
@@ -385,8 +411,10 @@
             <el-col :span="22">
               <el-form-item label="URL" prop="url">
                 <el-input
+                  @change="handleUrl_elastic"
                   v-model="updateForm.url_elastic"
                   placeholder="请输入 Elasticsearch 地址"
+                  :disabled="url_elasticDisabled"
                 />
               </el-form-item>
             </el-col>
@@ -394,6 +422,7 @@
             <el-col :span="24" v-if="updateForm.origin_elastic == '自定义'">
               <el-form-item label="保密字典">
                 <el-select
+                  clearable
                   v-model="updateForm.dictionary_elastic"
                   @focus="setMinWidthEmpty"
                   style="width: 65%"
@@ -435,7 +464,10 @@
           <el-row class="container-div" style="padding-top: 20px">
             <el-col :span="24">
               <el-form-item label="来源">
-                <el-radio-group v-model="updateForm.origin_monitor">
+                <el-radio-group
+                  v-model="updateForm.origin_monitor"
+                  @input="handleRadio2"
+                >
                   <el-radio-button label="平台提供"></el-radio-button>
                   <el-radio-button label="自定义"></el-radio-button>
                 </el-radio-group>
@@ -468,8 +500,9 @@
             <el-col :span="22">
               <el-form-item label="URL" prop="url_monitor">
                 <el-input
+                  placeholder="请输入监控系统的访问地址"
                   v-model="updateForm.url_monitor"
-                  :disabled="urlDisabled2"
+                  :disabled="url_monitorDisabled"
                 />
               </el-form-item>
             </el-col>
@@ -517,14 +550,258 @@
         <el-button @click="updateVisible = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 显示更新名称 -->
+    <el-dialog
+      title="更新显示名称"
+      @close="updateShownameVisible = false"
+      :visible.sync="updateShownameVisible"
+      width="60%"
+    >
+      <el-form ref="updateNameForm" :model="updateNameForm" label-width="135px">
+        <div style="margin-top: 20px">
+          <el-form-item label="显示名称">
+            <el-input v-model="updateNameForm.showName"> </el-input>
+          </el-form-item>
+        </div>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleUpdateName"> 更新 </el-button>
+        <el-button @click="updateShownameVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 更新保密字典 -->
+    <el-dialog
+      title="新建保密字典"
+      @close="dictionaryVisible = false"
+      :visible.sync="dictionaryVisible"
+      width="60%"
+    >
+      <el-form
+        v-if="dictType == 'elastic'"
+        ref="dictionaryForm"
+        :model="dictionaryForm"
+        :rules="dictionaryRules"
+        label-width="135px"
+      >
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="dictionaryForm.name">
+            <template slot="prepend"> servicemesh-elasticsearch- </template>
+          </el-input>
+        </el-form-item>
+
+        <label class="el-form-item__label" style="width: 135px">
+          认证信息
+        </label>
+        <div class="component-div-dialog">
+          <el-row class="container-div" style="padding-top: 20px">
+            <el-col :span="22">
+              <el-form-item label="用户名" prop="userName">
+                <el-input
+                  v-model="dictionaryForm.userName"
+                  placeholder="请输入用户名"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="22">
+              <el-form-item label="密码" prop="password">
+                <el-input
+                  show-password
+                  v-model="dictionaryForm.password"
+                  placeholder="请输入密码"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </el-form>
+
+      <el-form
+        v-else
+        ref="dictionaryForm_monitor"
+        :model="dictionaryForm_monitor"
+        :rules="dictionaryRules_monitor"
+        label-width="135px"
+      >
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="dictionaryForm_monitor.name">
+            <template slot="prepend"> servicemesh-elasticsearch- </template>
+          </el-input>
+        </el-form-item>
+
+        <label class="el-form-item__label" style="width: 135px">
+          认证信息
+        </label>
+        <div class="component-div-dialog">
+          <el-row class="container-div" style="padding-top: 20px">
+            <el-col :span="22">
+              <el-form-item label="用户名" prop="userName">
+                <el-input
+                  v-model="dictionaryForm_monitor.userName"
+                  placeholder="请输入用户名"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="22">
+              <el-form-item label="密码" prop="password">
+                <el-input
+                  show-password
+                  v-model="dictionaryForm_monitor.password"
+                  placeholder="请输入密码"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleSure">确定</el-button>
+        <el-button @click="dictionaryVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 删除 -->
+    <el-dialog
+      @close="deleteVisible = false"
+      :visible.sync="deleteVisible"
+      width="60%"
+    >
+      <div slot="title" class="header-title">
+        <span style="font-size: 22px; line-height: 24px; font-weight: bold">
+          <i class="el-icon-warning" style="color: red" />
+          {{ `删除服务网络` }}
+        </span>
+      </div>
+
+      <div style="margin-bottom: 10px">
+        确定删除服务网络"{{ titleName }}"吗？删除后：<br />
+      </div>
+      <div style="margin-bottom: 10px">
+        1) 将卸载 {{ titleName }} 相关组件，将无法进行服务治理<br />
+      </div>
+      <div style="margin-bottom: 15px">
+        2) 删除 {{ titleName }} 创建的资源；<br />
+      </div>
+      <div style="margin-top: 10px">
+        请输入 <span style="color: red">{{ titleName }}</span> 确定删除。
+      </div>
+      <div class="inputInfo copy_icon">
+        <el-input v-model="command" style="width: 95%" @input="handleCommand" />
+      </div>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          type="danger"
+          @click="handle_delete"
+          :disabled="deleteDisable"
+          >删除</el-button
+        >
+        <el-button @click="deleteVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="部署进度"
+      @close="deployVisible = false"
+      :visible.sync="deployVisible"
+      width="70%"
+    >
+      <el-tabs tab-position="left">
+        <el-tab-pane label="Operators" style="height: 90%">
+          <div style="margin-bottom: 15px; margin-left: 5px">
+            部署信息
+            <i class="el-icon-success running" />
+            Operators 部署成功
+          </div>
+
+          <div
+            style="
+              background: rgba(247, 249, 252);
+              border: 10px solid rgba(247, 249, 252);
+            "
+          >
+            <monaco-editor
+              class="yamlStyle"
+              ref="monacoEditor"
+              :code="currentCode"
+              :read-only="true"
+              :language="language"
+              @handleBlur="handleBlur"
+              :btn-visible="btnVisible"
+            />
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="组件实例">
+          <div style="margin-bottom: 15px; margin-left: 5px">
+            部署信息
+            <i class="el-icon-success running" />
+            组件实例 部署成功
+          </div>
+
+          <div
+            style="
+              background: rgba(247, 249, 252);
+              border: 10px solid rgba(247, 249, 252);
+            "
+          >
+            <monaco-editor
+              class="yamlStyle"
+              ref="monacoEditor2"
+              :code="currentCode2"
+              :read-only="true"
+              :language="language"
+              @handleBlur="handleBlur2"
+              :btn-visible="btnVisible2"
+            />
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="组件运行检查">
+          <div style="margin-bottom: 15px; margin-left: 5px">
+            部署信息
+            <i class="el-icon-success running" />
+            组件运行检查 部署成功
+          </div>
+          <div
+            style="
+              background: rgba(247, 249, 252);
+              border: 10px solid rgba(247, 249, 252);
+            "
+          >
+            <monaco-editor
+              class="yamlStyle"
+              ref="monacoEditor2"
+              :code="currentCode2"
+              :read-only="true"
+              :language="language"
+              @handleBlur="handleBlur2"
+              :btn-visible="btnVisible2"
+            />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="deployVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { tableColumnList, tableData } from "./constant/index";
+import {
+  tableColumnList,
+  tableData,
+  tableColumnList2,
+  tableData2,
+} from "./constant/index";
 import FoldableBlock from "@/apps/container/views/components/FoldableBlock";
 import MonacoEditor from "@/apps/container/views/components/MonacoEditor";
-
 import { nanoid } from "nanoid";
 
 export default {
@@ -536,7 +813,6 @@ export default {
       activeName: "1",
 
       updateVisible: false,
-
       updateForm: {
         cpu: "0.1",
         memory: "128",
@@ -557,7 +833,6 @@ export default {
         cpu_gateway: "0.5",
         memory_gateway: "0.5",
       },
-
       updateRules: {
         name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
         version: [
@@ -586,14 +861,51 @@ export default {
           { required: true, message: "必填项不能为空", trigger: "blur" },
         ],
       },
-
-      urlDisabled: false,
-      urlDisabled2: false,
+      url_elasticDisabled: true,
+      url_monitorDisabled: true,
 
       monitorOptions: [
         { label: "Prometheus", value: "prometheus" },
         { label: "VictoriaMetrics", value: "victoriaMetrics" },
       ],
+
+      dictionaryOptions_elastic: [],
+      dictionaryOptions_monitor: [],
+
+      dictType: "",
+      dictionaryVisible: false,
+
+      dictionaryForm: {
+        name: "",
+        userName: "",
+        password: "",
+      },
+
+      dictionaryRules: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        userName: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+      },
+
+      dictionaryForm_monitor: {
+        name: "",
+        userName: "",
+        password: "",
+      },
+
+      dictionaryRules_monitor: {
+        name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
+        userName: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "必填项不能为空", trigger: "blur" },
+        ],
+      },
 
       detailResData: [
         {
@@ -646,6 +958,9 @@ export default {
 
       tableData,
       tableColumnList,
+      tableData2,
+      tableColumnList2,
+
       rowCenter: {
         "max-width": "520px",
         "word-break": "break-all",
@@ -726,6 +1041,16 @@ export default {
         resource_type: "Pod",
         time: "1667783895000000",
       },
+
+      updateShownameVisible: false,
+
+      updateNameForm: {
+        showName: "",
+      },
+
+      deleteVisible: false,
+      deleteDisable: true,
+      command: "",
     };
   },
   computed: {},
@@ -745,19 +1070,123 @@ export default {
       }
     },
 
+    // 更新显示名称
     handleUpdate() {
-      this.updateVisible = true;
+      this.updateShownameVisible = true;
+      this.updateNameForm.showName = this.titleName;
     },
+
+    handleUpdateName() {},
+
+    handleUpdateGrid() {
+      this.updateForm = this.$options.data().updateForm;
+      this.$nextTick(() => {
+        this.$refs["updateForm"].resetFields();
+      });
+      (this.url_elasticDisabled = true),
+        (this.url_monitorDisabled = true),
+        (this.updateVisible = true);
+    },
+
+    handleUrl_elastic(val) {},
 
     handleRadio(val) {
       if (val == "自定义") {
+        this.url_elasticDisabled = false;
         this.updateForm.url_elastic = "";
       } else {
+        this.url_elasticDisabled = true;
         this.updateForm.url_elastic = "http://25.2.20.203:443/es_proxy";
       }
     },
 
+    handleRadio2(val) {
+      if (val == "自定义") {
+        this.url_monitorDisabled = false;
+        this.updateForm.url_monitor = "";
+      } else {
+        this.url_monitorDisabled = true;
+        this.updateForm.url_monitor = "http://25.2.20.203:443/es_proxy";
+      }
+    },
+
+    handleCreateDict(type) {
+      if (type == "elastic") {
+        this.dictionaryForm = this.$options.data().dictionaryForm;
+        this.$nextTick(() => {
+          this.$refs["dictionaryForm"].resetFields();
+        });
+        this.dictType = type;
+        this.dictionaryVisible = true;
+      } else {
+        this.dictionaryForm = this.$options.data().dictionaryForm;
+        this.$nextTick(() => {
+          this.$refs["dictionaryForm"].resetFields();
+        });
+        this.dictType = type;
+        this.dictionaryVisible = true;
+      }
+    },
+
+    handleSure() {
+      if (this.dictType == "elastic") {
+        this.$refs["dictionaryForm"].validate((valid) => {
+          if (valid) {
+            this.dictionaryOptions_elastic.push({
+              value: "servicemesh-elasticsearch-" + this.dictionaryForm.name,
+              label: "servicemesh-elasticsearch-" + this.dictionaryForm.name,
+            });
+            this.dictionaryVisible = false;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        this.$refs["dictionaryForm_monitor"].validate((valid) => {
+          if (valid) {
+            this.dictionaryOptions_monitor.push({
+              value:
+                "servicemesh" +
+                this.updateForm.monitorType +
+                this.dictionaryForm_monitor.name,
+              label:
+                "servicemesh" +
+                this.updateForm.monitorType +
+                this.dictionaryForm_monitor.name,
+            });
+            this.dictionaryVisible = false;
+          } else {
+            return false;
+          }
+        });
+      }
+    },
+
     handle_update() {},
+
+    handleRemove() {},
+
+    handleToCluster(cluster) {
+      this.$router.push({
+        path: "/cluster-management/cluster/detail",
+        query: { name: cluster },
+      });
+    },
+
+    handleDelete() {
+      this.command = "";
+      this.deleteVisible = true;
+    },
+
+    handleCommand(val) {
+      if (this.command == this.titleName) {
+        this.deleteDisable = false;
+      } else {
+        this.deleteDisable = true;
+      }
+    },
+
+    handle_delete() {},
 
     handleTablet() {
       this.deployVisible = true;
@@ -771,6 +1200,14 @@ export default {
     // 编辑器失去焦点
     handleBlur2(value) {
       this.inputCode2 = value;
+    },
+
+    // 添加集群
+    handleAddCluster() {
+      this.$router.push({
+        path: "/service-management/service-mesh/addCluster",
+        query: { name: this.titleName },
+      });
     },
   },
 };
@@ -930,10 +1367,10 @@ export default {
 }
 .label-value {
   margin-bottom: 12px;
-  margin-top: 12px;
+  // margin-top: 12px;
   span {
     font-size: $font-size-14;
-    font-weight: bold;
+    // font-weight: bold;
   }
   span:last-child {
     font-weight: 400;

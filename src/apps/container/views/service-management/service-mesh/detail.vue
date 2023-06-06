@@ -11,6 +11,12 @@
       </el-tabs>
     </div>
 
+    <LineAlert
+      style="margin-top: 20px"
+      v-if="activeName == 'backList'"
+      content="作用于当前服务网络的单个集群,对 Istio-ingressgateway 接收的请求进行访问控制。对于七层负载均衡器转发的请求,需要将服务源 IP 加到 x-forwarded-for 中,以便Istio-ingressgateway 能够获取。其他类型负载均衡器请参考 如何将服务源 IP 通过负载均衡器转发至 Istio-ingressgateway"
+    />
+
     <component :is="comName" />
   </div>
 </template>
@@ -18,9 +24,12 @@
 <script>
 import TabHeader from "@/apps/container/views/components/TabHeader";
 import LineAlert from "@/apps/container/views/components/LineAlert";
+
 import ServiceNet from "./components/ServiceNet/ServiceNet.vue";
 import ComList from "./components/ComList/ComList.vue";
 import GatewayList from "./components/GatewayList/GatewayList.vue";
+import BackList from "./components/BackList/BackList.vue";
+import Monitor from "./components/Monitor/Monitor.vue";
 
 import { nanoid } from "nanoid";
 
@@ -32,6 +41,7 @@ export default {
     ServiceNet,
     ComList,
     GatewayList,
+    BackList,
   },
   data() {
     return {
@@ -39,7 +49,7 @@ export default {
       desc: "",
       tabList: [
         {
-          label: "服务网络",
+          label: "服务网格",
           name: "serviceNet",
           com: "ServiceNet",
         },
@@ -52,6 +62,16 @@ export default {
           label: "网关列表",
           name: "gatewayList",
           com: "GatewayList",
+        },
+        {
+          label: "黑白列表",
+          name: "backList",
+          com: "BackList",
+        },
+        {
+          label: "监控",
+          name: "monitor",
+          com: "Monitor",
         },
       ],
       activeName: "",
@@ -73,7 +93,7 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
     },
   },
 };

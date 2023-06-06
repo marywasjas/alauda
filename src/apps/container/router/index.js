@@ -1768,6 +1768,17 @@ export const containerAsyncRoutes = [
             },
           },
           {
+            path: 'addCluster',
+            component: () => import('@/apps/container/views/service-management/service-mesh/components/ServiceNet/addCluster'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
             path: 'createGateway',
             component: () => import('@/apps/container/views/service-management/service-mesh/components/GatewayList/create'),
             name: 'UserList',
