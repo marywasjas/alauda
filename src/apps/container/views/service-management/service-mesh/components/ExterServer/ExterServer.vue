@@ -2,42 +2,10 @@
   <div class="container margin-top">
     <el-tabs v-model="activeName">
       <el-tab-pane label="global" name="1" class="tabStyle">
-        <div
-          style="
-            font-size: 14px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-          "
-        >
-          <span>规则状态: </span>
-          <i
-            :class="
-              ruleContent == '已启用'
-                ? 'el-icon-success question-icon '
-                : 'el-icon-remove question-icon'
-            "
-          />
-          <span style="margin: 0 5px">{{ ruleContent }}</span>
-          <el-button type="text" @click="handleStatus">规则状态设置</el-button>
-          <el-tooltip effect="dark" class="item" placement="top">
-            <template slot="content">
-              <div style="max-width: 400px">
-                状态为已启用时,黑白名单规则方可生效
-              </div>
-            </template>
-            <i class="el-icon-question margin-left10 question-icon" />
-          </el-tooltip>
-        </div>
-
         <div>
-          <el-button type="primary" @click="handleAdd('添加白名单')"
-            >添加白名单</el-button
+          <el-button type="primary" @click="handleAdd"
+            >添加外部服务</el-button
           >
-          <el-button type="primary" @click="handleAdd('添加黑名单')"
-            >添加黑名单</el-button
-          >
-          <el-button disabled>批量删除</el-button>
         </div>
 
         <el-table
@@ -99,85 +67,7 @@
       </div>
     </el-dialog>
 
-    <!-- 名单 -->
-    <el-dialog
-      @close="listVisible = false"
-      :visible.sync="listVisible"
-      width="60%"
-      :title="titleList"
-    >
-      <el-form :model="listForm" :rules="listRule" label-width="135px">
-        <el-form-item label="规则名称" prop="ruleName">
-          <el-input v-model="listForm.ruleName"> </el-input>
-        </el-form-item>
 
-        <el-form-item label="规则类型">
-          <span>{{ titleList == "添加白名单" ? "白名单" : "黑名单" }}</span>
-        </el-form-item>
-
-        <el-form-item label="匹配类型">
-          <span>{{ "下游服务 IP" }}</span>
-        </el-form-item>
-
-        <el-form-item label="服务 IP" >
-        <!-- <label class="el-form-item__label" style="width: 135px">
-         服务 IP
-        </label> -->
-        <table border="0" style="width: 100%">
-          <thead>
-            <tr class="headerStyle">
-              <th>
-                <div class="cell"></div>
-              </th>
-              <th>
-                <div class="cell">操作</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(domain, index) in listForm.serverItems"
-              :key="domain.id"
-            >
-              <td>
-                <el-form-item>
-                  <el-input
-                    v-model="domain.ip"
-                    placeholder="请输入服务 IP 或 IP 网段"
-                  />
-                </el-form-item>
-              </td>
-              <td class="text-center">
-                <el-button
-                  icon="el-icon-remove-outline"
-                  class="cursor-pointer margin-left10 margin-right10"
-                  type="text"
-                  @click="handleDeleteLabel('serverItems', domain, index)"
-                />
-              </td>
-            </tr>
-
-            <tr>
-              <td colspan="5">
-                <div
-                  class="cursor-pointer text-center hover-div"
-                  @click="handleAddLabel('serverItems')"
-                >
-                  <i class="el-icon-circle-plus-outline" />
-                  添加
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        </el-form-item>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="handleSubmit" type="primary">确定</el-button>
-        <el-button @click="listVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -197,19 +87,7 @@ export default {
       ruleStatus: "2",
       ruleContent: "未启用",
 
-      listVisible: false,
-      titleList: "",
-      listForm: {
-        serverItems: [{ id: nanoid(), ip: "" }],
-      },
-      listRule: {
-        ruleName: [
-          { required: true, message: "必填项不能为空", trigger: "blur" },
-        ],
-        serverItems: [
-          { required: true, message: "必填项不能为空", trigger: "change" },
-        ],
-      },
+
 
       rowCenter: {
         "max-width": "520px",
@@ -260,9 +138,10 @@ export default {
       }
     },
 
-    handleAdd(title) {
-      this.listVisible = true;
-      this.titleList = title;
+    handleAdd() {
+      this.$router.push({
+        path:"/service-management/service-mesh/addExterServer"
+      })
     },
 
     handleSelectChange(val) {
@@ -271,17 +150,6 @@ export default {
 
     handleSubmit() {},
 
-    handleDeleteLabel(filed, item, index) {
-      this.listForm[filed].splice(index, 1);
-    },
-
-    handleAddLabel(filed) {
-      const obj = {
-        id: nanoid(),
-        ip: "",
-      };
-      this.listForm[filed].push(obj);
-    },
   },
 };
 </script>

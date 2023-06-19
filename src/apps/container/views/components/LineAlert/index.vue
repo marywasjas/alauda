@@ -4,6 +4,14 @@
     <div class="line-alert__body">
       <div class="line-alert__content">
         {{ content }}
+        <el-button
+          v-if="buttonText"
+          @click="handleHelp"
+          type="text"
+          style="padding: 0"
+        >
+          {{ buttonText }}
+        </el-button>
       </div>
     </div>
   </div>
@@ -11,23 +19,31 @@
 
 <script>
 export default {
-  name: 'LineAlert',
+  name: "LineAlert",
   components: {},
   props: {
     content: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
+    buttonText: {
+      type: String,
+      default: "",
+    },
   },
   data() {
-    return {}
+    return {};
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
-}
+  methods: {
+    handleHelp() {
+      this.$emit("handleHelp");
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .line-alert {

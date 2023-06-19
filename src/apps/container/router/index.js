@@ -1779,6 +1779,17 @@ export const containerAsyncRoutes = [
             },
           },
           {
+            path: 'addExterServer',
+            component: () => import('@/apps/container/views/service-management/service-mesh/components/ExterServer/addExterServer'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true,
+            beforeEnter: (to, from, next) => {
+              if (to.query.name) to.meta.title = to.query.name;
+              next();
+            },
+          },
+          {
             path: 'createGateway',
             component: () => import('@/apps/container/views/service-management/service-mesh/components/GatewayList/create'),
             name: 'UserList',
@@ -1798,9 +1809,33 @@ export const containerAsyncRoutes = [
           },
         ]
       },
+
+      // WASM 插件
+      {
+        path: 'wasm',
+        component: () => import('@/apps/container/views/service-management/wasm/index'),
+        redirect: '/service-management/wasm/list',
+        name: 'WasmMain',
+        meta: { title: 'WASM 插件', roles: ['admin'] },
+        children: [
+          {
+            path: 'list',
+            component: () => import('@/apps/container/views/service-management/wasm/list'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+          {
+            path: 'create',
+            component: () => import('@/apps/container/views/service-management/wasm/create'),
+            name: 'UserList',
+            meta: { title: '', icon: 'icon', noCache: true, },
+            hidden: true
+          },
+        ]
+      },
     ]
   },
-
 
   // 平台管理--运营统计
   {

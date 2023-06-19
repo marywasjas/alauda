@@ -14,7 +14,9 @@
     <LineAlert
       style="margin-top: 20px"
       v-if="activeName == 'backList'"
-      content="作用于当前服务网络的单个集群,对 Istio-ingressgateway 接收的请求进行访问控制。对于七层负载均衡器转发的请求,需要将服务源 IP 加到 x-forwarded-for 中,以便Istio-ingressgateway 能够获取。其他类型负载均衡器请参考 如何将服务源 IP 通过负载均衡器转发至 Istio-ingressgateway"
+      :handleHelp="handleHelp"
+      buttonText="如何将服务源 IP 通过负载均衡器转发至 Istio-ingressgateway?"
+      content="作用于当前服务网络的单个集群,对 Istio-ingressgateway 接收的请求进行访问控制。对于七层负载均衡器转发的请求,需要将服务源 IP 加到 x-forwarded-for 中,以便 Istio-ingressgateway 能够获取。其他类型负载均衡器请参考"
     />
 
     <component :is="comName" />
@@ -30,6 +32,7 @@ import ComList from "./components/ComList/ComList.vue";
 import GatewayList from "./components/GatewayList/GatewayList.vue";
 import BackList from "./components/BackList/BackList.vue";
 import Monitor from "./components/Monitor/Monitor.vue";
+import ExterServer from "./components/ExterServer/ExterServer.vue";
 
 import { nanoid } from "nanoid";
 
@@ -42,6 +45,8 @@ export default {
     ComList,
     GatewayList,
     BackList,
+    Monitor,
+    ExterServer,
   },
   data() {
     return {
@@ -73,6 +78,11 @@ export default {
           name: "monitor",
           com: "Monitor",
         },
+        {
+          label: "外部服务",
+          name: "exterServer",
+          com: "ExterServer",
+        },
       ],
       activeName: "",
       content:
@@ -95,6 +105,8 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     },
+
+    handleHelp() {},
   },
 };
 </script>
